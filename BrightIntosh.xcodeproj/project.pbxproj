@@ -7,27 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C1B521152A5EF85500E9B7AC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B521142A5EF85500E9B7AC /* main.swift */; };
-		C1DF94522A5EF20E00FA285F /* overlay_shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */; };
-		C1DF94532A5EF20E00FA285F /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
-		C1DF94542A5EF20E00FA285F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
+		C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
+		C1B5215B2A5EFFDB00E9B7AC /* overlay_shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */; };
+		C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
+		C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B521142A5EF85500E9B7AC /* main.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		C1DF94432A5EF20000FA285F /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		C1B521142A5EF85500E9B7AC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		C1DF94452A5EF20000FA285F /* BrightIntosh */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BrightIntosh; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1B521172A5EFCB300E9B7AC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = overlay_shader.metal; sourceTree = "<group>"; };
 		C1DF94502A5EF20E00FA285F /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
 		C1DF94512A5EF20E00FA285F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -35,7 +24,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		C1DF94422A5EF20000FA285F /* Frameworks */ = {
+		C1B521452A5EFF5800E9B7AC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -57,7 +46,7 @@
 		C1DF94462A5EF20000FA285F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C1DF94452A5EF20000FA285F /* BrightIntosh */,
+				C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -65,6 +54,7 @@
 		C1DF94472A5EF20000FA285F /* BrightIntosh */ = {
 			isa = PBXGroup;
 			children = (
+				C1B521172A5EFCB300E9B7AC /* Info.plist */,
 				C1DF94512A5EF20E00FA285F /* AppDelegate.swift */,
 				C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */,
 				C1DF94502A5EF20E00FA285F /* Overlay.swift */,
@@ -76,13 +66,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C1DF94442A5EF20000FA285F /* BrightIntosh */ = {
+		C1B521472A5EFF5800E9B7AC /* BrightIntosh */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C1DF944C2A5EF20000FA285F /* Build configuration list for PBXNativeTarget "BrightIntosh" */;
+			buildConfigurationList = C1B521572A5EFF5900E9B7AC /* Build configuration list for PBXNativeTarget "BrightIntosh" */;
 			buildPhases = (
-				C1DF94412A5EF20000FA285F /* Sources */,
-				C1DF94422A5EF20000FA285F /* Frameworks */,
-				C1DF94432A5EF20000FA285F /* CopyFiles */,
+				C1B521442A5EFF5800E9B7AC /* Sources */,
+				C1B521452A5EFF5800E9B7AC /* Frameworks */,
+				C1B521462A5EFF5800E9B7AC /* Resources */,
 			);
 			buildRules = (
 			);
@@ -90,8 +80,8 @@
 			);
 			name = BrightIntosh;
 			productName = BrightIntosh;
-			productReference = C1DF94452A5EF20000FA285F /* BrightIntosh */;
-			productType = "com.apple.product-type.tool";
+			productReference = C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -103,7 +93,7 @@
 				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					C1DF94442A5EF20000FA285F = {
+					C1B521472A5EFF5800E9B7AC = {
 						CreatedOnToolsVersion = 14.3.1;
 					};
 				};
@@ -121,26 +111,122 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C1DF94442A5EF20000FA285F /* BrightIntosh */,
+				C1B521472A5EFF5800E9B7AC /* BrightIntosh */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		C1B521462A5EFF5800E9B7AC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
-		C1DF94412A5EF20000FA285F /* Sources */ = {
+		C1B521442A5EFF5800E9B7AC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1DF94542A5EF20E00FA285F /* AppDelegate.swift in Sources */,
-				C1DF94532A5EF20E00FA285F /* Overlay.swift in Sources */,
-				C1B521152A5EF85500E9B7AC /* main.swift in Sources */,
-				C1DF94522A5EF20E00FA285F /* overlay_shader.metal in Sources */,
+				C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */,
+				C1B5215B2A5EFFDB00E9B7AC /* overlay_shader.metal in Sources */,
+				C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */,
+				C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		C1B521582A5EFF5900E9B7AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 9K32WDUN2H;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BrightIntosh/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				"INFOPLIST_KEY_UISupportsDocumentBrowser[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UISupportsDocumentBrowser[sdk=iphonesimulator*]" = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "de.by-rousset.brightintosh";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C1B521592A5EFF5900E9B7AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 9K32WDUN2H;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BrightIntosh/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				"INFOPLIST_KEY_UISupportsDocumentBrowser[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UISupportsDocumentBrowser[sdk=iphonesimulator*]" = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "de.by-rousset.brightintosh";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		C1DF944A2A5EF20000FA285F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -254,45 +340,23 @@
 			};
 			name = Release;
 		};
-		C1DF944D2A5EF20000FA285F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 9K32WDUN2H;
-				ENABLE_HARDENED_RUNTIME = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		C1DF944E2A5EF20000FA285F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 9K32WDUN2H;
-				ENABLE_HARDENED_RUNTIME = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C1B521572A5EFF5900E9B7AC /* Build configuration list for PBXNativeTarget "BrightIntosh" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1B521582A5EFF5900E9B7AC /* Debug */,
+				C1B521592A5EFF5900E9B7AC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C1DF94402A5EF20000FA285F /* Build configuration list for PBXProject "BrightIntosh" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C1DF944A2A5EF20000FA285F /* Debug */,
 				C1DF944B2A5EF20000FA285F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C1DF944C2A5EF20000FA285F /* Build configuration list for PBXNativeTarget "BrightIntosh" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C1DF944D2A5EF20000FA285F /* Debug */,
-				C1DF944E2A5EF20000FA285F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
