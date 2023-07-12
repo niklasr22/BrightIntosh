@@ -9,7 +9,7 @@ import Cocoa
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
-    private var active: Bool = true
+    private var active = true
 
     @IBOutlet var window: NSWindow!
 
@@ -40,14 +40,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "sun.max.circle", accessibilityDescription: "1")
         }
-        setupMenus(active: active)
+        setupMenus()
     }
 
-    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
-        return true
-    }
-
-    func setupMenus(active: Bool) {
+    func setupMenus() {
         let menu = NSMenu()
         
         let title = NSMenuItem(title: "BrightIntosh", action: nil, keyEquivalent: "")
@@ -60,8 +56,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func toggleBrightIntosh() {
-        active = !active
-        setupMenus(active: active)
+        active.toggle()
+        setupMenus()
         window.setIsVisible(active)
     }
     

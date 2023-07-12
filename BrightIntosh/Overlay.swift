@@ -21,20 +21,20 @@ class Overlay: MTKView, MTKViewDelegate {
     init(frame: CGRect) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
         
-        if (device == nil) {
+        guard let device else {
             fatalError("No metal device")
         }
         
-        commandQueue = device!.makeCommandQueue()
+        commandQueue = device.makeCommandQueue()
         
         if (commandQueue == nil) {
             fatalError("Could not create command queue")
         }
         
-        guard let fragmentShader = device!.makeDefaultLibrary()?.makeFunction(name: "fragmentShader") else {
+        guard let fragmentShader = device.makeDefaultLibrary()?.makeFunction(name: "fragmentShader") else {
             fatalError("Could not create fragment shader function")
         }
-        guard let vertexShader = device!.makeDefaultLibrary()?.makeFunction(name: "vertexShader") else {
+        guard let vertexShader = device.makeDefaultLibrary()?.makeFunction(name: "vertexShader") else {
             fatalError("Could not create vertex shader function")
         }
         
@@ -69,7 +69,7 @@ class Overlay: MTKView, MTKViewDelegate {
         pipelineDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormat.rgba16Float
         
         
-        guard let pipelineState = try? device?.makeRenderPipelineState(descriptor: pipelineDescriptor) else {
+        guard let pipelineState = try? device.makeRenderPipelineState(descriptor: pipelineDescriptor) else {
             fatalError("Failed to create Metal Pipeline state")
         }
         self.pipelineState = pipelineState
@@ -83,7 +83,7 @@ class Overlay: MTKView, MTKViewDelegate {
              1.0,  1.0, 0.0, 1.0,
         ]
         
-        self.vertexBuffer = device?.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size, options: [])!
+        self.vertexBuffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size, options: [])!
     }
     
     required init(coder: NSCoder) {

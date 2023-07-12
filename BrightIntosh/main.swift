@@ -12,5 +12,4 @@ let application = NSApplication.shared
 let delegate = AppDelegate()
 application.delegate = delegate
 
-_ = __NSApplicationLoad()
 NSApp.run()

@@ -1,4 +1,5 @@
 #include <metal_stdlib>
+
 using namespace metal;
 
 struct VertexIn {
