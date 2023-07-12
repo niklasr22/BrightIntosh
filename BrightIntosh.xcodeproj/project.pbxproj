@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C1DF94492A5EF20000FA285F /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94482A5EF20000FA285F /* main.swift */; };
+		C1B521152A5EF85500E9B7AC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B521142A5EF85500E9B7AC /* main.swift */; };
+		C1DF94522A5EF20E00FA285F /* overlay_shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */; };
+		C1DF94532A5EF20E00FA285F /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
+		C1DF94542A5EF20E00FA285F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +26,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C1B521142A5EF85500E9B7AC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C1DF94452A5EF20000FA285F /* BrightIntosh */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BrightIntosh; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1DF94482A5EF20000FA285F /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = overlay_shader.metal; sourceTree = "<group>"; };
+		C1DF94502A5EF20E00FA285F /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
+		C1DF94512A5EF20E00FA285F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		C1DF94572A5EF66200FA285F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +48,7 @@
 		C1DF943C2A5EF20000FA285F = {
 			isa = PBXGroup;
 			children = (
+				C1DF94572A5EF66200FA285F /* README.md */,
 				C1DF94472A5EF20000FA285F /* BrightIntosh */,
 				C1DF94462A5EF20000FA285F /* Products */,
 			);
@@ -57,7 +65,10 @@
 		C1DF94472A5EF20000FA285F /* BrightIntosh */ = {
 			isa = PBXGroup;
 			children = (
-				C1DF94482A5EF20000FA285F /* main.swift */,
+				C1DF94512A5EF20E00FA285F /* AppDelegate.swift */,
+				C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */,
+				C1DF94502A5EF20E00FA285F /* Overlay.swift */,
+				C1B521142A5EF85500E9B7AC /* main.swift */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -120,7 +131,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1DF94492A5EF20000FA285F /* main.swift in Sources */,
+				C1DF94542A5EF20E00FA285F /* AppDelegate.swift in Sources */,
+				C1DF94532A5EF20E00FA285F /* Overlay.swift in Sources */,
+				C1B521152A5EF85500E9B7AC /* main.swift in Sources */,
+				C1DF94522A5EF20E00FA285F /* overlay_shader.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

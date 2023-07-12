@@ -2,10 +2,15 @@
 //  main.swift
 //  BrightIntosh
 //
-//  Created by Niklas on 12.07.23.
+//  Created by Niklas Rousset on 12.07.23.
 //
 
-import Foundation
+import Cocoa
 
-print("Hello, World!")
+let application = NSApplication.shared
 
+let delegate = AppDelegate()
+application.delegate = delegate
+
+_ = __NSApplicationLoad()
+NSApp.run()
