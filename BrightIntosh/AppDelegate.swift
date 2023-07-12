@@ -5,6 +5,7 @@
 //  Created by Niklas Rousset on 12.07.23.
 //
 
+
 import Cocoa
 
 class AppDelegate: NSObject, NSApplicationDelegate {
