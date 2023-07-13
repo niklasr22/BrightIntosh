@@ -12,4 +12,5 @@ let application = NSApplication.shared
 let delegate = AppDelegate()
 application.delegate = delegate
 
-NSApp.run()
+_ = NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
+application.run()

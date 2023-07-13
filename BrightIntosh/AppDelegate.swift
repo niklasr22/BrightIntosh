@@ -6,34 +6,37 @@
 //
 
 import Cocoa
+import SwiftUI
+
+struct SwiftUIView: View {
+    var body: some View {
+        Text("Hello, SwiftUI!")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var active = true
+    
+    private var overlayAvailable = false
 
-    @IBOutlet var window: NSWindow!
-
+    var overlayWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        guard let screen = NSScreen.main else { return }
-        let rect = NSRect(x: 0, y: 0, width: screen.frame.width, height: screen.frame.height)
         
-        window = NSWindow(contentRect: rect, styleMask: [.borderless], backing: .buffered, defer: false)
-        window.isOpaque = false
-        window.hasShadow = false
-        window.backgroundColor = NSColor.clear
-        window.ignoresMouseEvents = true
-        window.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.screenSaverWindow)))
-        window.collectionBehavior = [.stationary, .canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
-        window.styleMask = [.fullSizeContentView]
-        window.makeKeyAndOrderFront(nil)
+        if let builtInScreen = getBuiltInScreen() {
+            setupOverlay(screen: builtInScreen)
+        }
         
-        guard let view = window.contentView else { return }
-        
-        let overlay = Overlay(frame: view.bounds)
-        overlay.autoresizingMask = [.width, .height]
-        view.addSubview(overlay)
-        
+        // Observe displays
+        NotificationCenter.default.addObserver(
+                    self,
+                    selector: #selector(handleScreenParameters),
+                    name: NSApplication.didChangeScreenParametersNotification,
+                    object: nil)
+                
         // Menu bar app
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         
@@ -41,6 +44,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             button.image = NSImage(systemSymbolName: "sun.max.circle", accessibilityDescription: "1")
         }
         setupMenus()
+    }
+    
+    func setupOverlay(screen: NSScreen) {
+        let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: screen.frame.width, height: screen.frame.height)
+        overlayWindow = OverlayWindow(rect: rect, screen: screen)
+        overlayAvailable = true
+    }
+    
+    func destroyOverlay() {
+        if let overlayWindow {
+            overlayWindow.close()
+            overlayAvailable = false
+        }
+    }
+    
+    func getBuiltInScreen() -> NSScreen? {
+        for screen in NSScreen.screens {
+            let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")]
+            let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
+            if (CGDisplayIsBuiltin(displayId) != 0) {
+                return screen
+            }
+        }
+        return nil
     }
 
     func setupMenus() {
@@ -58,7 +85,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func toggleBrightIntosh() {
         active.toggle()
         setupMenus()
-        window.setIsVisible(active)
+        if (active == true) {
+            if let builtInScreen = getBuiltInScreen() {
+                setupOverlay(screen: builtInScreen)
+            }
+        } else {
+            destroyOverlay()
+        }
+    }
+    
+    @objc func handleScreenParameters() {
+        if let builtInScreen = getBuiltInScreen() {
+            if (!overlayAvailable) {
+                setupOverlay(screen: builtInScreen)
+            }
+        } else {
+            destroyOverlay()
+        }
     }
     
     @objc func exitBrightIntosh() {

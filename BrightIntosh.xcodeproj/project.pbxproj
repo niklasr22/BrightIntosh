@@ -11,12 +11,14 @@
 		C1B5215B2A5EFFDB00E9B7AC /* overlay_shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */; };
 		C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
 		C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B521142A5EF85500E9B7AC /* main.swift */; };
+		C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D044EA2A60205E0022B970 /* OverlayWindow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C1B521142A5EF85500E9B7AC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C1B521172A5EFCB300E9B7AC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1D044EA2A60205E0022B970 /* OverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindow.swift; sourceTree = "<group>"; };
 		C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = overlay_shader.metal; sourceTree = "<group>"; };
 		C1DF94502A5EF20E00FA285F /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
 		C1DF94512A5EF20E00FA285F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 				C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */,
 				C1DF94502A5EF20E00FA285F /* Overlay.swift */,
 				C1B521142A5EF85500E9B7AC /* main.swift */,
+				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -132,6 +135,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */,
+				C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */,
 				C1B5215B2A5EFFDB00E9B7AC /* overlay_shader.metal in Sources */,
 				C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */,
 				C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */,
