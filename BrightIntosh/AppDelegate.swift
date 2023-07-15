@@ -96,7 +96,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @objc func handleScreenParameters() {
         if let builtInScreen = getBuiltInScreen() {
-            if (!overlayAvailable) {
+            if (!overlayAvailable && active) {
                 setupOverlay(screen: builtInScreen)
             }
         } else {
