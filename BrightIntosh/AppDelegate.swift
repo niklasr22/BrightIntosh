@@ -40,9 +40,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Menu bar app
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         
-        if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "sun.max.circle", accessibilityDescription: "1")
-        }
         setupMenus()
     }
     
@@ -71,6 +68,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func setupMenus() {
+        if let button = statusItem.button {
+            button.image = NSImage(systemSymbolName: active ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: "1")
+        }
+        
         let menu = NSMenu()
         
         let title = NSMenuItem(title: "BrightIntosh", action: nil, keyEquivalent: "")
