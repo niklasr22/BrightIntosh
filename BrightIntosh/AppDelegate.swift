@@ -7,6 +7,7 @@
 
 import Cocoa
 import SwiftUI
+import ServiceManagement
 
 struct SwiftUIView: View {
     var body: some View {
@@ -18,6 +19,8 @@ struct SwiftUIView: View {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
+    
+    private var launchAtLogin = false
     private var active = true
     
     private var overlayAvailable = false
@@ -39,6 +42,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 
         // Menu bar app
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        
+        // Load launch at login status
+        launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
         
         setupMenus()
     }
@@ -69,16 +75,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func setupMenus() {
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: active ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: "1")
+            button.image = NSImage(systemSymbolName: active ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: active ? "Increased brightness" : "Default brightness")
         }
         
         let menu = NSMenu()
         
         let title = NSMenuItem(title: "BrightIntosh", action: nil, keyEquivalent: "")
-        let toggle = NSMenuItem(title: active ? "Disable" : "Activate", action: #selector(toggleBrightIntosh) , keyEquivalent: "1")
-        let exit = NSMenuItem(title: "Exit", action: #selector(exitBrightIntosh) , keyEquivalent: "2")
+        let toggleOverlay = NSMenuItem(title: active ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "b")
+        toggleOverlay.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.shift]
+        let toggleLaunchAtLogin = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
+        if launchAtLogin {
+            toggleLaunchAtLogin.image = NSImage(systemSymbolName: "checkmark", accessibilityDescription: "Launch at login active")
+        }
+        let exit = NSMenuItem(title: "Exit", action: #selector(exitBrightIntosh), keyEquivalent: "")
         menu.addItem(title)
-        menu.addItem(toggle)
+        menu.addItem(toggleOverlay)
+        menu.addItem(toggleLaunchAtLogin)
         menu.addItem(exit)
         statusItem.menu = menu
     }
@@ -93,6 +105,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             destroyOverlay()
         }
+    }
+    
+    @objc func toggleLaunchAtLogin() {
+        launchAtLogin.toggle()
+        let service = SMAppService.mainApp
+        do {
+            if launchAtLogin {
+                try service.register()
+            } else {
+                try service.unregister()
+            }
+        } catch {
+            launchAtLogin.toggle()
+        }
+        setupMenus()
     }
     
     @objc func handleScreenParameters() {
