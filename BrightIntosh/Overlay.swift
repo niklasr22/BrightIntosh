@@ -27,7 +27,7 @@ class Overlay: MTKView, MTKViewDelegate {
         
         commandQueue = device.makeCommandQueue()
         
-        if (commandQueue == nil) {
+        if commandQueue == nil {
             fatalError("Could not create command queue")
         }
         
