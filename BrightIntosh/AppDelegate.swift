@@ -21,7 +21,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     
     private var launchAtLogin = false
-    private var active = true
+    private var active = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
+        didSet {
+            UserDefaults.standard.set(active, forKey: "active")
+        }
+    }
     
     private var overlayAvailable = false
 
@@ -29,7 +33,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-        if let builtInScreen = getBuiltInScreen() {
+        if let builtInScreen = getBuiltInScreen(), active {
             setupOverlay(screen: builtInScreen)
         }
         
@@ -98,7 +102,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func toggleBrightIntosh() {
         active.toggle()
         setupMenus()
-        if (active == true) {
+        if active {
             if let builtInScreen = getBuiltInScreen() {
                 setupOverlay(screen: builtInScreen)
             }
@@ -124,7 +128,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @objc func handleScreenParameters() {
         if let builtInScreen = getBuiltInScreen() {
-            if (!overlayAvailable && active) {
+            if !overlayAvailable && active {
                 setupOverlay(screen: builtInScreen)
             }
         } else {
