@@ -106,7 +106,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func requestAccessibilityFeatures() {
-        print("Request accessibility")
         let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString: true]
         AXIsProcessTrustedWithOptions(options)
         
