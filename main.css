@@ -1,8 +1,8 @@
-@media only screen and (max-width: 600px) {
+@media screen and (max-width: 999px) {
     h1 {
         font-size: 50px;
     }
-    div.about, div.contribute {
+    div.info {
         width: 80%;
     }
 }
@@ -20,7 +20,7 @@ html {
     height: 100%;
 }
 
-div.about, div.contribute {
+div.info {
     margin: auto;
     width: 40%;
     padding: 10px;
@@ -46,7 +46,10 @@ a.download {
 
 a {
     color: #2aa5e8;
+}
 
+#donate-button {
+    height: 50px;
 }
 
 img.logo {
