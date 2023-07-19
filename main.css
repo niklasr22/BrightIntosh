@@ -11,9 +11,8 @@ html {
     height: 100%;
 }
 
-div.about {
+div.about, div.contribute {
     margin: auto;
-    min-width: 500px;
     width: 40%;
     padding: 10px;
     font-size: 20px;
@@ -34,6 +33,11 @@ a.download {
     display: float;
     float: right;
     margin-top: 18px;
+}
+
+a {
+    color: #2aa5e8;
+
 }
 
 img.logo {
