@@ -12,3 +12,7 @@ This tool should not harm your display as it doesn't use any lowlevel api calls 
 ## Limitations
 
 Currently the increased brightness is not supported while switching spaces or using mission control.
+
+## Contributing
+
+If you have any ideas, enhancements or proposals, feel free to open an issue or a pull request!
