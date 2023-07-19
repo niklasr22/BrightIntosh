@@ -2,6 +2,9 @@
     h1 {
         font-size: 50px;
     }
+    div.about, div.contribute {
+        width: 80%;
+    }
 }
 
 body {
