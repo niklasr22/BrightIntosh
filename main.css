@@ -1,0 +1,40 @@
+body {
+    background-color: #fff;
+    color: #333;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+}
+
+div.about {
+    margin: auto;
+    min-width: 500px;
+    width: 40%;
+    padding: 10px;
+    font-size: 20px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+div.download {
+    margin: auto;
+    min-width: 500px;
+    width: 40%;
+    padding: 10px;
+    font-size: 20px;
+    text-align: center;
+}
+
+img.logo {
+    width: 60px;
+    height: 60px;
+    margin-left: 20px;
+    top: 0;
+    left: 0;
+}
+
+
+h1 {
+    font-size: 40px;
+    text-align: center;
+}
