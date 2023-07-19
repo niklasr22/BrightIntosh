@@ -1,9 +1,14 @@
 body {
-    background-color: #fff;
     color: #333;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;;
     font-size: 14px;
     line-height: 1.42857143;
+    height: 100%;
+    margin: 0;
+}
+
+html {
+    height: 100%;
 }
 
 div.about {
@@ -14,27 +19,61 @@ div.about {
     font-size: 20px;
     text-align: center;
     margin-top: 10px;
+    color: #59595D;
 }
 
-div.download {
-    margin: auto;
-    min-width: 500px;
-    width: 40%;
-    padding: 10px;
+div.head {
+    top: 0;
+    display: flex;
+}
+
+a.download {
     font-size: 20px;
-    text-align: center;
+    margin: 15px;
+    margin-right: 30px;
+    margin-left: auto;
+    display: float;
+    float: right;
 }
 
 img.logo {
     width: 60px;
     height: 60px;
     margin-left: 20px;
-    top: 0;
-    left: 0;
+    display: float;
+    float: left;
 }
 
 
 h1 {
-    font-size: 40px;
+    font-size: 50px;
     text-align: center;
+    color: #2aa5e8;
+}
+
+h2 {
+    text-align: center;
+    color: #59595D;
+}
+
+.btn {
+    background-color: #2aa5e8;
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 8px;
+}
+
+.btn:hover {
+    background-color: #067ebf;
+}
+
+.full_heigth {
+    height: 100%;
+}
+
+#gradient {
+    background-image: linear-gradient(to bottom, rgba(42, 165, 232, 0.3), rgba(255,255,255,0));
 }
