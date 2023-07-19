@@ -28,9 +28,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     private var overlayAvailable = false
-
+    
     var overlayWindow: NSWindow?
-
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         if let builtInScreen = getBuiltInScreen(), active {
@@ -39,11 +39,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Observe displays
         NotificationCenter.default.addObserver(
-                    self,
-                    selector: #selector(handleScreenParameters),
-                    name: NSApplication.didChangeScreenParametersNotification,
-                    object: nil)
-                
+            self,
+            selector: #selector(handleScreenParameters),
+            name: NSApplication.didChangeScreenParametersNotification,
+            object: nil)
+        
         // Menu bar app
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         
@@ -76,7 +76,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         return nil
     }
-
+    
     func setupMenus() {
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: active ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: active ? "Increased brightness" : "Default brightness")
@@ -96,7 +96,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(toggleOverlay)
         menu.addItem(toggleLaunchAtLogin)
         menu.addItem(exit)
+        
+        if !AXIsProcessTrusted() {
+            let requestAccessibilityFeaturesItem = NSMenuItem(title: "Enable global hot key", action: #selector(requestAccessibilityFeatures), keyEquivalent: "")
+            menu.addItem(requestAccessibilityFeaturesItem)
+        }
+        
         statusItem.menu = menu
+    }
+    
+    @objc func requestAccessibilityFeatures() {
+        print("Request accessibility")
+        let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString: true]
+        AXIsProcessTrustedWithOptions(options)
+        
+        AccessibilityService.startPollingTrustedProcessState(getsTrusted: self.gotTrusted)
+    }
+    
+    func gotTrusted() {
+        setupMenus()
+        NSEvent.addGlobalMonitorForEvents(matching: NSEvent.EventTypeMask.keyDown, handler: {(event: NSEvent) -> Void in
+            if let chars = event.characters, event.modifierFlags.contains(NSEvent.ModifierFlags.command) && event.modifierFlags.contains(NSEvent.ModifierFlags.shift) && chars.contains("b") {
+                self.toggleBrightIntosh()
+            }
+        })
     }
     
     @objc func toggleBrightIntosh() {

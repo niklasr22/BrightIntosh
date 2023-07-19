@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9C9C78032A62AEE800778CAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C9C78022A62AEE800778CAE /* Assets.xcassets */; };
+		9CBD4E952A67E9F600C7A625 /* AccessibilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CBD4E942A67E9F600C7A625 /* AccessibilityService.swift */; };
 		C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
 		C1B5215B2A5EFFDB00E9B7AC /* overlay_shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */; };
 		C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
@@ -17,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		9C9C78022A62AEE800778CAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9CBD4E942A67E9F600C7A625 /* AccessibilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityService.swift; sourceTree = "<group>"; };
 		C1B521142A5EF85500E9B7AC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C1B521172A5EFCB300E9B7AC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,6 +67,7 @@
 				C1B521142A5EF85500E9B7AC /* main.swift */,
 				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
 				9C9C78022A62AEE800778CAE /* Assets.xcassets */,
+				9CBD4E942A67E9F600C7A625 /* AccessibilityService.swift */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -140,6 +143,7 @@
 			files = (
 				C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */,
 				C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */,
+				9CBD4E952A67E9F600C7A625 /* AccessibilityService.swift in Sources */,
 				C1B5215B2A5EFFDB00E9B7AC /* overlay_shader.metal in Sources */,
 				C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */,
 				C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */,
