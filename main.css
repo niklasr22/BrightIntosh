@@ -23,7 +23,6 @@ div.about {
 }
 
 div.head {
-    top: 0;
     display: flex;
 }
 
@@ -34,14 +33,16 @@ a.download {
     margin-left: auto;
     display: float;
     float: right;
+    margin-top: 18px;
 }
 
 img.logo {
     width: 60px;
     height: 60px;
-    margin-left: 20px;
+    margin-left: 30px;
     display: float;
     float: left;
+    margin-top: 10px;
 }
 
 
