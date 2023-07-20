@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     color: #333;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -42,6 +46,7 @@ a.download {
     padding: 10px;
     position: absolute;
     bottom: 0;
+    width: 100%;
 }
 
 a {
