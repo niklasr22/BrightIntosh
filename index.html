@@ -1,62 +1,69 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="main.css">
-    <link rel="icon" type="image/x-icon" href="./brightintosh_sm.png">
-    <script src="https://kit.fontawesome.com/ad8851e634.js" crossorigin="anonymous"></script>
-    <title>BrightIntosh</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  </head>
 
-  <body>
-    <div class="full_heigth" id="gradient">
-      <div class="head">
-        <img class="logo" src="./brightintosh_sm.png" alt="BrightIntosh Logo">
-        <a class="download" href="https://github.com/niklasr22/BrightIntosh/releases/download/latest/BrightIntosh.dmg">
-          <button class="btn">
-            <i class="fa-solid fa-download" style="margin-left: 7px;"></i>
-            Download
-          </button>
-        </a>
-      </div>
-      <h1>BrightIntosh</h1>
-      
-      <div class="info">
-        <h2>About</h2>
-        <p>
-          BrightIntosh enables your MacBook Pro M1 (or newer) to use the increased brightness of its XDR display anytime. By default this is only possible when displaying HDR content.
-          <br><br>
-          This tool should not harm your display as it doesn't use any lowlevel api calls and your OS is in full control over the display.
-        </p>
-      </div>
-      <div class="info">
-        <h2>Donate</h2>
-        <p>
-          Support this project by contributing or by donating a small amount of money. Your help is very much appreciated.
-        </p>
-        <div id="donate-button-container">
-          <div id="donate-button"></div>
-          <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
-          <script>
+<head>
+  <link rel="stylesheet" href="main.css">
+  <link rel="icon" type="image/x-icon" href="./brightintosh_sm.png">
+  <script src="https://kit.fontawesome.com/ad8851e634.js" crossorigin="anonymous"></script>
+  <title>BrightIntosh</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+</head>
+
+<body>
+  <div class="full_heigth" id="gradient">
+    <div class="head">
+      <img class="logo" src="./brightintosh_sm.png" alt="BrightIntosh Logo">
+      <a class="download" href="https://github.com/niklasr22/BrightIntosh/releases/download/latest/BrightIntosh.dmg">
+        <button class="btn">
+          <i class="fa-solid fa-download" style="margin-left: 7px;"></i>
+          Download
+        </button>
+      </a>
+    </div>
+    <h1>BrightIntosh</h1>
+
+    <div class="info">
+      <h2>About</h2>
+      <p>
+        BrightIntosh enables your MacBook Pro M1 (or newer) to use the increased brightness of its XDR display anytime.
+        By default this is only possible when displaying HDR content.
+        <br><br>
+        This tool should not harm your display as it doesn't use any lowlevel api calls and your OS is in full control
+        over the display.
+      </p>
+    </div>
+    <div class="info">
+      <h2>Donate</h2>
+      <p>
+        Support this project by contributing or by donating a small amount of money. Your help is very much appreciated.
+      </p>
+      <div id="donate-button-container">
+        <div id="donate-button"></div>
+        <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
+        <script>
           PayPal.Donation.Button({
-          env:'production',
-          hosted_button_id:'CLTLLRFAG5FL4',
-          image: {
-          src:'https://pics.paypal.com/00/s/ZmNhZDJmYjYtMWVmNy00MGMxLWJjMmYtMmNmZWRjYWE5Njk3/file.PNG',
-          alt:'Donate with PayPal button',
-          title:'PayPal - The safer, easier way to pay online!',
-          }
+            env: 'production',
+            hosted_button_id: 'CLTLLRFAG5FL4',
+            image: {
+              src: 'https://pics.paypal.com/00/s/ZmNhZDJmYjYtMWVmNy00MGMxLWJjMmYtMmNmZWRjYWE5Njk3/file.PNG',
+              alt: 'Donate with PayPal button',
+              title: 'PayPal - The safer, easier way to pay online!',
+            }
           }).render('#donate-button');
-          </script>
-        </div>
-      </div>
-      <div class="info">
-        <h2>Contribute</h2>
-        <p>
-          BrightIntosh is an open source project.
-          If you want to contribute, feel free to open a pull request on <a href="https://github.com/niklasr22/BrightIntosh">GitHub</a>.</p>
+        </script>
       </div>
     </div>
-    <a class="legal" href="./legal_notice.html">Legal notice</a>
-  </body>
+    <div class="info">
+      <h2>Contribute</h2>
+      <p>
+        BrightIntosh is an open source project.
+        If you want to contribute, feel free to open a pull request on <a
+          href="https://github.com/niklasr22/BrightIntosh">GitHub</a>.</p>
+    </div>
+    <div class="legal">
+      <a href="./legal_notice.html">Legal notice</a>
+    </div>
+  </div>
+</body>
+
 </html>
