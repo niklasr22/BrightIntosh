@@ -27,16 +27,13 @@ div.info {
 
 div.head {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
 }
 
 a.download {
     font-size: 20px;
-    margin: 15px;
-    margin-right: 30px;
-    margin-left: auto;
-    display: float;
-    float: right;
-    margin-top: 18px;
 }
 
 .legal {
@@ -59,10 +56,6 @@ a {
 img.logo {
     width: 60px;
     height: 60px;
-    margin-left: 30px;
-    display: float;
-    float: left;
-    margin-top: 10px;
 }
 
 
@@ -85,6 +78,7 @@ h2 {
     cursor: pointer;
     font-size: 20px;
     border-radius: 8px;
+    transition: all 0.2s ease-in-out;
 }
 
 .btn:hover {
