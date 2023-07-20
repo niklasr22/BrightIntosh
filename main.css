@@ -35,6 +35,11 @@ a.download {
     margin-top: 18px;
 }
 
+a.legal {
+    float: right;
+    display: float;
+}
+
 a {
     color: #2aa5e8;
 }
