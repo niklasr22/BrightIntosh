@@ -4,12 +4,12 @@ body {
     ;
     font-size: 14px;
     line-height: 1.42857143;
-    min-height: 100%;
+    height: 100%;
     margin: 0;
 }
 
 html {
-    min-height: 100%;
+    height: 100%;
 }
 
 div.info {
