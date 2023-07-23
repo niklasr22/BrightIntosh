@@ -40,7 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Observe displays
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(handleScreenParameters),
+            selector: #selector(handleScreenParameters(notification:)),
             name: NSApplication.didChangeScreenParametersNotification,
             object: nil)
         
@@ -156,7 +156,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupMenus()
     }
     
-    @objc func handleScreenParameters() {
+    @objc func handleScreenParameters(notification: Notification) {
         if let builtInScreen = getBuiltInScreen() {
             if !overlayAvailable && active {
                 setupOverlay(screen: builtInScreen)
