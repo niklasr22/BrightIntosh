@@ -51,6 +51,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
         
         setupMenus()
+        
+        if AXIsProcessTrusted() {
+            addKeyListeners()
+        }
     }
     
     func setupOverlay(screen: NSScreen) {
@@ -114,6 +118,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func gotTrusted() {
         setupMenus()
+        addKeyListeners()
+    }
+    
+    func addKeyListeners() {
         NSEvent.addGlobalMonitorForEvents(matching: NSEvent.EventTypeMask.keyDown, handler: {(event: NSEvent) -> Void in
             if let chars = event.characters, event.modifierFlags.contains(NSEvent.ModifierFlags.command) && event.modifierFlags.contains(NSEvent.ModifierFlags.shift) && chars.contains("b") {
                 self.toggleBrightIntosh()
