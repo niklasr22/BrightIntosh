@@ -6,15 +6,7 @@
 //
 
 import Cocoa
-import SwiftUI
 import ServiceManagement
-
-struct SwiftUIView: View {
-    var body: some View {
-        Text("Hello, SwiftUI!")
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
 
 
 class AppDelegate: NSObject, NSApplicationDelegate {
