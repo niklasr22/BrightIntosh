@@ -29,9 +29,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var overlayAvailable = false
     
-    var overlayWindow: NSWindow?
+    private var overlayWindow: NSWindow?
+    
+    private var appVersion: String?
+    
+    private var newVersionAvailable = false
+
+    private let BRIGHTINTOSH_URL = "https://brightintosh.de"
+    private let BRIGHTINTOSH_VERSION_URL = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest"
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        
+        appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         
         if let builtInScreen = getBuiltInScreen(), active {
             setupOverlay(screen: builtInScreen)
@@ -55,6 +64,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if AXIsProcessTrusted() {
             addKeyListeners()
         }
+        
+        // Schedule version check every 3 hours
+        let versionCheckDate = Date()
+        let versionCheckTimer = Timer(fire: versionCheckDate, interval: 10800, repeats: true, block: {t in self.fetchNewestVersion()})
+        RunLoop.main.add(versionCheckTimer, forMode: RunLoop.Mode.default)
     }
     
     func setupOverlay(screen: NSScreen) {
@@ -88,7 +102,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         let menu = NSMenu()
         
-        let title = NSMenuItem(title: "BrightIntosh", action: nil, keyEquivalent: "")
+        let title = NSMenuItem(title: "BrightIntosh (v\(appVersion ?? "?"))", action: #selector(openWebsite), keyEquivalent: "")
         let toggleOverlay = NSMenuItem(title: active ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "b")
         toggleOverlay.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.shift]
         let toggleLaunchAtLogin = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
@@ -96,6 +110,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             toggleLaunchAtLogin.image = NSImage(systemSymbolName: "checkmark", accessibilityDescription: "Launch at login active")
         }
         let exit = NSMenuItem(title: "Exit", action: #selector(exitBrightIntosh), keyEquivalent: "")
+        
         menu.addItem(title)
         menu.addItem(toggleOverlay)
         menu.addItem(toggleLaunchAtLogin)
@@ -104,6 +119,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !AXIsProcessTrusted() {
             let requestAccessibilityFeaturesItem = NSMenuItem(title: "Enable global hot key", action: #selector(requestAccessibilityFeatures), keyEquivalent: "")
             menu.addItem(requestAccessibilityFeaturesItem)
+        }
+        
+        if newVersionAvailable {
+            let newVersionItem = NSMenuItem(title: "Download a new version", action: #selector(openWebsite), keyEquivalent: "")
+            newVersionItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "Download a new version")
+            menu.addItem(newVersionItem)
         }
         
         statusItem.menu = menu
@@ -169,5 +190,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func exitBrightIntosh() {
         exit(0)
     }
+
+    @objc func fetchNewestVersion() {
+        let url = URL(string: BRIGHTINTOSH_VERSION_URL)!
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else {
+                return
+            }
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                let version = json["tag_name"] as! String
+                if version != "v" + (self.appVersion ?? "") {
+                    self.newVersionAvailable = true
+                    DispatchQueue.main.async {
+                        self.setupMenus()
+                    }
+                }
+            } catch {}
+        }
+        task.resume()
+    }
+
+    @objc func openWebsite() {
+        NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_URL)!)
+    }
+    
 }
 
