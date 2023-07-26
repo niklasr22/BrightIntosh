@@ -6,16 +6,8 @@
 //
 
 import Cocoa
-import SwiftUI
 import ServiceManagement
 import Carbon
-
-struct SwiftUIView: View {
-    var body: some View {
-        Text("Hello, SwiftUI!")
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
 
 extension String {
   /// This converts string to UInt as a fourCharCode
