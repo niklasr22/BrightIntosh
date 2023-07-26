@@ -36,6 +36,11 @@ a.download {
     font-size: 20px;
 }
 
+#version {
+    font-size: 12px;
+    vertical-align: middle;
+}
+
 .legal {
     margin: auto;
     text-align: right;

@@ -13,9 +13,9 @@
   <div class="background">
     <div class="head">
       <img class="logo" src="./brightintosh_sm.png" alt="BrightIntosh Logo">
-      <a class="download"
-        href="https://github.com/niklasr22/BrightIntosh/releases/latest/download/BrightIntosh.dmg" download="BrightIntosh_v1.0.5.dmg"><button
-          class="btn"><i class="fa-solid fa-download"></i> Download</button></a>
+      <a class="download" id="download-link" href="https://github.com/niklasr22/BrightIntosh/releases/latest/"
+        download="BrightIntosh_v1.0.5.dmg"><button class="btn"><i class="fa-solid fa-download"></i> Download<span
+            id="version"></span></button></a>
     </div>
     <h1>BrightIntosh</h1>
 
@@ -29,10 +29,11 @@
     <div class="info">
       <h2>Disclaimer</h2>
       <p>
-        Use this application at your own risk. This software comes with no warranty or guarantees. Users take full responsibility for any problems that arise from the use of this software.
-        <br/>
+        Use this application at your own risk. This software comes with no warranty or guarantees. Users take full
+        responsibility for any problems that arise from the use of this software.
+        <br />
         By using the BrightIntosh application you accept the above.
-        <br/><br/>
+        <br /><br />
         However this tool <i>should</i> not harm your display as the OS is in full control over the display brightness.
       </p>
     </div>
@@ -68,6 +69,17 @@
       <a href="./legal_notice.html">Legal notice</a>
     </div>
   </div>
+  <script>
+    const version = document.getElementById("version");
+    const downloadLink = document.getElementById("download-link");
+    const url = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest";
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        version.innerHTML = " (" + data.tag_name + ")";
+        downloadLink.href = data.assets[0].browser_download_url;
+      });
+  </script>
 </body>
 
 </html>
