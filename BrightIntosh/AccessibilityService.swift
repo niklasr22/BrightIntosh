@@ -7,7 +7,8 @@
 
 import Cocoa
 
-final class AccessibilityService {
+/* TODO: Use this once Carbon is fully deprecated without a better successor.
+ final class AccessibilityService {
     
     private static var trusted = false
     private static var running = false
@@ -32,3 +33,4 @@ final class AccessibilityService {
     }
     
 }
+*/
