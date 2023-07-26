@@ -10,23 +10,23 @@ import ServiceManagement
 import Carbon
 
 extension String {
-  /// This converts string to UInt as a fourCharCode
-  public var fourCharCodeValue: Int {
-    var result: Int = 0
-    if let data = self.data(using: String.Encoding.macOSRoman) {
-      data.withUnsafeBytes({ (rawBytes) in
-        let bytes = rawBytes.bindMemory(to: UInt8.self)
-        for i in 0 ..< data.count {
-          result = result << 8 + Int(bytes[i])
+    /// This converts string to UInt as a fourCharCode
+    public var fourCharCodeValue: Int {
+        var result: Int = 0
+        if let data = self.data(using: String.Encoding.macOSRoman) {
+            data.withUnsafeBytes({ (rawBytes) in
+                let bytes = rawBytes.bindMemory(to: UInt8.self)
+                for i in 0 ..< data.count {
+                    result = result << 8 + Int(bytes[i])
+                }
+            })
         }
-      })
+        return result
     }
-    return result
-  }
 }
 
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
     
     private var launchAtLogin = false
@@ -43,7 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var appVersion: String?
     
     private var newVersionAvailable = false
-
+    
     private let BRIGHTINTOSH_URL = "https://brightintosh.de"
     private let BRIGHTINTOSH_VERSION_URL = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest"
     
@@ -70,9 +70,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         setupMenus()
         
-        if AXIsProcessTrusted() {
+        // Register global hotkey
+        addKeyListeners()
+        /* TODO: Use this once Carbon is fully deprecated without a better successor.
+         if AXIsProcessTrusted() {
             addKeyListeners()
-        }
+        }*/
         
         // Schedule version check every 3 hours
         let versionCheckDate = Date()
@@ -110,10 +113,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         let menu = NSMenu()
+        menu.delegate = self
         
         let title = NSMenuItem(title: "BrightIntosh (v\(appVersion ?? "?"))", action: #selector(openWebsite), keyEquivalent: "")
         let toggleOverlay = NSMenuItem(title: active ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "b")
-        toggleOverlay.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.shift]
+        toggleOverlay.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.option]
         let toggleLaunchAtLogin = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
         if launchAtLogin {
             toggleLaunchAtLogin.image = NSImage(systemSymbolName: "checkmark", accessibilityDescription: "Launch at login active")
@@ -125,10 +129,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(toggleLaunchAtLogin)
         menu.addItem(exit)
         
+        /* TODO: Use this once Carbon is fully deprecated without a better successor.
         if !AXIsProcessTrusted() {
             let requestAccessibilityFeaturesItem = NSMenuItem(title: "Enable global hot key", action: #selector(requestAccessibilityFeatures), keyEquivalent: "")
             menu.addItem(requestAccessibilityFeaturesItem)
-        }
+        }*/
         
         if newVersionAvailable {
             let newVersionItem = NSMenuItem(title: "Download a new version", action: #selector(openWebsite), keyEquivalent: "")
@@ -139,12 +144,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.menu = menu
     }
     
-    @objc func requestAccessibilityFeatures() {
+    /* TODO: Use this once Carbon is fully deprecated without a better successor.
+     @objc func requestAccessibilityFeatures() {
         let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString: true]
         AXIsProcessTrustedWithOptions(options)
         
         AccessibilityService.startPollingTrustedProcessState(getsTrusted: self.gotTrusted)
-    }
+    }*/
     
     func gotTrusted() {
         setupMenus()
@@ -152,62 +158,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func addKeyListeners() {
-        NSEvent.addGlobalMonitorForEvents(matching: NSEvent.EventTypeMask.keyDown, handler: {(event: NSEvent) -> Void in
+        /* TODO: Use this once Carbon is fully deprecated without a better successor.
+         
+         NSEvent.addGlobalMonitorForEvents(matching: NSEvent.EventTypeMask.keyDown, handler: {(event: NSEvent) -> Void in
             if let chars = event.characters, event.modifierFlags.contains(NSEvent.ModifierFlags.command) && event.modifierFlags.contains(NSEvent.ModifierFlags.shift) && chars.contains("b") {
                 self.toggleBrightIntosh()
             }
-        })
+        })*/
         
-        
-        
+        HotKeyUtils.registerHotKey(modifierFlags: UInt32(0 | optionKey | cmdKey) , keyCode: UInt32(kVK_ANSI_B), callback: self.toggleBrightIntosh)
     }
-    
-    static func register() {
-        var hotKeyRef: EventHotKeyRef?
-        let modifierFlags: UInt32 =
-          getCarbonFlagsFromCocoaFlags(cocoaFlags: NSEvent.ModifierFlags.command)
-
-        let keyCode = kVK_ANSI_R
-        var gMyHotKeyID = EventHotKeyID()
-
-        gMyHotKeyID.id = UInt32(keyCode)
-
-        // Not sure what "swat" vs "htk1" do.
-        gMyHotKeyID.signature = OSType("swat".fourCharCodeValue)
-        // gMyHotKeyID.signature = OSType("htk1".fourCharCodeValue)
-
-        var eventType = EventTypeSpec()
-        eventType.eventClass = OSType(kEventClassKeyboard)
-        eventType.eventKind = OSType(kEventHotKeyReleased)
-
-        // Install handler.
-        InstallEventHandler(GetApplicationEventTarget(), {
-          (nextHanlder, theEvent, userData) -> OSStatus in
-          // var hkCom = EventHotKeyID()
-
-          // GetEventParameter(theEvent,
-          //                   EventParamName(kEventParamDirectObject),
-          //                   EventParamType(typeEventHotKeyID),
-          //                   nil,
-          //                   MemoryLayout<EventHotKeyID>.size,
-          //                   nil,
-          //                   &hkCom)
-
-          NSLog("Command + R Released!")
-
-          return noErr
-          /// Check that hkCom in indeed your hotkey ID and handle it.
-        }, 1, &eventType, nil, nil)
-
-        // Register hotkey.
-        let status = RegisterEventHotKey(UInt32(keyCode),
-                                         modifierFlags,
-                                         gMyHotKeyID,
-                                         GetApplicationEventTarget(),
-                                         0,
-                                         &hotKeyRef)
-        assert(status == noErr)
-      }
     
     @objc func toggleBrightIntosh() {
         active.toggle()
@@ -249,7 +209,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func exitBrightIntosh() {
         exit(0)
     }
-
+    
     @objc func fetchNewestVersion() {
         let url = URL(string: BRIGHTINTOSH_VERSION_URL)!
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
@@ -269,10 +229,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         task.resume()
     }
-
+    
     @objc func openWebsite() {
         NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_URL)!)
     }
     
+    func menuWillOpen(_ menu: NSMenu) {
+        HotKeyUtils.unregisterAllHotKeys()
+    }
+    
+    func menuDidClose(_ menu: NSMenu) {
+        addKeyListeners()
+    }
 }
 
