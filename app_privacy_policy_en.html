@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" type="image/x-icon" href="./brightintosh_sm.png">
+    <script src="https://kit.fontawesome.com/ad8851e634.js" crossorigin="anonymous"></script>
+    <title>BrightIntosh - Privacy Policy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+</head>
+
+<body>
+    <div class="background">
+        <div class="head">
+            <a href="./index.html">
+                <img class="logo" src="./brightintosh_sm.png" alt="BrightIntosh Logo">
+            </a>
+            <a class="download" id="download-link"
+                href="https://github.com/niklasr22/BrightIntosh/releases/latest/"><button class="btn"><i
+                        class="fa-solid fa-download"></i> Download<span id="version"></span></button></a>
+        </div>
+        <h1>BrightIntosh</h1>
+
+        <div class="info">
+            <h2>Privacy Policy for the Application</h2>
+            <p class="align-left">
+                Effective Date: 27.07.2023
+                <br>
+                <br>
+                BrightIntosh ("the App") is dedicated to protecting your privacy. We want to assure you
+                that the App does not collect any data from its users, and it does not connect to the internet in any
+                way. Your personal information remains entirely secure and private when using our App.
+                <br>
+                <br>
+                <strong>Data Collection and Usage:</strong>
+                <br>
+                <br>
+                We do not collect, store, or transmit any personal data or personally identifiable information (PII)
+                from our users. Your privacy is of utmost importance to us, and we have designed the App to operate
+                entirely offline to ensure that no data is collected.
+                <br>
+                <br>
+                <strong>Internet Connectivity:</strong>
+                <br>
+                <br>
+                The App does not have any internet connectivity features. It does not communicate with external servers,
+                and it does not require an internet connection to function. You can use the App with confidence, knowing
+                that no data is being sent or received over the internet.
+            </p>
+        </div>
+        <div class="legal">
+            <a href="./privacy_policy.html">Privacy policy / Datenschutzerklärung</a>
+            <a href="./legal_notice.html">Legal notice / Impressum</a>
+        </div>
+    </div>
+    <script>
+        const version = document.getElementById("version");
+        const downloadLink = document.getElementById("download-link");
+        const url = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest";
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                version.innerHTML = " (" + data.tag_name + ")";
+                downloadLink.href = data.assets[0].browser_download_url;
+            });
+    </script>
+</body>
+
+</html>

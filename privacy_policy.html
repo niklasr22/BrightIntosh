@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="main.css">
     <link rel="icon" type="image/x-icon" href="./brightintosh_sm.png">
     <script src="https://kit.fontawesome.com/ad8851e634.js" crossorigin="anonymous"></script>
-    <title>BrightIntosh - Legal Notice</title>
+    <title>BrightIntosh - Privacy Policy</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 </head>
 
@@ -15,9 +15,9 @@
             <a href="./index.html">
                 <img class="logo" src="./brightintosh_sm.png" alt="BrightIntosh Logo">
             </a>
-            <a class="download"
-                href="https://github.com/niklasr22/BrightIntosh/releases/latest/download/BrightIntosh.dmg"><button
-                    class="btn"><i class="fa-solid fa-download"></i> Download</button></a>
+            <a class="download" id="download-link"
+                href="https://github.com/niklasr22/BrightIntosh/releases/latest/"><button class="btn"><i
+                        class="fa-solid fa-download"></i> Download<span id="version"></span></button></a>
         </div>
         <h1>BrightIntosh</h1>
 
@@ -155,6 +155,17 @@
             <a href="./legal_notice.html">Legal notice / Impressum</a>
         </div>
     </div>
+    <script>
+        const version = document.getElementById("version");
+        const downloadLink = document.getElementById("download-link");
+        const url = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest";
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                version.innerHTML = " (" + data.tag_name + ")";
+                downloadLink.href = data.assets[0].browser_download_url;
+            });
+    </script>
 </body>
 
 </html>
