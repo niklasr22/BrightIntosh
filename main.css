@@ -41,6 +41,10 @@ a.download {
     vertical-align: middle;
 }
 
+.align-left {
+    text-align: left;
+}
+
 .legal {
     margin: auto;
     text-align: right;
