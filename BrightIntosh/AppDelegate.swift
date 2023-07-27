@@ -78,9 +78,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }*/
         
         // Schedule version check every 3 hours
+        #if !STORE
         let versionCheckDate = Date()
         let versionCheckTimer = Timer(fire: versionCheckDate, interval: 10800, repeats: true, block: {t in self.fetchNewestVersion()})
         RunLoop.main.add(versionCheckTimer, forMode: RunLoop.Mode.default)
+        #endif
     }
     
     func setupOverlay(screen: NSScreen) {
@@ -115,7 +117,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let menu = NSMenu()
         menu.delegate = self
         
-        let title = NSMenuItem(title: "BrightIntosh (v\(appVersion ?? "?"))", action: #selector(openWebsite), keyEquivalent: "")
+        #if STORE
+        let titleString = "BrightIntosh SE (v\(appVersion ?? "?"))"
+        #else
+        let titleString = "BrightIntosh (v\(appVersion ?? "?"))"
+        #endif
+        let title = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
         let toggleOverlay = NSMenuItem(title: active ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "b")
         toggleOverlay.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.option]
         let toggleLaunchAtLogin = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
@@ -210,6 +217,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         exit(0)
     }
     
+    #if !STORE
     @objc func fetchNewestVersion() {
         let url = URL(string: BRIGHTINTOSH_VERSION_URL)!
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
@@ -229,6 +237,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         task.resume()
     }
+    #endif
     
     @objc func openWebsite() {
         NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_URL)!)
