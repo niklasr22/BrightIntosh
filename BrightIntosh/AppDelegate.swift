@@ -32,7 +32,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var launchAtLogin = false
     private var active = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
         didSet {
-            UserDefaults.standard.set(active, forKey: "active")
         }
     }
     
@@ -50,6 +49,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        
+        if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
+            firstStartWarning()
+        }
         
         if let builtInScreen = getBuiltInScreen(), active {
             setupOverlay(screen: builtInScreen)
@@ -83,6 +86,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let versionCheckTimer = Timer(fire: versionCheckDate, interval: 10800, repeats: true, block: {t in self.fetchNewestVersion()})
         RunLoop.main.add(versionCheckTimer, forMode: RunLoop.Mode.default)
         #endif
+    }
+    
+    func firstStartWarning() {
+        let alert = NSAlert()
+        alert.messageText = "Use this application at your own risk. This software comes with no warranty or guarantees. Users take full responsibility for any problems that arise from the use of this software. By continuing and using the BrightIntosh application you accept the previous statement."
+        alert.addButton(withTitle: "Continue")
+        alert.addButton(withTitle: "Cancel")
+        let result = alert.runModal()
+        if result == NSApplication.ModalResponse.alertSecondButtonReturn {
+            NSApplication.shared.terminate(nil)
+            return
+        }
+        UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
     
     func setupOverlay(screen: NSScreen) {
