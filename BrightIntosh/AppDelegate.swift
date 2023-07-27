@@ -32,7 +32,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var launchAtLogin = false
     private var active = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
         didSet {
-            UserDefaults.standard.set(active, forKey: "active")
         }
     }
     
@@ -50,6 +49,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        
+        if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
+            firstStartWarning()
+        }
         
         if let builtInScreen = getBuiltInScreen(), active {
             setupOverlay(screen: builtInScreen)
@@ -78,9 +81,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }*/
         
         // Schedule version check every 3 hours
+        #if !STORE
         let versionCheckDate = Date()
         let versionCheckTimer = Timer(fire: versionCheckDate, interval: 10800, repeats: true, block: {t in self.fetchNewestVersion()})
         RunLoop.main.add(versionCheckTimer, forMode: RunLoop.Mode.default)
+        #endif
+    }
+    
+    func firstStartWarning() {
+        let alert = NSAlert()
+        alert.messageText = "Use this application at your own risk. This software comes with no warranty or guarantees. Users take full responsibility for any problems that arise from the use of this software. By continuing and using the BrightIntosh application you accept the previous statement."
+        alert.addButton(withTitle: "Continue")
+        alert.addButton(withTitle: "Cancel")
+        let result = alert.runModal()
+        if result == NSApplication.ModalResponse.alertSecondButtonReturn {
+            NSApplication.shared.terminate(nil)
+            return
+        }
+        UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
     
     func setupOverlay(screen: NSScreen) {
@@ -115,7 +133,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let menu = NSMenu()
         menu.delegate = self
         
-        let title = NSMenuItem(title: "BrightIntosh (v\(appVersion ?? "?"))", action: #selector(openWebsite), keyEquivalent: "")
+        #if STORE
+        let titleString = "BrightIntosh SE (v\(appVersion ?? "?"))"
+        #else
+        let titleString = "BrightIntosh (v\(appVersion ?? "?"))"
+        #endif
+        let title = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
         let toggleOverlay = NSMenuItem(title: active ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "b")
         toggleOverlay.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.option]
         let toggleLaunchAtLogin = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
@@ -210,6 +233,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         exit(0)
     }
     
+    #if !STORE
     @objc func fetchNewestVersion() {
         let url = URL(string: BRIGHTINTOSH_VERSION_URL)!
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
@@ -229,6 +253,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         task.resume()
     }
+    #endif
     
     @objc func openWebsite() {
         NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_URL)!)
