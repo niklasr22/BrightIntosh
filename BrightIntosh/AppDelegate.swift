@@ -21,7 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     private var overlayAvailable = false
     
-    private var overlayWindow: NSWindow?
+    private var overlayWindow: OverlayWindow?
     
     private var appVersion: String?
     
@@ -110,9 +110,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
     
     func setupMenus() {
-        if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: active ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: active ? "Increased brightness" : "Default brightness")
-        }
         
         let menu = NSMenu()
         menu.delegate = self
@@ -122,6 +119,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         #else
         let titleString = "BrightIntosh (v\(appVersion ?? "?"))"
         #endif
+        
+        if let button = statusItem.button {
+            button.image = NSImage(systemSymbolName: active ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: active ? "Increased brightness" : "Default brightness")
+            button.toolTip = titleString
+        }
+        
+        
         let title = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
         let toggleOverlay = NSMenuItem(title: active ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "b")
         toggleOverlay.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.option]
@@ -207,6 +211,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if let builtInScreen = getBuiltInScreen() {
             if !overlayAvailable && active {
                 setupOverlay(screen: builtInScreen)
+            } else {
+                overlayWindow?.screenUpdate(screen: builtInScreen)
             }
         } else {
             destroyOverlay()

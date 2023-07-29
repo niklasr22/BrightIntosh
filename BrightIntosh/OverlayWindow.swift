@@ -9,6 +9,8 @@ import Cocoa
 
 class OverlayWindow: NSWindow {
     
+    private var overlay: Overlay!
+    
     init(rect: NSRect, screen: NSScreen) {
         super.init(contentRect: rect, styleMask: [.borderless], backing: .buffered, defer: false)
         
@@ -25,9 +27,13 @@ class OverlayWindow: NSWindow {
         
         guard let view = contentView else { return }
         
-        let overlay = Overlay(frame: view.bounds)
+        overlay = Overlay(frame: view.bounds, screen: screen)
         overlay.autoresizingMask = [.width, .height]
         view.addSubview(overlay)
+    }
+    
+    func screenUpdate(screen: NSScreen) {
+        overlay.screenUpdate(screen: screen)
     }
     
 }
