@@ -17,8 +17,12 @@ class Overlay: MTKView, MTKViewDelegate {
     private var pipelineState: MTLRenderPipelineState?
     private var vertexBuffer: MTLBuffer?
     
+    private var maxEdrValue: Float = 1.0
     
-    init(frame: CGRect) {
+    private let screen: NSScreen
+    
+    init(frame: CGRect, screen: NSScreen) {
+        self.screen = screen
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
         
         guard let device else {
@@ -40,7 +44,7 @@ class Overlay: MTKView, MTKViewDelegate {
         
         delegate = self
         framebufferOnly = false
-        preferredFramesPerSecond = NSScreen.main?.maximumFramesPerSecond ?? 120
+        preferredFramesPerSecond = screen.maximumFramesPerSecond
         colorPixelFormat = .rgba16Float
         colorspace = colorSpace
         clearColor = MTLClearColorMake(0, 0, 0, 0)
@@ -84,10 +88,18 @@ class Overlay: MTKView, MTKViewDelegate {
         ]
         
         self.vertexBuffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size, options: [])!
+        
+        maxEdrValue = Float(screen.maximumExtendedDynamicRangeColorComponentValue)
+        print(maxEdrValue)
     }
     
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    func screenUpdate(screen: NSScreen) {
+        self.maxEdrValue = Float(screen.maximumExtendedDynamicRangeColorComponentValue)
     }
     
     func draw(in view: MTKView) {
@@ -101,9 +113,12 @@ class Overlay: MTKView, MTKViewDelegate {
             return
         }
         
+        var fragmentColor = vector_float4(maxEdrValue, maxEdrValue, maxEdrValue, 1.0)
+        
         renderEncoder.setRenderPipelineState(pipelineState)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder.setFragmentTexture(drawable.texture, index: 0)
+        renderEncoder.setFragmentBytes(&fragmentColor, length: MemoryLayout.size(ofValue: fragmentColor), index: 1)
         renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
         renderEncoder.endEncoding()
         
