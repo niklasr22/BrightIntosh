@@ -34,9 +34,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         
         appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         
+        #if !STORE
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             firstStartWarning()
         }
+        #endif
         
         if let builtInScreen = getBuiltInScreen(), active {
             setupOverlay(screen: builtInScreen)
