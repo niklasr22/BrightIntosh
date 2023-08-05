@@ -9,6 +9,11 @@ import Cocoa
 import ServiceManagement
 import Carbon
 
+extension NSScreen {
+    var displayId: CGDirectDisplayID? {
+        return deviceDescription[NSDeviceDescriptionKey(rawValue: "NSScreenNumber")] as? CGDirectDisplayID
+    }
+}
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
@@ -29,6 +34,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     private let BRIGHTINTOSH_URL = "https://brightintosh.de"
     private let BRIGHTINTOSH_VERSION_URL = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest"
+    
+    private var gamma: Float = 1.7
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
@@ -66,8 +73,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             addKeyListeners()
         }*/
         
-        // Schedule version check every 3 hours
         #if !STORE
+        // Schedule version check every 3 hours
         let versionCheckDate = Date()
         let versionCheckTimer = Timer(fire: versionCheckDate, interval: 10800, repeats: true, block: {t in self.fetchNewestVersion()})
         RunLoop.main.add(versionCheckTimer, forMode: RunLoop.Mode.default)
@@ -88,9 +95,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
     
     func setupOverlay(screen: NSScreen) {
-        let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: screen.frame.width, height: screen.frame.height)
+        let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: 1, height: 1)
         overlayWindow = OverlayWindow(rect: rect, screen: screen)
         overlayAvailable = true
+        adjustGammaTable(screen: screen)
     }
     
     func destroyOverlay() {
@@ -98,6 +106,38 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             overlayWindow.close()
             overlayAvailable = false
         }
+    }
+    
+    func adjustGammaTable(screen: NSScreen) {
+        if let displayId = screen.displayId {
+            resetGammaTable()
+            
+            let tableSize: Int = 256 // The size of the gamma table
+            var redTable = [CGGammaValue](repeating: 0, count: tableSize)
+            var greenTable = [CGGammaValue](repeating: 0, count: tableSize)
+            var blueTable = [CGGammaValue](repeating: 0, count: tableSize)
+            var sampleCount: UInt32 = 0
+            let result = CGGetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable, &sampleCount)
+            
+            guard result == CGError.success else {
+                return
+            }
+            
+            for i in 0..<redTable.count {
+                redTable[i] = redTable[i] * gamma
+            }
+            for i in 0..<greenTable.count {
+                greenTable[i] = greenTable[i] * gamma
+            }
+            for i in 0..<redTable.count {
+                blueTable[i] = blueTable[i] * gamma
+            }
+            CGSetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable)
+        }
+    }
+    
+    func resetGammaTable() {
+        CGDisplayRestoreColorSyncSettings()
     }
     
     func getBuiltInScreen() -> NSScreen? {
@@ -142,6 +182,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(toggleLaunchAtLogin)
         menu.addItem(exit)
         
+        #if DEBUG
+        let increase = NSMenuItem(title: "Increase gamma", action: #selector(increase), keyEquivalent: "")
+        menu.addItem(increase)
+        let decrease = NSMenuItem(title: "Decrease gamma", action: #selector(decrease), keyEquivalent: "")
+        menu.addItem(decrease)
+        #endif
+        
         /* TODO: Use this once Carbon is fully deprecated without a better successor.
         if !AXIsProcessTrusted() {
             let requestAccessibilityFeaturesItem = NSMenuItem(title: "Enable global hot key", action: #selector(requestAccessibilityFeatures), keyEquivalent: "")
@@ -155,6 +202,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         
         statusItem.menu = menu
+    }
+    
+    @objc func increase() {
+        gamma += 0.05
+        adjustGammaTable(screen: overlayWindow!.screen!)
+    }
+    
+    @objc func decrease() {
+        gamma -= 0.05
+        adjustGammaTable(screen: overlayWindow!.screen!)
     }
     
     /* TODO: Use this once Carbon is fully deprecated without a better successor.
@@ -172,7 +229,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     func addKeyListeners() {
         /* TODO: Use this once Carbon is fully deprecated without a better successor.
-         
          NSEvent.addGlobalMonitorForEvents(matching: NSEvent.EventTypeMask.keyDown, handler: {(event: NSEvent) -> Void in
             if let chars = event.characters, event.modifierFlags.contains(NSEvent.ModifierFlags.command) && event.modifierFlags.contains(NSEvent.ModifierFlags.shift) && chars.contains("b") {
                 self.toggleBrightIntosh()
@@ -191,6 +247,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             }
         } else {
             destroyOverlay()
+            resetGammaTable()
         }
     }
     
