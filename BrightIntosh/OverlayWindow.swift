@@ -14,8 +14,6 @@ class OverlayWindow: NSWindow {
     init(rect: NSRect, screen: NSScreen) {
         super.init(contentRect: rect, styleMask: [], backing: BackingStoreType(rawValue: 0)!, defer: false)
         
-        print(rect)
-        print(screen.frame.origin)
         setFrameOrigin(screen.frame.origin)
         isOpaque = false
         hasShadow = false
