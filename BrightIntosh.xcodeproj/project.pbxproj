@@ -12,14 +12,12 @@
 		9C8803762A72625E00476017 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
 		9C8803772A72625E00476017 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D044EA2A60205E0022B970 /* OverlayWindow.swift */; };
 		9C8803782A72625E00476017 /* AccessibilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CBD4E942A67E9F600C7A625 /* AccessibilityService.swift */; };
-		9C8803792A72625E00476017 /* overlay_shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */; };
 		9C88037A2A72625E00476017 /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
 		9C88037B2A72625E00476017 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B521142A5EF85500E9B7AC /* main.swift */; };
 		9C88037E2A72625E00476017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C9C78022A62AEE800778CAE /* Assets.xcassets */; };
 		9C9C78032A62AEE800778CAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C9C78022A62AEE800778CAE /* Assets.xcassets */; };
 		9CBD4E952A67E9F600C7A625 /* AccessibilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CBD4E942A67E9F600C7A625 /* AccessibilityService.swift */; };
 		C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
-		C1B5215B2A5EFFDB00E9B7AC /* overlay_shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */; };
 		C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
 		C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B521142A5EF85500E9B7AC /* main.swift */; };
 		C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D044EA2A60205E0022B970 /* OverlayWindow.swift */; };
@@ -34,7 +32,6 @@
 		C1B521172A5EFCB300E9B7AC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D044EA2A60205E0022B970 /* OverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindow.swift; sourceTree = "<group>"; };
-		C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = overlay_shader.metal; sourceTree = "<group>"; };
 		C1DF94502A5EF20E00FA285F /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
 		C1DF94512A5EF20E00FA285F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1DF94572A5EF66200FA285F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -81,7 +78,6 @@
 			children = (
 				C1B521172A5EFCB300E9B7AC /* Info.plist */,
 				C1DF94512A5EF20E00FA285F /* AppDelegate.swift */,
-				C1DF944F2A5EF20E00FA285F /* overlay_shader.metal */,
 				C1DF94502A5EF20E00FA285F /* Overlay.swift */,
 				C1B521142A5EF85500E9B7AC /* main.swift */,
 				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
@@ -139,8 +135,12 @@
 				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					9C8803732A72625E00476017 = {
+						LastSwiftMigration = 1430;
+					};
 					C1B521472A5EFF5800E9B7AC = {
 						CreatedOnToolsVersion = 14.3.1;
+						LastSwiftMigration = 1430;
 					};
 				};
 			};
@@ -191,7 +191,6 @@
 				9C8803762A72625E00476017 /* AppDelegate.swift in Sources */,
 				9C8803772A72625E00476017 /* OverlayWindow.swift in Sources */,
 				9C8803782A72625E00476017 /* AccessibilityService.swift in Sources */,
-				9C8803792A72625E00476017 /* overlay_shader.metal in Sources */,
 				9C88037A2A72625E00476017 /* Overlay.swift in Sources */,
 				9C88037B2A72625E00476017 /* main.swift in Sources */,
 			);
@@ -205,7 +204,6 @@
 				C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */,
 				C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */,
 				9CBD4E952A67E9F600C7A625 /* AccessibilityService.swift in Sources */,
-				C1B5215B2A5EFFDB00E9B7AC /* overlay_shader.metal in Sources */,
 				C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */,
 				C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */,
 			);
@@ -220,6 +218,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -257,6 +256,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG STORE";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -267,6 +267,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -314,6 +315,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -350,6 +352,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -360,6 +363,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;

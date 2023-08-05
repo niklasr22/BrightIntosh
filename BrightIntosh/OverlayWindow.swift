@@ -9,33 +9,32 @@ import Cocoa
 
 class OverlayWindow: NSWindow {
     
-    private var overlay: Overlay!
+    private var overlay: Overlay?
     
     init(rect: NSRect, screen: NSScreen) {
-        super.init(contentRect: rect, styleMask: [.fullSizeContentView, .borderless], backing: .buffered, defer: false)
+        super.init(contentRect: rect, styleMask: [], backing: BackingStoreType(rawValue: 0)!, defer: false)
         
-        NSApplication.shared.activate(ignoringOtherApps: true)
-        
+        print(rect)
+        print(screen.frame.origin)
         setFrameOrigin(screen.frame.origin)
         isOpaque = false
         hasShadow = false
         backgroundColor = NSColor.clear
         ignoresMouseEvents = true
-        level = NSWindow.Level(rawValue: Int(CGShieldingWindowLevel()))
-        collectionBehavior = [.stationary, .canJoinAllSpaces, .ignoresCycle, .canJoinAllApplications, .fullScreenAuxiliary]
-        makeKeyAndOrderFront(nil)
+        level = .screenSaver
+        collectionBehavior = [.stationary, .ignoresCycle, .canJoinAllSpaces]
         isReleasedWhenClosed = false
-        hidesOnDeactivate = false
+        canHide = false
+        isMovableByWindowBackground = true
+        alphaValue = 1
+        orderFrontRegardless()
         
-        guard let view = contentView else { return }
-        
-        overlay = Overlay(frame: view.bounds, screen: screen)
-        overlay.autoresizingMask = [.width, .height]
-        view.addSubview(overlay)
+        overlay = Overlay(frame: rect, screen: screen)
+        contentView = overlay
     }
     
     func screenUpdate(screen: NSScreen) {
-        overlay.screenUpdate(screen: screen)
+        overlay?.screenUpdate(screen: screen)
     }
     
 }
