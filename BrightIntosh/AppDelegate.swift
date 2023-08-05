@@ -35,6 +35,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let BRIGHTINTOSH_URL = "https://brightintosh.de"
     private let BRIGHTINTOSH_VERSION_URL = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest"
     
+    private var gamma: Float = 1.7
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
@@ -110,8 +112,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if let displayId = screen.displayId {
             resetGammaTable()
             
-            let maxEdr: Float = 1.75 //Float(screen.maximumExtendedDynamicRangeColorComponentValue)
-            
             let tableSize: Int = 256 // The size of the gamma table
             var redTable = [CGGammaValue](repeating: 0, count: tableSize)
             var greenTable = [CGGammaValue](repeating: 0, count: tableSize)
@@ -124,13 +124,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             }
             
             for i in 0..<redTable.count {
-                redTable[i] = redTable[i] * maxEdr
+                redTable[i] = redTable[i] * gamma
             }
             for i in 0..<greenTable.count {
-                greenTable[i] = greenTable[i] * maxEdr
+                greenTable[i] = greenTable[i] * gamma
             }
             for i in 0..<redTable.count {
-                blueTable[i] = blueTable[i] * maxEdr
+                blueTable[i] = blueTable[i] * gamma
             }
             CGSetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable)
         }
@@ -182,6 +182,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(toggleLaunchAtLogin)
         menu.addItem(exit)
         
+        #if DEBUG
+        let increase = NSMenuItem(title: "Increase gamma", action: #selector(increase), keyEquivalent: "")
+        menu.addItem(increase)
+        let decrease = NSMenuItem(title: "Decrease gamma", action: #selector(decrease), keyEquivalent: "")
+        menu.addItem(decrease)
+        #endif
+        
         /* TODO: Use this once Carbon is fully deprecated without a better successor.
         if !AXIsProcessTrusted() {
             let requestAccessibilityFeaturesItem = NSMenuItem(title: "Enable global hot key", action: #selector(requestAccessibilityFeatures), keyEquivalent: "")
@@ -195,6 +202,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         
         statusItem.menu = menu
+    }
+    
+    @objc func increase() {
+        gamma += 0.05
+        adjustGammaTable(screen: overlayWindow!.screen!)
+    }
+    
+    @objc func decrease() {
+        gamma -= 0.05
+        adjustGammaTable(screen: overlayWindow!.screen!)
     }
     
     /* TODO: Use this once Carbon is fully deprecated without a better successor.
