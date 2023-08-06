@@ -26,7 +26,9 @@ class HotKeyUtils {
         
         InstallEventHandler(GetApplicationEventTarget(), {
             nextHandler, event, userData -> OSStatus in
-            HotKeyUtils.handleHotKeyPress(hotkeyId: EventHotKeyID().id)
+            var eventHotKeyId = EventHotKeyID()
+            GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, MemoryLayout<EventHotKeyID>.size, nil, &eventHotKeyId)
+            HotKeyUtils.handleHotKeyPress(hotkeyId: eventHotKeyId.id)
             return noErr
         }, 1, &eventType, nil, nil)
         
