@@ -13,8 +13,9 @@
   <div class="background">
     <div class="head">
       <img class="logo" src="./brightintosh_sm.png" alt="BrightIntosh Logo">
-      <a class="download" id="download-link" href="https://github.com/niklasr22/BrightIntosh/releases/latest/"><button
-          class="btn"><i class="fa-solid fa-download"></i> Download<span id="version"></span></button></a>
+      <a class="download" id="download-link" target="_blank" rel="noopener noreferrer"
+        href="https://github.com/niklasr22/BrightIntosh/releases/latest/"><button class="btn"><i
+            class="fa-solid fa-download"></i> Download<span id="version"></span></button></a>
     </div>
     <h1>BrightIntosh</h1>
 
@@ -79,6 +80,12 @@
         version.innerHTML = " (" + data.tag_name + ")";
         downloadLink.href = data.assets[0].browser_download_url;
       });
+
+    downloadLink.addEventListener("click", function () {
+      fetch("https://c.brightintosh.de/d.php");
+    });
+
+    fetch("https://c.brightintosh.de/v.php");
   </script>
 </body>
 
