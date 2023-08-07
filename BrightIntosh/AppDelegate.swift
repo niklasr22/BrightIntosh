@@ -183,10 +183,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(exit)
         
         #if DEBUG
-        let increase = NSMenuItem(title: "Increase gamma", action: #selector(increase), keyEquivalent: "")
-        menu.addItem(increase)
-        let decrease = NSMenuItem(title: "Decrease gamma", action: #selector(decrease), keyEquivalent: "")
-        menu.addItem(decrease)
+        let increaseGammaMenu = NSMenuItem(title: "Increase gamma", action: #selector(increaseGamma), keyEquivalent: "-")
+        menu.addItem(increaseGammaMenu)
+        let decreaseGammaMenu = NSMenuItem(title: "Decrease gamma", action: #selector(decreaseGamma), keyEquivalent: "+")
+        menu.addItem(decreaseGammaMenu)
+        increaseGammaMenu.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.option]
+        decreaseGammaMenu.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.option]
         #endif
         
         /* TODO: Use this once Carbon is fully deprecated without a better successor.
@@ -204,12 +206,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusItem.menu = menu
     }
     
-    @objc func increase() {
+    @objc func increaseGamma() {
         gamma += 0.05
         adjustGammaTable(screen: overlayWindow!.screen!)
     }
     
-    @objc func decrease() {
+    @objc func decreaseGamma() {
         gamma -= 0.05
         adjustGammaTable(screen: overlayWindow!.screen!)
     }
@@ -236,6 +238,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         })*/
         
         HotKeyUtils.registerHotKey(modifierFlags: UInt32(0 | optionKey | cmdKey) , keyCode: UInt32(kVK_ANSI_B), callback: self.toggleBrightIntosh)
+        HotKeyUtils.registerHotKey(modifierFlags: UInt32(1 | optionKey | cmdKey) , keyCode: UInt32(kVK_ANSI_Minus), callback: self.decreaseGamma)
+        HotKeyUtils.registerHotKey(modifierFlags: UInt32(2 | optionKey | cmdKey) , keyCode: UInt32(kVK_ANSI_Equal), callback: self.increaseGamma)
     }
     
     @objc func toggleBrightIntosh() {
