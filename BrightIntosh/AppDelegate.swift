@@ -21,6 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var launchAtLogin = false
     private var active = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
         didSet {
+            UserDefaults.standard.setValue(active, forKey: "active")
         }
     }
     
@@ -37,15 +38,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     private var gamma: Float = 1.7
     
+    private static let launcherBundleId = "de.brightintosh.launcher" as CFString
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         
-        #if !STORE
+#if !STORE
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             firstStartWarning()
         }
-        #endif
+#endif
         
         if let builtInScreen = getBuiltInScreen(), active {
             setupOverlay(screen: builtInScreen)
@@ -62,7 +65,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         
         // Load launch at login status
-        launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
+        if false == true, #available(macOS 13, *) {
+            launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
+        } else {
+            launchAtLogin = UserDefaults.standard.object(forKey: "launchAtLoginActive") != nil && UserDefaults.standard.bool(forKey: "launchAtLoginActive")
+        }
         
         setupMenus()
         
@@ -70,15 +77,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         addKeyListeners()
         /* TODO: Use this once Carbon is fully deprecated without a better successor.
          if AXIsProcessTrusted() {
-            addKeyListeners()
-        }*/
+         addKeyListeners()
+         }*/
         
-        #if !STORE
+#if !STORE
         // Schedule version check every 3 hours
         let versionCheckDate = Date()
         let versionCheckTimer = Timer(fire: versionCheckDate, interval: 10800, repeats: true, block: {t in self.fetchNewestVersion()})
         RunLoop.main.add(versionCheckTimer, forMode: RunLoop.Mode.default)
-        #endif
+#endif
     }
     
     func firstStartWarning() {
@@ -156,11 +163,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let menu = NSMenu()
         menu.delegate = self
         
-        #if STORE
+#if STORE
         let titleString = "BrightIntosh SE (v\(appVersion ?? "?"))"
-        #else
+#else
         let titleString = "BrightIntosh (v\(appVersion ?? "?"))"
-        #endif
+#endif
         
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: active ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: active ? "Increased brightness" : "Default brightness")
@@ -182,18 +189,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(toggleLaunchAtLogin)
         menu.addItem(exit)
         
-        #if DEBUG
+#if DEBUG
         let increase = NSMenuItem(title: "Increase gamma", action: #selector(increase), keyEquivalent: "")
         menu.addItem(increase)
         let decrease = NSMenuItem(title: "Decrease gamma", action: #selector(decrease), keyEquivalent: "")
         menu.addItem(decrease)
-        #endif
+#endif
         
         /* TODO: Use this once Carbon is fully deprecated without a better successor.
-        if !AXIsProcessTrusted() {
-            let requestAccessibilityFeaturesItem = NSMenuItem(title: "Enable global hot key", action: #selector(requestAccessibilityFeatures), keyEquivalent: "")
-            menu.addItem(requestAccessibilityFeaturesItem)
-        }*/
+         if !AXIsProcessTrusted() {
+         let requestAccessibilityFeaturesItem = NSMenuItem(title: "Enable global hot key", action: #selector(requestAccessibilityFeatures), keyEquivalent: "")
+         menu.addItem(requestAccessibilityFeaturesItem)
+         }*/
         
         if newVersionAvailable {
             let newVersionItem = NSMenuItem(title: "Download a new version", action: #selector(openWebsite), keyEquivalent: "")
@@ -216,11 +223,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     /* TODO: Use this once Carbon is fully deprecated without a better successor.
      @objc func requestAccessibilityFeatures() {
-        let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString: true]
-        AXIsProcessTrustedWithOptions(options)
-        
-        AccessibilityService.startPollingTrustedProcessState(getsTrusted: self.gotTrusted)
-    }*/
+     let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString: true]
+     AXIsProcessTrustedWithOptions(options)
+     
+     AccessibilityService.startPollingTrustedProcessState(getsTrusted: self.gotTrusted)
+     }*/
     
     func gotTrusted() {
         setupMenus()
@@ -230,10 +237,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func addKeyListeners() {
         /* TODO: Use this once Carbon is fully deprecated without a better successor.
          NSEvent.addGlobalMonitorForEvents(matching: NSEvent.EventTypeMask.keyDown, handler: {(event: NSEvent) -> Void in
-            if let chars = event.characters, event.modifierFlags.contains(NSEvent.ModifierFlags.command) && event.modifierFlags.contains(NSEvent.ModifierFlags.shift) && chars.contains("b") {
-                self.toggleBrightIntosh()
-            }
-        })*/
+         if let chars = event.characters, event.modifierFlags.contains(NSEvent.ModifierFlags.command) && event.modifierFlags.contains(NSEvent.ModifierFlags.shift) && chars.contains("b") {
+         self.toggleBrightIntosh()
+         }
+         })*/
         
         HotKeyUtils.registerHotKey(modifierFlags: UInt32(0 | optionKey | cmdKey) , keyCode: UInt32(kVK_ANSI_B), callback: self.toggleBrightIntosh)
     }
@@ -253,15 +260,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     @objc func toggleLaunchAtLogin() {
         launchAtLogin.toggle()
-        let service = SMAppService.mainApp
-        do {
-            if launchAtLogin {
-                try service.register()
-            } else {
-                try service.unregister()
+        
+        if false == true, #available(macOS 13, *) {
+            let service = SMAppService.mainApp
+            do {
+                if launchAtLogin {
+                    try service.register()
+                } else {
+                    try service.unregister()
+                }
+            } catch {
+                launchAtLogin.toggle()
             }
-        } catch {
-            launchAtLogin.toggle()
+        } else {
+            SMLoginItemSetEnabled(AppDelegate.launcherBundleId, launchAtLogin)
+            UserDefaults.standard.set(launchAtLogin, forKey: "launchAtLoginActive")
         }
         setupMenus()
     }
@@ -282,7 +295,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         exit(0)
     }
     
-    #if !STORE
+#if !STORE
     @objc func fetchNewestVersion() {
         let url = URL(string: BRIGHTINTOSH_VERSION_URL)!
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
@@ -302,7 +315,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         task.resume()
     }
-    #endif
+#endif
     
     @objc func openWebsite() {
         NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_URL)!)
