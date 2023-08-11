@@ -65,7 +65,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         
         // Load launch at login status
-        if false == true, #available(macOS 13, *) {
+        if #available(macOS 13, *) {
             launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
         } else {
             launchAtLogin = UserDefaults.standard.object(forKey: "launchAtLoginActive") != nil && UserDefaults.standard.bool(forKey: "launchAtLoginActive")
@@ -261,7 +261,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc func toggleLaunchAtLogin() {
         launchAtLogin.toggle()
         
-        if false == true, #available(macOS 13, *) {
+        if #available(macOS 13, *) {
             let service = SMAppService.mainApp
             do {
                 if launchAtLogin {
