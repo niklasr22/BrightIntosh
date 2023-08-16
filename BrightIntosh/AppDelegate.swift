@@ -8,6 +8,9 @@
 import Cocoa
 import ServiceManagement
 import Carbon
+#if !STORE
+import Sparkle
+#endif
 
 extension NSScreen {
     var displayId: CGDirectDisplayID? {
@@ -39,6 +42,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var gamma: Float = 1.7
     
     private static let launcherBundleId = "de.brightintosh.launcher" as CFString
+    
+#if !STORE
+    @IBOutlet var checkForUpdatesMenuItem: NSMenuItem!
+    let updaterController: SPUStandardUpdaterController
+    
+    private var autoUpdateCheck = UserDefaults.standard.object(forKey: "autoUpdateCheckActive") != nil ? UserDefaults.standard.bool(forKey: "autoUpdateCheckActive") : true {
+        didSet {
+            UserDefaults.standard.setValue(autoUpdateCheck, forKey: "autoUpdateCheckActive")
+        }
+    }
+    
+    override init() {
+        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+        if UserDefaults.standard.object(forKey: "autoUpdateCheckActive") == nil {
+            autoUpdateCheck = updaterController.updater.automaticallyChecksForUpdates
+        }
+    }
+#endif
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
@@ -79,13 +100,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
          if AXIsProcessTrusted() {
          addKeyListeners()
          }*/
-        
-#if !STORE
-        // Schedule version check every 3 hours
-        let versionCheckDate = Date()
-        let versionCheckTimer = Timer(fire: versionCheckDate, interval: 10800, repeats: true, block: {t in self.fetchNewestVersion()})
-        RunLoop.main.add(versionCheckTimer, forMode: RunLoop.Mode.default)
-#endif
     }
     
     func firstStartWarning() {
@@ -136,7 +150,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             for i in 0..<greenTable.count {
                 greenTable[i] = greenTable[i] * gamma
             }
-            for i in 0..<redTable.count {
+            for i in 0..<blueTable.count {
                 blueTable[i] = blueTable[i] * gamma
             }
             CGSetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable)
@@ -175,25 +189,42 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         
         
-        let title = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
-        let toggleOverlay = NSMenuItem(title: active ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "b")
-        toggleOverlay.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.option]
-        let toggleLaunchAtLogin = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
+        let titleItem = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
+
+        let toggleOverlayItem = NSMenuItem(title: active ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "b")
+        toggleOverlayItem.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.option]
+
+        let toggleLaunchAtLoginItem = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
         if launchAtLogin {
-            toggleLaunchAtLogin.image = NSImage(systemSymbolName: "checkmark", accessibilityDescription: "Launch at login active")
+            toggleLaunchAtLoginItem.image = NSImage(systemSymbolName: "checkmark", accessibilityDescription: "Launch at login active")
         }
-        let exit = NSMenuItem(title: "Exit", action: #selector(exitBrightIntosh), keyEquivalent: "")
+
+        let autoCheckForUpdatesItem = NSMenuItem(title: "Auto update check", action: #selector(toggleAutoUpdateCheck), keyEquivalent: "")
+        if autoUpdateCheck {
+            autoCheckForUpdatesItem.image = NSImage(systemSymbolName: "checkmark", accessibilityDescription: "Auto update check active")
+        }
         
-        menu.addItem(title)
-        menu.addItem(toggleOverlay)
-        menu.addItem(toggleLaunchAtLogin)
-        menu.addItem(exit)
+#if !STORE
+        checkForUpdatesMenuItem = NSMenuItem(title: "Check for Updates...", action: #selector(SPUStandardUpdaterController.checkForUpdates(_:)), keyEquivalent: "")
+        checkForUpdatesMenuItem.target = updaterController
+#endif
+        
+        let exitItem = NSMenuItem(title: "Exit", action: #selector(exitBrightIntosh), keyEquivalent: "")
+        
+        menu.addItem(titleItem)
+        menu.addItem(toggleOverlayItem)
+        menu.addItem(toggleLaunchAtLoginItem)
+        menu.addItem(autoCheckForUpdatesItem)
+#if !STORE
+        menu.addItem(checkForUpdatesMenuItem)
+#endif
+        menu.addItem(exitItem)
         
 #if DEBUG
-        let increase = NSMenuItem(title: "Increase gamma", action: #selector(increase), keyEquivalent: "")
-        menu.addItem(increase)
-        let decrease = NSMenuItem(title: "Decrease gamma", action: #selector(decrease), keyEquivalent: "")
-        menu.addItem(decrease)
+        let increaseItem = NSMenuItem(title: "Increase gamma", action: #selector(increase), keyEquivalent: "")
+        menu.addItem(increaseItem)
+        let decreaseItem = NSMenuItem(title: "Decrease gamma", action: #selector(decrease), keyEquivalent: "")
+        menu.addItem(decreaseItem)
 #endif
         
         /* TODO: Use this once Carbon is fully deprecated without a better successor.
@@ -279,6 +310,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         setupMenus()
     }
     
+#if !STORE
+    @objc func toggleAutoUpdateCheck() {
+        autoUpdateCheck.toggle()
+        updaterController.updater.automaticallyChecksForUpdates = autoUpdateCheck
+        setupMenus()
+    }
+#endif
+    
     @objc func handleScreenParameters(notification: Notification) {
         if let builtInScreen = getBuiltInScreen() {
             if !overlayAvailable && active {
@@ -294,28 +333,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc func exitBrightIntosh() {
         exit(0)
     }
-    
-#if !STORE
-    @objc func fetchNewestVersion() {
-        let url = URL(string: BRIGHTINTOSH_VERSION_URL)!
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data else {
-                return
-            }
-            do {
-                let json = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
-                let version = json["tag_name"] as! String
-                if version != "v" + (self.appVersion ?? "") {
-                    self.newVersionAvailable = true
-                    DispatchQueue.main.async {
-                        self.setupMenus()
-                    }
-                }
-            } catch {}
-        }
-        task.resume()
-    }
-#endif
     
     @objc func openWebsite() {
         NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_URL)!)
