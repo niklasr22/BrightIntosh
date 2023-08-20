@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://c.brightintosh.de/updates/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>POqq4ru3F8g73y2YhYM6MEI+pks9T7QpXNoXWlP0DEQ=</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSUIElement</key>
