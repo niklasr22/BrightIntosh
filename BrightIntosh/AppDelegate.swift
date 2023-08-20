@@ -198,13 +198,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if launchAtLogin {
             toggleLaunchAtLoginItem.image = NSImage(systemSymbolName: "checkmark", accessibilityDescription: "Launch at login active")
         }
-
+        
+#if !STORE
         let autoCheckForUpdatesItem = NSMenuItem(title: "Auto update check", action: #selector(toggleAutoUpdateCheck), keyEquivalent: "")
         if autoUpdateCheck {
             autoCheckForUpdatesItem.image = NSImage(systemSymbolName: "checkmark", accessibilityDescription: "Auto update check active")
         }
         
-#if !STORE
         checkForUpdatesMenuItem = NSMenuItem(title: "Check for Updates...", action: #selector(SPUStandardUpdaterController.checkForUpdates(_:)), keyEquivalent: "")
         checkForUpdatesMenuItem.target = updaterController
 #endif
@@ -214,8 +214,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(titleItem)
         menu.addItem(toggleOverlayItem)
         menu.addItem(toggleLaunchAtLoginItem)
-        menu.addItem(autoCheckForUpdatesItem)
 #if !STORE
+        menu.addItem(autoCheckForUpdatesItem)
         menu.addItem(checkForUpdatesMenuItem)
 #endif
         menu.addItem(exitItem)
