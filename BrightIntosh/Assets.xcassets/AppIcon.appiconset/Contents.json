@@ -1,21 +1,25 @@
 {
   "images" : [
     {
+      "filename" : "brightintosh_16.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "16x16"
     },
     {
+      "filename" : "brightintosh_32.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
+      "filename" : "brightintosh_32 1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
+      "filename" : "brightintosh_64.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
@@ -45,13 +49,13 @@
       "size" : "256x256"
     },
     {
-      "filename" : "brightintosh Kopie.png",
+      "filename" : "brightintosh_512 1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
-      "filename" : "brightintosh.png",
+      "filename" : "brightintosh_1024.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"

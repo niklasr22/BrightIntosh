@@ -209,7 +209,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         checkForUpdatesMenuItem.target = updaterController
 #endif
         
-        let exitItem = NSMenuItem(title: "Exit", action: #selector(exitBrightIntosh), keyEquivalent: "")
+        let quitItem = NSMenuItem(title: "Quit", action: #selector(exitBrightIntosh), keyEquivalent: "")
         
         menu.addItem(titleItem)
         menu.addItem(toggleOverlayItem)
@@ -218,7 +218,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(autoCheckForUpdatesItem)
         menu.addItem(checkForUpdatesMenuItem)
 #endif
-        menu.addItem(exitItem)
+        menu.addItem(quitItem)
         
 #if DEBUG
         let increaseItem = NSMenuItem(title: "Increase gamma", action: #selector(increase), keyEquivalent: "")
