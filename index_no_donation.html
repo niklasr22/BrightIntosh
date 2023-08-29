@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="main.css">
+  <link rel="icon" type="image/x-icon" href="./brightintosh_sm.png">
+  <script src="https://kit.fontawesome.com/ad8851e634.js" crossorigin="anonymous"></script>
+  <title>BrightIntosh</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+</head>
+
+<body>
+  <div class="background">
+    <div class="head">
+      <img class="logo" src="./brightintosh_sm.png" alt="BrightIntosh Logo">
+      <a class="download" id="download-link" target="_blank" rel="noopener noreferrer"
+        href="https://github.com/niklasr22/BrightIntosh/releases/latest/"><button class="btn"><i
+            class="fa-solid fa-download"></i> Download<span id="version"></span></button></a>
+    </div>
+    <h1>BrightIntosh</h1>
+
+    <div class="content">
+      <div class="info">
+        <h2>About</h2>
+        <p>
+          BrightIntosh enables your MacBook Pro M1 (or newer) to use the increased brightness of its XDR display
+          anytime.
+          By default this is only possible when displaying HDR content.
+        </p>
+      </div>
+      <div class="info">
+        <h2>Disclaimer</h2>
+        <p>
+          Use this application at your own risk. This software comes with no warranty or guarantees. Users take full
+          responsibility for any problems that arise from the use of this software.
+          <br />
+          By using the BrightIntosh application you accept the above.
+          <br /><br />
+          However this tool <i>should</i> not harm your display as the OS is in full control over the display
+          brightness.
+        </p>
+      </div>
+      <div class="info">
+        <h2>Contribute</h2>
+        <p>
+          BrightIntosh is an open source project.
+          If you want to contribute, feel free to open a pull request on <a
+            href="https://github.com/niklasr22/BrightIntosh">GitHub</a>.</p>
+      </div>
+    </div>
+    <div class="footer">
+      <a href="https://twitter.com/BrightIntoshApp" class="social"><i class="fa-brands fa-square-x-twitter"
+          title="Twitter"></i></a>
+      <a href="./privacy_policy.html">Privacy policy / Datenschutzerklärung</a>
+      <a href="./legal_notice.html">Legal notice / Impressum</a>
+    </div>
+  </div>
+  <script>
+    const version = document.getElementById("version");
+    const downloadLink = document.getElementById("download-link");
+    const url = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest";
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        version.innerHTML = " (" + data.tag_name + ")";
+        downloadLink.href = data.assets[0].browser_download_url;
+      });
+
+    downloadLink.addEventListener("click", function () {
+      fetch("https://c.brightintosh.de/d.php");
+    });
+
+    fetch("https://c.brightintosh.de/v.php");
+  </script>
+</body>
+
+</html>
