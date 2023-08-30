@@ -29,15 +29,21 @@ div.info {
     color: #59595D;
 }
 
-div.head {
+.head {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px;
 }
 
-a.download {
+.download {
     font-size: 20px;
+    display: inline-flex;
+}
+
+.appstore-download {
+    height: 47px;
+    padding: 0 10px;
 }
 
 #version {
@@ -74,7 +80,7 @@ a {
     height: 50px;
 }
 
-img.logo {
+.logo {
     width: 60px;
     height: 60px;
 }
@@ -115,6 +121,30 @@ h2 {
 }
 
 @media screen and (max-width: 999px) {
+
+    .head {
+        text-align: center;
+        display: block;
+    }
+
+    .logo {
+        width: 90px;
+        height: 90px;
+    }
+
+    .download,
+    .download>* {
+        display: block;
+        margin: 10px 0;
+    }
+
+    #download-link>.btn {
+        width: 184px;
+        height: 47px;
+        padding: 12px 5px;
+        font-size: 18px;
+    }
+
     h1 {
         font-size: 50px;
     }
