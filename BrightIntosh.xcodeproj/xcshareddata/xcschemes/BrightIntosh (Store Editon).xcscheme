@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9C8803732A72625E00476017"
-               BuildableName = "BrightIntosh  (Store Editon).app"
-               BlueprintName = "BrightIntosh  (Store Editon)"
+               BuildableName = "BrightIntosh (Store Editon).app"
+               BlueprintName = "BrightIntosh (Store Editon)"
                ReferencedContainer = "container:BrightIntosh.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,8 +44,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9C8803732A72625E00476017"
-            BuildableName = "BrightIntosh  (Store Editon).app"
-            BlueprintName = "BrightIntosh  (Store Editon)"
+            BuildableName = "BrightIntosh (Store Editon).app"
+            BlueprintName = "BrightIntosh (Store Editon)"
             ReferencedContainer = "container:BrightIntosh.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -61,8 +61,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9C8803732A72625E00476017"
-            BuildableName = "BrightIntosh  (Store Editon).app"
-            BlueprintName = "BrightIntosh  (Store Editon)"
+            BuildableName = "BrightIntosh (Store Editon).app"
+            BlueprintName = "BrightIntosh (Store Editon)"
             ReferencedContainer = "container:BrightIntosh.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

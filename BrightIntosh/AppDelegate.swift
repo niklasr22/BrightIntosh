@@ -35,8 +35,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var appVersion: String?
     
     private var newVersionAvailable = false
-    
+#if !STORE
     private let BRIGHTINTOSH_URL = "https://brightintosh.de"
+#else
+    private let BRIGHTINTOSH_URL = "https://brightintosh.de/index_nd.html"
+#endif
+    
     private let BRIGHTINTOSH_VERSION_URL = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest"
     
     private var gamma: Float = 1.7

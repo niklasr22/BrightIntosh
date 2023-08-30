@@ -42,7 +42,7 @@
 
 /* Begin PBXFileReference section */
 		9C8803712A718BFA00476017 /* HotKeyUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyUtils.swift; sourceTree = "<group>"; };
-		9C8803822A72625E00476017 /* BrightIntosh  (Store Editon).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BrightIntosh  (Store Editon).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C8803822A72625E00476017 /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C9C78022A62AEE800778CAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9CBD4E942A67E9F600C7A625 /* AccessibilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityService.swift; sourceTree = "<group>"; };
 		9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh.entitlements; sourceTree = "<group>"; };
@@ -112,7 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */,
-				9C8803822A72625E00476017 /* BrightIntosh  (Store Editon).app */,
+				9C8803822A72625E00476017 /* BrightIntosh.app */,
 				C1031D552A86742E001EE05B /* AutoLauncher.app */,
 			);
 			name = Products;
@@ -138,9 +138,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9C8803732A72625E00476017 /* BrightIntosh  (Store Editon) */ = {
+		9C8803732A72625E00476017 /* BrightIntosh (Store Editon) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9C88037F2A72625E00476017 /* Build configuration list for PBXNativeTarget "BrightIntosh  (Store Editon)" */;
+			buildConfigurationList = 9C88037F2A72625E00476017 /* Build configuration list for PBXNativeTarget "BrightIntosh (Store Editon)" */;
 			buildPhases = (
 				9C8803742A72625E00476017 /* Sources */,
 				9C88037C2A72625E00476017 /* Frameworks */,
@@ -150,9 +150,9 @@
 			);
 			dependencies = (
 			);
-			name = "BrightIntosh  (Store Editon)";
+			name = "BrightIntosh (Store Editon)";
 			productName = BrightIntosh;
-			productReference = 9C8803822A72625E00476017 /* BrightIntosh  (Store Editon).app */;
+			productReference = 9C8803822A72625E00476017 /* BrightIntosh.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C1031D542A86742E001EE05B /* AutoLauncher */ = {
@@ -232,7 +232,7 @@
 			projectRoot = "";
 			targets = (
 				C1B521472A5EFF5800E9B7AC /* BrightIntosh */,
-				9C8803732A72625E00476017 /* BrightIntosh  (Store Editon) */,
+				9C8803732A72625E00476017 /* BrightIntosh (Store Editon) */,
 				C1031D542A86742E001EE05B /* AutoLauncher */,
 			);
 		};
@@ -340,7 +340,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = BrightIntosh;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = macosx;
 				SUPPORTS_MACCATALYST = NO;
@@ -389,7 +389,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = BrightIntosh;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = macosx;
 				SUPPORTS_MACCATALYST = NO;
@@ -674,7 +674,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9C88037F2A72625E00476017 /* Build configuration list for PBXNativeTarget "BrightIntosh  (Store Editon)" */ = {
+		9C88037F2A72625E00476017 /* Build configuration list for PBXNativeTarget "BrightIntosh (Store Editon)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9C8803802A72625E00476017 /* Debug */,
