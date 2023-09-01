@@ -37,8 +37,8 @@ div.content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    width: 80%;
+    padding: 20px 10px;
+    width: 60%;
     margin: auto;
 }
 
@@ -152,12 +152,12 @@ h2 {
     overflow: hidden;
     box-shadow: #555 0px 2px 5px;
 }
-  
+
 .img-comp-img {
     width: 100%;
     overflow: hidden;
 }
-  
+
 .img-comp-img img {
     display: block;
 }
@@ -175,7 +175,7 @@ h2 {
     top: 0px;
     height: 100%;
 }
-  
+
 .img-comp-slider {
     position: absolute;
     height: 100%;
@@ -185,13 +185,14 @@ h2 {
     top: 0;
     overflow: visible;
     z-index: 9;
+    transform: translateX(-50%);
+    cursor: ew-resize;
 }
 
 .img-comp-slider::after {
     content: " ";
     transform: translate(-50%, -50%);
     position: absolute;
-    cursor: ew-resize;
     width: 40px;
     height: 40px;
     background-color: #2196F3;
