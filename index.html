@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="main.css">
   <link rel="icon" type="image/x-icon" href="./brightintosh_sm.png">
   <script src="https://kit.fontawesome.com/ad8851e634.js" crossorigin="anonymous"></script>
+  <script src="slider.js"></script>
   <title>BrightIntosh</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 </head>
@@ -12,7 +13,7 @@
 <body>
   <div class="background">
     <div class="head">
-      <a href="index.html"><img class="logo" src="./brightintosh_sm.png" alt="BrightIntosh Logo"></a>
+      <a class="brand" href="index.html"><img class="logo" src="./brightintosh_sm.png" alt="BrightIntosh Logo"><span class="title">BrightIntosh</span></a>
       <span class="download">
         <a class="appstore-download"
           href="https://apps.apple.com/us/app/brightintosh/id6452471855?mt=12&amp;itsct=apps_box_badge&amp;itscg=30200"><img
@@ -23,27 +24,24 @@
               class="fa-solid fa-download"></i> Download<span id="version"></span></button></a>
       </span>
     </div>
-    <h1>BrightIntosh</h1>
 
     <div class="content">
+      <div class="info large">
+        <div class="img-comp-container">
+          <div class="img-comp-img img-comp-base">
+            <img src="demo_dark.webp">
+          </div>
+          <div class="img-comp-img img-comp-overlay">
+            <img src="demo_bright.webp">
+          </div>
+        </div>
+      </div>
       <div class="info">
         <h2>About</h2>
         <p>
           BrightIntosh enables your MacBook Pro M1 (or newer) to use the increased brightness of its XDR display
           anytime.
           By default this is only possible when displaying HDR content.
-        </p>
-      </div>
-      <div class="info">
-        <h2>Disclaimer</h2>
-        <p>
-          Use this application at your own risk. This software comes with no warranty or guarantees. Users take full
-          responsibility for any problems that arise from the use of this software.
-          <br />
-          By using the BrightIntosh application you accept the above.
-          <br /><br />
-          However this tool <i>should</i> not harm your display as the OS is in full control over the display
-          brightness.
         </p>
       </div>
       <div class="info">
@@ -75,6 +73,18 @@
           If you want to contribute, feel free to open a pull request on <a
             href="https://github.com/niklasr22/BrightIntosh">GitHub</a>.</p>
       </div>
+      <div class="info">
+        <h2>Disclaimer</h2>
+        <p>
+          This tool should not harm your display as the OS is in full control over the display brightness.
+          <br /><br />
+          However this software comes with no warranty or guarantees. Users take full
+          responsibility for any problems that arise from the use of this software.
+          <br />
+          By using the BrightIntosh application you accept the above.
+          <br /><br />
+        </p>
+      </div>
     </div>
     <div class="footer">
       <a href="https://twitter.com/BrightIntoshApp" class="social"><i class="fa-brands fa-square-x-twitter"
@@ -97,8 +107,9 @@
     downloadLink.addEventListener("click", function () {
       fetch("https://c.brightintosh.de/d.php");
     });
+    initComparisons();
 
-    fetch("https://c.brightintosh.de/v.php");
+    //fetch("https://c.brightintosh.de/v.php");
   </script>
 </body>
 
