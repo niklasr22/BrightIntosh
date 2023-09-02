@@ -19,7 +19,7 @@ div.content {
     flex: 1;
 }
 
-div.info {
+.info {
     margin: auto;
     width: 40%;
     padding: 10px;
@@ -29,11 +29,34 @@ div.info {
     color: #59595D;
 }
 
+.info.large {
+    width: 60%;
+}
+
 .head {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 20px 10px;
+    width: 60%;
+    margin: auto;
+}
+
+.head a {
+    text-decoration: none;
+}
+
+.head .brand {
+    display: flex;
+}
+
+.head .title {
+    text-decoration: none;
+    color: #2aa5e8;
+    font-size: 40px;
+    line-height: 70px;
+    font-weight: bold;
+    padding-left: 10px;
 }
 
 .download {
@@ -120,16 +143,83 @@ h2 {
     flex-direction: column;
 }
 
+/* IMG COMP */
+
+.img-comp-container {
+    position: relative;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: #555 0px 2px 5px;
+}
+
+.img-comp-img {
+    width: 100%;
+    overflow: hidden;
+}
+
+.img-comp-img img {
+    display: block;
+}
+
+.img-comp-base img {
+    width: 100%;
+}
+
+.img-comp-overlay img {
+    height: 100%;
+}
+
+.img-comp-overlay {
+    position: absolute;
+    top: 0px;
+    height: 100%;
+}
+
+.img-comp-slider {
+    position: absolute;
+    height: 100%;
+    background: #2aa5e8;
+    opacity: 0.7;
+    width: 5px;
+    top: 0;
+    overflow: visible;
+    z-index: 9;
+    transform: translateX(-50%);
+    cursor: ew-resize;
+}
+
+.img-comp-slider::after {
+    content: " ";
+    transform: translate(-50%, -50%);
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: #2196F3;
+    border-radius: 50%;
+    top: 50%;
+}
+
 @media screen and (max-width: 999px) {
 
     .head {
         text-align: center;
         display: block;
+        width: 100%;
+        margin: 0;
     }
 
     .logo {
-        width: 90px;
-        height: 90px;
+        width: 70px;
+        height: 70px;
+    }
+
+    .head .brand {
+        justify-content: center;
+    }
+
+    .head .title {
+        line-height: 80px;
     }
 
     .download,
@@ -149,7 +239,11 @@ h2 {
         font-size: 50px;
     }
 
-    div.info {
+    .info {
         width: 80%;
+    }
+
+    .info.large {
+        width: 90%;
     }
 }
