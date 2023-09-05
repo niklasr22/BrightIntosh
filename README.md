@@ -20,6 +20,7 @@ This tool should not harm your display as it doesn't use any low level API calls
   <img src="https://github.com/niklasr22/BrightIntosh/assets/75939868/b8774d5c-7bfa-4661-86d0-e0e58fefbdf1">
 </p>
 
+Maximum brightness with BrightIntosh on the left half of the picture, default maximum brightness on the right half.
 
 ## Contributing
 
