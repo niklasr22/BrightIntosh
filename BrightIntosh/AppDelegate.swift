@@ -43,7 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     private let BRIGHTINTOSH_VERSION_URL = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest"
     
-    private var gamma: Float = 1.7
+    private var gamma: Float = 1.6
     
     private static let launcherBundleId = "de.brightintosh.launcher" as CFString
     
@@ -248,12 +248,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     @objc func increase() {
         gamma += 0.05
-        adjustGammaTable(screen: overlayWindow!.screen!)
+        adjustGammaTable(screen: overlayWindow!.getScreen()!)
     }
     
     @objc func decrease() {
         gamma -= 0.05
-        adjustGammaTable(screen: overlayWindow!.screen!)
+        adjustGammaTable(screen: overlayWindow!.getScreen()!)
     }
     
     /* TODO: Use this once Carbon is fully deprecated without a better successor.
