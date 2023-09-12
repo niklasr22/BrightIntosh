@@ -8,6 +8,7 @@
 import Cocoa
 import ServiceManagement
 import Carbon
+import SwiftUI
 #if !STORE
 import Sparkle
 #endif
@@ -69,11 +70,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         
         appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         
-#if !STORE
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
-            firstStartWarning()
+            welcomeWindow()
         }
-#endif
         
         if let builtInScreen = getBuiltInScreen(), active {
             setupOverlay(screen: builtInScreen)
@@ -106,16 +105,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
          }*/
     }
     
-    func firstStartWarning() {
-        let alert = NSAlert()
-        alert.messageText = "Use this application at your own risk. This software comes with no warranty or guarantees. Users take full responsibility for any problems that arise from the use of this software. By continuing and using the BrightIntosh application you accept the previous statement."
-        alert.addButton(withTitle: "Continue")
-        alert.addButton(withTitle: "Cancel")
-        let result = alert.runModal()
-        if result == NSApplication.ModalResponse.alertSecondButtonReturn {
-            NSApplication.shared.terminate(nil)
-            return
-        }
+    func welcomeWindow() {
+        let appWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 500, height: 480),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+
+        let contentView = WelcomeWindow(closeWindow: appWindow.close).frame(width: 500, height: 480)
+        appWindow.contentView = NSHostingView(rootView: contentView)
+        appWindow.isReleasedWhenClosed = false
+        appWindow.titlebarAppearsTransparent = true
+        appWindow.titlebarSeparatorStyle = .none
+        
+        appWindow.center()
+        appWindow.makeKeyAndOrderFront(nil)
+        
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
     
