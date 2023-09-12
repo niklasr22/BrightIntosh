@@ -36,6 +36,6 @@ We want BrightIntosh to be an open and welcoming community for all contributors.
 
 Remember, we're all here to learn and collaborate. Let's make BrightIntosh better together!
 
-If you have any questions or need assistance, feel free to reach out in the GitHub discussions or X (Twitter).
+If you have any questions or need assistance, feel free to reach out in the GitHub discussions or [X (Twitter)](http://x.com/BrightIntoshApp).
 
 Thank you for contributing to BrightIntosh!
