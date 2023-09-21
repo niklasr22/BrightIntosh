@@ -13,7 +13,8 @@ struct WelcomeWindow: View {
     
     var body: some View {
         VStack(alignment: HorizontalAlignment.center, spacing: 10.0) {
-            Image("Logo").resizable()
+            Image("LogoBorderedHighRes")
+                .resizable()
                 .frame(width: 200, height: 200)
                 .aspectRatio(contentMode: .fit)
             Text("Welcome to BrightIntosh!").font(Font.title)

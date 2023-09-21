@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9C380FF12A8A8922000A6566 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 9C380FF02A8A8922000A6566 /* Sparkle */; };
+		9C4163702AB7198B005B34B6 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */; };
+		9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */; };
 		9C8803722A718BFA00476017 /* HotKeyUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8803712A718BFA00476017 /* HotKeyUtils.swift */; };
 		9C8803752A72625E00476017 /* HotKeyUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8803712A718BFA00476017 /* HotKeyUtils.swift */; };
 		9C8803762A72625E00476017 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
@@ -43,6 +45,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		9C8803712A718BFA00476017 /* HotKeyUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyUtils.swift; sourceTree = "<group>"; };
 		9C8803822A72625E00476017 /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeWindow.swift; sourceTree = "<group>"; };
@@ -135,6 +138,7 @@
 				9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */,
 				9CEB41EF2A923723005D7A0D /* BrightIntosh_SE.entitlements */,
 				9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */,
+				9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -273,6 +277,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */,
 				9C8FA26C2AB058310049C0D1 /* WelcomeWindow.swift in Sources */,
 				9C8803752A72625E00476017 /* HotKeyUtils.swift in Sources */,
 				9C8803762A72625E00476017 /* AppDelegate.swift in Sources */,
@@ -296,6 +301,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C4163702AB7198B005B34B6 /* SettingsWindow.swift in Sources */,
 				9C8FA26B2AB058310049C0D1 /* WelcomeWindow.swift in Sources */,
 				9C8803722A718BFA00476017 /* HotKeyUtils.swift in Sources */,
 				C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */,

@@ -103,6 +103,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
          if AXIsProcessTrusted() {
          addKeyListeners()
          }*/
+        
     }
     
     func welcomeWindow() {
