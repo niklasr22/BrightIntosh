@@ -18,23 +18,25 @@ struct BasicSettings: View {
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
             Section(header: Text("Brightness").bold()) {
-                Toggle("Increased brightness", isOn: $increasedBrightness).toggleStyle(.switch)
+                Toggle("Increased brightness", isOn: $increasedBrightness)
                 Slider(value: $brightness) {
                     Text("Brightness")
                 }
             }
-            Section(header: Text("Automations").bold()) {
+            /* Section(header: Text("Automations").bold()) {
                 Toggle("Launch on login", isOn: $launchOnLogin)
-                Toggle("Automatically disable increased brightness when battery level drops", isOn: $autoDisableOnLowBattery)
-                Toggle("Automatically toggle increased brightness depending on the envrionment's brightness", isOn: $autoDisableOnLowBattery)
-            }
-            Section(header: Text("Shortcut").bold()) {
+                // Toggle("Automatically disable increased brightness when battery level drops", isOn: $autoDisableOnLowBattery)
+                // Toggle("Automatically toggle increased brightness depending on the envrionment's brightness", isOn: $autoDisableOnLowBattery)
+            } */
+            /*Section(header: Text("Shortcut").bold()) {
                 TextField("Toggle increased brightness", text: $input)
-            }
+            }*/
             Spacer()
         }.padding()
     }
 }
+
+
 
 struct AdvancedSettings: View {
     
@@ -43,8 +45,13 @@ struct AdvancedSettings: View {
     
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
-            Toggle("Highlight the active window with increased brightness", isOn: $activeWindowHighlight)
-            Toggle("Increase brightness using an overlay technique. This may show more accurate colors but the increased brightness won't be available when using Mission Control or switching Spaces.", isOn: $overlayTechnique)
+            //Toggle("Highlight the active window with increased brightness", isOn: $activeWindowHighlight)
+            Toggle(isOn: $overlayTechnique) {
+                Text("Increase brightness using an overlay technique.")
+                Label("This may show more accurate colors but the increased brightness won't be available when using Mission Control or switching Spaces. The window selection tool of the screenshot application won't be able to focus any other window than the overlay.", systemImage: "exclamationmark.triangle.fill").foregroundColor(Color.yellow)
+                
+            }
+            Spacer()
         }.padding()
     }
 }
