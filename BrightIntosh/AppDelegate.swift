@@ -190,26 +190,34 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(quitItem)
         
 #if DEBUG
-        let increaseItem = NSMenuItem(title: "Increase gamma", action: #selector(increase), keyEquivalent: "")
+        let increaseItem = NSMenuItem(title: "Increase gamma", action: #selector(increaseBrightness), keyEquivalent: "")
+        increaseItem.setShortcut(for: .increaseBrightness)
         menu.addItem(increaseItem)
-        let decreaseItem = NSMenuItem(title: "Decrease gamma", action: #selector(decrease), keyEquivalent: "")
+        let decreaseItem = NSMenuItem(title: "Decrease gamma", action: #selector(decreaseBrightness), keyEquivalent: "")
+        decreaseItem.setShortcut(for: .decreaseBrightness)
         menu.addItem(decreaseItem)
 #endif
         
         statusItem.menu = menu
     }
     
-    @objc func increase() {
-        Settings.shared.brightness += 0.05
+    @objc func increaseBrightness() {
+        Settings.shared.brightness = min(1.6, Settings.shared.brightness + 0.05)
     }
     
-    @objc func decrease() {
-        Settings.shared.brightness -= 0.05
+    @objc func decreaseBrightness() {
+        Settings.shared.brightness = max(1.0, Settings.shared.brightness - 0.05)
     }
     
     func addKeyListeners() {
         KeyboardShortcuts.onKeyUp(for: .toggleBrightIntosh) {
             self.toggleBrightIntosh()
+        }
+        KeyboardShortcuts.onKeyUp(for: .increaseBrightness) {
+            self.increaseBrightness()
+        }
+        KeyboardShortcuts.onKeyUp(for: .decreaseBrightness) {
+            self.decreaseBrightness()
         }
     }
     
