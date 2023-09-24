@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct WelcomeWindow: View {
+struct WelcomeView: View {
     var closeWindow: () -> Void
     
     var body: some View {
@@ -37,8 +37,42 @@ struct WelcomeWindow: View {
     }
 }
 
-struct WelcomeWindow_Previews: PreviewProvider {
+struct WelcomeView_Previews: PreviewProvider {
     static var previews: some View {
-        WelcomeWindow(closeWindow: {() in })
+        WelcomeView(closeWindow: {() in })
+    }
+}
+
+final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
+    init() {
+        
+        let welcomeWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 500, height: 480),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+
+        let contentView = WelcomeView(closeWindow: welcomeWindow.close).frame(width: 500, height: 480)
+        
+        welcomeWindow.contentView = NSHostingView(rootView: contentView)
+        welcomeWindow.titlebarAppearsTransparent = true
+        welcomeWindow.titlebarSeparatorStyle = .none
+        welcomeWindow.center()
+        
+        super.init(window: welcomeWindow)
+        welcomeWindow.delegate = self
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func windowDidBecomeKey(_ notification: Notification) {
+        window?.level = .statusBar
+    }
+    
+    func windowWillClose(_ notification: Notification) {
+        NSApp.stopModal()
     }
 }
