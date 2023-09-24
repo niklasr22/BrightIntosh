@@ -20,9 +20,15 @@ final class BasicSettingsViewModel: NSObject, ObservableObject {
         set { Settings.shared.brightintoshActive = newValue }
         get { return brightIntoshActive }
     }
+    private var brightness = Settings.shared.brightness
+    var brightnessSlider: Float {
+        set { Settings.shared.brightness = newValue }
+        get { return brightness }
+    }
 
     @objc private let settings: Settings = Settings.shared
     private var observationBrightIntoshActive: NSKeyValueObservation?
+    private var observationBrightness: NSKeyValueObservation?
     
     override init() {
         super.init()
@@ -30,6 +36,13 @@ final class BasicSettingsViewModel: NSObject, ObservableObject {
             object, change in
             if self.brightIntoshActive != Settings.shared.brightintoshActive {
                 self.brightIntoshActive = Settings.shared.brightintoshActive
+                self.objectWillChange.send()
+            }
+        }
+        observationBrightness = observe(\.settings.brightness, options: [.old, .new]) {
+            object, change in
+            if self.brightness != Settings.shared.brightness {
+                self.brightness = Settings.shared.brightness
                 self.objectWillChange.send()
             }
         }
@@ -42,15 +55,14 @@ struct BasicSettings: View {
     @State private var launchOnLogin = Settings.shared.launchAtLogin
     @State private var autoDisableOnLowBattery = false
     @State private var autoUpdateCheck = Settings.shared.autoUpdateCheck
-    @State private var brightness = 1.0
-    
+
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
             Section(header: Text("Brightness").bold()) {
                 Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
-                /*Slider(value: $brightness) {
+                Slider(value: $viewModel.brightnessSlider, in: 1.0...1.6) {
                     Text("Brightness")
-                }*/
+                }
             }
             Section(header: Text("Automations").bold()) {
                 Toggle("Launch on login", isOn: $launchOnLogin)
@@ -62,6 +74,8 @@ struct BasicSettings: View {
             }
             Section(header: Text("Shortcut").bold()) {
                 KeyboardShortcuts.Recorder("Toggle increased brightness:", name: .toggleBrightIntosh)
+                KeyboardShortcuts.Recorder("Increase brightness:", name: .increaseBrightness)
+                KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
             }
             
 #if !STORE
@@ -144,13 +158,13 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     init() {
         
         let settingsWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 500, height: 480),
+            contentRect: NSRect(x: 0, y: 0, width: 500, height: 500),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
         )
 
-        let contentView = SettingsView().frame(width: 500, height: 480)
+        let contentView = SettingsView().frame(width: 500, height: 500)
         
         settingsWindow.contentView = NSHostingView(rootView: contentView)
         settingsWindow.titlebarAppearsTransparent = true
