@@ -6,12 +6,10 @@
 //
 
 import Cocoa
+import KeyboardShortcuts
 import ServiceManagement
 import Carbon
 import SwiftUI
-#if !STORE
-import Sparkle
-#endif
 
 extension NSScreen {
     var displayId: CGDirectDisplayID? {
@@ -22,20 +20,11 @@ extension NSScreen {
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
     
-    private var launchAtLogin = false
-    private var active = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
-        didSet {
-            UserDefaults.standard.setValue(active, forKey: "active")
-        }
-    }
     
     private var overlayAvailable = false
     
     private var overlayWindow: OverlayWindow?
     
-    private var appVersion: String?
-    
-    private var newVersionAvailable = false
 #if !STORE
     private let BRIGHTINTOSH_URL = "https://brightintosh.de"
 #else
@@ -44,37 +33,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     private let BRIGHTINTOSH_VERSION_URL = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest"
     
-    private var gamma: Float = 1.6
     
-    private static let launcherBundleId = "de.brightintosh.launcher" as CFString
+    let settingsWindowController = SettingsWindowController()
     
-#if !STORE
-    @IBOutlet var checkForUpdatesMenuItem: NSMenuItem!
-    let updaterController: SPUStandardUpdaterController
     
-    private var autoUpdateCheck = UserDefaults.standard.object(forKey: "autoUpdateCheckActive") != nil ? UserDefaults.standard.bool(forKey: "autoUpdateCheckActive") : true {
-        didSet {
-            UserDefaults.standard.setValue(autoUpdateCheck, forKey: "autoUpdateCheckActive")
-        }
-    }
+    @objc var settings: Settings
+    
+    var observationBrightIntoshActive: NSKeyValueObservation?
+    var observationBrightness: NSKeyValueObservation?
     
     override init() {
-        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
-        if UserDefaults.standard.object(forKey: "autoUpdateCheckActive") == nil {
-            autoUpdateCheck = updaterController.updater.automaticallyChecksForUpdates
-        }
+        settings = Settings.shared
+        super.init()
     }
-#endif
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-        appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             welcomeWindow()
         }
         
-        if let builtInScreen = getBuiltInScreen(), active {
+        if let builtInScreen = getBuiltInScreen(), Settings.shared.brightintoshActive {
             setupOverlay(screen: builtInScreen)
         }
         
@@ -88,42 +68,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         // Menu bar app
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         
-        // Load launch at login status
-        if #available(macOS 13, *) {
-            launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
-        } else {
-            launchAtLogin = UserDefaults.standard.object(forKey: "launchAtLoginActive") != nil && UserDefaults.standard.bool(forKey: "launchAtLoginActive")
-        }
-        
         setupMenus()
         
-        // Register global hotkey
+        // Register global hotkeys
         addKeyListeners()
-        /* TODO: Use this once Carbon is fully deprecated without a better successor.
-         if AXIsProcessTrusted() {
-         addKeyListeners()
-         }*/
         
-    }
-    
-    func welcomeWindow() {
-        let appWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 500, height: 480),
-            styleMask: [.titled, .closable],
-            backing: .buffered,
-            defer: false
-        )
-
-        let contentView = WelcomeWindow(closeWindow: appWindow.close).frame(width: 500, height: 480)
-        appWindow.contentView = NSHostingView(rootView: contentView)
-        appWindow.isReleasedWhenClosed = false
-        appWindow.titlebarAppearsTransparent = true
-        appWindow.titlebarSeparatorStyle = .none
+        // Observe application state
+        observationBrightIntoshActive = observe(\.settings.brightintoshActive, options: [.old, .new]) {
+            object, change in
+            print("Toggled increased brightness. Active: \(Settings.shared.brightintoshActive)")
+            
+            self.setupMenus()
+            if Settings.shared.brightintoshActive {
+                if let builtInScreen = self.getBuiltInScreen() {
+                    self.setupOverlay(screen: builtInScreen)
+                }
+            } else {
+                self.destroyOverlay()
+                self.resetGammaTable()
+            }
+        }
         
-        appWindow.center()
-        appWindow.makeKeyAndOrderFront(nil)
+        observationBrightness = observe(\.settings.brightness, options: [.old, .new]) {
+            object, change in
+            if let overlayWindow = self.overlayWindow {
+                self.adjustGammaTable(screen: overlayWindow.getScreen()!)
+                print("Set brightness to \(Settings.shared.brightness)")
+            }
+        }
         
-        UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
     
     func setupOverlay(screen: NSScreen) {
@@ -141,7 +114,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
     
     func adjustGammaTable(screen: NSScreen) {
-        if let displayId = screen.displayId {
+        if let displayId = screen.displayId, Settings.shared.brightintoshActive {
             resetGammaTable()
             
             let tableSize: Int = 256 // The size of the gamma table
@@ -154,6 +127,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             guard result == CGError.success else {
                 return
             }
+            
+            let gamma = Settings.shared.brightness
             
             for i in 0..<redTable.count {
                 redTable[i] = redTable[i] * gamma
@@ -189,46 +164,29 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.delegate = self
         
 #if STORE
-        let titleString = "BrightIntosh SE (v\(appVersion ?? "?"))"
+        let titleString = "BrightIntosh SE (v\(appVersion))"
 #else
-        let titleString = "BrightIntosh (v\(appVersion ?? "?"))"
+        let titleString = "BrightIntosh (v\(appVersion))"
 #endif
         
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: active ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: active ? "Increased brightness" : "Default brightness")
+            button.image = NSImage(systemSymbolName: Settings.shared.brightintoshActive ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: Settings.shared.brightintoshActive ? "Increased brightness" : "Default brightness")
             button.toolTip = titleString
         }
         
         
         let titleItem = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
 
-        let toggleOverlayItem = NSMenuItem(title: active ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "b")
-        toggleOverlayItem.keyEquivalentModifierMask = [NSEvent.ModifierFlags.command, NSEvent.ModifierFlags.option]
-
-        let toggleLaunchAtLoginItem = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
-        if launchAtLogin {
-            toggleLaunchAtLoginItem.image = NSImage(systemSymbolName: "checkmark", accessibilityDescription: "Launch at login active")
-        }
+        let toggleIncreasedBrightness = NSMenuItem(title: Settings.shared.brightintoshActive ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "")
+        toggleIncreasedBrightness.setShortcut(for: .toggleBrightIntosh)
         
-#if !STORE
-        let autoCheckForUpdatesItem = NSMenuItem(title: "Auto update check", action: #selector(toggleAutoUpdateCheck), keyEquivalent: "")
-        if autoUpdateCheck {
-            autoCheckForUpdatesItem.image = NSImage(systemSymbolName: "checkmark", accessibilityDescription: "Auto update check active")
-        }
-        
-        checkForUpdatesMenuItem = NSMenuItem(title: "Check for Updates...", action: #selector(SPUStandardUpdaterController.checkForUpdates(_:)), keyEquivalent: "")
-        checkForUpdatesMenuItem.target = updaterController
-#endif
+        let settingsItem = NSMenuItem(title: "Settings", action: #selector(openSettings), keyEquivalent: "")
         
         let quitItem = NSMenuItem(title: "Quit", action: #selector(exitBrightIntosh), keyEquivalent: "")
         
         menu.addItem(titleItem)
-        menu.addItem(toggleOverlayItem)
-        menu.addItem(toggleLaunchAtLoginItem)
-#if !STORE
-        menu.addItem(autoCheckForUpdatesItem)
-        menu.addItem(checkForUpdatesMenuItem)
-#endif
+        menu.addItem(toggleIncreasedBrightness)
+        menu.addItem(settingsItem)
         menu.addItem(quitItem)
         
 #if DEBUG
@@ -238,100 +196,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(decreaseItem)
 #endif
         
-        /* TODO: Use this once Carbon is fully deprecated without a better successor.
-         if !AXIsProcessTrusted() {
-         let requestAccessibilityFeaturesItem = NSMenuItem(title: "Enable global hot key", action: #selector(requestAccessibilityFeatures), keyEquivalent: "")
-         menu.addItem(requestAccessibilityFeaturesItem)
-         }*/
-        
-        if newVersionAvailable {
-            let newVersionItem = NSMenuItem(title: "Download a new version", action: #selector(openWebsite), keyEquivalent: "")
-            newVersionItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "Download a new version")
-            menu.addItem(newVersionItem)
-        }
-        
         statusItem.menu = menu
     }
     
     @objc func increase() {
-        gamma += 0.05
-        adjustGammaTable(screen: overlayWindow!.getScreen()!)
+        Settings.shared.brightness += 0.05
     }
     
     @objc func decrease() {
-        gamma -= 0.05
-        adjustGammaTable(screen: overlayWindow!.getScreen()!)
-    }
-    
-    /* TODO: Use this once Carbon is fully deprecated without a better successor.
-     @objc func requestAccessibilityFeatures() {
-     let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString: true]
-     AXIsProcessTrustedWithOptions(options)
-     
-     AccessibilityService.startPollingTrustedProcessState(getsTrusted: self.gotTrusted)
-     }*/
-    
-    func gotTrusted() {
-        setupMenus()
-        addKeyListeners()
+        Settings.shared.brightness -= 0.05
     }
     
     func addKeyListeners() {
-        /* TODO: Use this once Carbon is fully deprecated without a better successor.
-         NSEvent.addGlobalMonitorForEvents(matching: NSEvent.EventTypeMask.keyDown, handler: {(event: NSEvent) -> Void in
-         if let chars = event.characters, event.modifierFlags.contains(NSEvent.ModifierFlags.command) && event.modifierFlags.contains(NSEvent.ModifierFlags.shift) && chars.contains("b") {
-         self.toggleBrightIntosh()
-         }
-         })*/
-        
-        HotKeyUtils.registerHotKey(modifierFlags: UInt32(0 | optionKey | cmdKey) , keyCode: UInt32(kVK_ANSI_B), callback: self.toggleBrightIntosh)
+        KeyboardShortcuts.onKeyUp(for: .toggleBrightIntosh) {
+            self.toggleBrightIntosh()
+        }
     }
     
     @objc func toggleBrightIntosh() {
-        active.toggle()
-        setupMenus()
-        if active {
-            if let builtInScreen = getBuiltInScreen() {
-                setupOverlay(screen: builtInScreen)
-            }
-        } else {
-            destroyOverlay()
-            resetGammaTable()
-        }
+        Settings.shared.brightintoshActive.toggle()
     }
-    
-    @objc func toggleLaunchAtLogin() {
-        launchAtLogin.toggle()
-        
-        if #available(macOS 13, *) {
-            let service = SMAppService.mainApp
-            do {
-                if launchAtLogin {
-                    try service.register()
-                } else {
-                    try service.unregister()
-                }
-            } catch {
-                launchAtLogin.toggle()
-            }
-        } else {
-            SMLoginItemSetEnabled(AppDelegate.launcherBundleId, launchAtLogin)
-            UserDefaults.standard.set(launchAtLogin, forKey: "launchAtLoginActive")
-        }
-        setupMenus()
-    }
-    
-#if !STORE
-    @objc func toggleAutoUpdateCheck() {
-        autoUpdateCheck.toggle()
-        updaterController.updater.automaticallyChecksForUpdates = autoUpdateCheck
-        setupMenus()
-    }
-#endif
     
     @objc func handleScreenParameters(notification: Notification) {
         if let builtInScreen = getBuiltInScreen() {
-            if !overlayAvailable && active {
+            if !overlayAvailable && Settings.shared.brightintoshActive {
                 setupOverlay(screen: builtInScreen)
             } else {
                 overlayWindow?.screenUpdate(screen: builtInScreen)
@@ -349,12 +237,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_URL)!)
     }
     
+    @objc func openSettings() {
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        NSApp.runModal(for: settingsWindowController.window!)
+    }
+    
+    func welcomeWindow() {
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        let controller = WelcomeWindowController()
+        NSApp.runModal(for: controller.window!)
+    }
+    
     func menuWillOpen(_ menu: NSMenu) {
-        HotKeyUtils.unregisterAllHotKeys()
+        KeyboardShortcuts.isEnabled = false
     }
     
     func menuDidClose(_ menu: NSMenu) {
-        addKeyListeners()
+        KeyboardShortcuts.isEnabled = true
     }
 }
 
