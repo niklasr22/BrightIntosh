@@ -53,7 +53,7 @@ final class Settings: NSObject {
     public var autoUpdateCheck = UserDefaults.standard.object(forKey: "autoUpdateCheckActive") != nil ? UserDefaults.standard.bool(forKey: "autoUpdateCheckActive") : true {
         didSet {
             UserDefaults.standard.setValue(autoUpdateCheck, forKey: "autoUpdateCheckActive")
-            updaterController.updater.automaticallyChecksForUpdates = Settings.shared.autoUpdateCheck
+            updaterController.updater.automaticallyChecksForUpdates = autoUpdateCheck
         }
     }
 #endif
@@ -63,7 +63,7 @@ final class Settings: NSObject {
 #if !STORE
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
         if UserDefaults.standard.object(forKey: "autoUpdateCheckActive") == nil {
-            Settings.shared.autoUpdateCheck = updaterController.updater.automaticallyChecksForUpdates
+            autoUpdateCheck = updaterController.updater.automaticallyChecksForUpdates
         }
 #endif
         
