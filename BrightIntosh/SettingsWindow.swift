@@ -54,8 +54,10 @@ struct BasicSettings: View {
     
     @State private var launchOnLogin = Settings.shared.launchAtLogin
     @State private var autoDisableOnLowBattery = false
+#if !STORE
     @State private var autoUpdateCheck = Settings.shared.autoUpdateCheck
-
+#endif
+    
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
             Section(header: Text("Brightness").bold()) {

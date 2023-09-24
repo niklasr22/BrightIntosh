@@ -254,6 +254,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         NSApplication.shared.activate(ignoringOtherApps: true)
         let controller = WelcomeWindowController()
         NSApp.runModal(for: controller.window!)
+        UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
     
     func menuWillOpen(_ menu: NSMenu) {
