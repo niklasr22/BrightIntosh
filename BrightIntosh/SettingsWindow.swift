@@ -106,7 +106,7 @@ struct BasicSettings: View {
 struct AdvancedSettings: View {
     
     @State private var activeWindowHighlight = false
-    @State private var overlayTechnique = false
+    @State private var overlayTechnique = Settings.shared.overlayTechnique
     
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
