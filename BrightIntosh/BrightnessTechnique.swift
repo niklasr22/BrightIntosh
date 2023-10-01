@@ -20,7 +20,7 @@ class BrightnessTechnique {
     }
     
     func adjustBrightness() {
-        guard let screen = getBuiltInScreen() else {
+        if getBuiltInScreen() == nil {
             self.disable()
             return
         }
