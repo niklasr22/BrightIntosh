@@ -54,15 +54,15 @@ class Overlay: MTKView, MTKViewDelegate {
         preferredFramesPerSecond = screen.maximumFramesPerSecond
         let maxEdrValue = screen.maximumExtendedDynamicRangeColorComponentValue
         let maxRenderedEdrValue = screen.maximumReferenceExtendedDynamicRangeColorComponentValue
-        
         let factor = max(maxEdrValue / max(maxRenderedEdrValue, 1.0) - 1.0, 1.0)
         clearColor = MTLClearColorMake(factor, factor, factor, 1.0)
     }
     
-    func setHDRBrightness(colorValue: Double) {
-        //clearColor = MTLClearColorMake(colorValue, colorValue, colorValue, 1.0)
-        
-        //print("HDR brightness set to \(colorValue). Size: \(frame.width) \(frame.height)")
+    func setHDRBrightness(colorValue: Double, screen: NSScreen) {
+        let maxEdrValue = screen.maximumExtendedDynamicRangeColorComponentValue
+        let percentage = (colorValue - 1.0) / 0.6
+        let newColor = ((maxEdrValue - 1.0) * percentage) + 1.0
+        clearColor = MTLClearColorMake(newColor, newColor, newColor, 1.0)
     }
     
     func draw(in view: MTKView) {

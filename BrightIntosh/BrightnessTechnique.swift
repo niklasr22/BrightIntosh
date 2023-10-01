@@ -44,7 +44,6 @@ class GammaTechnique: BrightnessTechnique {
             isEnabled = true
             let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: 1, height: 1)
             overlayWindowController.open(rect: rect, screen: screen)
-            print("Show overlay")
             adjustBrightness()
         }
     }
@@ -99,35 +98,32 @@ class GammaTechnique: BrightnessTechnique {
 
 class OverlayTechnique: BrightnessTechnique {
     
-    private var overlayWindowController: FullsizeOverlayWindowController
+    private var overlayWindowController: OverlayWindowController
     
     override init() {
-        guard let screen = getBuiltInScreen() else {
-            fatalError("No Screen")
-        }
-        let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: screen.frame.width, height: screen.frame.height)
-        overlayWindowController = FullsizeOverlayWindowController(rect: rect, screen: screen)
+        overlayWindowController = OverlayWindowController(fullsize: true)
         super.init()
     }
     
     override func enable() {
-        //if let screen = getBuiltInScreen() {
-        //    let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: screen.visibleFrame.width, height: screen.visibleFrame.height)
-        isEnabled = true
-        overlayWindowController.open()
-        adjustBrightness()
-        //}
+        if let screen = getBuiltInScreen() {
+            isEnabled = true
+            let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: screen.frame.width, height: screen.frame.height)
+            overlayWindowController.open(rect: rect, screen: screen)
+            adjustBrightness()
+        }
     }
     
     override func disable() {
         isEnabled = false
-        overlayWindowController.window?.close()
+        overlayWindowController.close()
     }
     
     override func adjustBrightness() {
         super.adjustBrightness()
         if let screen = getBuiltInScreen() {
-            (overlayWindowController.window as? FullsizeOverlayWindow)?.overlay?.screenUpdate(screen: screen)
+            //(overlayWindowController.window as? OverlayWindow)?.screenUpdate(screen: screen)
+            (overlayWindowController.window as? OverlayWindow)?.overlay?.setHDRBrightness(colorValue: Double(Settings.shared.brightness), screen: screen)
         }
     }
     
