@@ -47,7 +47,7 @@ class OverlayWindow: NSWindow {
 
 class FullsizeOverlayWindow: NSWindow {
     
-    private var overlay: Overlay!
+    var overlay: Overlay!
     
     init(rect: NSRect, screen: NSScreen) {
         super.init(contentRect: rect, styleMask: [.fullSizeContentView, .borderless], backing: .buffered, defer: false)
@@ -92,7 +92,8 @@ final class FullsizeOverlayWindowController: NSWindowController, NSWindowDelegat
     
     func open() {
         NSApplication.shared.activate(ignoringOtherApps: true)
-        window?.makeKeyAndOrderFront(nil)
+        window?.orderFrontRegardless()
+        window?.makeKey()
     }
     
     required init?(coder: NSCoder) {
@@ -124,7 +125,7 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         
         if fullsize {
             window.setFrameOrigin(screen.frame.origin)
-            window.makeKeyAndOrderFront(nil)
+            window.orderFrontRegardless()
         } else {
             var position = screen.frame.origin
             position.y += screen.frame.height
