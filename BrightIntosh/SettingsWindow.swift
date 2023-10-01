@@ -114,6 +114,8 @@ struct AdvancedSettings: View {
             Toggle(isOn: $overlayTechnique) {
                 Text("Increase brightness using an overlay technique.")
                 Label("This may show more accurate colors but the increased brightness won't be available when using Mission Control or switching Spaces. The window selection tool of the screenshot application won't be able to focus any other window than the overlay.", systemImage: "exclamationmark.triangle.fill").foregroundColor(Color.yellow)
+            }.onChange(of: overlayTechnique) { value in
+                Settings.shared.overlayTechnique = value
             }
             Spacer()
         }.frame(
@@ -140,9 +142,9 @@ struct SettingsView: View {
                 BasicSettings().tabItem {
                     Text("General")
                 }
-                /*AdvancedSettings().tabItem {
+                AdvancedSettings().tabItem {
                     Text("Advanced")
-                }*/
+                }
             }
             Label(title, image: "LogoBordered").imageScale(.small)
         }.padding()

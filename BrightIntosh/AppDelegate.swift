@@ -11,11 +11,6 @@ import ServiceManagement
 import Carbon
 import SwiftUI
 
-extension NSScreen {
-    var displayId: CGDirectDisplayID? {
-        return deviceDescription[NSDeviceDescriptionKey(rawValue: "NSScreenNumber")] as? CGDirectDisplayID
-    }
-}
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
@@ -23,7 +18,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     private var overlayAvailable = false
     
-    private var overlayWindow: OverlayWindow?
     
 #if !STORE
     private let BRIGHTINTOSH_URL = "https://brightintosh.de"
@@ -42,6 +36,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var observationBrightIntoshActive: NSKeyValueObservation?
     var observationBrightness: NSKeyValueObservation?
     
+    var brightnessManager: BrightnessManager?
+    
     override init() {
         settings = Settings.shared
         super.init()
@@ -49,21 +45,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-        
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             welcomeWindow()
         }
         
-        if let builtInScreen = getBuiltInScreen(), Settings.shared.brightintoshActive {
-            setupOverlay(screen: builtInScreen)
-        }
-        
-        // Observe displays
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleScreenParameters(notification:)),
-            name: NSApplication.didChangeScreenParametersNotification,
-            object: nil)
+        brightnessManager = BrightnessManager()
         
         // Menu bar app
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -76,86 +62,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         // Observe application state
         observationBrightIntoshActive = observe(\.settings.brightintoshActive, options: [.old, .new]) {
             object, change in
-            print("Toggled increased brightness. Active: \(Settings.shared.brightintoshActive)")
-            
             self.setupMenus()
-            if Settings.shared.brightintoshActive {
-                if let builtInScreen = self.getBuiltInScreen() {
-                    self.setupOverlay(screen: builtInScreen)
-                }
-            } else {
-                self.destroyOverlay()
-                self.resetGammaTable()
-            }
         }
-        
-        observationBrightness = observe(\.settings.brightness, options: [.old, .new]) {
-            object, change in
-            if let overlayWindow = self.overlayWindow {
-                self.adjustGammaTable(screen: overlayWindow.getScreen()!)
-                print("Set brightness to \(Settings.shared.brightness)")
-            }
-        }
-        
-    }
-    
-    func setupOverlay(screen: NSScreen) {
-        let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: 1, height: 1)
-        overlayWindow = OverlayWindow(rect: rect, screen: screen)
-        overlayAvailable = true
-        adjustGammaTable(screen: screen)
-    }
-    
-    func destroyOverlay() {
-        if let overlayWindow {
-            overlayWindow.close()
-            overlayAvailable = false
-        }
-    }
-    
-    func adjustGammaTable(screen: NSScreen) {
-        if let displayId = screen.displayId, Settings.shared.brightintoshActive {
-            resetGammaTable()
-            
-            let tableSize: Int = 256 // The size of the gamma table
-            var redTable = [CGGammaValue](repeating: 0, count: tableSize)
-            var greenTable = [CGGammaValue](repeating: 0, count: tableSize)
-            var blueTable = [CGGammaValue](repeating: 0, count: tableSize)
-            var sampleCount: UInt32 = 0
-            let result = CGGetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable, &sampleCount)
-            
-            guard result == CGError.success else {
-                return
-            }
-            
-            let gamma = Settings.shared.brightness
-            
-            for i in 0..<redTable.count {
-                redTable[i] = redTable[i] * gamma
-            }
-            for i in 0..<greenTable.count {
-                greenTable[i] = greenTable[i] * gamma
-            }
-            for i in 0..<blueTable.count {
-                blueTable[i] = blueTable[i] * gamma
-            }
-            CGSetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable)
-        }
-    }
-    
-    func resetGammaTable() {
-        CGDisplayRestoreColorSyncSettings()
-    }
-    
-    func getBuiltInScreen() -> NSScreen? {
-        for screen in NSScreen.screens {
-            let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")]
-            let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
-            if (CGDisplayIsBuiltin(displayId) != 0) {
-                return screen
-            }
-        }
-        return nil
     }
     
     func setupMenus() {
@@ -223,18 +131,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     @objc func toggleBrightIntosh() {
         Settings.shared.brightintoshActive.toggle()
-    }
-    
-    @objc func handleScreenParameters(notification: Notification) {
-        if let builtInScreen = getBuiltInScreen() {
-            if !overlayAvailable && Settings.shared.brightintoshActive {
-                setupOverlay(screen: builtInScreen)
-            } else {
-                overlayWindow?.screenUpdate(screen: builtInScreen)
-            }
-        } else {
-            destroyOverlay()
-        }
     }
     
     @objc func exitBrightIntosh() {
