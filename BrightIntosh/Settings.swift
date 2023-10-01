@@ -27,6 +27,12 @@ final class Settings: NSObject {
         }
     }
     
+    @objc dynamic public var overlayTechnique = UserDefaults.standard.object(forKey: "overlayTechnique") != nil ? UserDefaults.standard.bool(forKey: "overlayTechnique") : false {
+        didSet {
+            UserDefaults.standard.setValue(overlayTechnique, forKey: "overlayTechnique")
+        }
+    }
+    
     public var launchAtLogin = false {
         didSet {
             if #available(macOS 13, *) {

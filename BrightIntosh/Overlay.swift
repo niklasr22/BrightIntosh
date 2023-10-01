@@ -15,10 +15,7 @@ class Overlay: MTKView, MTKViewDelegate {
     
     private var fragmentColor = vector_float4(1.0, 1.0, 1.0, 1.0)
     
-    private let screen: NSScreen
-    
-    init(frame: CGRect, screen: NSScreen) {
-        self.screen = screen
+    init(frame: CGRect, multiplyCompositing: Bool = false) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
         
         guard let device else {
@@ -35,7 +32,6 @@ class Overlay: MTKView, MTKViewDelegate {
         }
         
         delegate = self
-        preferredFramesPerSecond = screen.maximumFramesPerSecond
         colorPixelFormat = .rgba16Float
         colorspace = colorSpace
         clearColor = MTLClearColorMake(1.0, 1.0, 1.0, 1.0)
@@ -44,22 +40,29 @@ class Overlay: MTKView, MTKViewDelegate {
             layer.wantsExtendedDynamicRangeContent = true
             layer.isOpaque = false
             layer.pixelFormat = .rgba16Float
+            if multiplyCompositing {
+                layer.compositingFilter = "multiply"
+            }
         }
-        
-        screenUpdate(screen: screen)
     }
     
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     func screenUpdate(screen: NSScreen) {
+        preferredFramesPerSecond = screen.maximumFramesPerSecond
         let maxEdrValue = screen.maximumExtendedDynamicRangeColorComponentValue
         let maxRenderedEdrValue = screen.maximumReferenceExtendedDynamicRangeColorComponentValue
-        
-        let factor = maxEdrValue / max(maxRenderedEdrValue, 1.0) - 1.0
+        let factor = max(maxEdrValue / max(maxRenderedEdrValue, 1.0) - 1.0, 1.0)
         clearColor = MTLClearColorMake(factor, factor, factor, 1.0)
+    }
+    
+    func setHDRBrightness(colorValue: Double, screen: NSScreen) {
+        let maxEdrValue = screen.maximumExtendedDynamicRangeColorComponentValue
+        let percentage = (colorValue - 1.0) / 0.6
+        let newColor = ((maxEdrValue - 1.0) * percentage) + 1.0
+        clearColor = MTLClearColorMake(newColor, newColor, newColor, 1.0)
     }
     
     func draw(in view: MTKView) {
