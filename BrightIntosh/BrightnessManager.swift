@@ -20,6 +20,7 @@ class BrightnessManager : NSObject {
     
     var observationBrightIntoshActive: NSKeyValueObservation?
     var observationBrightness: NSKeyValueObservation?
+    var observationOverlayTechnique: NSKeyValueObservation?
     
     var brightnessTechnique: BrightnessTechnique?
     
@@ -27,7 +28,7 @@ class BrightnessManager : NSObject {
         settings = Settings.shared
         super.init()
         
-        brightnessTechnique = OverlayTechnique()
+        setBrightnessTechnique()
         
         if Settings.shared.brightintoshActive {
             self.brightnessTechnique?.enable()
@@ -55,14 +56,37 @@ class BrightnessManager : NSObject {
         observationBrightness = observe(\.settings.brightness, options: [.old, .new]) {
             object, change in
             print("Set brightness to \(Settings.shared.brightness)")
-            self.brightnessTechnique?.adjustBrightness()
+            if let brightnessTechnique = self.brightnessTechnique, brightnessTechnique.isEnabled {
+                self.brightnessTechnique?.adjustBrightness()
+            }
+        }
+        
+        
+        observationOverlayTechnique = observe(\.settings.overlayTechnique, options: [.old, .new]) {
+            object, change in
+            self.setBrightnessTechnique()
+        }
+    }
+    
+    func setBrightnessTechnique() {
+        brightnessTechnique?.disable()
+        if Settings.shared.overlayTechnique {
+            brightnessTechnique = OverlayTechnique()
+            print("Activated Overlay Technique")
+        } else {
+            brightnessTechnique = GammaTechnique()
+            print("Activated Gamma Technique")
         }
     }
     
     @objc func handleScreenParameters(notification: Notification) {
-        if getBuiltInScreen() != nil {
-            if Settings.shared.brightintoshActive {
-                brightnessTechnique?.enable()
+        if let screen = getBuiltInScreen() {
+            if let brightnessTechnique = brightnessTechnique, Settings.shared.brightintoshActive {
+                if !brightnessTechnique.isEnabled {
+                    brightnessTechnique.enable()
+                } else {
+                    brightnessTechnique.screenUpdate(screen: screen)
+                }
             }
         } else {
             brightnessTechnique?.disable()

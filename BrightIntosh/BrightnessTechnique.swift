@@ -9,6 +9,8 @@ import Foundation
 import Cocoa
 
 class BrightnessTechnique {
+    fileprivate(set) var isEnabled = false
+    
     func enable() {
         fatalError("Subclasses need to implement the `enable()` method.")
     }
@@ -24,6 +26,8 @@ class BrightnessTechnique {
         }
     }
     
+    func screenUpdate(screen: NSScreen) {}
+    
 }
 
 class GammaTechnique: BrightnessTechnique {
@@ -37,13 +41,16 @@ class GammaTechnique: BrightnessTechnique {
     
     override func enable() {
         if let screen = getBuiltInScreen() {
+            isEnabled = true
             let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: 1, height: 1)
             overlayWindowController.open(rect: rect, screen: screen)
+            print("Show overlay")
             adjustBrightness()
         }
     }
     
     override func disable() {
+        isEnabled = false
         overlayWindowController.window?.close()
         resetGammaTable()
     }
@@ -106,17 +113,25 @@ class OverlayTechnique: BrightnessTechnique {
     override func enable() {
         //if let screen = getBuiltInScreen() {
         //    let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: screen.visibleFrame.width, height: screen.visibleFrame.height)
-            overlayWindowController.open()
-            adjustBrightness()
+        isEnabled = true
+        overlayWindowController.open()
+        adjustBrightness()
         //}
     }
     
     override func disable() {
+        isEnabled = false
         overlayWindowController.window?.close()
     }
     
     override func adjustBrightness() {
         super.adjustBrightness()
-        (overlayWindowController.window as? OverlayWindow)?.overlay?.setHDRBrightness(colorValue: Double(Settings.shared.brightness))
+        if let screen = getBuiltInScreen() {
+            (overlayWindowController.window as? FullsizeOverlayWindow)?.overlay?.screenUpdate(screen: screen)
+        }
+    }
+    
+    override func screenUpdate(screen: NSScreen) {
+        adjustBrightness()
     }
 }
