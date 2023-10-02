@@ -14,6 +14,8 @@
 		9C4163772ABD8FA4005B34B6 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 9C4163762ABD8FA4005B34B6 /* KeyboardShortcuts */; };
 		9C4163792ABD8FBD005B34B6 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4163782ABD8FBD005B34B6 /* Constants.swift */; };
 		9C41637A2ABD8FBD005B34B6 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4163782ABD8FBD005B34B6 /* Constants.swift */; };
+		9C534AC52ACB02C60029E050 /* BatteryAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C534AC42ACB02C60029E050 /* BatteryAutomation.swift */; };
+		9C534AC62ACB02C60029E050 /* BatteryAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C534AC42ACB02C60029E050 /* BatteryAutomation.swift */; };
 		9C5610502ABF55A90066D6C9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C56104F2ABF55A90066D6C9 /* Settings.swift */; };
 		9C5610512ABF55A90066D6C9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C56104F2ABF55A90066D6C9 /* Settings.swift */; };
 		9C8803762A72625E00476017 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
@@ -53,6 +55,7 @@
 /* Begin PBXFileReference section */
 		9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		9C4163782ABD8FBD005B34B6 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		9C534AC42ACB02C60029E050 /* BatteryAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryAutomation.swift; sourceTree = "<group>"; };
 		9C56104F2ABF55A90066D6C9 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		9C8803822A72625E00476017 /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeWindow.swift; sourceTree = "<group>"; };
@@ -159,6 +162,7 @@
 				9C56104F2ABF55A90066D6C9 /* Settings.swift */,
 				9CA026502AC9647E0068CC74 /* BrightnessManager.swift */,
 				9CA026522AC968430068CC74 /* BrightnessTechnique.swift */,
+				9C534AC42ACB02C60029E050 /* BatteryAutomation.swift */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -312,6 +316,7 @@
 				9CA026542AC968430068CC74 /* BrightnessTechnique.swift in Sources */,
 				9C88037B2A72625E00476017 /* main.swift in Sources */,
 				9C41637A2ABD8FBD005B34B6 /* Constants.swift in Sources */,
+				9C534AC62ACB02C60029E050 /* BatteryAutomation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +343,7 @@
 				C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */,
 				C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */,
 				9C4163792ABD8FBD005B34B6 /* Constants.swift in Sources */,
+				9C534AC52ACB02C60029E050 /* BatteryAutomation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

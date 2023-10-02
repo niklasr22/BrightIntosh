@@ -64,6 +64,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             object, change in
             self.setupMenus()
         }
+        
+        getBatteryCapacity()
     }
     
     func setupMenus() {
