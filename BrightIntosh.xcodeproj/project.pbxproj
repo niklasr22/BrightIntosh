@@ -18,6 +18,8 @@
 		9C534AC62ACB02C60029E050 /* BatteryHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */; };
 		9C534AC82ACB06210029E050 /* AutomationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C534AC72ACB06210029E050 /* AutomationManager.swift */; };
 		9C534AC92ACB06210029E050 /* AutomationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C534AC72ACB06210029E050 /* AutomationManager.swift */; };
+		9C534ACB2ACB2A050029E050 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C534ACA2ACB2A050029E050 /* Alerts.swift */; };
+		9C534ACC2ACB2A050029E050 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C534ACA2ACB2A050029E050 /* Alerts.swift */; };
 		9C5610502ABF55A90066D6C9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C56104F2ABF55A90066D6C9 /* Settings.swift */; };
 		9C5610512ABF55A90066D6C9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C56104F2ABF55A90066D6C9 /* Settings.swift */; };
 		9C8803762A72625E00476017 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
@@ -59,6 +61,7 @@
 		9C4163782ABD8FBD005B34B6 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHelpers.swift; sourceTree = "<group>"; };
 		9C534AC72ACB06210029E050 /* AutomationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomationManager.swift; sourceTree = "<group>"; };
+		9C534ACA2ACB2A050029E050 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 		9C56104F2ABF55A90066D6C9 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		9C8803822A72625E00476017 /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeWindow.swift; sourceTree = "<group>"; };
@@ -167,6 +170,7 @@
 				9CA026522AC968430068CC74 /* BrightnessTechnique.swift */,
 				9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */,
 				9C534AC72ACB06210029E050 /* AutomationManager.swift */,
+				9C534ACA2ACB2A050029E050 /* Alerts.swift */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -318,6 +322,7 @@
 				9C5610512ABF55A90066D6C9 /* Settings.swift in Sources */,
 				9C8803772A72625E00476017 /* OverlayWindow.swift in Sources */,
 				9C88037A2A72625E00476017 /* Overlay.swift in Sources */,
+				9C534ACC2ACB2A050029E050 /* Alerts.swift in Sources */,
 				9CA026542AC968430068CC74 /* BrightnessTechnique.swift in Sources */,
 				9C88037B2A72625E00476017 /* main.swift in Sources */,
 				9C41637A2ABD8FBD005B34B6 /* Constants.swift in Sources */,
@@ -346,6 +351,7 @@
 				C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */,
 				9C5610502ABF55A90066D6C9 /* Settings.swift in Sources */,
 				C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */,
+				9C534ACB2ACB2A050029E050 /* Alerts.swift in Sources */,
 				C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */,
 				C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */,
 				9C4163792ABD8FBD005B34B6 /* Constants.swift in Sources */,

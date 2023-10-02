@@ -25,15 +25,24 @@ final class BasicSettingsViewModel: NSObject, ObservableObject {
         set { Settings.shared.brightness = newValue }
         get { return brightness }
     }
+    private var batteryAutomation = Settings.shared.batteryAutomation
+    var batteryAutomationToggle: Bool {
+        set { Settings.shared.batteryAutomation = newValue }
+        get { return batteryAutomation }
+    }
 
     @objc private let settings: Settings = Settings.shared
     private var observationBrightIntoshActive: NSKeyValueObservation?
     private var observationBrightness: NSKeyValueObservation?
+    private var observationBatteryAutomation: NSKeyValueObservation?
     
     override init() {
         super.init()
         observationBrightIntoshActive = observe(\.settings.brightintoshActive, options: [.old, .new]) {
             object, change in
+            if Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
+                Settings.shared.brightintoshActive = false
+            }
             if self.brightIntoshActive != Settings.shared.brightintoshActive {
                 self.brightIntoshActive = Settings.shared.brightintoshActive
                 self.objectWillChange.send()
@@ -46,6 +55,13 @@ final class BasicSettingsViewModel: NSObject, ObservableObject {
                 self.objectWillChange.send()
             }
         }
+        observationBatteryAutomation = observe(\.settings.batteryAutomation, options: [.old, .new]) {
+            object, change in
+            if self.batteryAutomation != Settings.shared.batteryAutomation {
+                self.batteryAutomation = Settings.shared.batteryAutomation
+                self.objectWillChange.send()
+            }
+        }
     }
 }
 
@@ -53,7 +69,6 @@ struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
     
     @State private var launchOnLogin = Settings.shared.launchAtLogin
-    @State private var autoDisableOnLowBattery = Settings.shared.batteryAutomation
     @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
 #if !STORE
     @State private var autoUpdateCheck = Settings.shared.autoUpdateCheck
@@ -72,21 +87,21 @@ struct BasicSettings: View {
                     .onChange(of: launchOnLogin) { value in
                         Settings.shared.launchAtLogin = value
                     }
-                Toggle("Automatically disable increased brightness when battery level drops", isOn: $autoDisableOnLowBattery)
-                    .onChange(of: autoDisableOnLowBattery) { value in
-                        Settings.shared.batteryAutomation = value
-                    }
-                if autoDisableOnLowBattery {
+                Toggle("Automatically disable increased brightness when battery level drops", isOn: $viewModel.batteryAutomationToggle)
+                if viewModel.batteryAutomationToggle {
                     TextField("Battery level threshold", value: $batteryLevelThreshold, format: .percent)
                         .textFieldStyle(.roundedBorder)
                         .onChange(of: batteryLevelThreshold) { value in
-                            print("Set threshold \(value)")
-                            Settings.shared.batteryAutomationThreshold = value
+                            if !(0...100 ~= batteryLevelThreshold) {
+                                batteryLevelThreshold = max(0, min(batteryLevelThreshold, 100))
+                            } else {
+                                Settings.shared.batteryAutomationThreshold = value
+                            }
                         }
                 }
                 // Toggle("Automatically toggle increased brightness depending on the envrionment's brightness", isOn: $autoDisableOnLowBattery)
             }
-            Section(header: Text("Shortcut").bold()) {
+            Section(header: Text("Shortcuts").bold()) {
                 KeyboardShortcuts.Recorder("Toggle increased brightness:", name: .toggleBrightIntosh)
                 KeyboardShortcuts.Recorder("Increase brightness:", name: .increaseBrightness)
                 KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)

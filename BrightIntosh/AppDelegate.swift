@@ -133,6 +133,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
     
     @objc func toggleBrightIntosh() {
+        if !Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
+            return
+        }
+        
         Settings.shared.brightintoshActive.toggle()
     }
     
