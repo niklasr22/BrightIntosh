@@ -53,7 +53,8 @@ struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
     
     @State private var launchOnLogin = Settings.shared.launchAtLogin
-    @State private var autoDisableOnLowBattery = false
+    @State private var autoDisableOnLowBattery = Settings.shared.batteryAutomation
+    @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
 #if !STORE
     @State private var autoUpdateCheck = Settings.shared.autoUpdateCheck
 #endif
@@ -71,7 +72,18 @@ struct BasicSettings: View {
                     .onChange(of: launchOnLogin) { value in
                         Settings.shared.launchAtLogin = value
                     }
-                // Toggle("Automatically disable increased brightness when battery level drops", isOn: $autoDisableOnLowBattery)
+                Toggle("Automatically disable increased brightness when battery level drops", isOn: $autoDisableOnLowBattery)
+                    .onChange(of: autoDisableOnLowBattery) { value in
+                        Settings.shared.batteryAutomation = value
+                    }
+                if autoDisableOnLowBattery {
+                    TextField("Battery level threshold", value: $batteryLevelThreshold, format: .percent)
+                        .textFieldStyle(.roundedBorder)
+                        .onChange(of: batteryLevelThreshold) { value in
+                            print("Set threshold \(value)")
+                            Settings.shared.batteryAutomationThreshold = value
+                        }
+                }
                 // Toggle("Automatically toggle increased brightness depending on the envrionment's brightness", isOn: $autoDisableOnLowBattery)
             }
             Section(header: Text("Shortcut").bold()) {
@@ -162,13 +174,13 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     init() {
         
         let settingsWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 500, height: 500),
+            contentRect: NSRect(x: 0, y: 0, width: 500, height: 580),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
         )
 
-        let contentView = SettingsView().frame(width: 500, height: 500)
+        let contentView = SettingsView().frame(width: 500, height: 580)
         
         settingsWindow.contentView = NSHostingView(rootView: contentView)
         settingsWindow.titlebarAppearsTransparent = true
