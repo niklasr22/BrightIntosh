@@ -33,6 +33,18 @@ final class Settings: NSObject {
         }
     }
     
+    @objc dynamic public var batteryAutomation = UserDefaults.standard.object(forKey: "batteryAutomation") != nil ? UserDefaults.standard.bool(forKey: "batteryAutomation") : false {
+        didSet {
+            UserDefaults.standard.setValue(batteryAutomation, forKey: "batteryAutomation")
+        }
+    }
+    
+    @objc dynamic public var batteryAutomationThreshold = UserDefaults.standard.object(forKey: "batteryAutomationThreshold") != nil ? UserDefaults.standard.integer(forKey: "batteryAutomationThreshold") : 50 {
+        didSet {
+            UserDefaults.standard.setValue(batteryAutomationThreshold, forKey: "batteryAutomationThreshold")
+        }
+    }
+    
     public var launchAtLogin = false {
         didSet {
             if #available(macOS 13, *) {

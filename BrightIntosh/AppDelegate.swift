@@ -37,6 +37,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var observationBrightness: NSKeyValueObservation?
     
     var brightnessManager: BrightnessManager?
+    var automationManager: AutomationManager?
     
     override init() {
         settings = Settings.shared
@@ -50,6 +51,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         
         brightnessManager = BrightnessManager()
+        automationManager = AutomationManager()
+        
         
         // Menu bar app
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -130,6 +133,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
     
     @objc func toggleBrightIntosh() {
+        if !Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
+            return
+        }
+        
         Settings.shared.brightintoshActive.toggle()
     }
     
