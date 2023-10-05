@@ -67,6 +67,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             object, change in
             self.setupMenus()
         }
+        observationBrightness = observe(\.settings.brightness, options: [.old, .new]) {
+            object, change in
+            self.setupMenus()
+        }
     }
     
     func setupMenus() {
@@ -87,7 +91,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         
         
         let titleItem = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
-
+        
+        // centered brightness slider
+        let brightnessSliderItem = NSMenuItem()
+        
+        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 200, height: 40))
+        let horizontalPadding: CGFloat = 5.0
+        let sliderWidth = sliderContainerView.frame.width - (2 * horizontalPadding)
+        let sliderX = (sliderContainerView.frame.width - sliderWidth) / 2
+        
+        let brightnessSlider = NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: 1.6, target: self, action: #selector(brightnessSliderMoved))
+        brightnessSlider.frame = NSRect(x: sliderX, y: 5, width: sliderWidth, height: 30)
+        brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin]
+        sliderContainerView.addSubview(brightnessSlider)
+        sliderContainerView.autoresizingMask = [.width]
+        brightnessSliderItem.view = sliderContainerView
+        
         let toggleIncreasedBrightness = NSMenuItem(title: Settings.shared.brightintoshActive ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "")
         toggleIncreasedBrightness.setShortcut(for: .toggleBrightIntosh)
         
@@ -97,6 +116,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         
         menu.addItem(titleItem)
         menu.addItem(toggleIncreasedBrightness)
+        menu.addItem(brightnessSliderItem)
         menu.addItem(settingsItem)
         menu.addItem(quitItem)
         
@@ -110,6 +130,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 #endif
         
         statusItem.menu = menu
+    }
+    
+    @objc func brightnessSliderMoved(slider: NSSlider) {
+        Settings.shared.brightness = slider.floatValue
     }
     
     @objc func increaseBrightness() {
