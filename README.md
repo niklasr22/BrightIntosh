@@ -10,9 +10,9 @@
 
 #  BrightIntosh
 
-BrightIntosh enables your MacBook Pro M1 (or newer) to use the increased brightness of its XDR display at any time. By default this is only possible when displaying HDR content.
+BrightIntosh enables your MacBook Pro M1 (or newer) to use the increased brightness of its XDR display at any time. By default, this is only possible when displaying HDR content.
 It comes with a handy menu bar item so you can toggle the increased brightness quickly and easily.
-This tool should not harm your display as it doesn't use any low level API calls and your OS is in full control over the display, but there is no warranty.
+This tool should not harm your display as it doesn't use any low-level API calls and your OS is in full control over the display, but there is no warranty.
 
 ## Preview
 
