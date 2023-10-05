@@ -20,7 +20,7 @@ struct WelcomeView: View {
             Text("Welcome to BrightIntosh!").font(Font.title)
             VStack (alignment: HorizontalAlignment.leading, spacing: 10.0) {
                 Text("Disclaimer:").font(Font.headline)
-                Text("BrightIntosh is designed to be safe for your computer. It will not harm your hardware, as it does not bypass the operating system's protections.")
+                Text("BrightIntosh is designed to be safe for your MacBook Pro. It will not harm your hardware, as it does not bypass the operating system's protections.")
                     .lineLimit(5)
                 
                 
