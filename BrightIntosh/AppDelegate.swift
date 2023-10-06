@@ -95,14 +95,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         // centered brightness slider
         let brightnessSliderItem = NSMenuItem()
         
-        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 200, height: 40))
+        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 200, height: 35))
         let horizontalPadding: CGFloat = 5.0
         let sliderWidth = sliderContainerView.frame.width - (2 * horizontalPadding)
+        let sliderHeight = 30.0
         let sliderX = (sliderContainerView.frame.width - sliderWidth) / 2
+        let sliderY = (sliderContainerView.frame.height - sliderWidth) / 2
         
         let brightnessSlider = NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: 1.6, target: self, action: #selector(brightnessSliderMoved))
-        brightnessSlider.frame = NSRect(x: sliderX, y: 5, width: sliderWidth, height: 30)
-        brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin]
+        brightnessSlider.frame = NSRect(x: sliderX, y: sliderY, width: sliderWidth, height: sliderHeight)
+        brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
         sliderContainerView.addSubview(brightnessSlider)
         sliderContainerView.autoresizingMask = [.width]
         brightnessSliderItem.view = sliderContainerView
@@ -116,18 +118,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         
         menu.addItem(titleItem)
         menu.addItem(toggleIncreasedBrightness)
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(NSMenuItem(title: "Brightness:", action: nil, keyEquivalent: ""))
         menu.addItem(brightnessSliderItem)
+        menu.addItem(NSMenuItem.separator())
         menu.addItem(settingsItem)
         menu.addItem(quitItem)
-        
-#if DEBUG
-        let increaseItem = NSMenuItem(title: "Increase gamma", action: #selector(increaseBrightness), keyEquivalent: "")
-        increaseItem.setShortcut(for: .increaseBrightness)
-        menu.addItem(increaseItem)
-        let decreaseItem = NSMenuItem(title: "Decrease gamma", action: #selector(decreaseBrightness), keyEquivalent: "")
-        decreaseItem.setShortcut(for: .decreaseBrightness)
-        menu.addItem(decreaseItem)
-#endif
         
         statusItem.menu = menu
     }
