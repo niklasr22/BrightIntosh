@@ -14,20 +14,11 @@ extension NSScreen {
     }
 }
 
-class BrightnessManager : NSObject {
-    
-    @objc var settings: Settings
-    
-    var observationBrightIntoshActive: NSKeyValueObservation?
-    var observationBrightness: NSKeyValueObservation?
-    var observationOverlayTechnique: NSKeyValueObservation?
+class BrightnessManager {
     
     var brightnessTechnique: BrightnessTechnique?
     
-    override init() {
-        settings = Settings.shared
-        super.init()
-        
+    init() {
         setBrightnessTechnique()
         
         if Settings.shared.brightintoshActive {
@@ -41,9 +32,8 @@ class BrightnessManager : NSObject {
             name: NSApplication.didChangeScreenParametersNotification,
             object: nil)
         
-        // Observe application state
-        observationBrightIntoshActive = observe(\.settings.brightintoshActive, options: [.old, .new]) {
-            object, change in
+        // Add settings listeners
+        Settings.shared.addListener(setting: "brightintoshActive") {
             print("Toggled increased brightness. Active: \(Settings.shared.brightintoshActive)")
             
             if Settings.shared.brightintoshActive {
@@ -53,17 +43,14 @@ class BrightnessManager : NSObject {
             }
         }
         
-        observationBrightness = observe(\.settings.brightness, options: [.old, .new]) {
-            object, change in
+        Settings.shared.addListener(setting: "brightness") {
             print("Set brightness to \(Settings.shared.brightness)")
             if let brightnessTechnique = self.brightnessTechnique, brightnessTechnique.isEnabled {
                 self.brightnessTechnique?.adjustBrightness()
             }
         }
         
-        
-        observationOverlayTechnique = observe(\.settings.overlayTechnique, options: [.old, .new]) {
-            object, change in
+        Settings.shared.addListener(setting: "overlayTechnique") {
             self.setBrightnessTechnique()
         }
     }

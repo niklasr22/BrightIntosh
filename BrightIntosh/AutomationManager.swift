@@ -7,26 +7,17 @@
 
 import Foundation
 
-class AutomationManager: NSObject {
-    @objc var settings: Settings
-    
+class AutomationManager {
     private let batteryLevelThreshold = 99
     private let batteryCheckInterval = 10.0
     private var batteryCheckTimer: Timer?
     
-    var observationBatteryAutomation: NSKeyValueObservation?
-    
-    override init() {
-        settings = Settings.shared
-        super.init()
-        
+    init() {
         if Settings.shared.batteryAutomation {
             startBatteryAutomation()
         }
-            
-        // Observe application state
-        observationBatteryAutomation = observe(\.settings.batteryAutomation, options: [.old, .new]) {
-            object, change in
+        
+        Settings.shared.addListener(setting: "batteryAutomation") {
             print("Toggled battery automation. Active: \(Settings.shared.batteryAutomation)")
             
             if Settings.shared.batteryAutomation {
