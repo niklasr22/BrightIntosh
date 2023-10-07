@@ -30,19 +30,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     let settingsWindowController = SettingsWindowController()
     
-    
-    @objc var settings: Settings
-    
-    var observationBrightIntoshActive: NSKeyValueObservation?
-    var observationBrightness: NSKeyValueObservation?
-    
     var brightnessManager: BrightnessManager?
     var automationManager: AutomationManager?
-    
-    override init() {
-        settings = Settings.shared
-        super.init()
-    }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
@@ -62,13 +51,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         // Register global hotkeys
         addKeyListeners()
         
-        // Observe application state
-        observationBrightIntoshActive = observe(\.settings.brightintoshActive, options: [.old, .new]) {
-            object, change in
+        // Listen to settings
+        Settings.shared.addListener(setting: "brightintoshActive") {
             self.setupMenus()
         }
-        observationBrightness = observe(\.settings.brightness, options: [.old, .new]) {
-            object, change in
+        
+        Settings.shared.addListener(setting: "brightness") {
             self.setupMenus()
         }
     }

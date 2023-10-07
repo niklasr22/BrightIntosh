@@ -11,37 +11,42 @@ import ServiceManagement
 import Sparkle
 #endif
 
-final class Settings: NSObject {
-    @objc static let shared = Settings()
+final class Settings {
+    static let shared = Settings()
     
     
-    @objc dynamic public var brightintoshActive = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
+    public var brightintoshActive = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
         didSet {
             UserDefaults.standard.setValue(brightintoshActive, forKey: "active")
+            callListeners(setting: "brightintoshActive")
         }
     }
     
-    @objc dynamic public var brightness: Float = UserDefaults.standard.object(forKey: "brightness") != nil ? UserDefaults.standard.float(forKey: "brightness") : 1.6 {
+    public var brightness: Float = UserDefaults.standard.object(forKey: "brightness") != nil ? UserDefaults.standard.float(forKey: "brightness") : 1.6 {
         didSet {
             UserDefaults.standard.setValue(brightness, forKey: "brightness")
+            callListeners(setting: "brightness")
         }
     }
     
-    @objc dynamic public var overlayTechnique = UserDefaults.standard.object(forKey: "overlayTechnique") != nil ? UserDefaults.standard.bool(forKey: "overlayTechnique") : false {
+    public var overlayTechnique = UserDefaults.standard.object(forKey: "overlayTechnique") != nil ? UserDefaults.standard.bool(forKey: "overlayTechnique") : false {
         didSet {
             UserDefaults.standard.setValue(overlayTechnique, forKey: "overlayTechnique")
+            callListeners(setting: "overlayTechnique")
         }
     }
     
-    @objc dynamic public var batteryAutomation = UserDefaults.standard.object(forKey: "batteryAutomation") != nil ? UserDefaults.standard.bool(forKey: "batteryAutomation") : false {
+    public var batteryAutomation = UserDefaults.standard.object(forKey: "batteryAutomation") != nil ? UserDefaults.standard.bool(forKey: "batteryAutomation") : false {
         didSet {
             UserDefaults.standard.setValue(batteryAutomation, forKey: "batteryAutomation")
+            callListeners(setting: "batteryAutomation")
         }
     }
     
-    @objc dynamic public var batteryAutomationThreshold = UserDefaults.standard.object(forKey: "batteryAutomationThreshold") != nil ? UserDefaults.standard.integer(forKey: "batteryAutomationThreshold") : 50 {
+    public var batteryAutomationThreshold = UserDefaults.standard.object(forKey: "batteryAutomationThreshold") != nil ? UserDefaults.standard.integer(forKey: "batteryAutomationThreshold") : 50 {
         didSet {
             UserDefaults.standard.setValue(batteryAutomationThreshold, forKey: "batteryAutomationThreshold")
+            callListeners(setting: "batteryAutomationThreshold")
         }
     }
     
@@ -62,6 +67,7 @@ final class Settings: NSObject {
                 SMLoginItemSetEnabled(launcherBundleId, launchAtLogin)
                 UserDefaults.standard.set(launchAtLogin, forKey: "launchAtLoginActive")
             }
+            callListeners(setting: "launchAtLogin")
         }
     }
     
@@ -72,11 +78,14 @@ final class Settings: NSObject {
         didSet {
             UserDefaults.standard.setValue(autoUpdateCheck, forKey: "autoUpdateCheckActive")
             updaterController.updater.automaticallyChecksForUpdates = autoUpdateCheck
+            callListeners(setting: "autoUpdateCheckActive")
         }
     }
 #endif
     
-    override init() {
+    private var listeners: [String: [()->()]] = [:]
+    
+    init() {
         
 #if !STORE
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
@@ -91,6 +100,20 @@ final class Settings: NSObject {
         } else {
             launchAtLogin = UserDefaults.standard.object(forKey: "launchAtLoginActive") != nil && UserDefaults.standard.bool(forKey: "launchAtLoginActive")
         }
-        super.init()
+    }
+    
+    public func addListener(setting: String, callback: @escaping () ->()) {
+        if !listeners.keys.contains(setting) {
+            listeners[setting] = []
+        }
+        listeners[setting]?.append(callback)
+    }
+    
+    private func callListeners(setting: String) {
+        if let setting_listeners = listeners[setting] {
+            setting_listeners.forEach { callback in
+                callback()
+            }
+        }
     }
 }

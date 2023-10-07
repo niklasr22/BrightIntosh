@@ -35,6 +35,7 @@ class Overlay: MTKView, MTKViewDelegate {
         colorPixelFormat = .rgba16Float
         colorspace = colorSpace
         clearColor = MTLClearColorMake(1.0, 1.0, 1.0, 1.0)
+        preferredFramesPerSecond = 5
         
         if let layer = self.layer as? CAMetalLayer {
             layer.wantsExtendedDynamicRangeContent = true
@@ -51,11 +52,14 @@ class Overlay: MTKView, MTKViewDelegate {
     }
     
     func screenUpdate(screen: NSScreen) {
-        preferredFramesPerSecond = screen.maximumFramesPerSecond
         let maxEdrValue = screen.maximumExtendedDynamicRangeColorComponentValue
         let maxRenderedEdrValue = screen.maximumReferenceExtendedDynamicRangeColorComponentValue
         let factor = max(maxEdrValue / max(maxRenderedEdrValue, 1.0) - 1.0, 1.0)
         clearColor = MTLClearColorMake(factor, factor, factor, 1.0)
+    }
+    
+    func setMaxFrameRate(screen: NSScreen) {
+        preferredFramesPerSecond = screen.maximumFramesPerSecond
     }
     
     func setHDRBrightness(colorValue: Double, screen: NSScreen) {

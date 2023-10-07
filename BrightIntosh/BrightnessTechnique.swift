@@ -123,6 +123,7 @@ class OverlayTechnique: BrightnessTechnique {
         super.adjustBrightness()
         if let screen = getBuiltInScreen() {
             //(overlayWindowController.window as? OverlayWindow)?.screenUpdate(screen: screen)
+            (overlayWindowController.window as? OverlayWindow)?.overlay?.setMaxFrameRate(screen: screen)
             (overlayWindowController.window as? OverlayWindow)?.overlay?.setHDRBrightness(colorValue: Double(Settings.shared.brightness), screen: screen)
         }
     }

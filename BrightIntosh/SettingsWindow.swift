@@ -11,7 +11,7 @@ import KeyboardShortcuts
 import Sparkle
 #endif
 
-final class BasicSettingsViewModel: NSObject, ObservableObject {
+final class BasicSettingsViewModel: ObservableObject {
     /*
      This View Model is used for settings that can be changed via shortcuts or another way other than the settings UI, so changes can be obeserved and showed in the UI.
      */
@@ -30,16 +30,9 @@ final class BasicSettingsViewModel: NSObject, ObservableObject {
         set { Settings.shared.batteryAutomation = newValue }
         get { return batteryAutomation }
     }
-
-    @objc private let settings: Settings = Settings.shared
-    private var observationBrightIntoshActive: NSKeyValueObservation?
-    private var observationBrightness: NSKeyValueObservation?
-    private var observationBatteryAutomation: NSKeyValueObservation?
     
-    override init() {
-        super.init()
-        observationBrightIntoshActive = observe(\.settings.brightintoshActive, options: [.old, .new]) {
-            object, change in
+    init() {
+        Settings.shared.addListener(setting: "brightintoshActive") {
             if Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
                 Settings.shared.brightintoshActive = false
             }
@@ -48,15 +41,13 @@ final class BasicSettingsViewModel: NSObject, ObservableObject {
                 self.objectWillChange.send()
             }
         }
-        observationBrightness = observe(\.settings.brightness, options: [.old, .new]) {
-            object, change in
+        Settings.shared.addListener(setting: "brightness") {
             if self.brightness != Settings.shared.brightness {
                 self.brightness = Settings.shared.brightness
                 self.objectWillChange.send()
             }
         }
-        observationBatteryAutomation = observe(\.settings.batteryAutomation, options: [.old, .new]) {
-            object, change in
+        Settings.shared.addListener(setting: "batteryAutomation") {
             if self.batteryAutomation != Settings.shared.batteryAutomation {
                 self.batteryAutomation = Settings.shared.batteryAutomation
                 self.objectWillChange.send()
