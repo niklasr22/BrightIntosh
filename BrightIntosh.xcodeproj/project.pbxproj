@@ -34,9 +34,10 @@
 		9CA026532AC968430068CC74 /* BrightnessTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026522AC968430068CC74 /* BrightnessTechnique.swift */; };
 		9CA026542AC968430068CC74 /* BrightnessTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026522AC968430068CC74 /* BrightnessTechnique.swift */; };
 		9CA026552AC96B260068CC74 /* BrightnessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026502AC9647E0068CC74 /* BrightnessManager.swift */; };
+		9CA458BE2AD0A61000CBF8B9 /* AutoLauncher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C1031D552A86742E001EE05B /* AutoLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C1031D582A86742E001EE05B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1031D572A86742E001EE05B /* AppDelegate.swift */; };
 		C1031D672A86791C001EE05B /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1031D662A86791C001EE05B /* main.swift */; };
-		C126561F2A8695DC006AD3B5 /* AutoLauncher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C1031D552A86742E001EE05B /* AutoLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C126561F2A8695DC006AD3B5 /* AutoLauncher.app in Copy Files */ = {isa = PBXBuildFile; fileRef = C1031D552A86742E001EE05B /* AutoLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
 		C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
 		C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B521142A5EF85500E9B7AC /* main.swift */; };
@@ -44,14 +45,25 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C1031D6D2A867E86001EE05B /* CopyFiles */ = {
+		9CA458BD2AD0A60000CBF8B9 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = Contents/Library/LoginItems;
 			dstSubfolderSpec = 1;
 			files = (
-				C126561F2A8695DC006AD3B5 /* AutoLauncher.app in CopyFiles */,
+				9CA458BE2AD0A61000CBF8B9 /* AutoLauncher.app in CopyFiles */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1031D6D2A867E86001EE05B /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LoginItems;
+			dstSubfolderSpec = 1;
+			files = (
+				C126561F2A8695DC006AD3B5 /* AutoLauncher.app in Copy Files */,
+			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -185,6 +197,7 @@
 				9C8803742A72625E00476017 /* Sources */,
 				9C88037C2A72625E00476017 /* Frameworks */,
 				9C88037D2A72625E00476017 /* Resources */,
+				9CA458BD2AD0A60000CBF8B9 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -222,7 +235,7 @@
 				C1B521442A5EFF5800E9B7AC /* Sources */,
 				C1B521452A5EFF5800E9B7AC /* Frameworks */,
 				C1B521462A5EFF5800E9B7AC /* Resources */,
-				C1031D6D2A867E86001EE05B /* CopyFiles */,
+				C1031D6D2A867E86001EE05B /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -372,7 +385,7 @@
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh_SE.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -398,7 +411,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = BrightIntosh;
 				SDKROOT = auto;
@@ -422,7 +435,7 @@
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh_SE.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -448,7 +461,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = BrightIntosh;
 				SDKROOT = auto;
@@ -533,7 +546,7 @@
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -560,7 +573,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -584,7 +597,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -611,7 +624,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
