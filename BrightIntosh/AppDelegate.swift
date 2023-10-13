@@ -65,6 +65,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         
         let menu = NSMenu()
         menu.delegate = self
+        menu.minimumWidth = 210
         
 #if STORE
         let titleString = "BrightIntosh SE (v\(appVersion))"
