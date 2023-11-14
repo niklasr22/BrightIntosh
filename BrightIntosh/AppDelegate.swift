@@ -159,7 +159,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     @objc func openSettings() {
         NSApplication.shared.activate(ignoringOtherApps: true)
-        NSApp.runModal(for: settingsWindowController.window!)
+        settingsWindowController.showWindow(self)
     }
     
     func welcomeWindow() {
