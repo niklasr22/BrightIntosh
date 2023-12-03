@@ -108,7 +108,7 @@ class OverlayTechnique: BrightnessTechnique {
     override func enable() {
         if let screen = getBuiltInScreen() {
             isEnabled = true
-            let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: screen.frame.width, height: screen.frame.height)
+            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: screen.frame.width, height: screen.frame.height)
             overlayWindowController.open(rect: rect, screen: screen)
             adjustBrightness()
         }
@@ -122,7 +122,6 @@ class OverlayTechnique: BrightnessTechnique {
     override func adjustBrightness() {
         super.adjustBrightness()
         if let screen = getBuiltInScreen() {
-            //(overlayWindowController.window as? OverlayWindow)?.screenUpdate(screen: screen)
             (overlayWindowController.window as? OverlayWindow)?.overlay?.setMaxFrameRate(screen: screen)
             (overlayWindowController.window as? OverlayWindow)?.overlay?.setHDRBrightness(colorValue: Double(Settings.shared.brightness), screen: screen)
         }
