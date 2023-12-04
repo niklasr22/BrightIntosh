@@ -22,6 +22,14 @@ This tool should not harm your display as it doesn't use any low-level API calls
 
 Maximum brightness with BrightIntosh on the left half of the picture, default maximum brightness on the right half.
 
+## Installation
+
+- `.dmg` file: [GitHub Releases](https://github.com/niklasr22/BrightIntosh/releases/latest) or our [official website](https://brightintosh.de/).
+- [Mac App Store](https://apple.co/3r0Ghqm)
+- Homebrew (Cask Install)
+
+      brew install --cask brightintosh
+
 ## Contributing
 
 If you have any ideas, enhancements or proposals, feel free to open an issue or a pull request!
