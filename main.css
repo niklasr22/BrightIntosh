@@ -52,7 +52,7 @@ div.content {
 
 .head .title {
     text-decoration: none;
-    color: #2aa5e8;
+    color: #49bddf;
     font-size: 40px;
     line-height: 70px;
     font-weight: bold;
@@ -96,7 +96,7 @@ div.content {
 }
 
 a {
-    color: #2aa5e8;
+    color: #49bddf;
 }
 
 #donate-button {
@@ -104,15 +104,15 @@ a {
 }
 
 .logo {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
 }
 
 
 h1 {
     font-size: 70px;
     text-align: center;
-    color: #2aa5e8;
+    color: #49bddf;
 }
 
 h2 {
@@ -121,7 +121,7 @@ h2 {
 }
 
 .btn {
-    background-color: #2aa5e8;
+    background-color: #49bddf;
     border: none;
     color: white;
     padding: 12px 30px;
@@ -179,7 +179,7 @@ h2 {
 .img-comp-slider {
     position: absolute;
     height: 100%;
-    background: #2aa5e8;
+    background: #49bddf;
     opacity: 0.7;
     width: 5px;
     top: 0;
@@ -195,7 +195,7 @@ h2 {
     position: absolute;
     width: 40px;
     height: 40px;
-    background-color: #2196F3;
+    background-color: #49bddf;
     border-radius: 50%;
     top: 50%;
 }
