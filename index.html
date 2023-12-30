@@ -72,6 +72,11 @@
         </div>
       </div>
       <div class="info">
+        <h2>Installation via Homebrew</h2>
+        <code
+          class="brew"><span id="brew-cmd">brew install --cask brightintosh</span><span class="copy-btn" onclick="copyBrew(this)"><i class="fa-regular fa-copy"></i></span></code>
+      </div>
+      <div class="info">
         <h2>Contribute</h2>
         <p>
           BrightIntosh is an open source project.
@@ -114,6 +119,11 @@
     initComparisons();
 
     fetch("https://c.brightintosh.de/v.php");
+
+    function copyBrew(btn) {
+      navigator.clipboard.writeText(document.getElementById("brew-cmd").innerText);
+      btn.children[0].className = "fa-solid fa-check";
+    }
   </script>
 </body>
 

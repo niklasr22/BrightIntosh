@@ -200,6 +200,22 @@ h2 {
     top: 50%;
 }
 
+code.brew::before {
+    content: "$ ";
+}
+
+code.brew {
+    background: #444;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+code .copy-btn {
+    padding-left: 5px;
+    cursor: pointer;
+}
+
 @media screen and (max-width: 999px) {
 
     .head {
