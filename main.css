@@ -262,4 +262,8 @@ code .copy-btn {
     .info.large {
         width: 90%;
     }
+    
+    code.brew {
+        font-size: 14px;
+    }
 }
