@@ -264,6 +264,10 @@ code .copy-btn {
     }
     
     code.brew {
-        font-size: 14px;
+        font-size: 12px;
+    }
+    
+    code .copy-btn {
+        display: none;
     }
 }
