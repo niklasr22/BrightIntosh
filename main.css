@@ -202,7 +202,7 @@ h2 {
 
 code.brew::before {
     content: "$";
-    padding-left: 10px;
+    padding-right: 10px;
 }
 
 code.brew {
