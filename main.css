@@ -201,7 +201,8 @@ h2 {
 }
 
 code.brew::before {
-    content: "$ ";
+    content: "$";
+    padding-left: 10px;
 }
 
 code.brew {
@@ -212,7 +213,7 @@ code.brew {
 }
 
 code .copy-btn {
-    padding-left: 5px;
+    padding-left: 10px;
     cursor: pointer;
 }
 
@@ -262,11 +263,11 @@ code .copy-btn {
     .info.large {
         width: 90%;
     }
-    
+
     code.brew {
         font-size: 12px;
     }
-    
+
     code .copy-btn {
         display: none;
     }
