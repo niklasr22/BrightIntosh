@@ -32,14 +32,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     var brightnessManager: BrightnessManager?
     var automationManager: AutomationManager?
+    var supportedDevice = false
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        
+        if let macModel = getModelIdentifier() {
+            supportedDevice = supportedDevices.contains(macModel)
+        }
         
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             welcomeWindow()
         }
         
-        brightnessManager = BrightnessManager()
+        brightnessManager = BrightnessManager(brightnessAllowed: supportedDevice)
         automationManager = AutomationManager()
         
         
@@ -113,6 +118,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(NSMenuItem.separator())
         menu.addItem(settingsItem)
         menu.addItem(quitItem)
+        
+        if !supportedDevice {
+            let unsupportedDeviceItem = NSMenuItem(title: "This device is incompatible", action: nil, keyEquivalent: "")
+            unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "This device is incompatible")
+            menu.addItem(unsupportedDeviceItem)
+        }
         
         statusItem.menu = menu
     }

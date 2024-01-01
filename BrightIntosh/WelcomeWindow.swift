@@ -9,6 +9,8 @@ import SwiftUI
 
 
 struct WelcomeView: View {
+    
+    var supportedDevice: Bool = false
     var closeWindow: () -> Void
     
     var body: some View {
@@ -22,11 +24,13 @@ struct WelcomeView: View {
                 Text("Disclaimer:").font(Font.headline)
                 Text("BrightIntosh is designed to be safe for your MacBook Pro. It will not harm your hardware, as it does not bypass the operating system's protections.")
                     .lineLimit(5)
-                
-                
                 Text("How to use BrightIntosh:").font(Font.headline)
                 Text("When the app is running you will see a sun icon in your menu bar that provides everything you need to use BrightIntosh.")
                     .lineLimit(nil)
+                if !supportedDevice {
+                    Label("Unfortunately your device is currently not supported by BrightIntosh.", systemImage:  "exclamationmark.triangle")
+                        .foregroundStyle(.yellow)
+                }
             }
             Spacer()
             Button("Alright") {
