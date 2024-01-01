@@ -17,12 +17,14 @@ extension NSScreen {
 class BrightnessManager {
     
     var brightnessTechnique: BrightnessTechnique?
+    var extraBrightnessAllowed = false;
     
-    init() {
+    init(brightnessAllowed: Bool) {
+        self.extraBrightnessAllowed = brightnessAllowed
         setBrightnessTechnique()
         
         if Settings.shared.brightintoshActive {
-            self.brightnessTechnique?.enable()
+            enableExtraBrightness()
         }
         
         // Observe displays
@@ -37,7 +39,7 @@ class BrightnessManager {
             print("Toggled increased brightness. Active: \(Settings.shared.brightintoshActive)")
             
             if Settings.shared.brightintoshActive {
-                self.brightnessTechnique?.enable()
+                self.enableExtraBrightness()
             } else {
                 self.brightnessTechnique?.disable()
             }
@@ -70,13 +72,19 @@ class BrightnessManager {
         if let screen = getBuiltInScreen() {
             if let brightnessTechnique = brightnessTechnique, Settings.shared.brightintoshActive {
                 if !brightnessTechnique.isEnabled {
-                    brightnessTechnique.enable()
+                    enableExtraBrightness()
                 } else {
                     brightnessTechnique.screenUpdate(screen: screen)
                 }
             }
         } else {
             brightnessTechnique?.disable()
+        }
+    }
+    
+    func enableExtraBrightness() {
+        if extraBrightnessAllowed {
+            self.brightnessTechnique?.enable()
         }
     }
 }

@@ -16,3 +16,5 @@ extension KeyboardShortcuts.Name {
 
 let launcherBundleId = "de.brightintosh.launcher" as CFString
 let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String)!
+
+let supportedDevices = ["MacBookPro18,1", "MacBookPro18,2", "MacBookPro18,3", "MacBookPro18,4", "Mac14,6", "Mac14,10", "Mac14,5", "Mac14,9", "Mac15,7", "Mac15,9", "Mac15,11", "Mac15,6", "Mac15,8", "Mac15,10", "Mac15,3"]
