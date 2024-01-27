@@ -42,7 +42,7 @@ class GammaTechnique: BrightnessTechnique {
     override func enable() {
         if let screen = getBuiltInScreen() {
             isEnabled = true
-            let rect = NSRect(x: screen.visibleFrame.origin.x, y: screen.visibleFrame.origin.y, width: 1, height: 1)
+            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 1, height: 1)
             overlayWindowController.open(rect: rect, screen: screen)
             adjustBrightness()
         }

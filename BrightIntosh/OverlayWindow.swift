@@ -73,9 +73,10 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         
         if !fullsize {
             var position = screen.frame.origin
-            position.y += screen.frame.height
+            position.y += screen.frame.height - 1
             
             window.setFrameOrigin(position)
+            print("HDR content positioned at \(position)")
         }
         
         window.orderFrontRegardless()
