@@ -73,7 +73,8 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         
         if !fullsize {
             var position = screen.frame.origin
-            position.y += screen.frame.height
+            // - 1 pixel offset so that the pixel is actually in the corner of the laptop screen and not visible on a potential screen placed on top of it.
+            position.y += screen.frame.height - 1
             
             window.setFrameOrigin(position)
         }
