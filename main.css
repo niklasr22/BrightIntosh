@@ -218,7 +218,7 @@ code .copy-btn {
     cursor: pointer;
 }
 
-@media screen and (max-width: 999px) {
+@media screen and (max-width: 1260px) {
 
     .head {
         text-align: center;
@@ -264,9 +264,13 @@ code .copy-btn {
     .info.large {
         width: 90%;
     }
+}
 
+@media screen and (max-width: 999px) {
     code {
         font-size: 12px;
+        line-break: anywhere;
+        display: block;
     }
 
     code .copy-btn {
