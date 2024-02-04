@@ -14,6 +14,10 @@ BrightIntosh enables your MacBook Pro M1 (or newer) to use the increased brightn
 It comes with a handy menu bar item so you can toggle the increased brightness quickly and easily.
 This tool should not harm your display as it doesn't use any low-level API calls and your OS is in full control over the display, but there is no warranty.
 
+### Donate
+
+If you enjoy BrightIntosh please consider [donating](https://brightintosh.de/donate.html) to help us improve the app and distribute it via the App Store.
+
 ## Preview
 
 <p align="center">
