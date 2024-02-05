@@ -24,9 +24,9 @@
           href="https://apps.apple.com/us/app/brightintosh/id6452471855?mt=12&amp;itsct=apps_box_badge&amp;itscg=30200"><img
             src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/white/en-us?size=270x83&amp;releaseDate=1693267200"
             alt="Download on the Mac App Store" style="width: 184px; height: 47px;"></a>
-        <a id="download-link" target="_blank" rel="noopener noreferrer"
-          href="https://github.com/niklasr22/BrightIntosh/releases/latest/"><button class="btn"><i
-              class="fa-solid fa-download"></i> Download<span id="version"></span></button></a>
+        <a id="download-link" href="https://github.com/niklasr22/BrightIntosh/releases/latest/" download><button
+            class="btn" onclick="toggleModal('download-modal')"><i class="fa-solid fa-download"></i> Download<span
+              id="version"></span></button></a>
       </span>
     </div>
 
@@ -106,6 +106,24 @@
       <a href="./legal_notice.html">Legal notice / Impressum</a>
     </div>
   </div>
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal-window hidden" id="download-modal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <h2 class="animated-text">Shine bright!</h2>
+        <p>Thanks for downloading BrightIntosh!</p>
+        <p>Please consider supporting this project by donating a small amount of
+          money.<br />Your help is very much appreciated.</p>
+        <p><code>ETH: 0xA97d490FFFb8f629e67a7d8f804366999bC86777</code></p>
+        <p><code>BTC: bc1qe3cv9485vs6ya2dejl967yegqn0uzksfxjq0gn</code></p>
+        <div class="inline">
+          <a href="https://www.paypal.com/donate/?hosted_button_id=FTG9FJK4HLRTY"><button
+              class="btn paypal">PayPal</button></a>
+          <button class="btn gray" onclick="toggleModal('download-modal')">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script>
     const version = document.getElementById("version");
     const downloadLink = document.getElementById("download-link");
@@ -127,6 +145,13 @@
     function copyBrew(btn) {
       navigator.clipboard.writeText(document.getElementById("brew-cmd").innerText);
       btn.children[0].className = "fa-solid fa-check";
+    }
+
+    function toggleModal(modalId) {
+      const modal = document.getElementById(modalId);
+      const overlay = document.getElementById("modal-overlay");
+      modal.classList.toggle("hidden");
+      overlay.classList.toggle("hidden");
     }
   </script>
 </body>
