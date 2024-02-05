@@ -246,7 +246,7 @@ code .copy-btn {
 }
 
 .modal-window {
-    padding: 40px;
+    padding: 8px;
     display: block;
     position: absolute;
     z-index: 100;
@@ -272,6 +272,12 @@ code .copy-btn {
     z-index: -1;
     backdrop-filter: blur(22px);
     background: #ffffff80;
+}
+
+.modal-content {
+    padding: 32px;
+    max-height: 90vh;
+    overflow: auto;
 }
 
 .modal-content {
@@ -367,5 +373,10 @@ code .copy-btn {
 
     code .copy-btn {
         display: none;
+    }
+
+    .modal-content .btn {
+        width: 100%;
+        margin: 8px;
     }
 }
