@@ -271,12 +271,13 @@ code .copy-btn {
     left: 0;
     z-index: -1;
     backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
     background: #ffffff80;
 }
 
 .modal-content {
     padding: 32px;
-    max-height: 90vh;
+    max-height: 80vh;
     overflow: auto;
 }
 
