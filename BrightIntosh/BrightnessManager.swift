@@ -21,6 +21,10 @@ class BrightnessManager {
     
     init(brightnessAllowed: Bool) {
         self.extraBrightnessAllowed = brightnessAllowed
+        if !self.extraBrightnessAllowed {
+            Settings.shared.brightintoshActive = false;
+        }
+        
         setBrightnessTechnique()
         
         if Settings.shared.brightintoshActive {
