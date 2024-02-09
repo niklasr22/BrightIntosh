@@ -175,7 +175,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     func welcomeWindow() {
         NSApplication.shared.activate(ignoringOtherApps: true)
-        let controller = WelcomeWindowController()
+        let controller = WelcomeWindowController(supportedDevice: supportedDevice)
         NSApp.runModal(for: controller.window!)
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }

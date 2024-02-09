@@ -48,7 +48,7 @@ struct WelcomeView_Previews: PreviewProvider {
 }
 
 final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
-    init() {
+    init(supportedDevice: Bool) {
         
         let welcomeWindow = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 500, height: 480),
@@ -57,7 +57,7 @@ final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
             defer: false
         )
 
-        let contentView = WelcomeView(closeWindow: welcomeWindow.close).frame(width: 500, height: 480)
+        let contentView = WelcomeView(supportedDevice: supportedDevice, closeWindow: welcomeWindow.close).frame(width: 500, height: 480)
         
         welcomeWindow.contentView = NSHostingView(rootView: contentView)
         welcomeWindow.titlebarAppearsTransparent = true
