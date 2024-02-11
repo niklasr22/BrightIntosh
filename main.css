@@ -69,6 +69,16 @@ div.content {
     padding: 0 10px;
 }
 
+.github-btn {
+    color: #1f2328;
+    margin-left: 10px;
+}
+
+.github-btn>i {
+    font-size: 47px;
+    height: 47px;
+}
+
 #version {
     font-size: 12px;
     vertical-align: middle;
@@ -317,7 +327,12 @@ code .copy-btn {
     display: none;
 }
 
-@media screen and (max-width: 1260px) {
+
+.hide-on-desktop {
+    display: none;
+}
+
+@media screen and (max-width: 1350px) {
 
     .head {
         text-align: center;
@@ -362,6 +377,14 @@ code .copy-btn {
 
     .info.large {
         width: 90%;
+    }
+
+    .hide-on-mobile {
+        display: none;
+    }
+
+    .hide-on-desktop {
+        display: block;
     }
 }
 
