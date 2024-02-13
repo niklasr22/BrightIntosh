@@ -93,9 +93,11 @@ struct BasicSettings: View {
                 // Toggle("Automatically toggle increased brightness depending on the envrionment's brightness", isOn: $autoDisableOnLowBattery)
             }
             Section(header: Text("Shortcuts").bold()) {
-                KeyboardShortcuts.Recorder("Toggle increased brightness:", name: .toggleBrightIntosh)
-                KeyboardShortcuts.Recorder("Increase brightness:", name: .increaseBrightness)
-                KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
+                Form {
+                    KeyboardShortcuts.Recorder("Toggle increased brightness:", name: .toggleBrightIntosh)
+                    KeyboardShortcuts.Recorder("Increase brightness:", name: .increaseBrightness)
+                    KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
+                }
             }
             
 #if !STORE
