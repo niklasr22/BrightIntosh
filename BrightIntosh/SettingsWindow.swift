@@ -65,6 +65,8 @@ struct BasicSettings: View {
     @State private var autoUpdateCheck = Settings.shared.autoUpdateCheck
 #endif
     
+    @State private var selectedTimout: Int = 5
+    
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
             Section(header: Text("Brightness").bold()) {
@@ -89,6 +91,14 @@ struct BasicSettings: View {
                                 Settings.shared.batteryAutomationThreshold = value
                             }
                         }
+                }
+                Picker("Automatic disabling after a certain time", selection: $selectedTimout) {
+                    ForEach(Array(stride(from: 10, to: 51, by: 10)), id: \.self) { minutes in
+                        Text("\(minutes) min").tag(minutes)
+                    }
+                    ForEach(Array(stride(from: 1, to: 5, by: 0.5)), id: \.self) { hours in
+                        Text(String(format: "%.1f h", hours)).tag(hours * 60)
+                    }
                 }
                 // Toggle("Automatically toggle increased brightness depending on the envrionment's brightness", isOn: $autoDisableOnLowBattery)
             }
