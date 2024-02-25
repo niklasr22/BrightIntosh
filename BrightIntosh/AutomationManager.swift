@@ -26,6 +26,10 @@ class AutomationManager {
                 self.stopBatteryAutomation()
             }
         }
+        
+        Settings.shared.addListener(setting: "timerAutomation") {
+            print("Toggled timer automation. Active: \(Settings.shared.timerAutomation), Timeout: \(Settings.shared.timerAutomationTimeout)")
+        }
     }
     
     func startBatteryAutomation() {
