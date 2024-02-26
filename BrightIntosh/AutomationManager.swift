@@ -8,9 +8,10 @@
 import Foundation
 
 class AutomationManager {
-    private let batteryLevelThreshold = 99
     private let batteryCheckInterval = 10.0
     private var batteryCheckTimer: Timer?
+    
+    private var timerAutomationTimer: Timer?
     
     init() {
         if Settings.shared.batteryAutomation {
@@ -27,9 +28,30 @@ class AutomationManager {
             }
         }
         
-        Settings.shared.addListener(setting: "timerAutomation") {
-            print("Toggled timer automation. Active: \(Settings.shared.timerAutomation), Timeout: \(Settings.shared.timerAutomationTimeout)")
+        if Settings.shared.timerAutomation && Settings.shared.brightintoshActive {
+            startTimerAutomation()
         }
+        
+        Settings.shared.addListener(setting: "timerAutomation") {
+            print("Toggled Timer automation. Active: \(Settings.shared.timerAutomation), Timeout: \(Settings.shared.timerAutomationTimeout)")
+            
+            if Settings.shared.timerAutomation && Settings.shared.brightintoshActive {
+                self.startTimerAutomation()
+            } else {
+                self.stopTimerAutomation()
+            }
+        }
+        
+        Settings.shared.addListener(setting: "brightintoshActive") {
+            if Settings.shared.brightintoshActive && Settings.shared.timerAutomation {
+                self.startTimerAutomation()
+                print("Toggled increased Brightness with timeout. Timer started.")
+            } else if !Settings.shared.brightintoshActive {
+                self.stopTimerAutomation()
+            }
+        }
+        
+        
     }
     
     func startBatteryAutomation() {
@@ -39,7 +61,7 @@ class AutomationManager {
         let batteryCheckDate = Date()
         batteryCheckTimer = Timer(fire: batteryCheckDate, interval: batteryCheckInterval, repeats: true, block: {t in self.checkBatteryAutomation()})
         RunLoop.main.add(batteryCheckTimer!, forMode: RunLoop.Mode.default)
-        print("Started automation")
+        print("Started battery automation")
     }
     
     func stopBatteryAutomation() {
@@ -58,8 +80,31 @@ class AutomationManager {
             if batteryCapacity <= threshold {
                 print("Battery level dropped below \(threshold)%. Deactivating increased brightness.")
                 Settings.shared.brightintoshActive = false
+                stopTimerAutomation()
             }
         }
+    }
+    
+    func startTimerAutomation() {
+        if timerAutomationTimer != nil || !Settings.shared.brightintoshActive {
+            return
+        }
+        let timeout = Settings.shared.timerAutomationTimeout
+        timerAutomationTimer = Timer.scheduledTimer(withTimeInterval: Double(timeout * 60), repeats: false, block: {t in self.timerAutomationCallback()})
+    }
+    
+    func stopTimerAutomation() {
+        if timerAutomationTimer != nil {
+            timerAutomationTimer?.invalidate()
+            timerAutomationTimer = nil
+            print("Timer Automation Timer reset.")
+        }
+    }
+    
+    func timerAutomationCallback() {
+        print("Timer fired. Deactivating increased brightness.")
+        Settings.shared.brightintoshActive = false
+        stopTimerAutomation()
     }
     
 }
