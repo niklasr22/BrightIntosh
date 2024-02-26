@@ -34,6 +34,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var automationManager: AutomationManager?
     var supportedDevice = false
     
+    private var remainingTimePoller: Timer?
+    private var remainingTime: Double = 0.0
+    
+    private var toggleTimer = NSMenuItem(title: Settings.shared.timerAutomation ? "Disable Timer" : "Enable Timer", action: #selector(toggleTimerAutomation), keyEquivalent: "")
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         if let macModel = getModelIdentifier() {
@@ -69,9 +74,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             self.setupMenus()
         }
         
-        Settings.shared.addListener(setting: "remainingTime") {
-            self.setupMenus()
-        }
     }
     
     func setupMenus() {
@@ -111,21 +113,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         sliderContainerView.autoresizingMask = [.width]
         brightnessSliderItem.view = sliderContainerView
         
-        let toggleIncreasedBrightness = NSMenuItem(title: Settings.shared.brightintoshActive ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "")
+        let toggleIncreasedBrightness = NSMenuItem(title: Settings.shared.brightintoshActive ? "Deactivate" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "")
         toggleIncreasedBrightness.setShortcut(for: .toggleBrightIntosh)
         
-        let toggleTimer = NSMenuItem(title: Settings.shared.timerAutomation ? "Disable Timer" : "Enable Timer", action: #selector(toggleTimerAutomation), keyEquivalent: "")
-        
-        if Settings.shared.timerAutomation {
-            let remainingTime = Settings.shared.remainingTime
-            let remainingMinutes = Int((remainingTime).rounded(.down))
-            let remainingSeconds = Int((remainingTime - Double(remainingMinutes)) * 60)
-            if #available(macOS 14, *) {
-                toggleTimer.badge = NSMenuItemBadge(string: "\(remainingMinutes):\(remainingSeconds)")
-            } else {
-                toggleTimer.title = Settings.shared.timerAutomation ? "Disable Timer" : "Enable Timer" + "\(remainingMinutes):\(remainingSeconds)"
-            }
-        }
+        toggleTimer = NSMenuItem(title: Settings.shared.timerAutomation ? "Disable Timer" : "Enable Timer", action: #selector(toggleTimerAutomation), keyEquivalent: "")
         
         let settingsItem = NSMenuItem(title: "Settings", action: #selector(openSettings), keyEquivalent: "")
         
@@ -150,6 +141,34 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         
         statusItem.menu = menu
+    }
+    
+    func startRemainingTimePoller() {
+        if self.remainingTimePoller != nil || self.automationManager == nil {
+            return
+        }
+        
+        self.remainingTimePoller = Timer(fire: Date.now, interval: 1.0, repeats: true, block: {t in
+            self.remainingTime = self.automationManager!.getRemainingTime()
+            let remainingMinutes = Int((self.remainingTime).rounded(.down))
+            let remainingSeconds = Int((self.remainingTime - Double(remainingMinutes)) * 60)
+            if #available(macOS 14, *) {
+                self.toggleTimer.badge = NSMenuItemBadge(string: "\(remainingMinutes):\(remainingSeconds)")
+            } else {
+                self.toggleTimer.title = "Disable Timer" + "\(remainingMinutes):\(remainingSeconds)"
+            }
+        })
+        
+        RunLoop.main.add(self.remainingTimePoller!, forMode: RunLoop.Mode.common)
+    }
+    
+    func stopRemainingTimePoller() {
+        if remainingTimePoller == nil {
+            return
+        }
+        self.remainingTimePoller?.invalidate()
+        self.remainingTimePoller = nil
+        self.remainingTime = 0.0
     }
     
     @objc func brightnessSliderMoved(slider: NSSlider) {
@@ -210,10 +229,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     
     func menuWillOpen(_ menu: NSMenu) {
         KeyboardShortcuts.isEnabled = false
+        if Settings.shared.timerAutomation {
+            self.startRemainingTimePoller()
+        } else if !Settings.shared.timerAutomation {
+            self.stopRemainingTimePoller()
+        }
     }
     
     func menuDidClose(_ menu: NSMenu) {
         KeyboardShortcuts.isEnabled = true
+        self.stopRemainingTimePoller()
     }
 }
 

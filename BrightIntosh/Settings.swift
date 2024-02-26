@@ -64,13 +64,6 @@ final class Settings {
         }
     }
     
-    public var remainingTime = UserDefaults.standard.object(forKey: "remainingTime") != nil ? UserDefaults.standard.double(forKey: "remainingTime") : 0.0 {
-        didSet {
-            UserDefaults.standard.setValue(remainingTime, forKey: "remainingTime")
-            callListeners(setting: "remainingTime")
-        }
-    }
-    
     public var launchAtLogin = false {
         didSet {
             if #available(macOS 13, *) {

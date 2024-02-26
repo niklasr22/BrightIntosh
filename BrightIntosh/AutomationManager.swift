@@ -92,8 +92,6 @@ class AutomationManager {
         }
         let timeout = Settings.shared.timerAutomationTimeout
         timerAutomationTimer = Timer.scheduledTimer(withTimeInterval: Double(timeout * 60), repeats: false, block: {t in self.timerAutomationCallback()})
-        remainingTime = timerAutomationTimer != nil ? Date.now.distance(to: timerAutomationTimer!.fireDate) / 60 : 0.0
-        Settings.shared.remainingTime = remainingTime
     }
     
     func stopTimerAutomation() {
@@ -108,6 +106,10 @@ class AutomationManager {
         print("Timer fired. Deactivating increased brightness.")
         Settings.shared.brightintoshActive = false
         stopTimerAutomation()
+    }
+    
+    func getRemainingTime() -> Double {
+        return timerAutomationTimer != nil ? Date.now.distance(to: timerAutomationTimer!.fireDate) / 60 : 0.0
     }
     
 }
