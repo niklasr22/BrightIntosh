@@ -64,6 +64,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         Settings.shared.addListener(setting: "brightness") {
             self.setupMenus()
         }
+        
+        Settings.shared.addListener(setting: "timerAutomation") {
+            self.setupMenus()
+        }
+        
+        Settings.shared.addListener(setting: "remainingTime") {
+            self.setupMenus()
+        }
     }
     
     func setupMenus() {
@@ -106,12 +114,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let toggleIncreasedBrightness = NSMenuItem(title: Settings.shared.brightintoshActive ? "Disable" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "")
         toggleIncreasedBrightness.setShortcut(for: .toggleBrightIntosh)
         
+        let toggleTimer = NSMenuItem(title: Settings.shared.timerAutomation ? "Disable Timer" : "Enable Timer", action: #selector(toggleTimerAutomation), keyEquivalent: "")
+        
+        if Settings.shared.timerAutomation {
+            let remainingTime = Settings.shared.remainingTime
+            let remainingMinutes = Int((remainingTime).rounded(.down))
+            let remainingSeconds = Int((remainingTime - Double(remainingMinutes)) * 60)
+            if #available(macOS 14, *) {
+                toggleTimer.badge = NSMenuItemBadge(string: "\(remainingMinutes):\(remainingSeconds)")
+            } else {
+                toggleTimer.title = Settings.shared.timerAutomation ? "Disable Timer" : "Enable Timer" + "\(remainingMinutes):\(remainingSeconds)"
+            }
+        }
+        
         let settingsItem = NSMenuItem(title: "Settings", action: #selector(openSettings), keyEquivalent: "")
         
         let quitItem = NSMenuItem(title: "Quit", action: #selector(exitBrightIntosh), keyEquivalent: "")
         
         menu.addItem(titleItem)
         menu.addItem(toggleIncreasedBrightness)
+        if Settings.shared.brightintoshActive {
+            menu.addItem(toggleTimer)
+        }
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Brightness:", action: nil, keyEquivalent: ""))
         menu.addItem(brightnessSliderItem)
@@ -158,6 +182,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         
         Settings.shared.brightintoshActive.toggle()
+    }
+    
+    @objc func toggleTimerAutomation() {
+        Settings.shared.timerAutomation.toggle()
     }
     
     @objc func exitBrightIntosh() {

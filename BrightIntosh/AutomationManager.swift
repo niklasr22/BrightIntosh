@@ -12,6 +12,7 @@ class AutomationManager {
     private var batteryCheckTimer: Timer?
     
     private var timerAutomationTimer: Timer?
+    private var remainingTime: TimeInterval = 0.0
     
     init() {
         if Settings.shared.batteryAutomation {
@@ -91,6 +92,8 @@ class AutomationManager {
         }
         let timeout = Settings.shared.timerAutomationTimeout
         timerAutomationTimer = Timer.scheduledTimer(withTimeInterval: Double(timeout * 60), repeats: false, block: {t in self.timerAutomationCallback()})
+        remainingTime = timerAutomationTimer != nil ? Date.now.distance(to: timerAutomationTimer!.fireDate) / 60 : 0.0
+        Settings.shared.remainingTime = remainingTime
     }
     
     func stopTimerAutomation() {
