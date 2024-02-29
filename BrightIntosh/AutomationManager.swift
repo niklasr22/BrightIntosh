@@ -34,12 +34,20 @@ class AutomationManager {
         }
         
         Settings.shared.addListener(setting: "timerAutomation") {
-            print("Toggled Timer automation. Active: \(Settings.shared.timerAutomation), Timeout: \(Settings.shared.timerAutomationTimeout)")
+            print("Toggled Timer automation. Active: \(Settings.shared.timerAutomation)")
             
             if Settings.shared.timerAutomation && Settings.shared.brightintoshActive {
                 self.startTimerAutomation()
             } else {
                 self.stopTimerAutomation()
+            }
+        }
+        
+        Settings.shared.addListener(setting: "timerAutomationTimeout") {
+            print("Changed Timer Automation Timeout: \(Settings.shared.timerAutomationTimeout)")
+            
+            if Settings.shared.timerAutomation && Settings.shared.brightintoshActive{
+                self.restartTimerAutomation()
             }
         }
         
@@ -91,7 +99,8 @@ class AutomationManager {
             return
         }
         let timeout = Settings.shared.timerAutomationTimeout
-        timerAutomationTimer = Timer.scheduledTimer(withTimeInterval: Double(timeout * 60), repeats: false, block: {t in self.timerAutomationCallback()})
+        timerAutomationTimer = Timer(timeInterval: Double(timeout * 60), repeats: false, block: {t in self.timerAutomationCallback()})
+        RunLoop.main.add(self.timerAutomationTimer!, forMode: RunLoop.Mode.common)
     }
     
     func stopTimerAutomation() {
@@ -100,6 +109,11 @@ class AutomationManager {
             timerAutomationTimer = nil
             print("Timer Automation Timer reset.")
         }
+    }
+    
+    func restartTimerAutomation() {
+        stopTimerAutomation()
+        startTimerAutomation()
     }
     
     func timerAutomationCallback() {

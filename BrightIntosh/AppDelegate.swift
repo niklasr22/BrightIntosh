@@ -12,32 +12,19 @@ import Carbon
 import SwiftUI
 
 
-class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
-    private var statusItem: NSStatusItem!
-    
+class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var overlayAvailable = false
-    
-    
-#if !STORE
-    private let BRIGHTINTOSH_URL = "https://brightintosh.de"
-#else
-    private let BRIGHTINTOSH_URL = "https://brightintosh.de/index_nd.html"
-#endif
     
     private let BRIGHTINTOSH_VERSION_URL = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest"
     
     
     let settingsWindowController = SettingsWindowController()
     
+    var statusBarMenu: StatusBarMenu?
     var brightnessManager: BrightnessManager?
     var automationManager: AutomationManager?
     var supportedDevice = false
-    
-    private var remainingTimePoller: Timer?
-    private var remainingTime: Double = 0.0
-    
-    private var toggleTimer = NSMenuItem(title: Settings.shared.timerAutomation ? "Disable Timer" : "Enable Timer", action: #selector(toggleTimerAutomation), keyEquivalent: "")
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
@@ -51,128 +38,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         
         brightnessManager = BrightnessManager(brightnessAllowed: supportedDevice)
         automationManager = AutomationManager()
-        
-        
-        // Menu bar app
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        
-        setupMenus()
+        statusBarMenu = StatusBarMenu(supportedDevice: supportedDevice, automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh)
         
         // Register global hotkeys
         addKeyListeners()
         
-        // Listen to settings
-        Settings.shared.addListener(setting: "brightintoshActive") {
-            self.setupMenus()
-        }
-        
-        Settings.shared.addListener(setting: "brightness") {
-            self.setupMenus()
-        }
-        
-        Settings.shared.addListener(setting: "timerAutomation") {
-            self.setupMenus()
-        }
-        
-    }
-    
-    func setupMenus() {
-        
-        let menu = NSMenu()
-        menu.delegate = self
-        menu.minimumWidth = 210
-        
-#if STORE
-        let titleString = "BrightIntosh SE (v\(appVersion))"
-#else
-        let titleString = "BrightIntosh (v\(appVersion))"
-#endif
-        
-        if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: Settings.shared.brightintoshActive ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: Settings.shared.brightintoshActive ? "Increased brightness" : "Default brightness")
-            button.toolTip = titleString
-        }
-        
-        
-        let titleItem = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
-        
-        // centered brightness slider
-        let brightnessSliderItem = NSMenuItem()
-        
-        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 200, height: 35))
-        let horizontalPadding: CGFloat = 5.0
-        let sliderWidth = sliderContainerView.frame.width - (2 * horizontalPadding)
-        let sliderHeight = 30.0
-        let sliderX = (sliderContainerView.frame.width - sliderWidth) / 2
-        let sliderY = (sliderContainerView.frame.height - sliderWidth) / 2
-        
-        let brightnessSlider = NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: 1.6, target: self, action: #selector(brightnessSliderMoved))
-        brightnessSlider.frame = NSRect(x: sliderX, y: sliderY, width: sliderWidth, height: sliderHeight)
-        brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
-        sliderContainerView.addSubview(brightnessSlider)
-        sliderContainerView.autoresizingMask = [.width]
-        brightnessSliderItem.view = sliderContainerView
-        
-        let toggleIncreasedBrightness = NSMenuItem(title: Settings.shared.brightintoshActive ? "Deactivate" : "Activate", action: #selector(toggleBrightIntosh), keyEquivalent: "")
-        toggleIncreasedBrightness.setShortcut(for: .toggleBrightIntosh)
-        
-        toggleTimer = NSMenuItem(title: Settings.shared.timerAutomation ? "Disable Timer" : "Enable Timer", action: #selector(toggleTimerAutomation), keyEquivalent: "")
-        
-        let settingsItem = NSMenuItem(title: "Settings", action: #selector(openSettings), keyEquivalent: "")
-        
-        let quitItem = NSMenuItem(title: "Quit", action: #selector(exitBrightIntosh), keyEquivalent: "")
-        
-        menu.addItem(titleItem)
-        menu.addItem(toggleIncreasedBrightness)
-        if Settings.shared.brightintoshActive {
-            menu.addItem(toggleTimer)
-        }
-        menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Brightness:", action: nil, keyEquivalent: ""))
-        menu.addItem(brightnessSliderItem)
-        menu.addItem(NSMenuItem.separator())
-        menu.addItem(settingsItem)
-        menu.addItem(quitItem)
-        
-        if !supportedDevice {
-            let unsupportedDeviceItem = NSMenuItem(title: "This device is incompatible", action: nil, keyEquivalent: "")
-            unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "This device is incompatible")
-            menu.addItem(unsupportedDeviceItem)
-        }
-        
-        statusItem.menu = menu
-    }
-    
-    func startRemainingTimePoller() {
-        if self.remainingTimePoller != nil || self.automationManager == nil {
-            return
-        }
-        
-        self.remainingTimePoller = Timer(fire: Date.now, interval: 1.0, repeats: true, block: {t in
-            self.remainingTime = self.automationManager!.getRemainingTime()
-            let remainingMinutes = Int((self.remainingTime).rounded(.down))
-            let remainingSeconds = Int((self.remainingTime - Double(remainingMinutes)) * 60)
-            if #available(macOS 14, *) {
-                self.toggleTimer.badge = NSMenuItemBadge(string: "\(remainingMinutes):\(remainingSeconds)")
-            } else {
-                self.toggleTimer.title = "Disable Timer" + "\(remainingMinutes):\(remainingSeconds)"
-            }
-        })
-        
-        RunLoop.main.add(self.remainingTimePoller!, forMode: RunLoop.Mode.common)
-    }
-    
-    func stopRemainingTimePoller() {
-        if remainingTimePoller == nil {
-            return
-        }
-        self.remainingTimePoller?.invalidate()
-        self.remainingTimePoller = nil
-        self.remainingTime = 0.0
-    }
-    
-    @objc func brightnessSliderMoved(slider: NSSlider) {
-        Settings.shared.brightness = slider.floatValue
     }
     
     @objc func increaseBrightness() {
@@ -203,23 +73,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         Settings.shared.brightintoshActive.toggle()
     }
     
-    @objc func toggleTimerAutomation() {
-        Settings.shared.timerAutomation.toggle()
-    }
-    
-    @objc func exitBrightIntosh() {
-        exit(0)
-    }
-    
-    @objc func openWebsite() {
-        NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_URL)!)
-    }
-    
-    @objc func openSettings() {
-        NSApplication.shared.activate(ignoringOtherApps: true)
-        settingsWindowController.showWindow(self)
-    }
-    
     func welcomeWindow() {
         NSApplication.shared.activate(ignoringOtherApps: true)
         let controller = WelcomeWindowController(supportedDevice: supportedDevice)
@@ -227,18 +80,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
     
-    func menuWillOpen(_ menu: NSMenu) {
-        KeyboardShortcuts.isEnabled = false
-        if Settings.shared.timerAutomation {
-            self.startRemainingTimePoller()
-        } else if !Settings.shared.timerAutomation {
-            self.stopRemainingTimePoller()
-        }
-    }
-    
-    func menuDidClose(_ menu: NSMenu) {
-        KeyboardShortcuts.isEnabled = true
-        self.stopRemainingTimePoller()
-    }
+ 
 }
 
