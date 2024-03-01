@@ -31,6 +31,12 @@ final class BasicSettingsViewModel: ObservableObject {
         get { return batteryAutomation }
     }
     
+    private var timerAutomation = Settings.shared.timerAutomation
+    var timerAutomationToggle: Bool {
+        set { Settings.shared.timerAutomation = newValue}
+        get { return timerAutomation}
+    }
+    
     init() {
         Settings.shared.addListener(setting: "brightintoshActive") {
             if Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
@@ -53,6 +59,12 @@ final class BasicSettingsViewModel: ObservableObject {
                 self.objectWillChange.send()
             }
         }
+        Settings.shared.addListener(setting: "timerAutomation") {
+            if self.timerAutomation != Settings.shared.timerAutomation {
+                self.timerAutomation = Settings.shared.timerAutomation
+                self.objectWillChange.send()
+            }
+        }
     }
 }
 
@@ -61,9 +73,13 @@ struct BasicSettings: View {
     
     @State private var launchOnLogin = Settings.shared.launchAtLogin
     @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
+    @State private var timerAutomationTimeout = Settings.shared.timerAutomationTimeout
+    
 #if !STORE
     @State private var autoUpdateCheck = Settings.shared.autoUpdateCheck
 #endif
+    
+    
     
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
@@ -78,10 +94,9 @@ struct BasicSettings: View {
                     .onChange(of: launchOnLogin) { value in
                         Settings.shared.launchAtLogin = value
                     }
-                Toggle("Automatically disable increased brightness when battery level drops", isOn: $viewModel.batteryAutomationToggle)
-                if viewModel.batteryAutomationToggle {
+                HStack {
+                    Toggle("Disable when battery level drops under", isOn: $viewModel.batteryAutomationToggle)
                     TextField("Battery level threshold", value: $batteryLevelThreshold, format: .percent)
-                        .textFieldStyle(.roundedBorder)
                         .onChange(of: batteryLevelThreshold) { value in
                             if !(0...100 ~= batteryLevelThreshold) {
                                 batteryLevelThreshold = max(0, min(batteryLevelThreshold, 100))
@@ -89,13 +104,32 @@ struct BasicSettings: View {
                                 Settings.shared.batteryAutomationThreshold = value
                             }
                         }
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 60)
+                        .multilineTextAlignment(.center)
                 }
-                // Toggle("Automatically toggle increased brightness depending on the envrionment's brightness", isOn: $autoDisableOnLowBattery)
+                HStack {
+                    Toggle("Disable after", isOn: $viewModel.timerAutomationToggle)
+                    Picker(selection: $timerAutomationTimeout, label: EmptyView()) {
+                        ForEach(Array(stride(from: 10, to: 51, by: 10)), id: \.self) { minutes in
+                            Text("\(minutes) min").tag(minutes)
+                        }
+                        ForEach(Array(stride(from: 1, to: 5, by: 0.5)), id: \.self) { hours in
+                            Text(String(format: "%.1f h", hours)).tag(Int(hours * 60))
+                        }
+                    }
+                    .onChange(of: timerAutomationTimeout) { value in
+                        Settings.shared.timerAutomationTimeout = value
+                    }
+                    .frame(maxWidth: 80)
+                }
             }
             Section(header: Text("Shortcuts").bold()) {
-                KeyboardShortcuts.Recorder("Toggle increased brightness:", name: .toggleBrightIntosh)
-                KeyboardShortcuts.Recorder("Increase brightness:", name: .increaseBrightness)
-                KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
+                Form {
+                    KeyboardShortcuts.Recorder("Toggle increased brightness:", name: .toggleBrightIntosh)
+                    KeyboardShortcuts.Recorder("Increase brightness:", name: .increaseBrightness)
+                    KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
+                }
             }
             
 #if !STORE

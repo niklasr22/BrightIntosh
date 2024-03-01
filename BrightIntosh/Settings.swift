@@ -50,6 +50,20 @@ final class Settings {
         }
     }
     
+    public var timerAutomation = UserDefaults.standard.object(forKey: "timerAutomation") != nil ? UserDefaults.standard.bool(forKey: "timerAutomation") : false {
+        didSet {
+            UserDefaults.standard.setValue(timerAutomation, forKey: "timerAutomation")
+            callListeners(setting: "timerAutomation")
+        }
+    }
+    
+    public var timerAutomationTimeout = UserDefaults.standard.object(forKey: "timerAutomationTimeout") != nil ? UserDefaults.standard.integer(forKey: "timerAutomationTimeout") : 180 {
+        didSet {
+            UserDefaults.standard.setValue(timerAutomationTimeout, forKey: "timerAutomationTimeout")
+            callListeners(setting: "timerAutomationTimeout")
+        }
+    }
+    
     public var launchAtLogin = false {
         didSet {
             if #available(macOS 13, *) {

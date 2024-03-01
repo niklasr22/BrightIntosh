@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E05D3952B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
+		1E05D3962B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
 		9C380FF12A8A8922000A6566 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 9C380FF02A8A8922000A6566 /* Sparkle */; };
 		9C4163702AB7198B005B34B6 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */; };
 		9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */; };
@@ -71,6 +73,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarMenu.swift; sourceTree = "<group>"; };
 		9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		9C4163782ABD8FBD005B34B6 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHelpers.swift; sourceTree = "<group>"; };
@@ -185,6 +188,7 @@
 				9CA026522AC968430068CC74 /* BrightnessTechnique.swift */,
 				9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */,
 				9C534AC72ACB06210029E050 /* AutomationManager.swift */,
+				1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */,
 				9C534ACA2ACB2A050029E050 /* Alerts.swift */,
 				9CDE33C42B4317D70085F786 /* Utils.swift */,
 			);
@@ -262,7 +266,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1510;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					9C8803732A72625E00476017 = {
 						LastSwiftMigration = 1430;
@@ -331,6 +335,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E05D3962B90E50E006FE96A /* StatusBarMenu.swift in Sources */,
 				9CA026552AC96B260068CC74 /* BrightnessManager.swift in Sources */,
 				9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */,
 				9C534AC92ACB06210029E050 /* AutomationManager.swift in Sources */,
@@ -361,6 +366,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E05D3952B90E50E006FE96A /* StatusBarMenu.swift in Sources */,
 				9C4163702AB7198B005B34B6 /* SettingsWindow.swift in Sources */,
 				9C8FA26B2AB058310049C0D1 /* WelcomeWindow.swift in Sources */,
 				9C534AC82ACB06210029E050 /* AutomationManager.swift in Sources */,
@@ -492,7 +498,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 9K32WDUN2H;
+				DEVELOPMENT_TEAM = CLG4S8GTX4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AutoLauncher/Info.plist;
@@ -523,7 +529,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 9K32WDUN2H;
+				DEVELOPMENT_TEAM = CLG4S8GTX4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AutoLauncher/Info.plist;
@@ -547,7 +553,6 @@
 		C1B521582A5EFF5900E9B7AC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
@@ -558,7 +563,7 @@
 				CURRENT_PROJECT_VERSION = 32;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 9K32WDUN2H;
+				DEVELOPMENT_TEAM = CLG4S8GTX4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -598,7 +603,6 @@
 		C1B521592A5EFF5900E9B7AC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
@@ -610,7 +614,7 @@
 				CURRENT_PROJECT_VERSION = 32;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 9K32WDUN2H;
+				DEVELOPMENT_TEAM = CLG4S8GTX4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
