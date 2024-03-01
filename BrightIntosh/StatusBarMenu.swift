@@ -112,23 +112,23 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         }
         
         statusItem.menu = menu
-        self.setupMenus()
+        self.updateMenu()
         
         // Listen to settings
         Settings.shared.addListener(setting: "brightintoshActive") {
-            self.setupMenus()
+            self.updateMenu()
         }
         
         Settings.shared.addListener(setting: "brightness") {
-            self.setupMenus()
+            self.updateMenu()
         }
         
         Settings.shared.addListener(setting: "timerAutomation") {
-            self.setupMenus()
+            self.updateMenu()
         }
     }
     
-    func setupMenus() {
+    func updateMenu() {
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: Settings.shared.brightintoshActive ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: Settings.shared.brightintoshActive ? "Increased brightness" : "Default brightness")
             button.toolTip = titleString
@@ -185,7 +185,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             if remainingTime == 0 {
                 self.stopRemainingTimePoller()
                 
-                self.setupMenus()
+                self.updateMenu()
                 return
             }
             
