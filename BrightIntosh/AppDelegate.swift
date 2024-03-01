@@ -8,8 +8,6 @@
 import Cocoa
 import KeyboardShortcuts
 import ServiceManagement
-import Carbon
-import SwiftUI
 
 
 class AppDelegate: NSObject, NSApplicationDelegate {
