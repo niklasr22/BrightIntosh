@@ -12,7 +12,6 @@ class AutomationManager {
     private var batteryCheckTimer: Timer?
     
     private var timerAutomationTimer: Timer?
-    private var remainingTime: TimeInterval = 0.0
     
     init() {
         if Settings.shared.batteryAutomation {
