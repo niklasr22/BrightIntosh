@@ -16,9 +16,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var overlayAvailable = false
     
-    private let BRIGHTINTOSH_VERSION_URL = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest"
-    
-    
     let settingsWindowController = SettingsWindowController()
     
     var statusBarMenu: StatusBarMenu?
