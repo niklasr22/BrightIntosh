@@ -180,6 +180,25 @@ struct AdvancedSettings: View {
     }
 }
 
+struct Acknowledgments: View {
+    var body: some View {
+        VStack(alignment: HorizontalAlignment.leading) {
+            ScrollView {
+                ForEach(acknowledgments) { ack in
+                    Text(ack.title).font(.title2)
+                    Text(ack.text)
+                }
+            }
+        }.frame(
+                minWidth: 0,
+                maxWidth: .infinity,
+                minHeight: 0,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            ).padding()
+    }
+}
+
 struct SettingsView: View {
 #if STORE
     var title: String = "BrightIntosh SE v\(appVersion)"
@@ -196,6 +215,9 @@ struct SettingsView: View {
                 }
                 AdvancedSettings().tabItem {
                     Text("Advanced")
+                }
+                Acknowledgments().tabItem {
+                    Text("Acknowledgments")
                 }
             }
             Label(title, image: "LogoBordered").imageScale(.small)
