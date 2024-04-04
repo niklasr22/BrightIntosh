@@ -31,8 +31,9 @@ struct Acknowledgment: Identifiable {
     let text: String
 }
 
-let acknowledgments: [Acknowledgment] = [
-    Acknowledgment(title: "KeyboardShortcuts", text: """
+
+
+private let keyboardShortcutsAcknowledgement = Acknowledgment(title: "KeyboardShortcuts", text: """
 MIT License
 
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -43,8 +44,9 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-                    ),
-    Acknowledgment(title: "Sparkle", text: """
+)
+
+private let sparkleAcknowledgment = Acknowledgment(title: "Sparkle", text: """
 Copyright (c) 2006-2013 Andy Matuschak.
 Copyright (c) 2009-2013 Elgato Systems GmbH.
 Copyright (c) 2011-2014 Kornel Lesiński.
@@ -180,6 +182,15 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
-                  )
-    
+)
+
+#if STORE
+let acknowledgments: [Acknowledgment] = [
+    keyboardShortcutsAcknowledgement
 ]
+#else
+let acknowledgments: [Acknowledgment] = [
+    keyboardShortcutsAcknowledgement,
+    sparkleAcknowledgment
+]
+#endif
