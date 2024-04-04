@@ -190,12 +190,12 @@ struct Acknowledgments: View {
                 }
             }
         }.frame(
-                minWidth: 0,
-                maxWidth: .infinity,
-                minHeight: 0,
-                maxHeight: .infinity,
-                alignment: .topLeading
-            ).padding()
+            minWidth: 0,
+            maxWidth: .infinity,
+            minHeight: 0,
+            maxHeight: .infinity,
+            alignment: .topLeading
+        ).padding()
     }
 }
 
@@ -241,7 +241,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-
+        
         let contentView = SettingsView().frame(width: 500, height: 580)
         
         settingsWindow.contentView = NSHostingView(rootView: contentView)
