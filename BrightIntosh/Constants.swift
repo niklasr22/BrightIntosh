@@ -31,8 +31,6 @@ struct Acknowledgment: Identifiable {
     let text: String
 }
 
-
-
 private let keyboardShortcutsAcknowledgement = Acknowledgment(title: "KeyboardShortcuts", text: """
 MIT License
 
