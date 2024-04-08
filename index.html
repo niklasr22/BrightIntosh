@@ -24,9 +24,6 @@
           href="https://apps.apple.com/us/app/brightintosh/id6452471855?mt=12&amp;itsct=apps_box_badge&amp;itscg=30200"><img
             src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/white/en-us?size=270x83&amp;releaseDate=1693267200"
             alt="Download on the Mac App Store" style="width: 184px; height: 47px;"></a>
-        <a id="download-link" href="https://github.com/niklasr22/BrightIntosh/releases/latest/" download><button
-            class="btn" onclick="toggleModal('download-modal')"><i class="fa-solid fa-download"></i> Download<span
-              id="version"></span></button></a>
         <a href="https://github.com/niklasr22/BrightIntosh" class="github-btn hide-on-mobile"><i
             class="fa-brands fa-github"></i></a>
       </span>
@@ -65,11 +62,6 @@
         <code>0xA97d490FFFb8f629e67a7d8f804366999bC86777</code>
         <p><strong>Bitcoin</strong> donations are also appreciated</p>
         <code>bc1qe3cv9485vs6ya2dejl967yegqn0uzksfxjq0gn</code>
-      </div>
-      <div class="info">
-        <h2>Installation via Homebrew</h2>
-        <code
-          class="brew"><span id="brew-cmd">brew install --cask brightintosh</span><span class="copy-btn" onclick="copyBrew(this)"><i class="fa-regular fa-copy"></i></span></code>
       </div>
       <div class="info">
         <h2>Contribute</h2>
@@ -124,27 +116,9 @@
     </div>
   </div>
   <script>
-    const version = document.getElementById("version");
-    const downloadLink = document.getElementById("download-link");
-    const url = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest";
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        version.innerHTML = " (" + data.tag_name + ")";
-        downloadLink.href = data.assets[0].browser_download_url;
-      });
-
-    downloadLink.addEventListener("click", function () {
-      fetch("https://c.brightintosh.de/d.php");
-    });
     initComparisons();
 
     fetch("https://c.brightintosh.de/v.php");
-
-    function copyBrew(btn) {
-      navigator.clipboard.writeText(document.getElementById("brew-cmd").innerText);
-      btn.children[0].className = "fa-solid fa-check";
-    }
 
     function toggleModal(modalId) {
       const modal = document.getElementById(modalId);
