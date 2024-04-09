@@ -27,11 +27,8 @@ Maximum brightness with BrightIntosh on the left half of the picture, default ma
 
 ## Installation
 
-- `.dmg` file: [GitHub Releases](https://github.com/niklasr22/BrightIntosh/releases/latest) or our [official website](https://brightintosh.de/).
 - [Mac App Store](https://apple.co/3r0Ghqm)
-- Homebrew (Cask Install)
-
-      brew install --cask brightintosh
+- 👩🏼‍💻 Build it yourself 👨🏽‍💻
 
 ## Contributing
 
