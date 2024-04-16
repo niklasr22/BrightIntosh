@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="https://github.com/niklasr22/BrightIntosh/assets/75939868/eb6ad676-aced-4785-a05e-53e18275a1a1">
+  <img src="https://github.com/niklasr22/BrightIntosh/assets/75939868/fd6b544e-d86d-4ab5-94af-eda67aeb0a88">
 </p>
 <p align="center">
   <a href="https://niklasr22.github.io/BrightIntosh">View our website</a><br/><br/>
