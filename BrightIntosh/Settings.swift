@@ -22,7 +22,7 @@ final class Settings {
         }
     }
     
-    public var brightness: Float = UserDefaults.standard.object(forKey: "brightness") != nil ? UserDefaults.standard.float(forKey: "brightness") : 1.6 {
+    public var brightness: Float = UserDefaults.standard.object(forKey: "brightness") != nil ? UserDefaults.standard.float(forKey: "brightness") : getDeviceMaxBrightness() {
         didSet {
             UserDefaults.standard.setValue(brightness, forKey: "brightness")
             callListeners(setting: "brightness")

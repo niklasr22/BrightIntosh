@@ -85,7 +85,7 @@ struct BasicSettings: View {
         VStack(alignment: HorizontalAlignment.leading) {
             Section(header: Text("Brightness").bold()) {
                 Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
-                Slider(value: $viewModel.brightnessSlider, in: 1.0...1.6) {
+                Slider(value: $viewModel.brightnessSlider, in: 1.0...getDeviceMaxBrightness()) {
                     Text("Brightness")
                 }
             }
