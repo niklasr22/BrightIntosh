@@ -41,7 +41,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func increaseBrightness() {
-        Settings.shared.brightness = min(1.6, Settings.shared.brightness + 0.05)
+        Settings.shared.brightness = min(getDeviceMaxBrightness(), Settings.shared.brightness + 0.05)
     }
     
     @objc func decreaseBrightness() {

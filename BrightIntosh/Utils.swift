@@ -18,3 +18,11 @@ func getModelIdentifier() -> String? {
     IOObjectRelease(service)
     return modelIdentifier
 }
+
+func getDeviceMaxBrightness() -> Float {
+    if let device = getModelIdentifier(),
+        sdr600nitsDevices.contains(device) {
+        return 1.54
+    }
+    return 1.6
+}

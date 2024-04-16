@@ -71,7 +71,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         let sliderX = (sliderContainerView.frame.width - sliderWidth) / 2
         let sliderY = (sliderContainerView.frame.height - sliderWidth) / 2
         
-        let brightnessSlider = NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: 1.6, target: self, action: #selector(brightnessSliderMoved))
+        let brightnessSlider = NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
         brightnessSlider.target = self
         brightnessSlider.frame = NSRect(x: sliderX, y: sliderY, width: sliderWidth, height: sliderHeight)
         brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
