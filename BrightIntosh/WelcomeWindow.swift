@@ -22,7 +22,7 @@ struct WelcomeView: View {
             Text("Welcome to BrightIntosh!").font(Font.title)
             VStack (alignment: HorizontalAlignment.leading, spacing: 10.0) {
                 Text("Disclaimer:").font(Font.headline)
-                Text("BrightIntosh is designed to be safe for your MacBook Pro. It will not harm your hardware, as it does not bypass the operating system's protections.")
+                Text("BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk.")
                     .lineLimit(5)
                 Text("How to use BrightIntosh:").font(Font.headline)
                 Text("When the app is running you will see a sun icon in your menu bar that provides everything you need to use BrightIntosh.")
@@ -33,7 +33,7 @@ struct WelcomeView: View {
                 }
             }
             Spacer()
-            Button("Alright") {
+            Button("Accept") {
                 closeWindow()
             }
             .buttonStyle(.borderedProminent)
