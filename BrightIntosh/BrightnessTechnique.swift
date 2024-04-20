@@ -32,31 +32,45 @@ class BrightnessTechnique {
 
 class GammaTechnique: BrightnessTechnique {
     
-    private var overlayWindowController: OverlayWindowController
+    //private var overlayWindowController: OverlayWindowController
+    private var overlayWindowControllers: [OverlayWindowController] = []
     
     override init() {
-        overlayWindowController = OverlayWindowController()
+        //overlayWindowController = OverlayWindowController()
         super.init()
     }
     
     override func enable() {
-        if let screen = getBuiltInScreen() {
+        overlayWindowControllers = []
+        for screen in getXDRDisplays() {
+            let overlayWindowController = OverlayWindowController()
+            overlayWindowControllers.append(overlayWindowController)
             isEnabled = true
-            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 1, height: 1)
+            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 100, height: 100)
             overlayWindowController.open(rect: rect, screen: screen)
             adjustBrightness()
         }
+        
+        /*if let screen = getBuiltInScreen() {
+            isEnabled = true
+            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 100, height: 100)
+            overlayWindowController.open(rect: rect, screen: screen)
+            adjustBrightness()
+        }*/
     }
     
     override func disable() {
         isEnabled = false
-        overlayWindowController.window?.close()
+        for overlayWindowController in overlayWindowControllers {
+            overlayWindowController.window?.close()
+        }
         resetGammaTable()
     }
     
     override func adjustBrightness() {
         super.adjustBrightness()
-        if let screen = getBuiltInScreen() {
+        for screen in getXDRDisplays() {
+        // if let screen = getBuiltInScreen() {
             self.adjustGammaTable(screen: screen)
         }
     }
@@ -88,6 +102,7 @@ class GammaTechnique: BrightnessTechnique {
                 blueTable[i] = blueTable[i] * gamma
             }
             CGSetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable)
+            print("Set gamme table for display \(screen.localizedName) \(String(describing: screen.displayId))")
         }
     }
     
