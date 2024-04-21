@@ -32,6 +32,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var titleItem: NSMenuItem!
     private var toggleTimerItem: NSMenuItem!
     private var toggleIncreasedBrightnessItem: NSMenuItem!
+    private var brightnessSlider: NSSlider!
 
     
     private var remainingTimePoller: Timer?
@@ -71,7 +72,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         let sliderX = (sliderContainerView.frame.width - sliderWidth) / 2
         let sliderY = (sliderContainerView.frame.height - sliderWidth) / 2
         
-        let brightnessSlider = NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
+        brightnessSlider = NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
         brightnessSlider.target = self
         brightnessSlider.frame = NSRect(x: sliderX, y: sliderY, width: sliderWidth, height: sliderHeight)
         brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
@@ -147,6 +148,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         } else if menu.items.contains(toggleTimerItem) {
             menu.removeItem(toggleTimerItem!)
         }
+        
+        brightnessSlider.floatValue = Settings.shared.brightness
     }
     
     @objc func callToggleBrightIntosh() {

@@ -1,5 +1,5 @@
 //
-//  OverlayTechnique.swift
+//  BrightnessTechnique.swift
 //  BrightIntosh
 //
 //  Created by Niklas Rousset on 01.10.23.
@@ -107,67 +107,5 @@ class GammaTechnique: BrightnessTechnique {
     
     private func resetGammaTable() {
         CGDisplayRestoreColorSyncSettings()
-    }
-}
-
-class OverlayTechnique: BrightnessTechnique {
-    
-    private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
-    
-    override init() {
-        super.init()
-    }
-    
-    override func enable() {
-        getXDRDisplays().forEach {
-            enableScreen(screen: $0)
-        }
-    }
-    
-    override func enableScreen(screen: NSScreen) {
-        if let displayId = screen.displayId {
-            let overlayWindowController = OverlayWindowController(screen: screen)
-            overlayWindowControllers[displayId] = overlayWindowController
-            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: screen.frame.width, height: screen.frame.height)
-            overlayWindowController.open(rect: rect)
-            adjustBrightness()
-        }
-    }
-    
-    override func disable() {
-        isEnabled = false
-        overlayWindowControllers.values.forEach { controller in
-            controller.close()
-        }
-        overlayWindowControllers.removeAll()
-    }
-    
-    override func adjustBrightness() {
-        super.adjustBrightness()
-        overlayWindowControllers.values.forEach { controller in
-            (controller.window as? OverlayWindow)?.overlay?.setMaxFrameRate(screen: controller.screen)
-            (controller.window as? OverlayWindow)?.overlay?.setHDRBrightness(colorValue: Double(Settings.shared.brightness), screen: controller.screen)
-        }
-    }
-    
-    override func screenUpdate(screens: [NSScreen]) {
-        for screen: NSScreen in screens {
-            if let displayId = screen.displayId {
-                if !overlayWindowControllers.keys.contains(displayId) {
-                    enableScreen(screen: screen)
-                } else {
-                    adjustBrightness()
-                }
-            }
-        }
-        
-        overlayWindowControllers = overlayWindowControllers.filter{ (displayId, controller) in
-            if screens.filter({ $0.displayId == displayId }).isEmpty {
-                print("Turn brightness off for \(controller.screen.localizedName)")
-                controller.close()
-                return false
-            }
-            return true
-        }
     }
 }

@@ -56,21 +56,12 @@ class BrightnessManager {
                 self.brightnessTechnique?.adjustBrightness()
             }
         }
-        
-        Settings.shared.addListener(setting: "overlayTechnique") {
-            self.setBrightnessTechnique()
-        }
     }
     
     func setBrightnessTechnique() {
         brightnessTechnique?.disable()
-        if Settings.shared.overlayTechnique {
-            brightnessTechnique = OverlayTechnique()
-            print("Activated Overlay Technique")
-        } else {
-            brightnessTechnique = GammaTechnique()
-            print("Activated Gamma Technique")
-        }
+        brightnessTechnique = GammaTechnique()
+        print("Activated Gamma Technique")
     }
     
     @objc func handleScreenParameters(notification: Notification) {
