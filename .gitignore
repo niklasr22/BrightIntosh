@@ -1,4 +1,6 @@
 xcuserdata
 *.pbxuser
 
+.vscode
+
 .DS_Store
