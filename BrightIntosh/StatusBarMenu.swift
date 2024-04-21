@@ -61,23 +61,29 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         titleItem = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
         
-        // centered brightness slider
         let brightnessSliderItem = NSMenuItem()
-        
-        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 200, height: 35))
-        let horizontalPadding: CGFloat = 5.0
-        let sliderWidth = sliderContainerView.frame.width - (2 * horizontalPadding)
-        let sliderHeight = 30.0
-        let sliderX = (sliderContainerView.frame.width - sliderWidth) / 2
-        let sliderY = (sliderContainerView.frame.height - sliderWidth) / 2
-        
-        let brightnessSlider = NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
-        brightnessSlider.target = self
-        brightnessSlider.frame = NSRect(x: sliderX, y: sliderY, width: sliderWidth, height: sliderHeight)
-        brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
-        sliderContainerView.addSubview(brightnessSlider)
-        sliderContainerView.autoresizingMask = [.width]
-        brightnessSliderItem.view = sliderContainerView
+        if #available(macOS 11.0, *) {
+            let sliderHandler = SliderHandler(title: "brightness")
+            brightnessSliderItem.view = sliderHandler.view
+            
+        } else {
+            // centered brightness slider
+            
+            let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 200, height: 35))
+            let horizontalPadding: CGFloat = 5.0
+            let sliderWidth = sliderContainerView.frame.width - (2 * horizontalPadding)
+            let sliderHeight = 30.0
+            let sliderX = (sliderContainerView.frame.width - sliderWidth) / 2
+            let sliderY = (sliderContainerView.frame.height - sliderWidth) / 2
+            
+            let brightnessSlider = NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
+            brightnessSlider.target = self
+            brightnessSlider.frame = NSRect(x: sliderX, y: sliderY, width: sliderWidth, height: sliderHeight)
+            brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
+            sliderContainerView.addSubview(brightnessSlider)
+            sliderContainerView.autoresizingMask = [.width]
+            brightnessSliderItem.view = sliderContainerView
+        }
         
         
         toggleIncreasedBrightnessItem = NSMenuItem(title: "", action: #selector(callToggleBrightIntosh), keyEquivalent: "")
