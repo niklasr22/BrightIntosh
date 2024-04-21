@@ -32,4 +32,4 @@ Maximum brightness with BrightIntosh on the left half of the picture, default ma
 
 ## Contributing
 
-If you have any ideas, enhancements or proposals, feel free to open an issue or a pull request!
+If you have any ideas, enhancements or proposals, feel free to open an issue!
