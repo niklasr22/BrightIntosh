@@ -12,14 +12,14 @@ import ServiceManagement
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     
-    private var overlayAvailable = false
+    private var overlayAvailable: Bool = false
     
     let settingsWindowController = SettingsWindowController()
     
     var statusBarMenu: StatusBarMenu?
     var brightnessManager: BrightnessManager?
     var automationManager: AutomationManager?
-    var supportedDevice = false
+    var supportedDevice: Bool = false
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
@@ -37,7 +37,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Register global hotkeys
         addKeyListeners()
-        
     }
     
     @objc func increaseBrightness() {
@@ -74,7 +73,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.runModal(for: controller.window!)
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
-    
  
 }
 

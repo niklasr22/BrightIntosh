@@ -9,10 +9,14 @@ import Foundation
 import Cocoa
 
 class BrightnessTechnique {
-    fileprivate(set) var isEnabled = false
+    fileprivate(set) var isEnabled: Bool = false
     
     func enable() {
         fatalError("Subclasses need to implement the `enable()` method.")
+    }
+    
+    func enableScreen(screen: NSScreen) {
+        fatalError("Subclasses need to implement the `enableScreen()` method.")
     }
     
     func disable() {
@@ -20,48 +24,53 @@ class BrightnessTechnique {
     }
     
     func adjustBrightness() {
-        if getBuiltInScreen() == nil {
+        if getXDRDisplays().count == 0 {
             self.disable()
-            return
         }
     }
     
-    func screenUpdate(screen: NSScreen) {}
+    func screenUpdate(screens: [NSScreen]) {}
     
 }
 
 class GammaTechnique: BrightnessTechnique {
     
-    private var overlayWindowControllers: [OverlayWindowController] = []
+    private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
     
     override init() {
         super.init()
     }
     
     override func enable() {
-        overlayWindowControllers = []
-        for screen in getXDRDisplays() {
-            let overlayWindowController = OverlayWindowController()
-            overlayWindowControllers.append(overlayWindowController)
+        getXDRDisplays().forEach {
+            enableScreen(screen: $0)
+        }
+    }
+    
+    override func enableScreen(screen: NSScreen) {
+        if let displayId = screen.displayId {
+            let overlayWindowController = OverlayWindowController(screen: screen)
+            overlayWindowControllers[displayId] = overlayWindowController
             isEnabled = true
             let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 100, height: 100)
-            overlayWindowController.open(rect: rect, screen: screen)
+            overlayWindowController.open(rect: rect)
             adjustBrightness()
         }
     }
     
     override func disable() {
         isEnabled = false
-        for overlayWindowController in overlayWindowControllers {
-            overlayWindowController.window?.close()
+        overlayWindowControllers.values.forEach { controller in
+            controller.window?.close()
         }
+        overlayWindowControllers.removeAll()
         resetGammaTable()
     }
     
     override func adjustBrightness() {
         super.adjustBrightness()
-        for screen in getXDRDisplays() {
-            self.adjustGammaTable(screen: screen)
+        overlayWindowControllers.values.forEach { controller in
+            self.adjustGammaTable(screen: controller.screen)
         }
     }
     
@@ -70,9 +79,9 @@ class GammaTechnique: BrightnessTechnique {
             resetGammaTable()
             
             let tableSize: Int = 256 // The size of the gamma table
-            var redTable = [CGGammaValue](repeating: 0, count: tableSize)
-            var greenTable = [CGGammaValue](repeating: 0, count: tableSize)
-            var blueTable = [CGGammaValue](repeating: 0, count: tableSize)
+            var redTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: tableSize)
+            var greenTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: tableSize)
+            var blueTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: tableSize)
             var sampleCount: UInt32 = 0
             let result = CGGetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable, &sampleCount)
             
@@ -92,7 +101,7 @@ class GammaTechnique: BrightnessTechnique {
                 blueTable[i] = blueTable[i] * gamma
             }
             CGSetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable)
-            print("Set gamme table for display \(screen.localizedName) \(String(describing: screen.displayId))")
+            print("Set gamma table for display \(screen.localizedName) \(String(describing: screen.displayId))")
         }
     }
     
@@ -103,42 +112,62 @@ class GammaTechnique: BrightnessTechnique {
 
 class OverlayTechnique: BrightnessTechnique {
     
-    private var overlayWindowController: OverlayWindowController
-    private var overlayWindowControllers: [OverlayWindowController] = []
+    private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
     
     override init() {
-        overlayWindowController = OverlayWindowController(fullsize: true)
         super.init()
     }
     
     override func enable() {
-        overlayWindowControllers = []
-        for screen in getXDRDisplays() {
-            let overlayWindowController = OverlayWindowController()
-            overlayWindowControllers.append(overlayWindowController)
-            isEnabled = true
+        getXDRDisplays().forEach {
+            enableScreen(screen: $0)
+        }
+    }
+    
+    override func enableScreen(screen: NSScreen) {
+        if let displayId = screen.displayId {
+            let overlayWindowController = OverlayWindowController(screen: screen)
+            overlayWindowControllers[displayId] = overlayWindowController
             let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: screen.frame.width, height: screen.frame.height)
-            overlayWindowController.open(rect: rect, screen: screen)
+            overlayWindowController.open(rect: rect)
             adjustBrightness()
         }
     }
     
     override func disable() {
         isEnabled = false
-        for overlayWindowController in overlayWindowControllers {
-            overlayWindowController.close()
+        overlayWindowControllers.values.forEach { controller in
+            controller.close()
         }
+        overlayWindowControllers.removeAll()
     }
     
     override func adjustBrightness() {
         super.adjustBrightness()
-        if let screen = getBuiltInScreen() {
-            (overlayWindowController.window as? OverlayWindow)?.overlay?.setMaxFrameRate(screen: screen)
-            (overlayWindowController.window as? OverlayWindow)?.overlay?.setHDRBrightness(colorValue: Double(Settings.shared.brightness), screen: screen)
+        overlayWindowControllers.values.forEach { controller in
+            (controller.window as? OverlayWindow)?.overlay?.setMaxFrameRate(screen: controller.screen)
+            (controller.window as? OverlayWindow)?.overlay?.setHDRBrightness(colorValue: Double(Settings.shared.brightness), screen: controller.screen)
         }
     }
     
-    override func screenUpdate(screen: NSScreen) {
-        adjustBrightness()
+    override func screenUpdate(screens: [NSScreen]) {
+        for screen: NSScreen in screens {
+            if let displayId = screen.displayId {
+                if !overlayWindowControllers.keys.contains(displayId) {
+                    enableScreen(screen: screen)
+                } else {
+                    adjustBrightness()
+                }
+            }
+        }
+        
+        overlayWindowControllers = overlayWindowControllers.filter{ (displayId, controller) in
+            if screens.filter({ $0.displayId == displayId }).isEmpty {
+                print("Turn brightness off for \(controller.screen.localizedName)")
+                controller.close()
+                return false
+            }
+            return true
+        }
     }
 }

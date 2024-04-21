@@ -36,7 +36,8 @@ class BrightnessManager {
             self,
             selector: #selector(handleScreenParameters(notification:)),
             name: NSApplication.didChangeScreenParametersNotification,
-            object: nil)
+            object: nil
+        )
         
         // Add settings listeners
         Settings.shared.addListener(setting: "brightintoshActive") {
@@ -73,12 +74,14 @@ class BrightnessManager {
     }
     
     @objc func handleScreenParameters(notification: Notification) {
-        if let screen = getBuiltInScreen() {
+        let screens = getXDRDisplays()
+        print("Available XDR displays: \(screens.count)")
+        if !screens.isEmpty {
             if let brightnessTechnique = brightnessTechnique, Settings.shared.brightintoshActive {
                 if !brightnessTechnique.isEnabled {
                     enableExtraBrightness()
                 } else {
-                    brightnessTechnique.screenUpdate(screen: screen)
+                    brightnessTechnique.screenUpdate(screens: screens)
                 }
             }
         } else {
@@ -88,6 +91,8 @@ class BrightnessManager {
     
     func enableExtraBrightness() {
         if extraBrightnessAllowed {
+            // Put brightness value into device specific bounds, as earlier versions allowed storing higher brightness values.
+            Settings.shared.brightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
             self.brightnessTechnique?.enable()
         }
     }
@@ -109,7 +114,7 @@ func getXDRDisplays() -> [NSScreen] {
     var xdrScreens: [NSScreen] = []
     for screen in NSScreen.screens {
         let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")]
-        let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
+        // let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
         //if (CGDisplayIsBuiltin(displayId) != 0 || screen.localizedName == "Pro Display XDR") {
             xdrScreens.append(screen)
         //}
