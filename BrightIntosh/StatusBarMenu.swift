@@ -120,6 +120,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         }
         
         Settings.shared.addListener(setting: "brightness") {
+            print("update brighntess value")
             self.updateMenu()
         }
         
