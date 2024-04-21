@@ -153,33 +153,6 @@ struct BasicSettings: View {
     }
 }
 
-
-
-struct AdvancedSettings: View {
-    
-    @State private var activeWindowHighlight = false
-    @State private var overlayTechnique = Settings.shared.overlayTechnique
-    
-    var body: some View {
-        VStack(alignment: HorizontalAlignment.leading) {
-            //Toggle("Highlight the active window with increased brightness", isOn: $activeWindowHighlight)
-            Toggle(isOn: $overlayTechnique) {
-                Text("Increase brightness using an overlay technique.")
-                Label("This may show more accurate colors but the increased brightness won't be available when using Mission Control or switching Spaces. The window selection tool of the screenshot application won't be able to focus any other window than the overlay.", systemImage: "exclamationmark.triangle.fill").foregroundColor(Color.yellow)
-            }.onChange(of: overlayTechnique) { value in
-                Settings.shared.overlayTechnique = value
-            }
-            Spacer()
-        }.frame(
-            minWidth: 0,
-            maxWidth: .infinity,
-            minHeight: 0,
-            maxHeight: .infinity,
-            alignment: .topLeading
-        ).padding()
-    }
-}
-
 struct Acknowledgments: View {
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
@@ -212,9 +185,6 @@ struct SettingsView: View {
             TabView {
                 BasicSettings().tabItem {
                     Text("General")
-                }
-                AdvancedSettings().tabItem {
-                    Text("Advanced")
                 }
                 Acknowledgments().tabItem {
                     Text("Acknowledgments")

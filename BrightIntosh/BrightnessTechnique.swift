@@ -1,5 +1,5 @@
 //
-//  OverlayTechnique.swift
+//  BrightnessTechnique.swift
 //  BrightIntosh
 //
 //  Created by Niklas Rousset on 01.10.23.
@@ -96,38 +96,3 @@ class GammaTechnique: BrightnessTechnique {
     }
 }
 
-class OverlayTechnique: BrightnessTechnique {
-    
-    private var overlayWindowController: OverlayWindowController
-    
-    override init() {
-        overlayWindowController = OverlayWindowController(fullsize: true)
-        super.init()
-    }
-    
-    override func enable() {
-        if let screen = getBuiltInScreen() {
-            isEnabled = true
-            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: screen.frame.width, height: screen.frame.height)
-            overlayWindowController.open(rect: rect, screen: screen)
-            adjustBrightness()
-        }
-    }
-    
-    override func disable() {
-        isEnabled = false
-        overlayWindowController.close()
-    }
-    
-    override func adjustBrightness() {
-        super.adjustBrightness()
-        if let screen = getBuiltInScreen() {
-            (overlayWindowController.window as? OverlayWindow)?.overlay?.setMaxFrameRate(screen: screen)
-            (overlayWindowController.window as? OverlayWindow)?.overlay?.setHDRBrightness(colorValue: Double(Settings.shared.brightness), screen: screen)
-        }
-    }
-    
-    override func screenUpdate(screen: NSScreen) {
-        adjustBrightness()
-    }
-}
