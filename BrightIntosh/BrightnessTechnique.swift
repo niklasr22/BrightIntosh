@@ -32,11 +32,9 @@ class BrightnessTechnique {
 
 class GammaTechnique: BrightnessTechnique {
     
-    //private var overlayWindowController: OverlayWindowController
     private var overlayWindowControllers: [OverlayWindowController] = []
     
     override init() {
-        //overlayWindowController = OverlayWindowController()
         super.init()
     }
     
@@ -50,13 +48,6 @@ class GammaTechnique: BrightnessTechnique {
             overlayWindowController.open(rect: rect, screen: screen)
             adjustBrightness()
         }
-        
-        /*if let screen = getBuiltInScreen() {
-            isEnabled = true
-            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 100, height: 100)
-            overlayWindowController.open(rect: rect, screen: screen)
-            adjustBrightness()
-        }*/
     }
     
     override func disable() {
@@ -70,7 +61,6 @@ class GammaTechnique: BrightnessTechnique {
     override func adjustBrightness() {
         super.adjustBrightness()
         for screen in getXDRDisplays() {
-        // if let screen = getBuiltInScreen() {
             self.adjustGammaTable(screen: screen)
         }
     }
@@ -114,6 +104,7 @@ class GammaTechnique: BrightnessTechnique {
 class OverlayTechnique: BrightnessTechnique {
     
     private var overlayWindowController: OverlayWindowController
+    private var overlayWindowControllers: [OverlayWindowController] = []
     
     override init() {
         overlayWindowController = OverlayWindowController(fullsize: true)
@@ -121,7 +112,10 @@ class OverlayTechnique: BrightnessTechnique {
     }
     
     override func enable() {
-        if let screen = getBuiltInScreen() {
+        overlayWindowControllers = []
+        for screen in getXDRDisplays() {
+            let overlayWindowController = OverlayWindowController()
+            overlayWindowControllers.append(overlayWindowController)
             isEnabled = true
             let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: screen.frame.width, height: screen.frame.height)
             overlayWindowController.open(rect: rect, screen: screen)
@@ -131,7 +125,9 @@ class OverlayTechnique: BrightnessTechnique {
     
     override func disable() {
         isEnabled = false
-        overlayWindowController.close()
+        for overlayWindowController in overlayWindowControllers {
+            overlayWindowController.close()
+        }
     }
     
     override func adjustBrightness() {
