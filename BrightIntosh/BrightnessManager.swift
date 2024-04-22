@@ -89,26 +89,14 @@ class BrightnessManager {
     }
 }
 
-
-func getBuiltInScreen() -> NSScreen? {
-    for screen in NSScreen.screens {
-        let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")]
-        let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
-        if (CGDisplayIsBuiltin(displayId) != 0) {
-            return screen
-        }
-    }
-    return nil
-}
-
 func getXDRDisplays() -> [NSScreen] {
     var xdrScreens: [NSScreen] = []
     for screen in NSScreen.screens {
         let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")]
-        // let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
-        //if (CGDisplayIsBuiltin(displayId) != 0 || screen.localizedName == "Pro Display XDR") {
+        let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
+        if (CGDisplayIsBuiltin(displayId) != 0 || externalXdrDisplays.contains(screen.localizedName)) {
             xdrScreens.append(screen)
-        //}
+        }
     }
     return xdrScreens
 }
