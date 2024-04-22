@@ -14,8 +14,7 @@ class OverlayWindow: NSWindow {
     
     init(fullsize: Bool = false) {
         self.fullsize = fullsize
-        // TODO: let rect = NSRect(x: 0, y: 0, width: 1, height: 1)
-        let rect = NSRect(x: 0, y: 0, width: 100, height: 100)
+        let rect = NSRect(x: 0, y: 0, width: 1, height: 1)
         
         
         if fullsize {
@@ -38,8 +37,7 @@ class OverlayWindow: NSWindow {
         
         isOpaque = false
         hasShadow = false
-        // TODO: backgroundColor = NSColor.clear
-        backgroundColor = NSColor.red
+        backgroundColor = NSColor.clear
         ignoresMouseEvents = true
         isReleasedWhenClosed = false
         hidesOnDeactivate = false
@@ -49,7 +47,7 @@ class OverlayWindow: NSWindow {
         overlay = Overlay(frame: frame, multiplyCompositing: self.fullsize)
         overlay?.screenUpdate(screen: screen)
         overlay?.autoresizingMask = [.width, .height]
-        //contentView = overlay
+        contentView = overlay
     }
     
     func screenUpdate(screen: NSScreen) {
@@ -80,8 +78,7 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         if !fullsize {
             var position = screen.frame.origin
             // - 1 pixel offset so that the pixel is actually in the corner of the laptop screen and not visible on a potential screen placed on top of it.
-            // TODO: Remove:
-            position.y += screen.frame.height - 100
+            position.y += screen.frame.height - 1
             
             window.setFrameOrigin(position)
         }
