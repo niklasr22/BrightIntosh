@@ -69,6 +69,7 @@ class GammaTechnique: BrightnessTechnique {
     
     override func adjustBrightness() {
         super.adjustBrightness()
+        resetGammaTable()
         overlayWindowControllers.values.forEach { controller in
             self.adjustGammaTable(screen: controller.screen)
         }
@@ -76,8 +77,6 @@ class GammaTechnique: BrightnessTechnique {
     
     private func adjustGammaTable(screen: NSScreen) {
         if let displayId = screen.displayId, Settings.shared.brightintoshActive {
-            resetGammaTable()
-            
             let tableSize: Int = 256 // The size of the gamma table
             var redTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: tableSize)
             var greenTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: tableSize)
@@ -107,5 +106,6 @@ class GammaTechnique: BrightnessTechnique {
     
     private func resetGammaTable() {
         CGDisplayRestoreColorSyncSettings()
+        print("Reset gamma table for all displays")
     }
 }
