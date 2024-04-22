@@ -16,6 +16,7 @@ class OverlayWindow: NSWindow {
         self.fullsize = fullsize
         let rect = NSRect(x: 0, y: 0, width: 1, height: 1)
         
+        
         if fullsize {
             super.init(contentRect: rect, styleMask: [.fullSizeContentView, .borderless], backing: .buffered, defer: false)
             if #available(macOS 13.0, *) {
@@ -56,7 +57,10 @@ class OverlayWindow: NSWindow {
 
 final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     let fullsize: Bool
-    init(fullsize: Bool = false) {
+    public let screen: NSScreen
+    
+    init(screen: NSScreen, fullsize: Bool = false) {
+        self.screen = screen
         self.fullsize = fullsize
         let overlayWindow = OverlayWindow(fullsize: fullsize)
         
@@ -64,7 +68,7 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         overlayWindow.delegate = self
     }
     
-    func open(rect: NSRect, screen: NSScreen) {
+    func open(rect: NSRect) {
         guard let window = self.window as? OverlayWindow else {
             return
         }

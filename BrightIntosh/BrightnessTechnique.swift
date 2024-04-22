@@ -9,10 +9,14 @@ import Foundation
 import Cocoa
 
 class BrightnessTechnique {
-    fileprivate(set) var isEnabled = false
+    fileprivate(set) var isEnabled: Bool = false
     
     func enable() {
         fatalError("Subclasses need to implement the `enable()` method.")
+    }
+    
+    func enableScreen(screen: NSScreen) {
+        fatalError("Subclasses need to implement the `enableScreen()` method.")
     }
     
     func disable() {
@@ -20,55 +24,63 @@ class BrightnessTechnique {
     }
     
     func adjustBrightness() {
-        if getBuiltInScreen() == nil {
+        if getXDRDisplays().count == 0 {
             self.disable()
-            return
         }
     }
     
-    func screenUpdate(screen: NSScreen) {}
+    func screenUpdate(screens: [NSScreen]) {}
     
 }
 
 class GammaTechnique: BrightnessTechnique {
     
-    private var overlayWindowController: OverlayWindowController
+    private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
     
     override init() {
-        overlayWindowController = OverlayWindowController()
         super.init()
     }
     
     override func enable() {
-        if let screen = getBuiltInScreen() {
+        getXDRDisplays().forEach {
+            enableScreen(screen: $0)
+        }
+    }
+    
+    override func enableScreen(screen: NSScreen) {
+        if let displayId = screen.displayId {
+            let overlayWindowController = OverlayWindowController(screen: screen)
+            overlayWindowControllers[displayId] = overlayWindowController
             isEnabled = true
             let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 1, height: 1)
-            overlayWindowController.open(rect: rect, screen: screen)
+            overlayWindowController.open(rect: rect)
             adjustBrightness()
         }
     }
     
     override func disable() {
         isEnabled = false
-        overlayWindowController.window?.close()
+        overlayWindowControllers.values.forEach { controller in
+            controller.window?.close()
+        }
+        overlayWindowControllers.removeAll()
         resetGammaTable()
     }
     
     override func adjustBrightness() {
         super.adjustBrightness()
-        if let screen = getBuiltInScreen() {
-            self.adjustGammaTable(screen: screen)
+        resetGammaTable()
+        overlayWindowControllers.values.forEach { controller in
+            self.adjustGammaTable(screen: controller.screen)
         }
     }
     
     private func adjustGammaTable(screen: NSScreen) {
         if let displayId = screen.displayId, Settings.shared.brightintoshActive {
-            resetGammaTable()
-            
             let tableSize: Int = 256 // The size of the gamma table
-            var redTable = [CGGammaValue](repeating: 0, count: tableSize)
-            var greenTable = [CGGammaValue](repeating: 0, count: tableSize)
-            var blueTable = [CGGammaValue](repeating: 0, count: tableSize)
+            var redTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: tableSize)
+            var greenTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: tableSize)
+            var blueTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: tableSize)
             var sampleCount: UInt32 = 0
             let result = CGGetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable, &sampleCount)
             
@@ -88,11 +100,12 @@ class GammaTechnique: BrightnessTechnique {
                 blueTable[i] = blueTable[i] * gamma
             }
             CGSetDisplayTransferByTable(displayId, UInt32(tableSize), &redTable, &greenTable, &blueTable)
+            print("Set gamma table for display \(screen.localizedName) \(String(describing: screen.displayId))")
         }
     }
     
     private func resetGammaTable() {
         CGDisplayRestoreColorSyncSettings()
+        print("Reset gamma table for all displays")
     }
 }
-

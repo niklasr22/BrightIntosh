@@ -20,9 +20,11 @@ let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? 
 #if DEBUG
 let supportedDevices = ["MacBookPro18,1", "MacBookPro18,2", "MacBookPro18,3", "MacBookPro18,4", "Mac14,6", "Mac14,10", "Mac14,5", "Mac14,9", "Mac15,7", "Mac15,9", "Mac15,11", "Mac15,6", "Mac15,8", "Mac15,10", "Mac15,3", "MacBookAir10,1"
 ]
+let externalXdrDisplays = ["Pro Display XDR", "C34H89x"]
 #else
 let supportedDevices = ["MacBookPro18,1", "MacBookPro18,2", "MacBookPro18,3", "MacBookPro18,4", "Mac14,6", "Mac14,10", "Mac14,5", "Mac14,9", "Mac15,7", "Mac15,9", "Mac15,11", "Mac15,6", "Mac15,8", "Mac15,10", "Mac15,3",
 ]
+let externalXdrDisplays = ["Pro Display XDR"]
 #endif
 let sdr600nitsDevices = ["Mac15,3", "Mac15,6", "Mac15,7", "Mac15,8", "Mac15,9", "Mac15,10", "Mac15,11"]
 
