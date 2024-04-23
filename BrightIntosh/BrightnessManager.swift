@@ -18,6 +18,7 @@ class BrightnessManager {
     
     var brightnessTechnique: BrightnessTechnique?
     var extraBrightnessAllowed = false;
+    var screens: [NSScreen] = []
     
     init(brightnessAllowed: Bool) {
         self.extraBrightnessAllowed = brightnessAllowed
@@ -56,6 +57,7 @@ class BrightnessManager {
                 self.brightnessTechnique?.adjustBrightness()
             }
         }
+        screens = getXDRDisplays()
     }
     
     func setBrightnessTechnique() {
@@ -65,13 +67,30 @@ class BrightnessManager {
     }
     
     @objc func handleScreenParameters(notification: Notification) {
-        let screens = getXDRDisplays()
-        print("Available XDR displays: \(screens.count)")
-        if !screens.isEmpty {
+        let newScreens = getXDRDisplays()
+        
+        var changedScreens = newScreens.count != screens.count
+        if !changedScreens {
+            for screen in screens {
+                let sameScreen = newScreens.filter({$0.displayId == screen.displayId }).first
+                if sameScreen?.frame.origin != screen.frame.origin {
+                    changedScreens = true;
+                    break
+                }
+            }
+        }
+        
+        if changedScreens {
+            print("Screen setup changed")
+            screens = newScreens
+        }
+        
+        
+        if !newScreens.isEmpty {
             if let brightnessTechnique = brightnessTechnique, Settings.shared.brightintoshActive {
                 if !brightnessTechnique.isEnabled {
                     enableExtraBrightness()
-                } else {
+                } else if changedScreens {
                     brightnessTechnique.screenUpdate(screens: screens)
                 }
             }

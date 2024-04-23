@@ -45,16 +45,16 @@ class GammaTechnique: BrightnessTechnique {
         getXDRDisplays().forEach {
             enableScreen(screen: $0)
         }
+        adjustBrightness()
+        isEnabled = true
     }
     
     override func enableScreen(screen: NSScreen) {
         if let displayId = screen.displayId {
             let overlayWindowController = OverlayWindowController(screen: screen)
             overlayWindowControllers[displayId] = overlayWindowController
-            isEnabled = true
             let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 1, height: 1)
             overlayWindowController.open(rect: rect)
-            adjustBrightness()
         }
     }
     
@@ -69,7 +69,6 @@ class GammaTechnique: BrightnessTechnique {
     
     override func adjustBrightness() {
         super.adjustBrightness()
-        resetGammaTable()
         overlayWindowControllers.values.forEach { controller in
             self.adjustGammaTable(screen: controller.screen)
         }
@@ -107,5 +106,11 @@ class GammaTechnique: BrightnessTechnique {
     private func resetGammaTable() {
         CGDisplayRestoreColorSyncSettings()
         print("Reset gamma table for all displays")
+    }
+    
+    override func screenUpdate(screens: [NSScreen]) {
+        disable()
+        usleep(500000)
+        enable()
     }
 }
