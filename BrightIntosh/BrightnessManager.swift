@@ -113,7 +113,7 @@ func getXDRDisplays() -> [NSScreen] {
     for screen in NSScreen.screens {
         let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")]
         let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
-        if (CGDisplayIsBuiltin(displayId) != 0 || externalXdrDisplays.contains(screen.localizedName)) {
+        if (CGDisplayIsBuiltin(displayId) != 0 || (externalXdrDisplays.contains(screen.localizedName) && !Settings.shared.brightIntoshOnlyOnBuiltIn)) {
             xdrScreens.append(screen)
         }
     }
