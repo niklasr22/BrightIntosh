@@ -22,6 +22,13 @@ final class Settings {
         }
     }
     
+    public var brightIntoshOnlyOnBuiltIn: Bool = UserDefaults.standard.object(forKey: "brightIntoshOnlyOnBuiltIn") != nil ? UserDefaults.standard.bool(forKey: "brightIntoshOnlyOnBuiltIn") : false {
+        didSet {
+            UserDefaults.standard.setValue(brightintoshActive, forKey: "brightIntoshOnlyOnBuiltIn")
+            callListeners(setting: "brightIntoshOnlyOnBuiltIn")
+        }
+    }
+
     public var brightness: Float = UserDefaults.standard.object(forKey: "brightness") != nil ? UserDefaults.standard.float(forKey: "brightness") : getDeviceMaxBrightness() {
         didSet {
             UserDefaults.standard.setValue(brightness, forKey: "brightness")

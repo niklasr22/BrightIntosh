@@ -72,6 +72,7 @@ struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
     
     @State private var launchOnLogin = Settings.shared.launchAtLogin
+    @State private var brightIntoshOnlyOnBuiltIn = Settings.shared.brightIntoshOnlyOnBuiltIn
     @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = Settings.shared.timerAutomationTimeout
     
@@ -88,6 +89,10 @@ struct BasicSettings: View {
                 Slider(value: $viewModel.brightnessSlider, in: 1.0...getDeviceMaxBrightness()) {
                     Text("Brightness")
                 }
+                Toggle("Apply increased brightness only on built-in screen", isOn: $brightIntoshOnlyOnBuiltIn)
+                    .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
+                        Settings.shared.brightIntoshOnlyOnBuiltIn = value
+                    }
             }
             Section(header: Text("Automations").bold()) {
                 Toggle("Launch on login", isOn: $launchOnLogin)
