@@ -69,6 +69,7 @@ class GammaTechnique: BrightnessTechnique {
     
     override func adjustBrightness() {
         super.adjustBrightness()
+        resetGammaTable()
         overlayWindowControllers.values.forEach { controller in
             self.adjustGammaTable(screen: controller.screen)
         }
