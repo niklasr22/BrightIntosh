@@ -72,6 +72,7 @@ struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
     
     @State private var launchOnLogin = Settings.shared.launchAtLogin
+    @State private var brightIntoshOnlyOnBuiltIn = Settings.shared.brightIntoshOnlyOnBuiltIn
     @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = Settings.shared.timerAutomationTimeout
     
@@ -87,6 +88,14 @@ struct BasicSettings: View {
                 Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
                 Slider(value: $viewModel.brightnessSlider, in: 1.0...getDeviceMaxBrightness()) {
                     Text("Brightness")
+                }
+                if isDeviceSupported() {
+                    Toggle("Apply increased brightness only on built-in XDR display", isOn: $brightIntoshOnlyOnBuiltIn)
+                        .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
+                            Settings.shared.brightIntoshOnlyOnBuiltIn = value
+                        }
+                } else {
+                    Label("Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays.", systemImage: "exclamationmark.triangle.fill").foregroundColor(Color.yellow)
                 }
             }
             Section(header: Text("Automations").bold()) {

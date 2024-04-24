@@ -17,15 +17,9 @@ extension NSScreen {
 class BrightnessManager {
     
     var brightnessTechnique: BrightnessTechnique?
-    var extraBrightnessAllowed = false;
     var screens: [NSScreen] = []
     
-    init(brightnessAllowed: Bool) {
-        self.extraBrightnessAllowed = brightnessAllowed
-        if !self.extraBrightnessAllowed {
-            Settings.shared.brightintoshActive = false;
-        }
-        
+    init() {
         setBrightnessTechnique()
         
         if Settings.shared.brightintoshActive {
@@ -57,6 +51,11 @@ class BrightnessManager {
                 self.brightnessTechnique?.adjustBrightness()
             }
         }
+        
+        Settings.shared.addListener(setting: "brightIntoshOnlyOnBuiltIn") {
+            self.handlePotentialScreenUpdate()
+        }
+        
         screens = getXDRDisplays()
     }
     
@@ -67,6 +66,10 @@ class BrightnessManager {
     }
     
     @objc func handleScreenParameters(notification: Notification) {
+        handlePotentialScreenUpdate()
+    }
+    
+    func handlePotentialScreenUpdate() {
         let newScreens = getXDRDisplays()
         
         var changedScreens = newScreens.count != screens.count
@@ -100,11 +103,9 @@ class BrightnessManager {
     }
     
     func enableExtraBrightness() {
-        if extraBrightnessAllowed {
-            // Put brightness value into device specific bounds, as earlier versions allowed storing higher brightness values.
-            Settings.shared.brightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
-            self.brightnessTechnique?.enable()
-        }
+        // Put brightness value into device specific bounds, as earlier versions allowed storing higher brightness values.
+        Settings.shared.brightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
+        self.brightnessTechnique?.enable()
     }
 }
 
@@ -113,7 +114,7 @@ func getXDRDisplays() -> [NSScreen] {
     for screen in NSScreen.screens {
         let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")]
         let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
-        if (CGDisplayIsBuiltin(displayId) != 0 || externalXdrDisplays.contains(screen.localizedName)) {
+        if ((CGDisplayIsBuiltin(displayId) != 0 && isDeviceSupported()) || (externalXdrDisplays.contains(screen.localizedName) && !Settings.shared.brightIntoshOnlyOnBuiltIn)) {
             xdrScreens.append(screen)
         }
     }
