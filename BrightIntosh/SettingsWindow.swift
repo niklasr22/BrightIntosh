@@ -89,10 +89,14 @@ struct BasicSettings: View {
                 Slider(value: $viewModel.brightnessSlider, in: 1.0...getDeviceMaxBrightness()) {
                     Text("Brightness")
                 }
-                Toggle("Apply increased brightness only on built-in screen", isOn: $brightIntoshOnlyOnBuiltIn)
-                    .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
-                        Settings.shared.brightIntoshOnlyOnBuiltIn = value
-                    }
+                if isDeviceSupported() {
+                    Toggle("Apply increased brightness only on built-in XDR display", isOn: $brightIntoshOnlyOnBuiltIn)
+                        .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
+                            Settings.shared.brightIntoshOnlyOnBuiltIn = value
+                        }
+                } else {
+                    Label("Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays.", systemImage: "exclamationmark.triangle.fill").foregroundColor(Color.yellow)
+                }
             }
             Section(header: Text("Automations").bold()) {
                 Toggle("Launch on login", isOn: $launchOnLogin)

@@ -23,15 +23,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-        if let macModel = getModelIdentifier() {
-            supportedDevice = supportedDevices.contains(macModel)
-        }
+        supportedDevice = isDeviceSupported()
         
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             welcomeWindow()
         }
         
-        brightnessManager = BrightnessManager(brightnessAllowed: supportedDevice)
+        if !supportedDevice {
+            Settings.shared.brightIntoshOnlyOnBuiltIn = false
+        }
+        
+        brightnessManager = BrightnessManager()
         automationManager = AutomationManager()
         statusBarMenu = StatusBarMenu(supportedDevice: supportedDevice, automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh)
         
