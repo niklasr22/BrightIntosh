@@ -16,6 +16,7 @@ class OverlayWindow: NSWindow {
         self.fullsize = fullsize
         let rect = NSRect(x: 0, y: 0, width: 1, height: 1)
         
+        
         if fullsize {
             super.init(contentRect: rect, styleMask: [.fullSizeContentView, .borderless], backing: .buffered, defer: false)
             if #available(macOS 13.0, *) {
@@ -56,7 +57,10 @@ class OverlayWindow: NSWindow {
 
 final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     let fullsize: Bool
-    init(fullsize: Bool = false) {
+    public let screen: NSScreen
+    
+    init(screen: NSScreen, fullsize: Bool = false) {
+        self.screen = screen
         self.fullsize = fullsize
         let overlayWindow = OverlayWindow(fullsize: fullsize)
         
@@ -64,7 +68,7 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         overlayWindow.delegate = self
     }
     
-    func open(rect: NSRect, screen: NSScreen) {
+    func open(rect: NSRect) {
         guard let window = self.window as? OverlayWindow else {
             return
         }
@@ -72,15 +76,21 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         
         
         if !fullsize {
-            var position = screen.frame.origin
-            // - 1 pixel offset so that the pixel is actually in the corner of the laptop screen and not visible on a potential screen placed on top of it.
-            position.y += screen.frame.height - 1
-            
-            window.setFrameOrigin(position)
+            reposition()
         }
         
         window.orderFrontRegardless()
         window.addMetalOverlay(screen: screen)
+    }
+    
+    func reposition() {
+        window?.setFrameOrigin(getIdealPosition())
+    }
+    
+    func getIdealPosition() -> CGPoint {
+        var position = screen.frame.origin
+        position.y += screen.frame.height - 1
+        return position
     }
     
     required init?(coder: NSCoder) {

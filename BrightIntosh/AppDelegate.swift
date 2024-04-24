@@ -12,32 +12,33 @@ import ServiceManagement
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     
-    private var overlayAvailable = false
+    private var overlayAvailable: Bool = false
     
     let settingsWindowController = SettingsWindowController()
     
     var statusBarMenu: StatusBarMenu?
     var brightnessManager: BrightnessManager?
     var automationManager: AutomationManager?
-    var supportedDevice = false
+    var supportedDevice: Bool = false
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-        if let macModel = getModelIdentifier() {
-            supportedDevice = supportedDevices.contains(macModel)
-        }
+        supportedDevice = isDeviceSupported()
         
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             welcomeWindow()
         }
         
-        brightnessManager = BrightnessManager(brightnessAllowed: supportedDevice)
+        if !supportedDevice {
+            Settings.shared.brightIntoshOnlyOnBuiltIn = false
+        }
+        
+        brightnessManager = BrightnessManager()
         automationManager = AutomationManager()
         statusBarMenu = StatusBarMenu(supportedDevice: supportedDevice, automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh)
         
         // Register global hotkeys
         addKeyListeners()
-        
     }
     
     @objc func increaseBrightness() {
@@ -74,7 +75,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.runModal(for: controller.window!)
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
-    
  
 }
 

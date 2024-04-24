@@ -19,6 +19,13 @@ func getModelIdentifier() -> String? {
     return modelIdentifier
 }
 
+func isDeviceSupported() -> Bool {
+    if let device = getModelIdentifier(), supportedDevices.contains(device) {
+        return true
+    }
+    return false
+}
+
 func getDeviceMaxBrightness() -> Float {
     if let device = getModelIdentifier(),
         sdr600nitsDevices.contains(device) {

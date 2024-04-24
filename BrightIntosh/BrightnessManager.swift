@@ -17,14 +17,9 @@ extension NSScreen {
 class BrightnessManager {
     
     var brightnessTechnique: BrightnessTechnique?
-    var extraBrightnessAllowed = false;
+    var screens: [NSScreen] = []
     
-    init(brightnessAllowed: Bool) {
-        self.extraBrightnessAllowed = brightnessAllowed
-        if !self.extraBrightnessAllowed {
-            Settings.shared.brightintoshActive = false;
-        }
-        
+    init() {
         setBrightnessTechnique()
         
         if Settings.shared.brightintoshActive {
@@ -36,7 +31,8 @@ class BrightnessManager {
             self,
             selector: #selector(handleScreenParameters(notification:)),
             name: NSApplication.didChangeScreenParametersNotification,
-            object: nil)
+            object: nil
+        )
         
         // Add settings listeners
         Settings.shared.addListener(setting: "brightintoshActive") {
@@ -56,29 +52,49 @@ class BrightnessManager {
             }
         }
         
-        Settings.shared.addListener(setting: "overlayTechnique") {
-            self.setBrightnessTechnique()
+        Settings.shared.addListener(setting: "brightIntoshOnlyOnBuiltIn") {
+            self.handlePotentialScreenUpdate()
         }
+        
+        screens = getXDRDisplays()
     }
     
     func setBrightnessTechnique() {
         brightnessTechnique?.disable()
-        if Settings.shared.overlayTechnique {
-            brightnessTechnique = OverlayTechnique()
-            print("Activated Overlay Technique")
-        } else {
-            brightnessTechnique = GammaTechnique()
-            print("Activated Gamma Technique")
-        }
+        brightnessTechnique = GammaTechnique()
+        print("Activated Gamma Technique")
     }
     
     @objc func handleScreenParameters(notification: Notification) {
-        if let screen = getBuiltInScreen() {
+        handlePotentialScreenUpdate()
+    }
+    
+    func handlePotentialScreenUpdate() {
+        let newScreens = getXDRDisplays()
+        
+        var changedScreens = newScreens.count != screens.count
+        if !changedScreens {
+            for screen in screens {
+                let sameScreen = newScreens.filter({$0.displayId == screen.displayId }).first
+                if sameScreen?.frame.origin != screen.frame.origin {
+                    changedScreens = true;
+                    break
+                }
+            }
+        }
+        
+        if changedScreens {
+            print("Screen setup changed")
+            screens = newScreens
+        }
+        
+        
+        if !newScreens.isEmpty {
             if let brightnessTechnique = brightnessTechnique, Settings.shared.brightintoshActive {
                 if !brightnessTechnique.isEnabled {
                     enableExtraBrightness()
-                } else {
-                    brightnessTechnique.screenUpdate(screen: screen)
+                } else if changedScreens {
+                    brightnessTechnique.screenUpdate(screens: screens)
                 }
             }
         } else {
@@ -87,20 +103,20 @@ class BrightnessManager {
     }
     
     func enableExtraBrightness() {
-        if extraBrightnessAllowed {
-            self.brightnessTechnique?.enable()
-        }
+        // Put brightness value into device specific bounds, as earlier versions allowed storing higher brightness values.
+        Settings.shared.brightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
+        self.brightnessTechnique?.enable()
     }
 }
 
-
-func getBuiltInScreen() -> NSScreen? {
+func getXDRDisplays() -> [NSScreen] {
+    var xdrScreens: [NSScreen] = []
     for screen in NSScreen.screens {
         let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")]
         let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
-        if (CGDisplayIsBuiltin(displayId) != 0) {
-            return screen
+        if ((CGDisplayIsBuiltin(displayId) != 0 && isDeviceSupported()) || (externalXdrDisplays.contains(screen.localizedName) && !Settings.shared.brightIntoshOnlyOnBuiltIn)) {
+            xdrScreens.append(screen)
         }
     }
-    return nil
+    return xdrScreens
 }

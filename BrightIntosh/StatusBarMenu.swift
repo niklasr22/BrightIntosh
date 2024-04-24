@@ -32,6 +32,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var titleItem: NSMenuItem!
     private var toggleTimerItem: NSMenuItem!
     private var toggleIncreasedBrightnessItem: NSMenuItem!
+    private var brightnessSlider: NSSlider!
 
     
     private var remainingTimePoller: Timer?
@@ -153,6 +154,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         } else if menu.items.contains(toggleTimerItem) {
             menu.removeItem(toggleTimerItem!)
         }
+        
+        brightnessSlider.floatValue = Settings.shared.brightness
     }
     
     @objc func callToggleBrightIntosh() {
