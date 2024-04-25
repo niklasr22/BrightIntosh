@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		1E05D3952B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
 		1E05D3962B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
-		1EB0D3CD2BD542E20062CDFA /* SliderHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB0D3CC2BD542E20062CDFA /* SliderHandler.swift */; };
-		1EB0D3CE2BD542E20062CDFA /* SliderHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB0D3CC2BD542E20062CDFA /* SliderHandler.swift */; };
 		9C380FF12A8A8922000A6566 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 9C380FF02A8A8922000A6566 /* Sparkle */; };
 		9C4163702AB7198B005B34B6 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */; };
 		9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */; };
@@ -78,7 +76,6 @@
 
 /* Begin PBXFileReference section */
 		1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarMenu.swift; sourceTree = "<group>"; };
-		1EB0D3CC2BD542E20062CDFA /* SliderHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderHandler.swift; sourceTree = "<group>"; };
 		9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		9C4163782ABD8FBD005B34B6 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHelpers.swift; sourceTree = "<group>"; };
@@ -194,7 +191,6 @@
 				9CA026522AC968430068CC74 /* BrightnessTechnique.swift */,
 				9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */,
 				9C534AC72ACB06210029E050 /* AutomationManager.swift */,
-				1EB0D3CC2BD542E20062CDFA /* SliderHandler.swift */,
 				1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */,
 				9C534ACA2ACB2A050029E050 /* Alerts.swift */,
 				9CDE33C42B4317D70085F786 /* Utils.swift */,
@@ -359,7 +355,6 @@
 				9C41637A2ABD8FBD005B34B6 /* Constants.swift in Sources */,
 				9C534AC62ACB02C60029E050 /* BatteryHelpers.swift in Sources */,
 				9C711B4F2BD9583F00231067 /* StyledSlider.swift in Sources */,
-				1EB0D3CE2BD542E20062CDFA /* SliderHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,7 +387,6 @@
 				9C4163792ABD8FBD005B34B6 /* Constants.swift in Sources */,
 				9C534AC52ACB02C60029E050 /* BatteryHelpers.swift in Sources */,
 				9C711B4E2BD9583F00231067 /* StyledSlider.swift in Sources */,
-				1EB0D3CD2BD542E20062CDFA /* SliderHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

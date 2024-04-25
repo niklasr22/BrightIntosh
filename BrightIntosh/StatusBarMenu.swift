@@ -32,8 +32,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var titleItem: NSMenuItem!
     private var toggleTimerItem: NSMenuItem!
     private var toggleIncreasedBrightnessItem: NSMenuItem!
-    private var brightnessSlider: NSSlider!
-
+    private var brightnessSlider: StyledSlider!
+    private var brightnessValueDisplay: NSTextField!
     
     private var remainingTimePoller: Timer?
     
@@ -58,26 +58,31 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         
         menu.delegate = self
-        menu.minimumWidth = 210
+        menu.minimumWidth = 280
         
         titleItem = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
         
         let brightnessSliderItem = NSMenuItem()
         
-        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 200, height: 35))
-        let horizontalPadding: CGFloat = 5.0
-        let sliderWidth = sliderContainerView.frame.width - (2 * horizontalPadding)
+        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 280, height: 35))
+        let sliderWidth = 190.0
         let sliderHeight = 30.0
-        let sliderX = (sliderContainerView.frame.width - sliderWidth) / 2
-        let sliderY = (sliderContainerView.frame.height - sliderWidth) / 2
+        let horizontalOffset = 15.0
+        let sliderY = (sliderContainerView.frame.height - sliderHeight) / 2
         
         brightnessSlider = StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
         brightnessSlider.target = self
-        brightnessSlider.frame = NSRect(x: sliderX, y: sliderY, width: sliderWidth, height: sliderHeight)
+        brightnessSlider.frame = NSRect(x: horizontalOffset, y: sliderY, width: sliderWidth, height: sliderHeight)
         brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
         
+        brightnessValueDisplay = NSTextField(string: "+100%")
+        brightnessValueDisplay.isEditable = false
+        brightnessValueDisplay.isBordered = false
+        brightnessValueDisplay.drawsBackground = false
+        brightnessValueDisplay.setFrameOrigin(NSPoint(x: sliderContainerView.frame.width - horizontalOffset - brightnessValueDisplay.frame.width, y: sliderContainerView.frame.height / 2.0 - brightnessValueDisplay.frame.height / 2.0))
+        
         sliderContainerView.addSubview(brightnessSlider)
-        sliderContainerView.autoresizingMask = [.width]
+        sliderContainerView.addSubview(brightnessValueDisplay)
         brightnessSliderItem.view = sliderContainerView
         
         
@@ -151,6 +156,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         }
         
         brightnessSlider.floatValue = Settings.shared.brightness
+        brightnessValueDisplay.stringValue = "+\(Int(round(brightnessSlider.getNormalizedSliderValue() * 100.0)))%"
     }
     
     @objc func callToggleBrightIntosh() {
