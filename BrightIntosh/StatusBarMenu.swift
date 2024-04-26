@@ -75,9 +75,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         brightnessSlider.frame = NSRect(x: horizontalOffset, y: sliderY, width: sliderWidth, height: sliderHeight)
         brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
         
-        brightnessValueDisplay = NSTextField(string: "+100%")
+        brightnessValueDisplay = NSTextField(string: "100%")
         brightnessValueDisplay.isEditable = false
         brightnessValueDisplay.isBordered = false
+        brightnessValueDisplay.isSelectable = false
         brightnessValueDisplay.drawsBackground = false
         brightnessValueDisplay.setFrameOrigin(NSPoint(x: sliderContainerView.frame.width - horizontalOffset - brightnessValueDisplay.frame.width, y: sliderContainerView.frame.height / 2.0 - brightnessValueDisplay.frame.height / 2.0))
         
@@ -156,7 +157,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         }
         
         brightnessSlider.floatValue = Settings.shared.brightness
-        brightnessValueDisplay.stringValue = "+\(Int(round(brightnessSlider.getNormalizedSliderValue() * 100.0)))%"
+        brightnessValueDisplay.stringValue = "\(Int(round(brightnessSlider.getNormalizedSliderValue() * 100.0)))%"
     }
     
     @objc func callToggleBrightIntosh() {
