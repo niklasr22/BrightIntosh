@@ -222,7 +222,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     func menuWillOpen(_ menu: NSMenu) {
-        KeyboardShortcuts.isEnabled = false
         if Settings.shared.timerAutomation {
             self.startRemainingTimePoller()
         } else if !Settings.shared.timerAutomation {
@@ -231,7 +230,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     func menuDidClose(_ menu: NSMenu) {
-        KeyboardShortcuts.isEnabled = true
         self.stopRemainingTimePoller()
     }
 }
