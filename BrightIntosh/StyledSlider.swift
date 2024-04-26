@@ -14,7 +14,7 @@ class StyledSliderCell: NSSliderCell {
     let knobFillColorTracking = NSColor(white: 0.95, alpha: 1)
     let knobStrokeColor = NSColor.systemGray.withAlphaComponent(0.4)
     
-    let barFillColor = NSColor.systemGray.withAlphaComponent(0.2)
+    let barFillColor = NSColor(named: NSColor.Name("StyledSliderBarColor"))!
     let barFilledFillColor = NSColor.white
     
     let inset: CGFloat = 4
