@@ -27,6 +27,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var statusItem: NSStatusItem!
     
     private let menu: NSMenu
+    private var isOpen: Bool = false
     
     // menu items
     private var titleItem: NSMenuItem!
@@ -162,6 +163,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         brightnessSlider.floatValue = Settings.shared.brightness
         brightnessValueDisplay.stringValue = "\(Int(round(brightnessSlider.getNormalizedSliderValue() * 100.0)))%"
+        
+        if isOpen {
+            startRemainingTimePoller()
+        }
     }
     
     @objc func callToggleBrightIntosh() {
@@ -215,7 +220,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             }
         })
         
-        RunLoop.main.add(self.remainingTimePoller!, forMode: RunLoop.Mode.common)
+        RunLoop.main.add(self.remainingTimePoller!, forMode: RunLoop.Mode.eventTracking)
     }
     
     func stopRemainingTimePoller() {
@@ -227,14 +232,20 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     func menuWillOpen(_ menu: NSMenu) {
+        startTimePollerIfApplicable()
+    }
+    
+    func startTimePollerIfApplicable() {
         if Settings.shared.timerAutomation {
             self.startRemainingTimePoller()
         } else if !Settings.shared.timerAutomation {
             self.stopRemainingTimePoller()
         }
+        isOpen = true
     }
     
     func menuDidClose(_ menu: NSMenu) {
+        isOpen = false
         self.stopRemainingTimePoller()
     }
 }
