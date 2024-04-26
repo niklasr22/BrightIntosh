@@ -90,7 +90,7 @@ struct BasicSettings: View {
                     Text("Brightness")
                 }
                 if isDeviceSupported() {
-                    Toggle("Apply increased brightness only on built-in XDR display", isOn: $brightIntoshOnlyOnBuiltIn)
+                    Toggle("Don't apply increased brightness to external XDR displays", isOn: $brightIntoshOnlyOnBuiltIn)
                         .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
                             Settings.shared.brightIntoshOnlyOnBuiltIn = value
                         }
