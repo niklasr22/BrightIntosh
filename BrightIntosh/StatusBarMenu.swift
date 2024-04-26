@@ -17,10 +17,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     @objc private var toggleBrightIntosh: () -> ()
     
     
-#if !STORE
-    private let BRIGHTINTOSH_URL = "https://brightintosh.de"
-#else
+#if STORE
     private let BRIGHTINTOSH_URL = "https://brightintosh.de/index_nd.html"
+#else
+    private let BRIGHTINTOSH_URL = "https://brightintosh.de"
 #endif
     
     
@@ -37,8 +37,12 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     private var remainingTimePoller: Timer?
     
-#if STORE
+#if STORE && DEBUG
+    private let titleString = "BrightIntosh SE (v\(appVersion)-dev)"
+#elseif STORE
     private let titleString = "BrightIntosh SE (v\(appVersion))"
+#elseif DEBUG
+    private let titleString = "BrightIntosh (v\(appVersion)-dev)"
 #else
     private let titleString = "BrightIntosh (v\(appVersion))"
 #endif
