@@ -12,13 +12,12 @@ import Cocoa
 class StyledSliderCell: NSSliderCell {
     let knobFillColor = NSColor.white
     let knobFillColorTracking = NSColor(white: 0.95, alpha: 1)
-    let knobStrokeColor = NSColor(white: 0.85, alpha: 1)
+    let knobStrokeColor = NSColor.systemGray.withAlphaComponent(0.4)
     
     let barFillColor = NSColor.systemGray.withAlphaComponent(0.2)
-    let barStrokeColor = NSColor.systemGray.withAlphaComponent(0.5)
     let barFilledFillColor = NSColor.white
     
-    let inset: CGFloat = 3.5
+    let inset: CGFloat = 4
     let offsetX: CGFloat = -1.5
     let offsetY: CGFloat = -1.5
     
@@ -52,15 +51,14 @@ class StyledSliderCell: NSSliderCell {
         let barOuterRect = barRect(flipped: flipped)
         let normalizedValue = getNormalizedSliderValue()
         
-        let knobDiameter = barOuterRect.height - 1
-        let knobStart = (barOuterRect.width - knobDiameter) * normalizedValue
+        let knobDiameter = barOuterRect.height
+        let knobStart = barOuterRect.origin.x + (barOuterRect.width - knobDiameter) * normalizedValue
 
-        return NSRect(x: knobStart, y: barOuterRect.origin.y, width: knobDiameter, height: knobDiameter).offsetBy(dx: 0.5, dy: 0.5)
+        return NSRect(x: knobStart, y: barOuterRect.origin.y, width: knobDiameter, height: knobDiameter)
     }
     
     override func drawKnob(_ knobRect: NSRect) {
         let radius = knobRect.height * 0.5
-        
         let knob = NSBezierPath(roundedRect: knobRect, xRadius: radius, yRadius: radius)
         if self.isTracking {
             knobFillColorTracking.setFill()
@@ -78,7 +76,7 @@ class StyledSliderCell: NSSliderCell {
         
         let knobDiameter = barOuterRect.height
         let radius = knobDiameter * 0.5
-        let knobStart = (barOuterRect.width - knobDiameter) * normalizedValue
+        let knobStart = barOuterRect.origin.x + (barOuterRect.width - knobDiameter) * normalizedValue
         
         // Bar background
         let bar = NSBezierPath(roundedRect: barOuterRect, xRadius: radius, yRadius: radius)
@@ -91,9 +89,6 @@ class StyledSliderCell: NSSliderCell {
         let barFilled = NSBezierPath(roundedRect: barFilledRect, xRadius: radius, yRadius: radius)
         self.barFilledFillColor.setFill()
         barFilled.fill()
-        
-        self.barStrokeColor.setStroke()
-        bar.stroke()
     }
     
     func getNormalizedSliderValue() -> Double {
