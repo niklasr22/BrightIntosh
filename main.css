@@ -33,6 +33,43 @@ div.content {
     width: 60%;
 }
 
+.compatibility-table {
+    background: #fff8;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: #c0c0c0 0px 2px 5px;
+}
+
+.compatibility-table .brand {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.compatibility-table .row {
+    display: flex;
+}
+
+.compatibility-table .col {
+    width: 50%;
+}
+
+.compatibility-table .details {
+    align-content: center;
+}
+
+.compatibility-table .example-image {
+    padding: 30px;
+}
+
+.compatibility-table img {
+    max-width: 100%;
+}
+
+.compatibility-table ul {
+    list-style: none;
+    text-align: left;
+}
+
 .head {
     display: flex;
     justify-content: space-between;
@@ -403,5 +440,13 @@ code .copy-btn {
     .modal-content .btn {
         width: 100%;
         margin: 8px;
+    }
+
+    .compatibility-table .row {
+        display: block;
+    }
+
+    .compatibility-table .col {
+        width: 100%;
     }
 }
