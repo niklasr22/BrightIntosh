@@ -33,3 +33,8 @@ Maximum brightness with BrightIntosh on the left half of the picture, default ma
 ## Contributing
 
 If you have any ideas, enhancements or proposals, feel free to open an issue!
+
+## Known incompatibilities and problems:
+
+- BrightIntosh and [f.lux](https://justgetflux.com) will likely not work simultaneously
+- HDR Videos will clip when BrightIntosh is active
