@@ -19,6 +19,8 @@ class BrightnessManager {
     var brightnessTechnique: BrightnessTechnique?
     var screens: [NSScreen] = []
     
+    var handlingScreenUpdate = false
+    
     init() {
         setBrightnessTechnique()
         
@@ -31,6 +33,14 @@ class BrightnessManager {
             self,
             selector: #selector(handleScreenParameters(notification:)),
             name: NSApplication.didChangeScreenParametersNotification,
+            object: nil
+        )
+        
+        // Observe workspace for wake notification
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self,
+            selector: #selector(screensWake(notification:)),
+            name: NSWorkspace.screensDidWakeNotification,
             object: nil
         )
         
@@ -47,9 +57,7 @@ class BrightnessManager {
         
         Settings.shared.addListener(setting: "brightness") {
             print("Set brightness to \(Settings.shared.brightness)")
-            if let brightnessTechnique = self.brightnessTechnique, brightnessTechnique.isEnabled {
-                self.brightnessTechnique?.adjustBrightness()
-            }
+            self.brightnessTechnique?.adjustBrightness()
         }
         
         Settings.shared.addListener(setting: "brightIntoshOnlyOnBuiltIn") {
@@ -66,10 +74,22 @@ class BrightnessManager {
     }
     
     @objc func handleScreenParameters(notification: Notification) {
-        handlePotentialScreenUpdate()
+        self.handlePotentialScreenUpdate()
+    }
+    
+    @objc func screensWake(notification: Notification) {
+        print("Wake up \(notification.name)")
+        if let brightnessTechnique = brightnessTechnique, brightnessTechnique.isEnabled {
+            brightnessTechnique.adjustBrightness()
+        }
     }
     
     func handlePotentialScreenUpdate() {
+        if handlingScreenUpdate {
+            return
+        }
+        handlingScreenUpdate = true
+        
         let newScreens = getXDRDisplays()
         
         var changedScreens = newScreens.count != screens.count
@@ -92,20 +112,31 @@ class BrightnessManager {
         if !newScreens.isEmpty {
             if let brightnessTechnique = brightnessTechnique, Settings.shared.brightintoshActive {
                 if !brightnessTechnique.isEnabled {
-                    enableExtraBrightness()
+                    print("Enable extra brightness after screen setup change")
+                    self.enableExtraBrightness()
                 } else if changedScreens {
                     brightnessTechnique.screenUpdate(screens: screens)
                 }
             }
         } else {
-            brightnessTechnique?.disable()
+            print("Disabling")
+            DispatchQueue.main.async {
+                self.brightnessTechnique?.disable()
+            }
         }
+        handlingScreenUpdate = false
     }
     
     func enableExtraBrightness() {
         // Put brightness value into device specific bounds, as earlier versions allowed storing higher brightness values.
-        Settings.shared.brightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
-        self.brightnessTechnique?.enable()
+        let safeBrightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
+        
+        if safeBrightness != Settings.shared.brightness {
+            print("Fixing brightness")
+            Settings.shared.brightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
+        } else {
+            self.brightnessTechnique?.enable()
+        }
     }
 }
 

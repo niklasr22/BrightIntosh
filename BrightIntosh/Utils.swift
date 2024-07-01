@@ -33,3 +33,14 @@ func getDeviceMaxBrightness() -> Float {
     }
     return 1.6
 }
+
+func runOnMainAfter(nanoseconds: Int, action: @escaping () -> Void) {
+    Task {
+        do {
+            try await Task.sleep(nanoseconds: 500_000_000)
+        } catch { }
+        DispatchQueue.main.async {
+            action()
+        }
+    }
+}
