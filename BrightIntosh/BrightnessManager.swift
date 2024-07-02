@@ -116,6 +116,8 @@ class BrightnessManager {
                     self.enableExtraBrightness()
                 } else if changedScreens {
                     brightnessTechnique.screenUpdate(screens: screens)
+                } else {
+                    brightnessTechnique.adjustBrightness()
                 }
             }
         } else {
