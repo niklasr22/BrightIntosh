@@ -74,7 +74,7 @@ class BrightnessManager {
     }
     
     @objc func handleScreenParameters(notification: Notification) {
-        self.handlePotentialScreenUpdate()
+        handlePotentialScreenUpdate()
     }
     
     @objc func screensWake(notification: Notification) {
@@ -85,11 +85,6 @@ class BrightnessManager {
     }
     
     func handlePotentialScreenUpdate() {
-        if handlingScreenUpdate {
-            return
-        }
-        handlingScreenUpdate = true
-        
         let newScreens = getXDRDisplays()
         
         var changedScreens = newScreens.count != screens.count
@@ -108,7 +103,6 @@ class BrightnessManager {
             screens = newScreens
         }
         
-        
         if !newScreens.isEmpty {
             if let brightnessTechnique = brightnessTechnique, Settings.shared.brightintoshActive {
                 if !brightnessTechnique.isEnabled {
@@ -122,11 +116,8 @@ class BrightnessManager {
             }
         } else {
             print("Disabling")
-            DispatchQueue.main.async {
-                self.brightnessTechnique?.disable()
-            }
+            self.brightnessTechnique?.disable()
         }
-        handlingScreenUpdate = false
     }
     
     func enableExtraBrightness() {
