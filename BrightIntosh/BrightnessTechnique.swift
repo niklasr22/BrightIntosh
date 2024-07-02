@@ -105,6 +105,7 @@ class GammaTechnique: BrightnessTechnique {
             controller.window?.close()
         }
         overlayWindowControllers.removeAll()
+        gammaTables.removeAll()
         resetGammaTable()
     }
     
