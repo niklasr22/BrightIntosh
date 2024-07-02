@@ -19,8 +19,6 @@ class BrightnessManager {
     var brightnessTechnique: BrightnessTechnique?
     var screens: [NSScreen] = []
     
-    var handlingScreenUpdate = false
-    
     init() {
         setBrightnessTechnique()
         
