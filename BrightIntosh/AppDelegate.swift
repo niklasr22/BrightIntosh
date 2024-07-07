@@ -32,14 +32,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
         
-        Task {
-            if #available(macOS 13.0, *) {
-                await checkEntitlements()
-            } else {
-                // Fallback on earlier versions
-            }
-        }
-        
         supportedDevice = isDeviceSupported()
         
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {

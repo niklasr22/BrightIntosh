@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1E05D3952B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
 		1E05D3962B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
-		9C380FF12A8A8922000A6566 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 9C380FF02A8A8922000A6566 /* Sparkle */; };
 		9C4163702AB7198B005B34B6 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */; };
 		9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */; };
 		9C4163742ABD8EE9005B34B6 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 9C4163732ABD8EE9005B34B6 /* KeyboardShortcuts */; };
@@ -128,7 +127,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C380FF12A8A8922000A6566 /* Sparkle in Frameworks */,
 				9C4163742ABD8EE9005B34B6 /* KeyboardShortcuts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -259,7 +257,6 @@
 			);
 			name = BrightIntosh;
 			packageProductDependencies = (
-				9C380FF02A8A8922000A6566 /* Sparkle */,
 				9C4163732ABD8EE9005B34B6 /* KeyboardShortcuts */,
 			);
 			productName = BrightIntosh;
@@ -299,7 +296,6 @@
 			);
 			mainGroup = C1DF943C2A5EF20000FA285F;
 			packageReferences = (
-				9C380FEF2A8A8922000A6566 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				9C4163722ABD8EE9005B34B6 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 			);
 			productRefGroup = C1DF94462A5EF20000FA285F /* Products */;
@@ -824,14 +820,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		9C380FEF2A8A8922000A6566 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sparkle-project/Sparkle";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
 		9C4163722ABD8EE9005B34B6 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
@@ -843,11 +831,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		9C380FF02A8A8922000A6566 /* Sparkle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9C380FEF2A8A8922000A6566 /* XCRemoteSwiftPackageReference "Sparkle" */;
-			productName = Sparkle;
-		};
 		9C4163732ABD8EE9005B34B6 /* KeyboardShortcuts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9C4163722ABD8EE9005B34B6 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;

@@ -7,9 +7,6 @@
 
 import Foundation
 import ServiceManagement
-#if !STORE
-import Sparkle
-#endif
 
 final class Settings {
     static let shared: Settings = Settings()
@@ -85,29 +82,9 @@ final class Settings {
         }
     }
     
-#if !STORE
-    public let updaterController: SPUStandardUpdaterController
-    
-    public var autoUpdateCheck: Bool = UserDefaults.standard.object(forKey: "autoUpdateCheckActive") != nil ? UserDefaults.standard.bool(forKey: "autoUpdateCheckActive") : true {
-        didSet {
-            UserDefaults.standard.setValue(autoUpdateCheck, forKey: "autoUpdateCheckActive")
-            updaterController.updater.automaticallyChecksForUpdates = autoUpdateCheck
-            callListeners(setting: "autoUpdateCheckActive")
-        }
-    }
-#endif
-    
     private var listeners: [String: [()->()]] = [:]
     
     init() {
-        
-#if !STORE
-        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
-        if UserDefaults.standard.object(forKey: "autoUpdateCheckActive") == nil {
-            autoUpdateCheck = updaterController.updater.automaticallyChecksForUpdates
-        }
-#endif
-        
         // Load launch at login status
         if #available(macOS 13, *) {
             launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled

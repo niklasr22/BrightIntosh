@@ -7,9 +7,6 @@
 
 import SwiftUI
 import KeyboardShortcuts
-#if !STORE
-import Sparkle
-#endif
 
 final class BasicSettingsViewModel: ObservableObject {
     /*
