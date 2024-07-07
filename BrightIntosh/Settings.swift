@@ -12,16 +12,23 @@ import Sparkle
 #endif
 
 final class Settings {
-    static let shared = Settings()
+    static let shared: Settings = Settings()
     
     
-    public var brightintoshActive = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
+    public var brightintoshActive: Bool = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
         didSet {
             UserDefaults.standard.setValue(brightintoshActive, forKey: "active")
             callListeners(setting: "brightintoshActive")
         }
     }
     
+    public var brightIntoshOnlyOnBuiltIn: Bool = UserDefaults.standard.object(forKey: "brightIntoshOnlyOnBuiltIn") != nil ? UserDefaults.standard.bool(forKey: "brightIntoshOnlyOnBuiltIn") : false {
+        didSet {
+            UserDefaults.standard.setValue(brightintoshActive, forKey: "brightIntoshOnlyOnBuiltIn")
+            callListeners(setting: "brightIntoshOnlyOnBuiltIn")
+        }
+    }
+
     public var brightness: Float = UserDefaults.standard.object(forKey: "brightness") != nil ? UserDefaults.standard.float(forKey: "brightness") : getDeviceMaxBrightness() {
         didSet {
             UserDefaults.standard.setValue(brightness, forKey: "brightness")
@@ -29,42 +36,35 @@ final class Settings {
         }
     }
     
-    public var overlayTechnique = UserDefaults.standard.object(forKey: "overlayTechnique") != nil ? UserDefaults.standard.bool(forKey: "overlayTechnique") : false {
-        didSet {
-            UserDefaults.standard.setValue(overlayTechnique, forKey: "overlayTechnique")
-            callListeners(setting: "overlayTechnique")
-        }
-    }
-    
-    public var batteryAutomation = UserDefaults.standard.object(forKey: "batteryAutomation") != nil ? UserDefaults.standard.bool(forKey: "batteryAutomation") : false {
+    public var batteryAutomation: Bool = UserDefaults.standard.object(forKey: "batteryAutomation") != nil ? UserDefaults.standard.bool(forKey: "batteryAutomation") : false {
         didSet {
             UserDefaults.standard.setValue(batteryAutomation, forKey: "batteryAutomation")
             callListeners(setting: "batteryAutomation")
         }
     }
     
-    public var batteryAutomationThreshold = UserDefaults.standard.object(forKey: "batteryAutomationThreshold") != nil ? UserDefaults.standard.integer(forKey: "batteryAutomationThreshold") : 50 {
+    public var batteryAutomationThreshold: Int = UserDefaults.standard.object(forKey: "batteryAutomationThreshold") != nil ? UserDefaults.standard.integer(forKey: "batteryAutomationThreshold") : 50 {
         didSet {
             UserDefaults.standard.setValue(batteryAutomationThreshold, forKey: "batteryAutomationThreshold")
             callListeners(setting: "batteryAutomationThreshold")
         }
     }
     
-    public var timerAutomation = UserDefaults.standard.object(forKey: "timerAutomation") != nil ? UserDefaults.standard.bool(forKey: "timerAutomation") : false {
+    public var timerAutomation: Bool = UserDefaults.standard.object(forKey: "timerAutomation") != nil ? UserDefaults.standard.bool(forKey: "timerAutomation") : false {
         didSet {
             UserDefaults.standard.setValue(timerAutomation, forKey: "timerAutomation")
             callListeners(setting: "timerAutomation")
         }
     }
     
-    public var timerAutomationTimeout = UserDefaults.standard.object(forKey: "timerAutomationTimeout") != nil ? UserDefaults.standard.integer(forKey: "timerAutomationTimeout") : 180 {
+    public var timerAutomationTimeout: Int = UserDefaults.standard.object(forKey: "timerAutomationTimeout") != nil ? UserDefaults.standard.integer(forKey: "timerAutomationTimeout") : 180 {
         didSet {
             UserDefaults.standard.setValue(timerAutomationTimeout, forKey: "timerAutomationTimeout")
             callListeners(setting: "timerAutomationTimeout")
         }
     }
     
-    public var launchAtLogin = false {
+    public var launchAtLogin: Bool = false {
         didSet {
             if #available(macOS 13, *) {
                 let service = SMAppService.mainApp
@@ -88,7 +88,7 @@ final class Settings {
 #if !STORE
     public let updaterController: SPUStandardUpdaterController
     
-    public var autoUpdateCheck = UserDefaults.standard.object(forKey: "autoUpdateCheckActive") != nil ? UserDefaults.standard.bool(forKey: "autoUpdateCheckActive") : true {
+    public var autoUpdateCheck: Bool = UserDefaults.standard.object(forKey: "autoUpdateCheckActive") != nil ? UserDefaults.standard.bool(forKey: "autoUpdateCheckActive") : true {
         didSet {
             UserDefaults.standard.setValue(autoUpdateCheck, forKey: "autoUpdateCheckActive")
             updaterController.updater.automaticallyChecksForUpdates = autoUpdateCheck

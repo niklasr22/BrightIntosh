@@ -72,6 +72,7 @@ struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
     
     @State private var launchOnLogin = Settings.shared.launchAtLogin
+    @State private var brightIntoshOnlyOnBuiltIn = Settings.shared.brightIntoshOnlyOnBuiltIn
     @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = Settings.shared.timerAutomationTimeout
     
@@ -87,6 +88,14 @@ struct BasicSettings: View {
                 Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
                 Slider(value: $viewModel.brightnessSlider, in: 1.0...getDeviceMaxBrightness()) {
                     Text("Brightness")
+                }
+                if isDeviceSupported() {
+                    Toggle("Don't apply increased brightness to external XDR displays", isOn: $brightIntoshOnlyOnBuiltIn)
+                        .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
+                            Settings.shared.brightIntoshOnlyOnBuiltIn = value
+                        }
+                } else {
+                    Label("Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays.", systemImage: "exclamationmark.triangle.fill").foregroundColor(Color.yellow)
                 }
             }
             Section(header: Text("Automations").bold()) {
@@ -153,33 +162,6 @@ struct BasicSettings: View {
     }
 }
 
-
-
-struct AdvancedSettings: View {
-    
-    @State private var activeWindowHighlight = false
-    @State private var overlayTechnique = Settings.shared.overlayTechnique
-    
-    var body: some View {
-        VStack(alignment: HorizontalAlignment.leading) {
-            //Toggle("Highlight the active window with increased brightness", isOn: $activeWindowHighlight)
-            Toggle(isOn: $overlayTechnique) {
-                Text("Increase brightness using an overlay technique.")
-                Label("This may show more accurate colors but the increased brightness won't be available when using Mission Control or switching Spaces. The window selection tool of the screenshot application won't be able to focus any other window than the overlay.", systemImage: "exclamationmark.triangle.fill").foregroundColor(Color.yellow)
-            }.onChange(of: overlayTechnique) { value in
-                Settings.shared.overlayTechnique = value
-            }
-            Spacer()
-        }.frame(
-            minWidth: 0,
-            maxWidth: .infinity,
-            minHeight: 0,
-            maxHeight: .infinity,
-            alignment: .topLeading
-        ).padding()
-    }
-}
-
 struct Acknowledgments: View {
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
@@ -212,9 +194,6 @@ struct SettingsView: View {
             TabView {
                 BasicSettings().tabItem {
                     Text("General")
-                }
-                AdvancedSettings().tabItem {
-                    Text("Advanced")
                 }
                 Acknowledgments().tabItem {
                     Text("Acknowledgments")
