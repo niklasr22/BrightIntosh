@@ -100,11 +100,11 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         toggleTimerItem = NSMenuItem(title: "", action: #selector(toggleTimerAutomation), keyEquivalent: "")
         toggleTimerItem.target = self
         
-        let settingsItem = NSMenuItem(title: "Settings", action: #selector(openSettings), keyEquivalent: "")
+        let settingsItem = NSMenuItem(title: String(localized: "Settings"), action: #selector(openSettings), keyEquivalent: "")
         settingsItem.target = self
         
         
-        let quitItem = NSMenuItem(title: "Quit", action: #selector(exitBrightIntosh), keyEquivalent: "")
+        let quitItem = NSMenuItem(title: String(localized: "Quit"), action: #selector(exitBrightIntosh), keyEquivalent: "")
         quitItem.target = self
         
         menu.addItem(titleItem)
@@ -113,13 +113,13 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             menu.addItem(toggleTimerItem!)
         }
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Brightness:", action: nil, keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: String(localized: "Brightness:"), action: nil, keyEquivalent: ""))
         menu.addItem(brightnessSliderItem)
         menu.addItem(NSMenuItem.separator())
         menu.addItem(settingsItem)
         menu.addItem(quitItem)
         if !supportedDevice {
-            let unsupportedDeviceItem = NSMenuItem(title: "This device is incompatible", action: nil, keyEquivalent: "")
+            let unsupportedDeviceItem = NSMenuItem(title: String(localized: "This device is incompatible"), action: nil, keyEquivalent: "")
             unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "This device is incompatible")
             menu.addItem(unsupportedDeviceItem)
         }
@@ -147,8 +147,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             button.toolTip = titleString
         }
         
-        toggleIncreasedBrightnessItem.title = Settings.shared.brightintoshActive ? "Deactivate" : "Activate"
-        toggleTimerItem.title = Settings.shared.timerAutomation ? "Disable Timer" : "Enable Timer"
+        toggleIncreasedBrightnessItem.title = Settings.shared.brightintoshActive ? String(localized: "Deactivate") : String(localized: "Activate")
+        toggleTimerItem.title = Settings.shared.timerAutomation ? String(localized: "Disable Timer") : String(localized: "Enable Timer")
         if #available(macOS 14, *), !Settings.shared.timerAutomation {
             toggleTimerItem.badge = nil
         }
@@ -216,7 +216,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             if #available(macOS 14, *) {
                 self.toggleTimerItem!.badge = NSMenuItemBadge(string: timerString)
             } else {
-                self.toggleTimerItem!.title = "Disable Timer" + timerString
+                self.toggleTimerItem!.title = String(localized: "Disable Timer") + timerString
             }
         })
         
