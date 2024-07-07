@@ -1,0 +1,317 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld min" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "Accept" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akzeptieren"
+          }
+        }
+      }
+    },
+    "Acknowledgments" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open-Source Software"
+          }
+        }
+      }
+    },
+    "Activate" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktivieren"
+          }
+        }
+      }
+    },
+    "Automations" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automationen"
+          }
+        }
+      }
+    },
+    "Battery level threshold" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwellenwert für den Batteriestand"
+          }
+        }
+      }
+    },
+    "BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh wurde so entwickelt, dass die Schutzmechanismen des Betriebssystems nicht umgangen werden und ein sicherer Betrieb möglich ist. BrightIntosh ist eine Open-Source-Software und unterliegt daher keiner Garantie, die Verwendung erfolgt also auf eigene Gefahr."
+          }
+        }
+      }
+    },
+    "Brightness" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helligkeit"
+          }
+        }
+      }
+    },
+    "Brightness:" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helligkeit:"
+          }
+        }
+      }
+    },
+    "Deactivate" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deaktivieren"
+          }
+        }
+      }
+    },
+    "Decrease brightness:" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helligkeit verringern:"
+          }
+        }
+      }
+    },
+    "Disable after" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deaktivieren nach"
+          }
+        }
+      }
+    },
+    "Disable Timer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer deaktivieren"
+          }
+        }
+      }
+    },
+    "Disable when battery level drops under" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deaktivieren wenn der Batteriestand unter den folgenden Wert fällt:"
+          }
+        }
+      }
+    },
+    "Disclaimer:" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haftungsausschluss"
+          }
+        }
+      }
+    },
+    "Don't apply increased brightness to external XDR displays" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erhöhte Helligkeit nicht auf externe XDR-Displays anwenden"
+          }
+        }
+      }
+    },
+    "Enable Timer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer aktivieren"
+          }
+        }
+      }
+    },
+    "General" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allgemein"
+          }
+        }
+      }
+    },
+    "How to use BrightIntosh:" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie man BrightIntosh nutzt:"
+          }
+        }
+      }
+    },
+    "Increase brightness:" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helligkeit erhöhen:"
+          }
+        }
+      }
+    },
+    "Increased brightness" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erhöhte Helligkeit"
+          }
+        }
+      }
+    },
+    "Launch on login" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei der Anmeldung starten"
+          }
+        }
+      }
+    },
+    "Quit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beenden"
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen"
+          }
+        }
+      }
+    },
+    "Shortcuts" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tastenkombinationen"
+          }
+        }
+      }
+    },
+    "This device is incompatible" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Gerät ist nicht kompatibel"
+          }
+        }
+      }
+    },
+    "Toggle increased brightness:" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erhöhte Helligkeit umschalten:"
+          }
+        }
+      }
+    },
+    "Unfortunately your device is currently not supported by BrightIntosh." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leider wird ihr Gerät nicht von BrightIntosh unterstützt."
+          }
+        }
+      }
+    },
+    "Welcome to BrightIntosh!" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Willkommen bei BrightIntosh!"
+          }
+        }
+      }
+    },
+    "When the app is running you will see a sun icon in your menu bar that provides everything you need to use BrightIntosh." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn die Anwendung ausgeführt wird, sehen Sie in Ihrer Menüleiste ein Sonnensymbol. Mit einem Klick öffnet sich ein Menü, welches alles enthält, was Sie für die Verwendung von BrightIntosh benötigen."
+          }
+        }
+      }
+    },
+    "Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ihr Gerät verfügt nicht über ein eingebautes XDR-Display. Erhöhte Helligkeit kann nur für externe XDR-Displays aktiviert werden."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
