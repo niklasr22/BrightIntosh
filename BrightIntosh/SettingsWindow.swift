@@ -7,6 +7,8 @@
 
 import SwiftUI
 import KeyboardShortcuts
+import StoreKit
+import OSLog
 
 final class BasicSettingsViewModel: ObservableObject {
     /*
@@ -72,9 +74,9 @@ struct BasicSettings: View {
     @State private var brightIntoshOnlyOnBuiltIn = Settings.shared.brightIntoshOnlyOnBuiltIn
     @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = Settings.shared.timerAutomationTimeout
-    
-#if !STORE
-    @State private var autoUpdateCheck = Settings.shared.autoUpdateCheck
+
+#if STORE
+    @AppStorage("entitledToUnrestrictedUse") var entitledToUnrestrictedUse: Bool = false
 #endif
     
     
@@ -137,18 +139,13 @@ struct BasicSettings: View {
                     KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
                 }
             }
-            
-#if !STORE
-            Section(header: Text("Updates").bold()) {
-                Toggle("Check automatically for updates", isOn: $autoUpdateCheck)
-                    .onChange(of: autoUpdateCheck) { value in
-                        Settings.shared.autoUpdateCheck = value
-                    }
-                Button("Check for updates") {
-                    Settings.shared.updaterController.checkForUpdates(nil)
-                }
+            #if DEBUG
+            Section("Debug") {
+                #if STORE
+                Toggle("Entitled to unrestricted usage", isOn: $entitledToUnrestrictedUse)
+                #endif
             }
-#endif
+            #endif
         }.frame(
             minWidth: 0,
             maxWidth: .infinity,
@@ -178,6 +175,61 @@ struct Acknowledgments: View {
     }
 }
 
+struct BrightIntoshStoreView: View {
+    private let logger = Logger(
+        subsystem: "Settings View",
+        category: "Store"
+    )
+    private let storeManager = StoreManager()
+    
+    
+    var body: some View {
+        VStack {
+            if #available(macOS 15.0, *) {
+                StoreView(ids: [Products.unrestrictedBrightIntosh]) { product in
+                    Image("LogoBorderedHighRes").resizable().scaledToFit()
+                }
+                .storeButton(.hidden, for: .cancellation)
+                .storeButton(.visible, for: .restorePurchases, .signIn)
+            } else {
+                VStack {
+                    List(storeManager.products, id: \.productIdentifier) { product in
+                        HStack {
+                            Text(product.localizedTitle)
+                            Spacer()
+                            Button(action: {
+                                storeManager.purchase(product: product)
+                            }) {
+                                Text("Buy \(product.priceLocale.currencySymbol ?? "$")\(product.price)")
+                            }
+                        }
+                    }
+                    
+                    Button("Restore Purchases") {
+                        storeManager.restorePurchases()
+                    }
+                }
+            }
+        }
+        .onAppear() {
+            StoreHandler.createSharedInstance()
+        }
+        .task {
+            logger.info("Starting tasks to observe transaction updates")
+            // Begin observing StoreKit transaction updates in case a
+            // transaction happens on another device.
+            await StoreHandler.shared.observeTransactionUpdates()
+            // Check if we have any unfinished transactions where we
+            // need to grant access to content
+            await StoreHandler.shared.checkForUnfinishedTransactions()
+            logger.info("Finished checking for unfinished transactions")
+            
+            await StoreHandler.shared.checkForEntitlements()
+            logger.info("Finished checking entitlements")
+        }
+    }
+}
+
 struct SettingsView: View {
 #if STORE
     var title: String = "BrightIntosh SE v\(appVersion)"
@@ -185,10 +237,21 @@ struct SettingsView: View {
     var title: String = "BrightIntosh v\(appVersion)"
 #endif
     
+#if STORE
+    @AppStorage("entitledToUnrestrictedUse") var entitledToUnrestrictedUse: Bool = false
+#else
+    var entitledToUnrestrictedUse: Bool = true
+#endif
+    
     var body: some View {
         VStack {
             Text("Settings").font(.largeTitle)
             TabView {
+                if !entitledToUnrestrictedUse {
+                    BrightIntoshStoreView().tabItem {
+                        Text("Store")
+                    }
+                }
                 BasicSettings().tabItem {
                     Text("General")
                 }
@@ -196,7 +259,7 @@ struct SettingsView: View {
                     Text("Acknowledgments")
                 }
             }
-            Label(title, image: "LogoBordered").imageScale(.small)
+            Label(title + (entitledToUnrestrictedUse ? "" : " - Free Trial"), image: "LogoBordered").imageScale(.small)
         }.padding()
     }
 }

@@ -26,7 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         Task {
             if #available(macOS 13.0, *) {
-                await checkEntitlements()
+                await checkAppEntitlements()
             } else {
                 // Fallback on earlier versions
             }
@@ -83,38 +83,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let controller = WelcomeWindowController(supportedDevice: supportedDevice)
         NSApp.runModal(for: controller.window!)
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
-    }
-    @available(macOS 13.0, *)
-    func checkEntitlements() async {
-        do {
-            // Get the appTransaction.
-            let shared = try await AppTransaction.shared
-            if case .verified(let appTransaction) = shared {
-                // Hard-code the major version number in which the app's business model changed.
-                let newBusinessModelMajorVersion = "2"
-
-
-                // Get the major version number of the version the customer originally purchased.
-                let versionComponents = appTransaction.originalAppVersion.split(separator: ".")
-                let originalMajorVersion = versionComponents[0]
-                print(originalMajorVersion)
-                print(appTransaction.debugDescription)
-
-                if originalMajorVersion < newBusinessModelMajorVersion {
-                    print("glück gehabt")
-                    // This customer purchased the app before the business model changed.
-                    // Deliver content that they're entitled to based on their app purchase.
-                }
-                else {
-                    // This customer purchased the app after the business model changed.
-                    print("pech")
-                }
-            }
-        }
-        catch {
-            // Handle errors.
-            print("woopsie")
-        }
     }
 }
 

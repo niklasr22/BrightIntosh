@@ -91,6 +91,16 @@
         }
       }
     },
+    "Buy %@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Buy %1$@%2$@"
+          }
+        }
+      }
+    },
     "Deactivate" : {
       "localizations" : {
         "de" : {
@@ -100,6 +110,9 @@
           }
         }
       }
+    },
+    "Debug" : {
+
     },
     "Decrease brightness:" : {
       "localizations" : {
@@ -171,6 +184,9 @@
         }
       }
     },
+    "Entitled to unrestricted usage" : {
+
+    },
     "General" : {
       "localizations" : {
         "de" : {
@@ -232,6 +248,9 @@
         }
       }
     },
+    "Restore Purchases" : {
+
+    },
     "Settings" : {
       "localizations" : {
         "de" : {
@@ -251,6 +270,9 @@
           }
         }
       }
+    },
+    "Store" : {
+
     },
     "This device is incompatible" : {
       "localizations" : {

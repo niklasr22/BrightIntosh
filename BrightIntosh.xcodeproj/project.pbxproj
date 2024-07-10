@@ -40,6 +40,8 @@
 		9CA458BE2AD0A61000CBF8B9 /* AutoLauncher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C1031D552A86742E001EE05B /* AutoLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9CCAC9342C3A8F9E00B105D1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */; };
 		9CCAC9352C3A8F9E00B105D1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */; };
+		9CCAC9372C3AF53B00B105D1 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9362C3AF53B00B105D1 /* Store.swift */; };
+		9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
 		9CDE33C52B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
 		9CDE33C62B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
 		C1031D582A86742E001EE05B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1031D572A86742E001EE05B /* AppDelegate.swift */; };
@@ -90,6 +92,8 @@
 		9CA026502AC9647E0068CC74 /* BrightnessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessManager.swift; sourceTree = "<group>"; };
 		9CA026522AC968430068CC74 /* BrightnessTechnique.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessTechnique.swift; sourceTree = "<group>"; };
 		9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		9CCAC9362C3AF53B00B105D1 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorePurchasesButton.swift; sourceTree = "<group>"; };
 		9CDE33C42B4317D70085F786 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh.entitlements; sourceTree = "<group>"; };
 		9CEB41EF2A923723005D7A0D /* BrightIntosh_SE.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh_SE.entitlements; sourceTree = "<group>"; };
@@ -197,6 +201,8 @@
 				9CDE33C42B4317D70085F786 /* Utils.swift */,
 				9C711B4D2BD9583F00231067 /* StyledSlider.swift */,
 				9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */,
+				9CCAC9362C3AF53B00B105D1 /* Store.swift */,
+				9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -347,11 +353,13 @@
 				9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */,
 				9C534AC92ACB06210029E050 /* AutomationManager.swift in Sources */,
 				9CDE33C62B4317D70085F786 /* Utils.swift in Sources */,
+				9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */,
 				9C8FA26C2AB058310049C0D1 /* WelcomeWindow.swift in Sources */,
 				9C8803762A72625E00476017 /* AppDelegate.swift in Sources */,
 				9C5610512ABF55A90066D6C9 /* Settings.swift in Sources */,
 				9C8803772A72625E00476017 /* OverlayWindow.swift in Sources */,
 				9C88037A2A72625E00476017 /* Overlay.swift in Sources */,
+				9CCAC9372C3AF53B00B105D1 /* Store.swift in Sources */,
 				9C534ACC2ACB2A050029E050 /* Alerts.swift in Sources */,
 				9CA026542AC968430068CC74 /* BrightnessTechnique.swift in Sources */,
 				9C88037B2A72625E00476017 /* main.swift in Sources */,
