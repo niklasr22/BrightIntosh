@@ -9,7 +9,31 @@
             "value" : ""
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : ""
@@ -505,10 +529,34 @@
             "value" : "Deaktivieren wenn der Batteriestand unter den folgenden Wert fällt:"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se desactiva cuando el nivel de la batería cae por debajo del"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se desactiva cuando el nivel de la batería cae por debajo del"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Désactivé lorsque le niveau de la batterie est inférieur à"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desativar quando o nível da bateria cair para menos de"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desativar quando o nível da bateria desce abaixo dos"
           }
         }
       }
@@ -561,10 +609,34 @@
             "value" : "Erhöhte Helligkeit nicht auf externe XDR-Displays anwenden"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No aumente el brillo de las pantallas XDR externas"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No aumente el brillo de las pantallas XDR externas"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "N'augmentez pas la luminosité des écrans XDR externes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não aplique o aumento de brilho em telas XDR externas"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não aplique o aumento de brilho a ecrãs XDR externos"
           }
         }
       }
@@ -978,10 +1050,34 @@
             "value" : "Erhöhte Helligkeit umschalten:"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumento alternativo del brillo:"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumento alternativo del brillo:"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Commuter la luminosité augmentée:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alternar o aumento do brilho:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alternar o aumento do brilho:"
           }
         }
       }
@@ -994,10 +1090,34 @@
             "value" : "Leider wird ihr Gerät nicht von BrightIntosh unterstützt."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lamentablemente, su dispositivo no es compatible con BrightIntosh."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lamentablemente, su dispositivo no es compatible con BrightIntosh."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Malheureusement, votre appareil n'est pas pris en charge par BrightIntosh."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Infelizmente, seu dispositivo não é compatível com a BrightIntosh no momento."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Infelizmente, o seu dispositivo não é atualmente suportado pela BrightIntosh."
           }
         }
       }
@@ -1050,10 +1170,34 @@
             "value" : "Wenn die Anwendung ausgeführt wird, sehen Sie in Ihrer Menüleiste ein Sonnensymbol. Mit einem Klick öffnet sich ein Menü, welches alles enthält, was Sie für die Verwendung von BrightIntosh benötigen."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando la aplicación esté en funcionamiento, verá un icono en forma de sol en la barra de menús que le proporcionará todo lo que necesita para utilizar BrightIntosh."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando la aplicación esté en funcionamiento, verá un icono en forma de sol en la barra de menús que le proporcionará todo lo que necesita para utilizar BrightIntosh."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lorsque l'application est lancée, vous verrez une icône de soleil dans votre barre de menu qui fournit tout ce dont vous avez besoin pour utiliser BrightIntosh."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando o aplicativo estiver em execução, você verá um ícone de sol na barra de menus que fornece tudo o que você precisa para usar o BrightIntosh."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando a aplicação estiver a funcionar, verá um ícone de sol na sua barra de menu que fornece tudo o que precisa para utilizar o BrightIntosh."
           }
         }
       }
@@ -1066,10 +1210,34 @@
             "value" : "Ihr Gerät verfügt nicht über ein eingebautes XDR-Display. Erhöhte Helligkeit kann nur für externe XDR-Displays aktiviert werden."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu dispositivo no tiene una pantalla XDR integrada. El aumento del brillo solo se puede activar para pantallas XDR externas."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu dispositivo no tiene una pantalla XDR integrada. El aumento del brillo solo se puede activar para pantallas XDR externas."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votre appareil ne dispose pas d'un écran XDR intégré. L'augmentation de la luminosité ne peut être activée que pour les écrans XDR externes."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu dispositivo não tem um monitor XDR integrado. O aumento do brilho só pode ser ativado para telas XDR externas."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O seu dispositivo não tem um ecrã XDR incorporado. O aumento de brilho só pode ser ativado para ecrãs XDR externos."
           }
         }
       }
