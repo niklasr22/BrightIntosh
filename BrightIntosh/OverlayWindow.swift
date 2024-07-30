@@ -76,18 +76,18 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         
         
         if !fullsize {
-            reposition()
+            reposition(screen: screen)
         }
         
         window.orderFrontRegardless()
         window.addMetalOverlay(screen: screen)
     }
     
-    func reposition() {
-        window?.setFrameOrigin(getIdealPosition())
+    func reposition(screen: NSScreen) {
+        window?.setFrameOrigin(getIdealPosition(screen: screen))
     }
     
-    func getIdealPosition() -> CGPoint {
+    func getIdealPosition(screen: NSScreen) -> CGPoint {
         var position = screen.frame.origin
         position.y += screen.frame.height - 1
         return position
