@@ -139,8 +139,12 @@ class GammaTechnique: BrightnessTechnique {
         }
         
         screens.forEach { screen in
-            if let displayId = screen.displayId, !overlayWindowControllers.keys.contains(displayId) {
-                enableScreen(screen: screen)
+            if let displayId = screen.displayId {
+                if overlayWindowControllers.keys.contains(displayId) {
+                    overlayWindowControllers[displayId]?.reposition(screen: screen)
+                } else {
+                    enableScreen(screen: screen)
+                }
             }
         }
         
