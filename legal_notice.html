@@ -57,17 +57,6 @@
       <a href="./legal_notice.html">Legal notice / Impressum</a>
     </div>
   </div>
-  <script>
-    const version = document.getElementById("version");
-    const downloadLink = document.getElementById("download-link");
-    const url = "https://api.github.com/repos/niklasr22/BrightIntosh/releases/latest";
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        version.innerHTML = " (" + data.tag_name + ")";
-        downloadLink.href = data.assets[0].browser_download_url;
-      });
-  </script>
 </body>
 
 </html>
