@@ -9,6 +9,12 @@
             "value" : ""
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47,6 +53,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impressum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About us"
           }
         },
         "es" : {
@@ -89,6 +101,12 @@
             "value" : "Akzeptieren"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accept"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -127,6 +145,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open-Source Software"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acknowledgments"
           }
         },
         "es" : {
@@ -169,6 +193,12 @@
             "value" : "Aktivieren"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activate"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -207,6 +237,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automationen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automations"
           }
         },
         "es" : {
@@ -249,6 +285,12 @@
             "value" : "Schwellenwert für den Batteriestand"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery level threshold"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -287,6 +329,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "BrightIntosh wurde so entwickelt, dass die Schutzmechanismen des Betriebssystems nicht umgangen werden und ein sicherer Betrieb möglich ist. BrightIntosh ist eine Open-Source-Software und unterliegt daher keiner Garantie, die Verwendung erfolgt also auf eigene Gefahr."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk."
           }
         },
         "es" : {
@@ -329,6 +377,12 @@
             "value" : "Helligkeit"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brightness"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -367,6 +421,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Helligkeit:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brightness:"
           }
         },
         "es" : {
@@ -409,6 +469,12 @@
             "value" : "Deaktivieren"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deactivate"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -447,6 +513,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Helligkeit verringern:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decrease brightness:"
           }
         },
         "es" : {
@@ -489,6 +561,12 @@
             "value" : "Deaktivieren nach"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable after"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -527,6 +605,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timer deaktivieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable Timer"
           }
         },
         "es" : {
@@ -569,6 +653,12 @@
             "value" : "Deaktivieren wenn der Batteriestand unter den folgenden Wert fällt:"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable when battery level drops under"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -607,6 +697,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Haftungsausschluss"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disclaimer:"
           }
         },
         "es" : {
@@ -649,6 +745,12 @@
             "value" : "Erhöhte Helligkeit nicht auf externe XDR-Displays anwenden"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don't apply increased brightness to external XDR displays"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -687,6 +789,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timer aktivieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Timer"
           }
         },
         "es" : {
@@ -729,6 +837,12 @@
             "value" : "Allgemein"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -767,6 +881,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wie man BrightIntosh nutzt:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How to use BrightIntosh:"
           }
         },
         "es" : {
@@ -809,6 +929,12 @@
             "value" : "Helligkeit erhöhen:"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increase brightness:"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -849,6 +975,12 @@
             "value" : "Erhöhte Helligkeit"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increased brightness"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -887,6 +1019,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bei der Anmeldung starten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Launch on login"
           }
         },
         "es" : {
@@ -930,6 +1068,12 @@
             "value" : "Beenden"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -968,6 +1112,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Einstellungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
           }
         },
         "es" : {
@@ -1010,6 +1160,12 @@
             "value" : "Tastenkombinationen"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcuts"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1048,6 +1204,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dieses Gerät ist nicht kompatibel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This device is incompatible"
           }
         },
         "es" : {
@@ -1090,6 +1252,12 @@
             "value" : "Erhöhte Helligkeit umschalten:"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toggle increased brightness:"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1128,6 +1296,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Leider wird ihr Gerät nicht von BrightIntosh unterstützt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unfortunately your device is currently not supported by BrightIntosh."
           }
         },
         "es" : {
@@ -1170,6 +1344,12 @@
             "value" : "Willkommen bei BrightIntosh!"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to BrightIntosh!"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1210,6 +1390,12 @@
             "value" : "Wenn die Anwendung ausgeführt wird, sehen Sie in Ihrer Menüleiste ein Sonnensymbol. Mit einem Klick öffnet sich ein Menü, welches alles enthält, was Sie für die Verwendung von BrightIntosh benötigen."
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When the app is running you will see a sun icon in your menu bar that provides everything you need to use BrightIntosh."
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1248,6 +1434,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ihr Gerät verfügt nicht über ein eingebautes XDR-Display. Erhöhte Helligkeit kann nur für externe XDR-Displays aktiviert werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays."
           }
         },
         "es" : {
