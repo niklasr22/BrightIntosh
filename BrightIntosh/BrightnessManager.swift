@@ -18,6 +18,7 @@ class BrightnessManager {
     
     var brightnessTechnique: BrightnessTechnique?
     var screens: [NSScreen] = []
+    var xdrScreens: [NSScreen] = []
     
     init() {
         setBrightnessTechnique()
@@ -83,8 +84,7 @@ class BrightnessManager {
     }
     
     func handlePotentialScreenUpdate() {
-        let newScreens = getXDRDisplays()
-        
+        let newScreens = NSScreen.screens
         var changedScreens = newScreens.count != screens.count
         if !changedScreens {
             for screen in screens {
@@ -99,6 +99,7 @@ class BrightnessManager {
         if changedScreens {
             print("Screen setup changed")
             screens = newScreens
+            xdrScreens = getXDRDisplays()
         }
         
         if !newScreens.isEmpty {
@@ -107,7 +108,7 @@ class BrightnessManager {
                     print("Enable extra brightness after screen setup change")
                     self.enableExtraBrightness()
                 } else if changedScreens {
-                    brightnessTechnique.screenUpdate(screens: screens)
+                    brightnessTechnique.screenUpdate(screens: xdrScreens)
                 } else {
                     brightnessTechnique.adjustBrightness()
                 }
