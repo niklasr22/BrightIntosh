@@ -23,6 +23,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private let BRIGHTINTOSH_URL = "https://brightintosh.de"
 #endif
     
+    private let BRIGHTINTOSH_LEGAL_NOTICE_URL = "https://brightintosh.de/legal_notice.html"
     
     private var statusItem: NSStatusItem!
     
@@ -67,31 +68,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         titleItem = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
         
-        let brightnessSliderItem = NSMenuItem()
-        
-        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 280, height: 35))
-        let sliderWidth = 190.0
-        let sliderHeight = 30.0
-        let horizontalOffset = 15.0
-        let sliderY = (sliderContainerView.frame.height - sliderHeight) / 2
-        
-        brightnessSlider = StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
-        brightnessSlider.target = self
-        brightnessSlider.frame = NSRect(x: horizontalOffset, y: sliderY, width: sliderWidth, height: sliderHeight)
-        brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
-        
-        brightnessValueDisplay = NSTextField(string: "100%")
-        brightnessValueDisplay.isEditable = false
-        brightnessValueDisplay.isBordered = false
-        brightnessValueDisplay.isSelectable = false
-        brightnessValueDisplay.drawsBackground = false
-        brightnessValueDisplay.setFrameOrigin(NSPoint(x: sliderContainerView.frame.width - horizontalOffset - brightnessValueDisplay.frame.width, y: sliderContainerView.frame.height / 2.0 - brightnessValueDisplay.frame.height / 2.0))
-        
-        sliderContainerView.addSubview(brightnessSlider)
-        sliderContainerView.addSubview(brightnessValueDisplay)
-        brightnessSliderItem.view = sliderContainerView
-        
-        
+        let brightnessSliderElements = createBrightnessSliderItem()
+        let brightnessSliderItem = brightnessSliderElements.0
+        brightnessSlider = brightnessSliderElements.1
+        brightnessValueDisplay = brightnessSliderElements.2
         
         toggleIncreasedBrightnessItem = NSMenuItem(title: "", action: #selector(callToggleBrightIntosh), keyEquivalent: "")
         toggleIncreasedBrightnessItem.setShortcut(for: .toggleBrightIntosh)
@@ -103,6 +83,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         let settingsItem = NSMenuItem(title: String(localized: "Settings"), action: #selector(openSettings), keyEquivalent: "")
         settingsItem.target = self
         
+        let aboutUsItem = NSMenuItem(title: String(localized: "About us"), action: #selector(openLegalNotice), keyEquivalent: "")
+        aboutUsItem.target = self
         
         let quitItem = NSMenuItem(title: String(localized: "Quit"), action: #selector(exitBrightIntosh), keyEquivalent: "")
         quitItem.target = self
@@ -117,6 +99,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         menu.addItem(brightnessSliderItem)
         menu.addItem(NSMenuItem.separator())
         menu.addItem(settingsItem)
+        menu.addItem(aboutUsItem)
         menu.addItem(quitItem)
         if !supportedDevice {
             let unsupportedDeviceItem = NSMenuItem(title: String(localized: "This device is incompatible"), action: nil, keyEquivalent: "")
@@ -140,6 +123,33 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         Settings.shared.addListener(setting: "timerAutomation") {
             self.updateMenu()
         }
+    }
+    
+    private func createBrightnessSliderItem() -> (NSMenuItem, StyledSlider, NSTextField) {
+        let brightnessSliderItem = NSMenuItem()
+        
+        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 280, height: 35))
+        let sliderWidth = 190.0
+        let sliderHeight = 30.0
+        let horizontalOffset = 15.0
+        let sliderY = (sliderContainerView.frame.height - sliderHeight) / 2
+        
+        let brightnessSlider = StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
+        brightnessSlider.target = self
+        brightnessSlider.frame = NSRect(x: horizontalOffset, y: sliderY, width: sliderWidth, height: sliderHeight)
+        brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
+        
+        let brightnessValueDisplay = NSTextField(string: "100%")
+        brightnessValueDisplay.isEditable = false
+        brightnessValueDisplay.isBordered = false
+        brightnessValueDisplay.isSelectable = false
+        brightnessValueDisplay.drawsBackground = false
+        brightnessValueDisplay.setFrameOrigin(NSPoint(x: sliderContainerView.frame.width - horizontalOffset - brightnessValueDisplay.frame.width, y: sliderContainerView.frame.height / 2.0 - brightnessValueDisplay.frame.height / 2.0))
+        
+        sliderContainerView.addSubview(brightnessSlider)
+        sliderContainerView.addSubview(brightnessValueDisplay)
+        brightnessSliderItem.view = sliderContainerView
+        return (brightnessSliderItem, brightnessSlider, brightnessValueDisplay)
     }
     
     func updateMenu() {
@@ -193,6 +203,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     @objc func openWebsite() {
         NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_URL)!)
+    }
+    
+    @objc func openLegalNotice() {
+        NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_LEGAL_NOTICE_URL)!)
     }
     
     func startRemainingTimePoller() {
