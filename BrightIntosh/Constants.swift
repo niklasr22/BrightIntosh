@@ -14,7 +14,6 @@ extension KeyboardShortcuts.Name {
     static let decreaseBrightness = Self("decreaseBrightness", default: .init(carbonKeyCode: kVK_ANSI_M, carbonModifiers: (0 | optionKey | cmdKey)))
 }
 
-let launcherBundleId = "de.brightintosh.launcher" as CFString
 let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String)!
 
 #if DEBUG
