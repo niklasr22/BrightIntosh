@@ -511,13 +511,36 @@
       }
     },
     "Click *Activate*" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke *Aktivieren*"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquer sur *Activer*"
+          }
+        }
+      }
     },
     "Click the %@ icon in your menu bar" : {
-
-    },
-    "Continue your free %lld day trial" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke das %@ Icon in der Menüleiste"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquez sur l'icône %@ dans votre barre de menu"
+          }
+        }
+      }
     },
     "Deactivate" : {
       "localizations" : {
@@ -565,9 +588,6 @@
         }
       }
     },
-    "Debug" : {
-
-    },
     "Decrease brightness:" : {
       "localizations" : {
         "de" : {
@@ -613,9 +633,6 @@
           }
         }
       }
-    },
-    "Did you enjoy the free trial?" : {
-
     },
     "Disable after" : {
       "localizations" : {
@@ -756,10 +773,6 @@
       }
     },
     "Disclaimer" : {
-
-    },
-    "Disclaimer:" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -767,40 +780,10 @@
             "value" : "Haftungsausschluss"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disclaimer:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Descargo de responsabilidad:"
-          }
-        },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Descargo de responsabilidad:"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clause de non-responsabilité:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Isenção de responsabilidade:"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Declaração de exoneração de responsabilidade:"
+            "value" : "Clause de non-responsabilité"
           }
         }
       }
@@ -898,10 +881,20 @@
       }
     },
     "Enjoy the extra brightness" : {
-
-    },
-    "Entitled to unrestricted usage" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genieße die extra Helligkeit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profitez de la luminosité supplémentaire"
+          }
+        }
+      }
     },
     "General" : {
       "localizations" : {
@@ -945,53 +938,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Geral"
-          }
-        }
-      }
-    },
-    "How to use BrightIntosh:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wie man BrightIntosh nutzt:"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "How to use BrightIntosh:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cómo utilizar BrightIntosh:"
-          }
-        },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cómo utilizar BrightIntosh:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comment utiliser BrightIntosh:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Como usar o BrightIntosh:"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Como utilizar o BrightIntosh:"
           }
         }
       }
@@ -1133,9 +1079,6 @@
           }
         }
       }
-    },
-    "Purchase your unrestricted BrightIntosh membership" : {
-
     },
     "Quit" : {
       "extractionState" : "manual",
@@ -1316,8 +1259,37 @@
         }
       }
     },
+    "Start your free %lld day trial" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starte für %lld Tage kostenlos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commencez votre essai gratuit de %lld jours"
+          }
+        }
+      }
+    },
     "Store" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Store"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boutique"
+          }
+        }
+      }
     },
     "This device is incompatible" : {
       "localizations" : {
@@ -1457,139 +1429,50 @@
         }
       }
     },
-    "Unleash the Brightness" : {
-
-    },
-    "Welcome to BrightIntosh!" : {
-      "extractionState" : "stale",
+    "Unleash the Brightness!" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Willkommen bei BrightIntosh!"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Welcome to BrightIntosh!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Bienvenido a BrightIntosh!"
-          }
-        },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Bienvenido a BrightIntosh!"
+            "value" : "Entfessle die maximale Helligkeit!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bienvenue à BrightIntosh!"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bem-vindo à BrightIntosh!"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bem-vindo ao BrightIntosh!"
+            "value" : "Libérez le maximum de luminosité!"
           }
         }
       }
     },
-    "When the app is running you will see a sun icon in your menu bar that provides everything you need to use BrightIntosh." : {
-      "extractionState" : "stale",
+    "Unlock unrestricted access to BrightIntosh" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn die Anwendung ausgeführt wird, sehen Sie in Ihrer Menüleiste ein Sonnensymbol. Mit einem Klick öffnet sich ein Menü, welches alles enthält, was Sie für die Verwendung von BrightIntosh benötigen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When the app is running you will see a sun icon in your menu bar that provides everything you need to use BrightIntosh."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuando la aplicación esté en funcionamiento, verá un icono en forma de sol en la barra de menús que le proporcionará todo lo que necesita para utilizar BrightIntosh."
-          }
-        },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuando la aplicación esté en funcionamiento, verá un icono en forma de sol en la barra de menús que le proporcionará todo lo que necesita para utilizar BrightIntosh."
+            "value" : "Schalte uneingeschränkte Zugriff auf BrightIntosh frei"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lorsque l'application est lancée, vous verrez une icône de soleil dans votre barre de menu qui fournit tout ce dont vous avez besoin pour utiliser BrightIntosh."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quando o aplicativo estiver em execução, você verá um ícone de sol na barra de menus que fornece tudo o que você precisa para usar o BrightIntosh."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quando a aplicação estiver a funcionar, verá um ícone de sol na sua barra de menu que fornece tudo o que precisa para utilizar o BrightIntosh."
+            "value" : "Débloquez l'accès illimité à BrightIntosh!"
           }
         }
       }
     },
-    "You already have access to BrightIntosh. Enjoy the brightness!" : {
+    "You have access to BrightIntosh.\nEnjoy the brightness!" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Du bist für die uneingeschränkte Nutzung berechtigt. Genieße die Helligkeit!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ya tienes acceso a BrightIntosh. ¡Disfrute del brillo!"
-          }
-        },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ya tienes acceso a BrightIntosh. ¡Disfrute del brillo!"
+            "value" : "Du hast Zugriff auf BrightIntosh. Genieße die Helligkeit"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous avez déjà accès à BrightIntosh. Profitez de la luminosité!"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você já tem acesso ao BrightIntosh. Aproveite o brilho!"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Já tem acesso ao BrightIntosh. Aproveite o brilho!"
+            "value" : "Vous avez accès à BrightIntosh.\nProfitez de la luminosité !"
           }
         }
       }
@@ -1636,6 +1519,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O seu dispositivo não tem um ecrã XDR incorporado. O aumento de brilho só pode ser ativado para ecrãs XDR externos."
+          }
+        }
+      }
+    },
+    "Your trial has expired" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die kostenlose Probezeit ist vorbei"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre période d'essai a expiré"
+          }
+        }
+      }
+    },
+    "Your trial has expired. Unlock unrestricted access to BrightIntosh" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die kostenlose Probezeit ist vorbei. Schalte jetzt den uneingeschränkten Zugriff auf BrightIntosh frei."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre période d'essai a expiré. Débloquez l'accès illimité à BrightIntosh."
           }
         }
       }

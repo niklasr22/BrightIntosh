@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		1E05D3952B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
 		1E05D3962B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
-		9C1C8BE72C8B3EA300754474 /* StoreModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE62C8B3EA300754474 /* StoreModifier.swift */; };
-		9C1C8BE82C8B4A1C00754474 /* StoreModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE62C8B3EA300754474 /* StoreModifier.swift */; };
+		9C1C8BE72C8B3EA300754474 /* UserStatusModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */; };
+		9C1C8BE82C8B4A1C00754474 /* UserStatusModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */; };
 		9C1C8BEA2C8B4FC000754474 /* Trial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE92C8B4FC000754474 /* Trial.swift */; };
 		9C1C8BEB2C8B4FC000754474 /* Trial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE92C8B4FC000754474 /* Trial.swift */; };
 		9C1C8BED2C8B817B00754474 /* BrightIntoshStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */; };
@@ -29,6 +29,7 @@
 		9C534ACC2ACB2A050029E050 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C534ACA2ACB2A050029E050 /* Alerts.swift */; };
 		9C5610502ABF55A90066D6C9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C56104F2ABF55A90066D6C9 /* Settings.swift */; };
 		9C5610512ABF55A90066D6C9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C56104F2ABF55A90066D6C9 /* Settings.swift */; };
+		9C59653A2C8CCE9500BFC9A6 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
 		9C711B4E2BD9583F00231067 /* StyledSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C711B4D2BD9583F00231067 /* StyledSlider.swift */; };
 		9C711B4F2BD9583F00231067 /* StyledSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C711B4D2BD9583F00231067 /* StyledSlider.swift */; };
 		9C8803762A72625E00476017 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
@@ -81,7 +82,7 @@
 
 /* Begin PBXFileReference section */
 		1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarMenu.swift; sourceTree = "<group>"; };
-		9C1C8BE62C8B3EA300754474 /* StoreModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreModifier.swift; sourceTree = "<group>"; };
+		9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserStatusModifier.swift; sourceTree = "<group>"; };
 		9C1C8BE92C8B4FC000754474 /* Trial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trial.swift; sourceTree = "<group>"; };
 		9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightIntoshStore.swift; sourceTree = "<group>"; };
 		9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
@@ -139,6 +140,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9C5965392C8CCE7E00BFC9A6 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				9C534ACA2ACB2A050029E050 /* Alerts.swift */,
+				9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */,
+				C1DF94502A5EF20E00FA285F /* Overlay.swift */,
+				9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */,
+				9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */,
+				1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */,
+				9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */,
+				9C711B4D2BD9583F00231067 /* StyledSlider.swift */,
+				9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */,
+				9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
 		C1DF943C2A5EF20000FA285F = {
 			isa = PBXGroup;
 			children = (
@@ -161,33 +179,24 @@
 		C1DF94472A5EF20000FA285F /* BrightIntosh */ = {
 			isa = PBXGroup;
 			children = (
-				9C1C8BE62C8B3EA300754474 /* StoreModifier.swift */,
-				C1B521172A5EFCB300E9B7AC /* Info.plist */,
 				C1DF94512A5EF20E00FA285F /* AppDelegate.swift */,
-				C1DF94502A5EF20E00FA285F /* Overlay.swift */,
-				C1B521142A5EF85500E9B7AC /* main.swift */,
-				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
 				9C9C78022A62AEE800778CAE /* Assets.xcassets */,
-				9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */,
+				9C534AC72ACB06210029E050 /* AutomationManager.swift */,
+				9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */,
 				9CEB41EF2A923723005D7A0D /* BrightIntosh_SE.entitlements */,
-				9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */,
-				9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */,
-				9C4163782ABD8FBD005B34B6 /* Constants.swift */,
-				9C56104F2ABF55A90066D6C9 /* Settings.swift */,
+				9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */,
 				9CA026502AC9647E0068CC74 /* BrightnessManager.swift */,
 				9CA026522AC968430068CC74 /* BrightnessTechnique.swift */,
-				9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */,
-				9C534AC72ACB06210029E050 /* AutomationManager.swift */,
-				1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */,
-				9C534ACA2ACB2A050029E050 /* Alerts.swift */,
-				9CDE33C42B4317D70085F786 /* Utils.swift */,
-				9C711B4D2BD9583F00231067 /* StyledSlider.swift */,
+				9C4163782ABD8FBD005B34B6 /* Constants.swift */,
+				C1B521172A5EFCB300E9B7AC /* Info.plist */,
 				9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */,
+				C1B521142A5EF85500E9B7AC /* main.swift */,
+				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
+				9C56104F2ABF55A90066D6C9 /* Settings.swift */,
 				9CCAC9362C3AF53B00B105D1 /* Store.swift */,
-				9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */,
 				9C1C8BE92C8B4FC000754474 /* Trial.swift */,
-				9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */,
-				9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */,
+				9C5965392C8CCE7E00BFC9A6 /* UI */,
+				9CDE33C42B4317D70085F786 /* Utils.swift */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -311,7 +320,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E05D3962B90E50E006FE96A /* StatusBarMenu.swift in Sources */,
-				9C1C8BE72C8B3EA300754474 /* StoreModifier.swift in Sources */,
+				9C1C8BE72C8B3EA300754474 /* UserStatusModifier.swift in Sources */,
 				9CA026552AC96B260068CC74 /* BrightnessManager.swift in Sources */,
 				9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */,
 				9C534AC92ACB06210029E050 /* AutomationManager.swift in Sources */,
@@ -357,8 +366,9 @@
 				C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */,
 				9C4163792ABD8FBD005B34B6 /* Constants.swift in Sources */,
 				9C534AC52ACB02C60029E050 /* BatteryHelpers.swift in Sources */,
-				9C1C8BE82C8B4A1C00754474 /* StoreModifier.swift in Sources */,
+				9C1C8BE82C8B4A1C00754474 /* UserStatusModifier.swift in Sources */,
 				9C711B4E2BD9583F00231067 /* StyledSlider.swift in Sources */,
+				9C59653A2C8CCE9500BFC9A6 /* RestorePurchasesButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

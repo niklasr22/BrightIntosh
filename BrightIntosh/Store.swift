@@ -61,19 +61,24 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     
     private func complete(transaction: SKPaymentTransaction) {
         SKPaymentQueue.default().finishTransaction(transaction)
-        purchasedProductIdentifiers.insert(transaction.payment.productIdentifier)
+        DispatchQueue.main.async {
+            print("Completed SM")
+            self.purchasedProductIdentifiers.insert(transaction.payment.productIdentifier)
+        }
     }
     
     private func failed(transaction: SKPaymentTransaction) {
         if let error = transaction.error as NSError? {
             print("Transaction failed: \(error.localizedDescription)")
         }
-        SKPaymentQueue.default().finishTransaction(transaction)
     }
     
     private func restore(transaction: SKPaymentTransaction) {
         SKPaymentQueue.default().finishTransaction(transaction)
-        purchasedProductIdentifiers.insert(transaction.payment.productIdentifier)
+        DispatchQueue.main.async {
+            print("Restored SM")
+            self.purchasedProductIdentifiers.insert(transaction.payment.productIdentifier)
+        }
     }
     
     func restorePurchases() {
@@ -82,7 +87,7 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
 }
 
 
-actor StoreHandler {
+class EntitlementHandler: ObservableObject {
     private let logger = Logger(
         subsystem: "Store Handler",
         category: "Transaction Processing"
@@ -90,7 +95,9 @@ actor StoreHandler {
     
     private var updatesTask: Task<Void, Never>?
     
-    public static let shared = StoreHandler()
+    public static let shared = EntitlementHandler()
+    
+    @Published public var isUnrestrictedUser: Bool = false
     
     func verifyEntitlement(transaction verificationResult: VerificationResult<Transaction>) async -> Bool {
         do {
@@ -121,15 +128,25 @@ actor StoreHandler {
     }
     
     func isUnrestrictedUser() async -> Bool {
+        return false
         if await checkAppEntitlements() {
+            DispatchQueue.main.async {
+                self.isUnrestrictedUser = true
+            }
             return true
         }
         
         for await entitlement in Transaction.currentEntitlements {
             if entitlement.unsafePayloadValue.productID == Products.unrestrictedBrightIntosh,
                await self.verifyEntitlement(transaction: entitlement) {
+                DispatchQueue.main.async {
+                    self.isUnrestrictedUser = true
+                }
                 return true
             }
+        }
+        DispatchQueue.main.async {
+            self.isUnrestrictedUser = false
         }
         return false
     }
@@ -141,7 +158,6 @@ actor StoreHandler {
             if case .verified(let appTransaction) = shared {
                 // Hard-code the major version number in which the app's business model changed.
                 let newBusinessModelMajorVersion = "3"
-
 
                 // Get the major version number of the version the customer originally purchased.
                 let versionComponents = appTransaction.originalAppVersion.split(separator: ".")

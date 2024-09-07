@@ -11,7 +11,7 @@ enum TrialError: Error {
     case error
 }
 
-struct TrialData {
+public struct TrialData {
     let purchaseDate: Date
     let currentDate: Date
     

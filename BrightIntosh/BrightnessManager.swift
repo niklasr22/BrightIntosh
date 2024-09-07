@@ -20,7 +20,7 @@ class BrightnessManager {
     var screens: [NSScreen] = []
     var xdrScreens: [NSScreen] = []
     
-    init() {
+    init(isExtraBrightnessAllowed: @escaping (Bool) async -> Bool) {
         setBrightnessTechnique()
         
         if Settings.shared.brightintoshActive {
@@ -48,7 +48,18 @@ class BrightnessManager {
             print("Toggled increased brightness. Active: \(Settings.shared.brightintoshActive)")
             
             if Settings.shared.brightintoshActive {
-                self.enableExtraBrightness()
+                
+                Task {
+                    if await isExtraBrightnessAllowed(true) {
+                        DispatchQueue.main.async {
+                            self.enableExtraBrightness()
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            Settings.shared.brightintoshActive = false
+                        }
+                    }
+                }
             } else {
                 self.brightnessTechnique?.disable()
             }

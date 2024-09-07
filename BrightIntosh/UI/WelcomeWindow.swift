@@ -12,32 +12,33 @@ struct WelcomeView: View {
     var supportedDevice: Bool = false
     var closeWindow: () -> Void
     
-    @State var acceptedDisclaimer = false
+    @State var showStore = false
     
     @State var trial: TrialData?
     
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
+    @State var unrestrictedUser: Bool = false
     
     var body: some View {
         VStack {
-            if !acceptedDisclaimer {
+            HStack {
+                Image("LogoBorderedHighRes")
+                    .resizable()
+                    .frame(width: 100, height: 100)
+                    .aspectRatio(contentMode: .fit)
+                Text("BrightIntosh")
+                    .font(.largeTitle)
+                    .foregroundColor(.brightintoshBlue)
+                    .bold()
+            }
+            Spacer()
+            if !showStore {
                 VStack(alignment: .center, spacing: 10.0) {
-                    HStack {
-                        Image("LogoBorderedHighRes")
-                            .resizable()
-                            .frame(width: 100, height: 100)
-                            .aspectRatio(contentMode: .fit)
-                        Text("BrightIntosh")
-                            .font(.largeTitle)
-                            .foregroundColor(.brightintoshBlue)
-                            .bold()
-                    }
-                    Spacer()
                     VStack(alignment: .leading, spacing: 10.0) {
                         if !supportedDevice {
                             VStack {
                                 Label(
-                                    title:{
+                                    title: {
                                         Text("Unfortunately your device is currently not supported by BrightIntosh.")
                                     },
                                     icon: {
@@ -59,7 +60,7 @@ struct WelcomeView: View {
                                         .multilineTextAlignment(.center)
                                         .font(.title3)
                                         .bold()
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                                 }
                                 Spacer()
                                 VStack(spacing: 10.0) {
@@ -71,7 +72,7 @@ struct WelcomeView: View {
                                         .multilineTextAlignment(.center)
                                         .font(.title3)
                                         .bold()
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                                 }
                                 Spacer()
                                 VStack(spacing: 10.0) {
@@ -83,7 +84,7 @@ struct WelcomeView: View {
                                         .multilineTextAlignment(.center)
                                         .font(.title3)
                                         .bold()
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                                 }
                                 Spacer()
                             }
@@ -103,58 +104,50 @@ struct WelcomeView: View {
                     }
                     Spacer()
                     Button(action: {
-                        if isUnrestrictedUser {
+                        if unrestrictedUser {
                             closeWindow()
                             return
                         }
                         
-                        acceptedDisclaimer = true
+                        showStore = true
                     }) {
                         Text("Accept")
                     }
                     .buttonStyle(BrightIntoshButtonStyle())
                 }
-                .padding(20.0)
             } else {
                 VStack {
-                    if trial == nil || !trial!.stillEntitled() {
-                        Text("Did you enjoy the free trial?")
-                            .foregroundColor(.brightintoshBlue)
-                            .font(.largeTitle)
-                            .bold()
-                    } else {
-                        Text("Unleash the Brightness")
-                            .foregroundColor(.brightintoshBlue)
-                            .font(.largeTitle)
-                            .bold()
-                    }
-                    Text("Purchase your unrestricted BrightIntosh membership")
-                        .font(.title2)
-                        .foregroundColor(.brightintoshBlue)
                     VStack {
-                        BrightIntoshStoreView()
+                        if trial == nil || !trial!.stillEntitled() {
+                            Text("Your trial has expired")
+                                .font(.largeTitle)
+                                .bold()
+                        } else {
+                            Text("Unleash the Brightness!")
+                                .font(.largeTitle)
+                                .bold()
+                        }
                     }
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(.black)
-                    .padding(20.0)
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(.white)
-                            .opacity(0.5)
-                            .shadow(radius: 3)
-                    )
-                    if trial != nil && trial!.stillEntitled() && trial!.getRemainingDays() > 0 {
+                    .translucentCard()
+                    VStack {
+                        BrightIntoshStoreView(showLogo: false)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .translucentCard()
+                    Spacer()
+                    if !unrestrictedUser && trial != nil && trial!.stillEntitled() && trial!.getRemainingDays() > 0 {
                         Button(action: {
                             closeWindow()
                         }) {
-                            Text("Continue your free \(trial!.getRemainingDays()) day trial")
+                            Text("Start your free \(trial!.getRemainingDays()) day trial")
                         }
                         .buttonStyle(BrightIntoshButtonStyle())
                     }
                 }
-                .padding(20.0)
             }
         }
+        .padding(20.0)
         .background(LinearGradient(colors: [Color(red: 0.75, green: 0.89, blue: 0.97), Color(red: 0.67, green: 0.87, blue: 0.93)], startPoint: .topLeading, endPoint: .bottom))
         .task {
             do {
@@ -163,6 +156,7 @@ struct WelcomeView: View {
             } catch {
                 print("Could not determine trial state")
             }
+            unrestrictedUser = await EntitlementHandler.shared.isUnrestrictedUser()
         }
     }
 }
@@ -170,7 +164,7 @@ struct WelcomeView: View {
 struct WelcomeView_Previews: PreviewProvider {
     static var previews: some View {
         WelcomeView(closeWindow: {() in })
-            .frame(width: 550, height: 550)
+            .frame(width: 580, height: 580)
     }
 }
 
@@ -178,7 +172,7 @@ final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
     init(supportedDevice: Bool) {
         
         let welcomeWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 550, height: 550),
+            contentRect: NSRect(x: 0, y: 0, width: 580, height: 580),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false

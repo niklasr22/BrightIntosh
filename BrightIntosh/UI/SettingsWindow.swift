@@ -136,17 +136,6 @@ struct BasicSettings: View {
                     KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
                 }
             }
-            #if DEBUG
-            Section("Debug") {
-                #if STORE
-                Toggle("Entitled to unrestricted usage", isOn: $entitledToUnrestrictedUse)
-                    .environment(\.isUnrestrictedUser, entitledToUnrestrictedUse)
-                    .onAppear {
-                        entitledToUnrestrictedUse = isUnrestrictedUser
-                    }
-                #endif
-            }
-            #endif
         }.frame(
             minWidth: 0,
             maxWidth: .infinity,
@@ -176,8 +165,7 @@ struct Acknowledgments: View {
     }
 }
 
-
-struct SettingsView: View {
+struct VersionView: View {
 #if STORE
     var title: String = "BrightIntosh SE v\(appVersion)"
 #else
@@ -187,22 +175,36 @@ struct SettingsView: View {
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
     var body: some View {
-        VStack {
-            Text("Settings").font(.largeTitle)
-            TabView {
-                if !isUnrestrictedUser {
-                    BrightIntoshStoreView().tabItem {
-                        Text("Store")
-                    }
-                }
-                BasicSettings().tabItem {
-                    Text("General")
-                }
-                Acknowledgments().tabItem {
-                    Text("Acknowledgments")
+        Label(title + (isUnrestrictedUser ? "" : " - Free Trial"), image: "LogoBordered").imageScale(.small)
+    }
+}
+
+struct SettingsTabs: View {
+    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
+    
+    var body: some View {
+        TabView {
+            if !isUnrestrictedUser {
+                BrightIntoshStoreView(showTrialExpiredWarning: true).tabItem {
+                    Text("Store")
                 }
             }
-            Label(title + (isUnrestrictedUser ? "" : " - Free Trial"), image: "LogoBordered").imageScale(.small)
+            BasicSettings().tabItem {
+                Text("General")
+            }
+            Acknowledgments().tabItem {
+                Text("Acknowledgments")
+            }
+        }
+    }
+}
+
+struct SettingsView: View {
+    var body: some View {
+        VStack {
+            Text("Settings").font(.largeTitle)
+            SettingsTabs()
+            VersionView()
         }
         .padding()
         .userStatusTask()
@@ -239,6 +241,11 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func showWindow(_ sender: Any?) {
+        window?.level = .floating
+        super.showWindow(sender)
     }
     
     func windowWillClose(_ notification: Notification) {

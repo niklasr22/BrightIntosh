@@ -16,24 +16,37 @@ struct UserStatusKey: EnvironmentKey {
 #endif
 }
 
+struct TrialKey: EnvironmentKey {
+    static let defaultValue: TrialData? = nil
+}
+
 public extension EnvironmentValues {
     var isUnrestrictedUser: Bool {
         get { self[UserStatusKey.self] }
         set { self[UserStatusKey.self] = newValue }
     }
+    var trial: TrialData? {
+        get { self[TrialKey.self] }
+        set { self[TrialKey.self] = newValue }
+    }
 }
 
 private struct UserStatusTaskModifier: ViewModifier {
     @State var unrestrictedUser = false
+    @State var trial: TrialData? = nil
     
     func body(content: Content) -> some View {
         content
             .task {
 #if STORE
-                unrestrictedUser = await StoreHandler.shared.isUnrestrictedUser()
+                unrestrictedUser = await EntitlementHandler.shared.isUnrestrictedUser()
+                do {
+                    trial = try await TrialData.getTrialData()
+                } catch {}
 #endif
             }
             .environment(\.isUnrestrictedUser, unrestrictedUser)
+            .environment(\.trial, trial)
     }
 }
 

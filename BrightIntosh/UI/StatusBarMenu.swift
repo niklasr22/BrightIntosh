@@ -17,6 +17,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     @objc private var toggleBrightIntosh: () -> ()
     
     
+    
 #if STORE
     private let BRIGHTINTOSH_URL = "https://brightintosh.de/index_nd.html"
 #else
@@ -34,10 +35,13 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var titleItem: NSMenuItem!
     private var toggleTimerItem: NSMenuItem!
     private var toggleIncreasedBrightnessItem: NSMenuItem!
+    private var trialExpiredItem: NSMenuItem!
     private var brightnessSlider: StyledSlider!
     private var brightnessValueDisplay: NSTextField!
     
     private var remainingTimePoller: Timer?
+    
+    private let isExtraBrightnessAllowed: (Bool) async -> Bool
     
 #if STORE && DEBUG
     private let titleString = "BrightIntosh SE (v\(appVersion)-dev)"
@@ -49,12 +53,13 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private let titleString = "BrightIntosh (v\(appVersion))"
 #endif
     
-    init(supportedDevice: Bool, automationManager: AutomationManager, settingsWindowController: SettingsWindowController, toggleBrightIntosh: @escaping () -> ()) {
+    init(supportedDevice: Bool, automationManager: AutomationManager, settingsWindowController: SettingsWindowController, toggleBrightIntosh: @escaping () -> (), isExtraBrightnessAllowed: @escaping (Bool) async -> Bool) {
         self.toggleBrightIntosh = toggleBrightIntosh
         
         self.supportedDevice = supportedDevice
         self.automationManager = automationManager
         self.settingsWindowController = settingsWindowController
+        self.isExtraBrightnessAllowed = isExtraBrightnessAllowed
         
         menu = NSMenu()
         
@@ -106,6 +111,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "This device is incompatible")
             menu.addItem(unsupportedDeviceItem)
         }
+        
+        trialExpiredItem = NSMenuItem(title: String(localized: "Your trial has expired"), action: nil, keyEquivalent: "")
+        trialExpiredItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "Your trial has expired")
         
         statusItem.menu = menu
         self.updateMenu()
@@ -177,6 +185,17 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         if isOpen {
             startRemainingTimePoller()
+        }
+        
+        Task {
+            let trialExpired = !(await isExtraBrightnessAllowed(false))
+            DispatchQueue.main.async {
+                if trialExpired && !self.menu.items.contains(self.trialExpiredItem) {
+                    self.menu.addItem(self.trialExpiredItem)
+                } else if self.menu.items.contains(self.trialExpiredItem) {
+                    self.menu.removeItem(self.trialExpiredItem)
+                }
+            }
         }
     }
     
