@@ -74,12 +74,9 @@ struct BasicSettings: View {
     @State private var brightIntoshOnlyOnBuiltIn = Settings.shared.brightIntoshOnlyOnBuiltIn
     @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = Settings.shared.timerAutomationTimeout
-
-#if STORE
-    @AppStorage("entitledToUnrestrictedUse") var entitledToUnrestrictedUse: Bool = false
-#endif
     
-    
+    @State private var entitledToUnrestrictedUse = false
+    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
@@ -143,6 +140,10 @@ struct BasicSettings: View {
             Section("Debug") {
                 #if STORE
                 Toggle("Entitled to unrestricted usage", isOn: $entitledToUnrestrictedUse)
+                    .environment(\.isUnrestrictedUser, entitledToUnrestrictedUse)
+                    .onAppear {
+                        entitledToUnrestrictedUse = isUnrestrictedUser
+                    }
                 #endif
             }
             #endif
@@ -175,60 +176,6 @@ struct Acknowledgments: View {
     }
 }
 
-struct BrightIntoshStoreView: View {
-    private let logger = Logger(
-        subsystem: "Settings View",
-        category: "Store"
-    )
-    private let storeManager = StoreManager()
-    
-    
-    var body: some View {
-        VStack {
-            if #available(macOS 15.0, *) {
-                StoreView(ids: [Products.unrestrictedBrightIntosh]) { product in
-                    Image("LogoBorderedHighRes").resizable().scaledToFit()
-                }
-                .storeButton(.hidden, for: .cancellation)
-                .storeButton(.visible, for: .restorePurchases, .signIn)
-            } else {
-                VStack {
-                    List(storeManager.products, id: \.productIdentifier) { product in
-                        HStack {
-                            Text(product.localizedTitle)
-                            Spacer()
-                            Button(action: {
-                                storeManager.purchase(product: product)
-                            }) {
-                                Text("Buy \(product.priceLocale.currencySymbol ?? "$")\(product.price)")
-                            }
-                        }
-                    }
-                    
-                    Button("Restore Purchases") {
-                        storeManager.restorePurchases()
-                    }
-                }
-            }
-        }
-        .onAppear() {
-            StoreHandler.createSharedInstance()
-        }
-        .task {
-            logger.info("Starting tasks to observe transaction updates")
-            // Begin observing StoreKit transaction updates in case a
-            // transaction happens on another device.
-            await StoreHandler.shared.observeTransactionUpdates()
-            // Check if we have any unfinished transactions where we
-            // need to grant access to content
-            await StoreHandler.shared.checkForUnfinishedTransactions()
-            logger.info("Finished checking for unfinished transactions")
-            
-            await StoreHandler.shared.checkForEntitlements()
-            logger.info("Finished checking entitlements")
-        }
-    }
-}
 
 struct SettingsView: View {
 #if STORE
@@ -237,17 +184,13 @@ struct SettingsView: View {
     var title: String = "BrightIntosh v\(appVersion)"
 #endif
     
-#if STORE
-    @AppStorage("entitledToUnrestrictedUse") var entitledToUnrestrictedUse: Bool = false
-#else
-    var entitledToUnrestrictedUse: Bool = true
-#endif
+    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
     var body: some View {
         VStack {
             Text("Settings").font(.largeTitle)
             TabView {
-                if !entitledToUnrestrictedUse {
+                if !isUnrestrictedUser {
                     BrightIntoshStoreView().tabItem {
                         Text("Store")
                     }
@@ -259,8 +202,10 @@ struct SettingsView: View {
                     Text("Acknowledgments")
                 }
             }
-            Label(title + (entitledToUnrestrictedUse ? "" : " - Free Trial"), image: "LogoBordered").imageScale(.small)
-        }.padding()
+            Label(title + (isUnrestrictedUser ? "" : " - Free Trial"), image: "LogoBordered").imageScale(.small)
+        }
+        .padding()
+        .userStatusTask()
     }
 }
 

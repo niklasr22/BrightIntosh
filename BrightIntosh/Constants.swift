@@ -7,6 +7,12 @@
 
 import Carbon
 import KeyboardShortcuts
+import SwiftUI
+
+extension Color {
+    static let brightintoshBlue = Color(red: 0.25, green: 0.67, blue: 0.79)
+    static let brightintoshBluePressed = Color(red: 0.36, green: 0.74, blue: 0.84)
+}
 
 extension KeyboardShortcuts.Name {
     static let toggleBrightIntosh = Self("toggleIncreasedBrightness", default: .init(carbonKeyCode: kVK_ANSI_B, carbonModifiers: (0 | optionKey | cmdKey)))

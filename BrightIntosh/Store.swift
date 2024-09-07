@@ -32,7 +32,9 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     }
     
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        products = response.products
+        DispatchQueue.main.async {
+            self.products = response.products
+        }
     }
     
     func purchase(product: SKProduct) {
@@ -88,68 +90,9 @@ actor StoreHandler {
     
     private var updatesTask: Task<Void, Never>?
     
-    private(set) static var shared: StoreHandler!
+    public static let shared = StoreHandler()
     
-    static func createSharedInstance() {
-        shared = StoreHandler()
-    }
-    
-    func process(transaction verificationResult: VerificationResult<Transaction>) async {
-        do {
-            let unsafeTransaction = verificationResult.unsafePayloadValue
-            logger.log("""
-            Processing transaction ID \(unsafeTransaction.id) for \
-            \(unsafeTransaction.productID)
-            """)
-        }
-        
-        let transaction: Transaction
-        switch verificationResult {
-        case .verified(let t):
-            logger.debug("""
-            Transaction ID \(t.id) for \(t.productID) is verified
-            """)
-            transaction = t
-        case .unverified(let t, let error):
-            // Log failure and ignore unverified transactions
-            logger.error("""
-            Transaction ID \(t.id) for \(t.productID) is unverified: \(error)
-            """)
-            return
-        }
-
-        if case .nonConsumable = transaction.productType {
-            await transaction.finish()
-            handleTransaction(transaction: transaction)
-        }
-    }
-    
-    func checkForUnfinishedTransactions() async {
-        logger.debug("Checking for unfinished transactions")
-        for await transaction in Transaction.unfinished {
-            let unsafeTransaction = transaction.unsafePayloadValue
-            logger.log("""
-            Processing unfinished transaction ID \(unsafeTransaction.id) for \
-            \(unsafeTransaction.productID)
-            """)
-            Task.detached(priority: .background) {
-                await self.process(transaction: transaction)
-            }
-        }
-        logger.debug("Finished checking for unfinished transactions")
-    }
-    
-    func observeTransactionUpdates() {
-        self.updatesTask = Task { [weak self] in
-            self?.logger.debug("Observing transaction updates")
-            for await update in Transaction.updates {
-                guard let self else { break }
-                await self.process(transaction: update)
-            }
-        }
-    }
-    
-    func processEntitlement(transaction verificationResult: VerificationResult<Transaction>) async {
+    func verifyEntitlement(transaction verificationResult: VerificationResult<Transaction>) async -> Bool {
         do {
             let unsafeTransaction = verificationResult.unsafePayloadValue
             logger.log("""
@@ -170,62 +113,50 @@ actor StoreHandler {
             logger.error("""
             (Entitlement) Transaction ID \(t.id) for \(t.productID) is unverified: \(error)
             """)
-            return
+            return false
         }
         
         logger.info("User is entitled to have the product \(transaction.productID)")
-        handleTransaction(transaction: transaction)
+        return true
     }
     
-    func checkForEntitlements() {
-        self.updatesTask = Task { [weak self] in
-            self?.logger.debug("Observing transaction updates")
-            for await entitlement in Transaction.currentEntitlements {
-                guard let self else { break }
-                await self.processEntitlement(transaction: entitlement)
+    func isUnrestrictedUser() async -> Bool {
+        if await checkAppEntitlements() {
+            return true
+        }
+        
+        for await entitlement in Transaction.currentEntitlements {
+            if entitlement.unsafePayloadValue.productID == Products.unrestrictedBrightIntosh,
+               await self.verifyEntitlement(transaction: entitlement) {
+                return true
             }
         }
+        return false
     }
     
-}
+    func checkAppEntitlements() async -> Bool {
+        do {
+            // Get the appTransaction.
+            let shared = try await AppTransaction.shared
+            if case .verified(let appTransaction) = shared {
+                // Hard-code the major version number in which the app's business model changed.
+                let newBusinessModelMajorVersion = "3"
 
 
-func handleTransaction(transaction: Transaction) {
-    if transaction.productID == Products.unrestrictedBrightIntosh {
-       // Settings.shared.entitledToUnrestrictedUse = true
-    }
-}
+                // Get the major version number of the version the customer originally purchased.
+                let versionComponents = appTransaction.originalAppVersion.split(separator: ".")
+                let originalMajorVersion = versionComponents[0]
+                print(originalMajorVersion)
+                print(appTransaction.debugDescription)
 
-@available(macOS 13.0, *)
-func checkAppEntitlements() async {
-    do {
-        // Get the appTransaction.
-        let shared = try await AppTransaction.shared
-        if case .verified(let appTransaction) = shared {
-            // Hard-code the major version number in which the app's business model changed.
-            let newBusinessModelMajorVersion = "2"
-
-
-            // Get the major version number of the version the customer originally purchased.
-            let versionComponents = appTransaction.originalAppVersion.split(separator: ".")
-            let originalMajorVersion = versionComponents[0]
-            print(originalMajorVersion)
-            print(appTransaction.debugDescription)
-
-            if originalMajorVersion < newBusinessModelMajorVersion {
-                Settings.shared.entitledToUnrestrictedUse = true
+                if originalMajorVersion < newBusinessModelMajorVersion {
+                    return true
+                }
             }
+        } catch {
+            logger.error("Fetching app transaction failed")
         }
-    }
-    catch {
-        // Handle errors.
-        print("woopsie")
-    }
-    
-    for await result in Transaction.currentEntitlements {
-        if case .verified(let transaction) = result {
-            handleTransaction(transaction: transaction)
-        }
+        return false
     }
 }
 

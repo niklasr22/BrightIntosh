@@ -25,15 +25,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         Task {
-            if #available(macOS 13.0, *) {
-                await checkAppEntitlements()
-            } else {
-                // Fallback on earlier versions
-            }
+            //await checkAppEntitlements()
         }
         
         supportedDevice = isDeviceSupported()
         
+        welcomeWindow()
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             welcomeWindow()
         }
