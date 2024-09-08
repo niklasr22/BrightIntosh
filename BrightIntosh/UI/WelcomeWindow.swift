@@ -30,6 +30,7 @@ struct IntroView: View {
                     .frame(maxWidth: .infinity)
                     .translucentCard(backgroundColor: .yellow)
                 }
+                
                 VStack(alignment: .leading, spacing: 10.0) {
                     HStack {
                         VStack(spacing: 10.0) {
@@ -72,6 +73,7 @@ struct IntroView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: 90.0)
                 .translucentCard()
+                
                 VStack(alignment: .leading, spacing: 10.0) {
                     Text("Disclaimer")
                         .bold()
@@ -83,7 +85,9 @@ struct IntroView: View {
                 .foregroundStyle(.black)
                 .translucentCard()
             }
+            
             Spacer()
+            
             Button(action: onAccept) {
                 Text("Accept")
             }
@@ -113,12 +117,15 @@ struct WelcomeStoreView: View {
             }
             .frame(maxWidth: .infinity)
             .translucentCard()
+            
             VStack {
                 BrightIntoshStoreView(showLogo: false)
             }
             .frame(maxWidth: .infinity)
             .translucentCard()
+            
             Spacer()
+            
             if !isUnrestrictedUser && trial.stillEntitled() && trial.getRemainingDays() > 0 {
                 Button(action: onContinue) {
                     Text("Start your free \(trial.getRemainingDays()) day trial")
