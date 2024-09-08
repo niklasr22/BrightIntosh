@@ -35,16 +35,6 @@ struct BrightIntoshStoreView: View {
                     .multilineTextAlignment(.center)
                     .font(.title)
                 Spacer()
-            } else if #available(macOS 15.0, *) {
-                StoreView(ids: [Products.unrestrictedBrightIntosh]) { product in
-                }
-                .storeButton(.hidden, for: .cancellation)
-                .storeButton(.visible, for: .restorePurchases, .signIn)
-                .onInAppPurchaseCompletion(perform: { _,_ in
-                    Task {
-                        _ = await EntitlementHandler.shared.checkAppEntitlements()
-                    }
-                })
             } else {
                 VStack {
                     Spacer()

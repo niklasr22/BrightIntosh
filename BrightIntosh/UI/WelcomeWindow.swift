@@ -74,7 +74,7 @@ struct IntroView: View {
                         Spacer()
                     }
                 }
-                .frame(maxWidth: .infinity, idealHeight: 0, maxHeight: 100.0)
+                .frame(maxWidth: .infinity, idealHeight: 0, maxHeight: 110.0)
                 .translucentCard()
                 
                 VStack(alignment: .leading, spacing: 10.0) {
