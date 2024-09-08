@@ -275,9 +275,7 @@
 				de,
 				fr,
 				es,
-				"pt-BR",
 				"pt-PT",
-				"es-419",
 			);
 			mainGroup = C1DF943C2A5EF20000FA285F;
 			packageReferences = (
