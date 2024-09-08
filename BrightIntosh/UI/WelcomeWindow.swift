@@ -142,8 +142,8 @@ struct WelcomeView: View {
     var closeWindow: () -> Void
     
     @State var showStore = false
-    @State var trial: TrialData?
-    
+   
+    @Environment(\.trial) private var trial: TrialData?
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
     var body: some View {
@@ -163,12 +163,15 @@ struct WelcomeView: View {
                 IntroView(
                     supportedDevice: supportedDevice, 
                     onAccept: {
+#if STORE
                         if isUnrestrictedUser {
                             closeWindow()
                             return
                         }
-                        
                         showStore = true
+#else
+                        closeWindow()
+#endif
                     }
                 )
             } else {
@@ -176,19 +179,12 @@ struct WelcomeView: View {
                     WelcomeStoreView(onContinue: closeWindow, trial: trial)
                 } else {
                     ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
         }
         .padding(20.0)
-        .background(LinearGradient(colors: [Color(red: 0.75, green: 0.89, blue: 0.97), Color(red: 0.67, green: 0.87, blue: 0.93)], startPoint: .topLeading, endPoint: .bottom))
-        .task {
-            do {
-                trial = try await TrialData.getTrialData()
-                trial = TrialData(purchaseDate: Date.now, currentDate: Date.now)
-            } catch {
-                print("Could not determine trial state")
-            }
-        }
+        .background(LinearGradient.brightIntoshBackground)
     }
 }
 

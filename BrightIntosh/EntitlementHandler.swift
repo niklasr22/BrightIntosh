@@ -5,85 +5,13 @@
 //  Created by Niklas Rousset on 04.07.24.
 //
 
-import Foundation
 import StoreKit
-import OSLog
 import SwiftData
+import OSLog
 
 
-struct Products {
+public struct Products {
     static let unrestrictedBrightIntosh = "brightintosh_paid"
-}
-
-class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
-    @Published var products: [SKProduct] = []
-    @Published var purchasedProductIdentifiers: Set<String> = []
-    
-    override init() {
-        super.init()
-        SKPaymentQueue.default().add(self)
-        fetchProducts()
-    }
-    
-    func fetchProducts() {
-        let request = SKProductsRequest(productIdentifiers: [Products.unrestrictedBrightIntosh])
-        request.delegate = self
-        request.start()
-    }
-    
-    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        DispatchQueue.main.async {
-            self.products = response.products
-        }
-    }
-    
-    func purchase(product: SKProduct) {
-        let payment = SKPayment(product: product)
-        SKPaymentQueue.default().add(payment)
-    }
-    
-    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-        for transaction in transactions {
-            switch transaction.transactionState {
-            case .purchased:
-                complete(transaction: transaction)
-            case .failed:
-                failed(transaction: transaction)
-            case .restored:
-                restore(transaction: transaction)
-            case .deferred, .purchasing:
-                break
-            @unknown default:
-                break
-            }
-        }
-    }
-    
-    private func complete(transaction: SKPaymentTransaction) {
-        SKPaymentQueue.default().finishTransaction(transaction)
-        DispatchQueue.main.async {
-            print("Completed SM")
-            self.purchasedProductIdentifiers.insert(transaction.payment.productIdentifier)
-        }
-    }
-    
-    private func failed(transaction: SKPaymentTransaction) {
-        if let error = transaction.error as NSError? {
-            print("Transaction failed: \(error.localizedDescription)")
-        }
-    }
-    
-    private func restore(transaction: SKPaymentTransaction) {
-        SKPaymentQueue.default().finishTransaction(transaction)
-        DispatchQueue.main.async {
-            print("Restored SM")
-            self.purchasedProductIdentifiers.insert(transaction.payment.productIdentifier)
-        }
-    }
-    
-    func restorePurchases() {
-        SKPaymentQueue.default().restoreCompletedTransactions()
-    }
 }
 
 
@@ -128,6 +56,7 @@ class EntitlementHandler: ObservableObject {
     }
     
     func isUnrestrictedUser() async -> Bool {
+        return false
         if await checkAppEntitlements() {
             DispatchQueue.main.async {
                 self.isUnrestrictedUser = true
