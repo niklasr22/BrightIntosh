@@ -56,7 +56,6 @@ class EntitlementHandler: ObservableObject {
     }
     
     func isUnrestrictedUser() async -> Bool {
-        return false
         if await checkAppEntitlements() {
             DispatchQueue.main.async {
                 self.isUnrestrictedUser = true
