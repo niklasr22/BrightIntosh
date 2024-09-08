@@ -7,17 +7,137 @@
 
 import SwiftUI
 
+struct IntroView: View {
+    var supportedDevice: Bool = false
+    var onAccept: () -> Void
+    
+    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
+    
+    var body: some View {
+        VStack(alignment: .center, spacing: 10.0) {
+            VStack(alignment: .leading, spacing: 10.0) {
+                if !supportedDevice {
+                    VStack {
+                        Label(
+                            title: {
+                                Text("Unfortunately your device is currently not supported by BrightIntosh.")
+                            },
+                            icon: {
+                                Image(systemName: "exclamationmark.triangle")
+                            }
+                        )
+                    }
+                    .frame(maxWidth: .infinity)
+                    .translucentCard(backgroundColor: .yellow)
+                }
+                VStack(alignment: .leading, spacing: 10.0) {
+                    HStack {
+                        VStack(spacing: 10.0) {
+                            Image(systemName: "1.circle")
+                                .resizable()
+                                .frame(width: 25.0, height: 25.0)
+                                .foregroundColor(.brightintoshBlue)
+                            Text("Click the \(Image(systemName: "sun.max.circle")) icon in your menu bar")
+                                .multilineTextAlignment(.center)
+                                .font(.title3)
+                                .bold()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        }
+                        Spacer()
+                        VStack(spacing: 10.0) {
+                            Image(systemName: "2.circle")
+                                .resizable()
+                                .frame(width: 25.0, height: 25.0)
+                                .foregroundColor(.brightintoshBlue)
+                            Text("Click *Activate*")
+                                .multilineTextAlignment(.center)
+                                .font(.title3)
+                                .bold()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        }
+                        Spacer()
+                        VStack(spacing: 10.0) {
+                            Image(systemName: "3.circle")
+                                .resizable()
+                                .frame(width: 25.0, height: 25.0)
+                                .foregroundColor(.brightintoshBlue)
+                            Text("Enjoy the extra brightness")
+                                .multilineTextAlignment(.center)
+                                .font(.title3)
+                                .bold()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        }
+                        Spacer()
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: 90.0)
+                .translucentCard()
+                VStack(alignment: .leading, spacing: 10.0) {
+                    Text("Disclaimer")
+                        .bold()
+                        .font(.title3)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text("BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk.")
+                        .lineLimit(nil)
+                }
+                .foregroundStyle(.black)
+                .translucentCard()
+            }
+            Spacer()
+            Button(action: onAccept) {
+                Text("Accept")
+            }
+            .buttonStyle(BrightIntoshButtonStyle())
+        }
+    }
+}
+
+struct WelcomeStoreView: View {
+    var onContinue: () -> Void
+    var trial: TrialData
+    
+    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
+    
+    var body: some View {
+        VStack {
+            VStack {
+                if !trial.stillEntitled() {
+                    Text("Your trial has expired")
+                        .font(.largeTitle)
+                        .bold()
+                } else {
+                    Text("Unleash the Brightness!")
+                        .font(.largeTitle)
+                        .bold()
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .translucentCard()
+            VStack {
+                BrightIntoshStoreView(showLogo: false)
+            }
+            .frame(maxWidth: .infinity)
+            .translucentCard()
+            Spacer()
+            if !isUnrestrictedUser && trial.stillEntitled() && trial.getRemainingDays() > 0 {
+                Button(action: onContinue) {
+                    Text("Start your free \(trial.getRemainingDays()) day trial")
+                }
+                .buttonStyle(BrightIntoshButtonStyle())
+            }
+        }
+    }
+}
+
 struct WelcomeView: View {
     
     var supportedDevice: Bool = false
     var closeWindow: () -> Void
     
     @State var showStore = false
-    
     @State var trial: TrialData?
     
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
-    @State var unrestrictedUser: Bool = false
     
     var body: some View {
         VStack {
@@ -33,117 +153,22 @@ struct WelcomeView: View {
             }
             Spacer()
             if !showStore {
-                VStack(alignment: .center, spacing: 10.0) {
-                    VStack(alignment: .leading, spacing: 10.0) {
-                        if !supportedDevice {
-                            VStack {
-                                Label(
-                                    title: {
-                                        Text("Unfortunately your device is currently not supported by BrightIntosh.")
-                                    },
-                                    icon: {
-                                        Image(systemName: "exclamationmark.triangle")
-                                    }
-                                )
-                            }
-                            .frame(maxWidth: .infinity)
-                            .translucentCard(backgroundColor: .yellow)
-                        }
-                        VStack(alignment: .leading, spacing: 10.0) {
-                            HStack {
-                                VStack(spacing: 10.0) {
-                                    Image(systemName: "1.circle")
-                                        .resizable()
-                                        .frame(width: 25.0, height: 25.0)
-                                        .foregroundColor(.brightintoshBlue)
-                                    Text("Click the \(Image(systemName: "sun.max.circle")) icon in your menu bar")
-                                        .multilineTextAlignment(.center)
-                                        .font(.title3)
-                                        .bold()
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                                }
-                                Spacer()
-                                VStack(spacing: 10.0) {
-                                    Image(systemName: "2.circle")
-                                        .resizable()
-                                        .frame(width: 25.0, height: 25.0)
-                                        .foregroundColor(.brightintoshBlue)
-                                    Text("Click *Activate*")
-                                        .multilineTextAlignment(.center)
-                                        .font(.title3)
-                                        .bold()
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                                }
-                                Spacer()
-                                VStack(spacing: 10.0) {
-                                    Image(systemName: "3.circle")
-                                        .resizable()
-                                        .frame(width: 25.0, height: 25.0)
-                                        .foregroundColor(.brightintoshBlue)
-                                    Text("Enjoy the extra brightness")
-                                        .multilineTextAlignment(.center)
-                                        .font(.title3)
-                                        .bold()
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                                }
-                                Spacer()
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: 90.0)
-                        .translucentCard()
-                        VStack(alignment: .leading, spacing: 10.0) {
-                            Text("Disclaimer")
-                                .bold()
-                                .font(.title3)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            Text("BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk.")
-                                .lineLimit(nil)
-                        }
-                        .foregroundStyle(.black)
-                        .translucentCard()
-                    }
-                    Spacer()
-                    Button(action: {
-                        if unrestrictedUser {
+                IntroView(
+                    supportedDevice: supportedDevice, 
+                    onAccept: {
+                        if isUnrestrictedUser {
                             closeWindow()
                             return
                         }
                         
                         showStore = true
-                    }) {
-                        Text("Accept")
                     }
-                    .buttonStyle(BrightIntoshButtonStyle())
-                }
+                )
             } else {
-                VStack {
-                    VStack {
-                        if trial == nil || !trial!.stillEntitled() {
-                            Text("Your trial has expired")
-                                .font(.largeTitle)
-                                .bold()
-                        } else {
-                            Text("Unleash the Brightness!")
-                                .font(.largeTitle)
-                                .bold()
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .translucentCard()
-                    VStack {
-                        BrightIntoshStoreView(showLogo: false)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .translucentCard()
-                    Spacer()
-                    if !unrestrictedUser && trial != nil && trial!.stillEntitled() && trial!.getRemainingDays() > 0 {
-                        Button(action: {
-                            closeWindow()
-                        }) {
-                            Text("Start your free \(trial!.getRemainingDays()) day trial")
-                        }
-                        .buttonStyle(BrightIntoshButtonStyle())
-                    }
+                if let trial = trial {
+                    WelcomeStoreView(onContinue: closeWindow, trial: trial)
+                } else {
+                    ProgressView()
                 }
             }
         }
@@ -156,7 +181,6 @@ struct WelcomeView: View {
             } catch {
                 print("Could not determine trial state")
             }
-            unrestrictedUser = await EntitlementHandler.shared.isUnrestrictedUser()
         }
     }
 }
@@ -179,6 +203,7 @@ final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
         )
         
         let contentView = WelcomeView(supportedDevice: supportedDevice, closeWindow: welcomeWindow.close).frame(width: 550, height: 550)
+            .userStatusTask()
         
         welcomeWindow.contentView = NSHostingView(rootView: contentView)
         welcomeWindow.titlebarAppearsTransparent = true

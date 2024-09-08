@@ -18,7 +18,7 @@ public struct TrialData {
     func getRemainingDays() -> Int {
         
         if let expirationDate = getExpirationDate(), currentDate < expirationDate {
-            return Calendar.current.dateComponents([.year, .month, .day, .hour], from: currentDate, to: expirationDate).day ?? 0
+            return Calendar.current.dateComponents([.year, .month, .day], from: currentDate, to: expirationDate).day ?? 0
         }
         return 0
     }
