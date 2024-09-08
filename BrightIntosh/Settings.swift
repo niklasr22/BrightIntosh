@@ -12,14 +12,6 @@ import ServiceManagement
 final class Settings {
     static let shared: Settings = Settings()
     
-    
-    public var entitledToUnrestrictedUse: Bool = UserDefaults.standard.object(forKey: "entitledToUnrestrictedUse") != nil ? UserDefaults.standard.bool(forKey: "entitledToUnrestrictedUse") : true {
-        didSet {
-            UserDefaults.standard.setValue(entitledToUnrestrictedUse, forKey: "entitledToUnrestrictedUse")
-            callListeners(setting: "entitledToUnrestrictedUse")
-        }
-    }
-    
     public var brightintoshActive: Bool = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
         didSet {
             UserDefaults.standard.setValue(brightintoshActive, forKey: "active")
