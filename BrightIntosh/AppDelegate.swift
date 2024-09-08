@@ -8,6 +8,7 @@
 import Cocoa
 import KeyboardShortcuts
 import ServiceManagement
+import StoreKit
 
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -24,7 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         supportedDevice = isDeviceSupported()
-        
+       
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             welcomeWindow()
         }
@@ -33,12 +34,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             Settings.shared.brightIntoshOnlyOnBuiltIn = false
         }
         
-        brightnessManager = BrightnessManager()
+        brightnessManager = BrightnessManager(isExtraBrightnessAllowed: isExtraBrightnessAllowed)
         automationManager = AutomationManager()
-        statusBarMenu = StatusBarMenu(supportedDevice: supportedDevice, automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh)
+        statusBarMenu = StatusBarMenu(supportedDevice: supportedDevice, automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh, isExtraBrightnessAllowed: isExtraBrightnessAllowed)
         
         // Register global hotkeys
         addKeyListeners()
+    }
+    
+    func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
+        if await EntitlementHandler.shared.isUnrestrictedUser() {
+            return true
+        }
+        do {
+            let stillEntitledToTrial = (try await TrialData.getTrialData()).stillEntitled()
+            if !stillEntitledToTrial && offerUpgrade {
+                DispatchQueue.main.async {
+                    self.settingsWindowController.showWindow(nil)
+                }
+            }
+            return stillEntitledToTrial
+        } catch {
+            return false
+        }
     }
     
     @objc func increaseBrightness() {
@@ -75,6 +93,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.runModal(for: controller.window!)
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
- 
-}
 
+}

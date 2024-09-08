@@ -9,7 +9,12 @@
 /* Begin PBXBuildFile section */
 		1E05D3952B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
 		1E05D3962B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
-		9C380FF12A8A8922000A6566 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 9C380FF02A8A8922000A6566 /* Sparkle */; };
+		9C1C8BE72C8B3EA300754474 /* UserStatusModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */; };
+		9C1C8BE82C8B4A1C00754474 /* UserStatusModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */; };
+		9C1C8BEA2C8B4FC000754474 /* Trial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE92C8B4FC000754474 /* Trial.swift */; };
+		9C1C8BEB2C8B4FC000754474 /* Trial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE92C8B4FC000754474 /* Trial.swift */; };
+		9C1C8BED2C8B817B00754474 /* BrightIntoshStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */; };
+		9C1C8BEE2C8B817B00754474 /* BrightIntoshStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */; };
 		9C4163702AB7198B005B34B6 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */; };
 		9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */; };
 		9C4163742ABD8EE9005B34B6 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 9C4163732ABD8EE9005B34B6 /* KeyboardShortcuts */; };
@@ -24,13 +29,16 @@
 		9C534ACC2ACB2A050029E050 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C534ACA2ACB2A050029E050 /* Alerts.swift */; };
 		9C5610502ABF55A90066D6C9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C56104F2ABF55A90066D6C9 /* Settings.swift */; };
 		9C5610512ABF55A90066D6C9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C56104F2ABF55A90066D6C9 /* Settings.swift */; };
+		9C59653A2C8CCE9500BFC9A6 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
+		9C59653E2C8DBB1400BFC9A6 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C59653D2C8DBB1400BFC9A6 /* StoreManager.swift */; };
+		9C59653F2C8DBB2C00BFC9A6 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C59653D2C8DBB1400BFC9A6 /* StoreManager.swift */; };
+		9C5965402C8DBB2F00BFC9A6 /* EntitlementHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */; };
 		9C711B4E2BD9583F00231067 /* StyledSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C711B4D2BD9583F00231067 /* StyledSlider.swift */; };
 		9C711B4F2BD9583F00231067 /* StyledSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C711B4D2BD9583F00231067 /* StyledSlider.swift */; };
 		9C8803762A72625E00476017 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
 		9C8803772A72625E00476017 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D044EA2A60205E0022B970 /* OverlayWindow.swift */; };
 		9C88037A2A72625E00476017 /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
 		9C88037B2A72625E00476017 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B521142A5EF85500E9B7AC /* main.swift */; };
-		9C88037E2A72625E00476017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C9C78022A62AEE800778CAE /* Assets.xcassets */; };
 		9C8FA26B2AB058310049C0D1 /* WelcomeWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */; };
 		9C8FA26C2AB058310049C0D1 /* WelcomeWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */; };
 		9C9C78032A62AEE800778CAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C9C78022A62AEE800778CAE /* Assets.xcassets */; };
@@ -38,14 +46,15 @@
 		9CA026532AC968430068CC74 /* BrightnessTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026522AC968430068CC74 /* BrightnessTechnique.swift */; };
 		9CA026542AC968430068CC74 /* BrightnessTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026522AC968430068CC74 /* BrightnessTechnique.swift */; };
 		9CA026552AC96B260068CC74 /* BrightnessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026502AC9647E0068CC74 /* BrightnessManager.swift */; };
-		9CA458BE2AD0A61000CBF8B9 /* AutoLauncher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C1031D552A86742E001EE05B /* AutoLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		9CCAC9342C3A8F9E00B105D1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */; };
-		9CCAC9352C3A8F9E00B105D1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */; };
+		9CCAC9372C3AF53B00B105D1 /* EntitlementHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */; };
+		9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
 		9CDE33C52B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
 		9CDE33C62B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
-		C1031D582A86742E001EE05B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1031D572A86742E001EE05B /* AppDelegate.swift */; };
-		C1031D672A86791C001EE05B /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1031D662A86791C001EE05B /* main.swift */; };
-		C126561F2A8695DC006AD3B5 /* AutoLauncher.app in Copy Files */ = {isa = PBXBuildFile; fileRef = C1031D552A86742E001EE05B /* AutoLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9CE3C37D2C8C89F200E7FDBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C9C78022A62AEE800778CAE /* Assets.xcassets */; };
+		9CE3C37E2C8C89F600E7FDBA /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */; };
+		9CE3C37F2C8C8A1800E7FDBA /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */; };
+		9CE3C3812C8C8D3B00E7FDBA /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */; };
+		9CE3C3822C8C8D3B00E7FDBA /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */; };
 		C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
 		C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
 		C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B521142A5EF85500E9B7AC /* main.swift */; };
@@ -59,7 +68,6 @@
 			dstPath = Contents/Library/LoginItems;
 			dstSubfolderSpec = 1;
 			files = (
-				9CA458BE2AD0A61000CBF8B9 /* AutoLauncher.app in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,7 +77,6 @@
 			dstPath = Contents/Library/LoginItems;
 			dstSubfolderSpec = 1;
 			files = (
-				C126561F2A8695DC006AD3B5 /* AutoLauncher.app in Copy Files */,
 			);
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -78,12 +85,16 @@
 
 /* Begin PBXFileReference section */
 		1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarMenu.swift; sourceTree = "<group>"; };
+		9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserStatusModifier.swift; sourceTree = "<group>"; };
+		9C1C8BE92C8B4FC000754474 /* Trial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trial.swift; sourceTree = "<group>"; };
+		9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightIntoshStore.swift; sourceTree = "<group>"; };
 		9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		9C4163782ABD8FBD005B34B6 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHelpers.swift; sourceTree = "<group>"; };
 		9C534AC72ACB06210029E050 /* AutomationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomationManager.swift; sourceTree = "<group>"; };
 		9C534ACA2ACB2A050029E050 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 		9C56104F2ABF55A90066D6C9 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		9C59653D2C8DBB1400BFC9A6 /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		9C711B4D2BD9583F00231067 /* StyledSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledSlider.swift; sourceTree = "<group>"; };
 		9C8803822A72625E00476017 /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeWindow.swift; sourceTree = "<group>"; };
@@ -91,14 +102,12 @@
 		9CA026502AC9647E0068CC74 /* BrightnessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessManager.swift; sourceTree = "<group>"; };
 		9CA026522AC968430068CC74 /* BrightnessTechnique.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessTechnique.swift; sourceTree = "<group>"; };
 		9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntitlementHandler.swift; sourceTree = "<group>"; };
+		9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorePurchasesButton.swift; sourceTree = "<group>"; };
 		9CDE33C42B4317D70085F786 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh.entitlements; sourceTree = "<group>"; };
 		9CEB41EF2A923723005D7A0D /* BrightIntosh_SE.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh_SE.entitlements; sourceTree = "<group>"; };
-		C1031D552A86742E001EE05B /* AutoLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1031D572A86742E001EE05B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C1031D602A86742F001EE05B /* AutoLauncher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AutoLauncher.entitlements; sourceTree = "<group>"; };
-		C1031D642A86764D001EE05B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C1031D662A86791C001EE05B /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C1B521142A5EF85500E9B7AC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C1B521172A5EFCB300E9B7AC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,18 +126,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C1031D522A86742E001EE05B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C1B521452A5EFF5800E9B7AC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C380FF12A8A8922000A6566 /* Sparkle in Frameworks */,
 				9C4163742ABD8EE9005B34B6 /* KeyboardShortcuts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,15 +144,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		C1031D562A86742E001EE05B /* AutoLauncher */ = {
+		9C5965392C8CCE7E00BFC9A6 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				C1031D572A86742E001EE05B /* AppDelegate.swift */,
-				C1031D602A86742F001EE05B /* AutoLauncher.entitlements */,
-				C1031D642A86764D001EE05B /* Info.plist */,
-				C1031D662A86791C001EE05B /* main.swift */,
+				9C534ACA2ACB2A050029E050 /* Alerts.swift */,
+				9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */,
+				C1DF94502A5EF20E00FA285F /* Overlay.swift */,
+				9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */,
+				9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */,
+				1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */,
+				9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */,
+				9C711B4D2BD9583F00231067 /* StyledSlider.swift */,
+				9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */,
+				9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */,
 			);
-			path = AutoLauncher;
+			path = UI;
 			sourceTree = "<group>";
 		};
 		C1DF943C2A5EF20000FA285F = {
@@ -159,7 +166,6 @@
 			children = (
 				C1DF94572A5EF66200FA285F /* README.md */,
 				C1DF94472A5EF20000FA285F /* BrightIntosh */,
-				C1031D562A86742E001EE05B /* AutoLauncher */,
 				C1DF94462A5EF20000FA285F /* Products */,
 				9C4163752ABD8FA4005B34B6 /* Frameworks */,
 			);
@@ -170,7 +176,6 @@
 			children = (
 				C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */,
 				9C8803822A72625E00476017 /* BrightIntosh.app */,
-				C1031D552A86742E001EE05B /* AutoLauncher.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -178,27 +183,25 @@
 		C1DF94472A5EF20000FA285F /* BrightIntosh */ = {
 			isa = PBXGroup;
 			children = (
-				C1B521172A5EFCB300E9B7AC /* Info.plist */,
 				C1DF94512A5EF20E00FA285F /* AppDelegate.swift */,
-				C1DF94502A5EF20E00FA285F /* Overlay.swift */,
-				C1B521142A5EF85500E9B7AC /* main.swift */,
-				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
 				9C9C78022A62AEE800778CAE /* Assets.xcassets */,
-				9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */,
+				9C534AC72ACB06210029E050 /* AutomationManager.swift */,
+				9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */,
 				9CEB41EF2A923723005D7A0D /* BrightIntosh_SE.entitlements */,
-				9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */,
-				9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */,
-				9C4163782ABD8FBD005B34B6 /* Constants.swift */,
-				9C56104F2ABF55A90066D6C9 /* Settings.swift */,
+				9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */,
 				9CA026502AC9647E0068CC74 /* BrightnessManager.swift */,
 				9CA026522AC968430068CC74 /* BrightnessTechnique.swift */,
-				9C534AC42ACB02C60029E050 /* BatteryHelpers.swift */,
-				9C534AC72ACB06210029E050 /* AutomationManager.swift */,
-				1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */,
-				9C534ACA2ACB2A050029E050 /* Alerts.swift */,
-				9CDE33C42B4317D70085F786 /* Utils.swift */,
-				9C711B4D2BD9583F00231067 /* StyledSlider.swift */,
+				9C4163782ABD8FBD005B34B6 /* Constants.swift */,
+				9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */,
+				C1B521172A5EFCB300E9B7AC /* Info.plist */,
 				9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */,
+				C1B521142A5EF85500E9B7AC /* main.swift */,
+				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
+				9C56104F2ABF55A90066D6C9 /* Settings.swift */,
+				9C59653D2C8DBB1400BFC9A6 /* StoreManager.swift */,
+				9C1C8BE92C8B4FC000754474 /* Trial.swift */,
+				9C5965392C8CCE7E00BFC9A6 /* UI */,
+				9CDE33C42B4317D70085F786 /* Utils.swift */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -212,7 +215,7 @@
 			buildPhases = (
 				9C8803742A72625E00476017 /* Sources */,
 				9C88037C2A72625E00476017 /* Frameworks */,
-				9C88037D2A72625E00476017 /* Resources */,
+				9CE3C37C2C8C89DF00E7FDBA /* Resources */,
 				9CA458BD2AD0A60000CBF8B9 /* CopyFiles */,
 			);
 			buildRules = (
@@ -225,23 +228,6 @@
 			);
 			productName = BrightIntosh;
 			productReference = 9C8803822A72625E00476017 /* BrightIntosh.app */;
-			productType = "com.apple.product-type.application";
-		};
-		C1031D542A86742E001EE05B /* AutoLauncher */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C1031D632A86742F001EE05B /* Build configuration list for PBXNativeTarget "AutoLauncher" */;
-			buildPhases = (
-				C1031D512A86742E001EE05B /* Sources */,
-				C1031D522A86742E001EE05B /* Frameworks */,
-				C1031D532A86742E001EE05B /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = AutoLauncher;
-			productName = AutoLauncher;
-			productReference = C1031D552A86742E001EE05B /* AutoLauncher.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C1B521472A5EFF5800E9B7AC /* BrightIntosh */ = {
@@ -259,7 +245,6 @@
 			);
 			name = BrightIntosh;
 			packageProductDependencies = (
-				9C380FF02A8A8922000A6566 /* Sparkle */,
 				9C4163732ABD8EE9005B34B6 /* KeyboardShortcuts */,
 			);
 			productName = BrightIntosh;
@@ -274,13 +259,10 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					9C8803732A72625E00476017 = {
 						LastSwiftMigration = 1430;
-					};
-					C1031D542A86742E001EE05B = {
-						CreatedOnToolsVersion = 14.3.1;
 					};
 					C1B521472A5EFF5800E9B7AC = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -298,13 +280,10 @@
 				de,
 				fr,
 				es,
-				"pt-BR",
 				"pt-PT",
-				"es-419",
 			);
 			mainGroup = C1DF943C2A5EF20000FA285F;
 			packageReferences = (
-				9C380FEF2A8A8922000A6566 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				9C4163722ABD8EE9005B34B6 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 			);
 			productRefGroup = C1DF94462A5EF20000FA285F /* Products */;
@@ -313,26 +292,17 @@
 			targets = (
 				C1B521472A5EFF5800E9B7AC /* BrightIntosh */,
 				9C8803732A72625E00476017 /* BrightIntosh (Store Editon) */,
-				C1031D542A86742E001EE05B /* AutoLauncher */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		9C88037D2A72625E00476017 /* Resources */ = {
+		9CE3C37C2C8C89DF00E7FDBA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CCAC9352C3A8F9E00B105D1 /* Localizable.xcstrings in Resources */,
-				9CCAC9352C3A8F9E00B105D1 /* Localizable.xcstrings in Resources */,
-				9C88037E2A72625E00476017 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C1031D532A86742E001EE05B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				9CE3C37E2C8C89F600E7FDBA /* Localizable.xcstrings in Resources */,
+				9CE3C37D2C8C89F200E7FDBA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,8 +310,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CCAC9342C3A8F9E00B105D1 /* Localizable.xcstrings in Resources */,
-				9CCAC9342C3A8F9E00B105D1 /* Localizable.xcstrings in Resources */,
+				9CE3C37F2C8C8A1800E7FDBA /* Localizable.xcstrings in Resources */,
 				9C9C78032A62AEE800778CAE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -354,30 +323,28 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E05D3962B90E50E006FE96A /* StatusBarMenu.swift in Sources */,
+				9C59653F2C8DBB2C00BFC9A6 /* StoreManager.swift in Sources */,
+				9C1C8BE72C8B3EA300754474 /* UserStatusModifier.swift in Sources */,
 				9CA026552AC96B260068CC74 /* BrightnessManager.swift in Sources */,
 				9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */,
 				9C534AC92ACB06210029E050 /* AutomationManager.swift in Sources */,
 				9CDE33C62B4317D70085F786 /* Utils.swift in Sources */,
+				9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */,
 				9C8FA26C2AB058310049C0D1 /* WelcomeWindow.swift in Sources */,
 				9C8803762A72625E00476017 /* AppDelegate.swift in Sources */,
 				9C5610512ABF55A90066D6C9 /* Settings.swift in Sources */,
+				9C1C8BEB2C8B4FC000754474 /* Trial.swift in Sources */,
+				9CE3C3822C8C8D3B00E7FDBA /* Styles.swift in Sources */,
 				9C8803772A72625E00476017 /* OverlayWindow.swift in Sources */,
 				9C88037A2A72625E00476017 /* Overlay.swift in Sources */,
+				9CCAC9372C3AF53B00B105D1 /* EntitlementHandler.swift in Sources */,
 				9C534ACC2ACB2A050029E050 /* Alerts.swift in Sources */,
 				9CA026542AC968430068CC74 /* BrightnessTechnique.swift in Sources */,
 				9C88037B2A72625E00476017 /* main.swift in Sources */,
 				9C41637A2ABD8FBD005B34B6 /* Constants.swift in Sources */,
 				9C534AC62ACB02C60029E050 /* BatteryHelpers.swift in Sources */,
+				9C1C8BEE2C8B817B00754474 /* BrightIntoshStore.swift in Sources */,
 				9C711B4F2BD9583F00231067 /* StyledSlider.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C1031D512A86742E001EE05B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C1031D672A86791C001EE05B /* main.swift in Sources */,
-				C1031D582A86742E001EE05B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,19 +355,26 @@
 				1E05D3952B90E50E006FE96A /* StatusBarMenu.swift in Sources */,
 				9C4163702AB7198B005B34B6 /* SettingsWindow.swift in Sources */,
 				9C8FA26B2AB058310049C0D1 /* WelcomeWindow.swift in Sources */,
+				9C59653E2C8DBB1400BFC9A6 /* StoreManager.swift in Sources */,
 				9C534AC82ACB06210029E050 /* AutomationManager.swift in Sources */,
+				9C1C8BEA2C8B4FC000754474 /* Trial.swift in Sources */,
 				9CDE33C52B4317D70085F786 /* Utils.swift in Sources */,
 				9CA026512AC9647E0068CC74 /* BrightnessManager.swift in Sources */,
 				9CA026532AC968430068CC74 /* BrightnessTechnique.swift in Sources */,
 				C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */,
 				9C5610502ABF55A90066D6C9 /* Settings.swift in Sources */,
+				9C1C8BED2C8B817B00754474 /* BrightIntoshStore.swift in Sources */,
+				9CE3C3812C8C8D3B00E7FDBA /* Styles.swift in Sources */,
 				C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */,
 				9C534ACB2ACB2A050029E050 /* Alerts.swift in Sources */,
 				C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */,
 				C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */,
 				9C4163792ABD8FBD005B34B6 /* Constants.swift in Sources */,
 				9C534AC52ACB02C60029E050 /* BatteryHelpers.swift in Sources */,
+				9C1C8BE82C8B4A1C00754474 /* UserStatusModifier.swift in Sources */,
+				9C5965402C8DBB2F00BFC9A6 /* EntitlementHandler.swift in Sources */,
 				9C711B4E2BD9583F00231067 /* StyledSlider.swift in Sources */,
+				9C59653A2C8CCE9500BFC9A6 /* RestorePurchasesButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,7 +392,7 @@
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh_SE.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 43;
+				CURRENT_PROJECT_VERSION = 44;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -428,6 +402,7 @@
 				INFOPLIST_FILE = BrightIntosh/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BrightIntosh;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -443,8 +418,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 2.2.3;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = BrightIntosh;
 				SDKROOT = auto;
@@ -469,118 +444,7 @@
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh_SE.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 43;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 9K32WDUN2H;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = BrightIntosh/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BrightIntosh;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
-				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				"INFOPLIST_KEY_UISupportsDocumentBrowser[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UISupportsDocumentBrowser[sdk=iphonesimulator*]" = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 2.2.3;
-				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
-				PRODUCT_NAME = BrightIntosh;
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = macosx;
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = STORE;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
-		C1031D612A86742F001EE05B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = AutoLauncher/AutoLauncher.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 9K32WDUN2H;
-				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AutoLauncher/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.3;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.launcher;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		C1031D622A86742F001EE05B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = AutoLauncher/AutoLauncher.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 9K32WDUN2H;
-				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AutoLauncher/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.3;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.launcher;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
-		C1B521582A5EFF5900E9B7AC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 43;
+				CURRENT_PROJECT_VERSION = 44;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -606,8 +470,58 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 2.2.3;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 3.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
+				PRODUCT_NAME = BrightIntosh;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = STORE;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		C1B521582A5EFF5900E9B7AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 44;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 9K32WDUN2H;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BrightIntosh/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BrightIntosh;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				"INFOPLIST_KEY_UISupportsDocumentBrowser[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UISupportsDocumentBrowser[sdk=iphonesimulator*]" = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -631,7 +545,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 43;
+				CURRENT_PROJECT_VERSION = 44;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -657,8 +571,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 2.2.3;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -675,6 +589,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -738,6 +653,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -801,15 +717,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C1031D632A86742F001EE05B /* Build configuration list for PBXNativeTarget "AutoLauncher" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C1031D612A86742F001EE05B /* Debug */,
-				C1031D622A86742F001EE05B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		C1B521572A5EFF5900E9B7AC /* Build configuration list for PBXNativeTarget "BrightIntosh" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -831,14 +738,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		9C380FEF2A8A8922000A6566 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sparkle-project/Sparkle";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
 		9C4163722ABD8EE9005B34B6 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
@@ -850,11 +749,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		9C380FF02A8A8922000A6566 /* Sparkle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9C380FEF2A8A8922000A6566 /* XCRemoteSwiftPackageReference "Sparkle" */;
-			productName = Sparkle;
-		};
 		9C4163732ABD8EE9005B34B6 /* KeyboardShortcuts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9C4163722ABD8EE9005B34B6 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;

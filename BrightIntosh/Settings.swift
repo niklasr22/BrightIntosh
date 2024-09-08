@@ -7,13 +7,10 @@
 
 import Foundation
 import ServiceManagement
-#if !STORE
-import Sparkle
-#endif
+
 
 final class Settings {
     static let shared: Settings = Settings()
-    
     
     public var brightintoshActive: Bool = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
         didSet {
@@ -66,54 +63,25 @@ final class Settings {
     
     public var launchAtLogin: Bool = false {
         didSet {
-            if #available(macOS 13, *) {
-                let service = SMAppService.mainApp
-                do {
-                    if launchAtLogin {
-                        try service.register()
-                    } else {
-                        try service.unregister()
-                    }
-                } catch {
-                    launchAtLogin.toggle()
+        let service = SMAppService.mainApp
+        do {
+                if launchAtLogin {
+                    try service.register()
+                } else {
+                    try service.unregister()
                 }
-            } else {
-                SMLoginItemSetEnabled(launcherBundleId, launchAtLogin)
-                UserDefaults.standard.set(launchAtLogin, forKey: "launchAtLoginActive")
+            } catch {
+                launchAtLogin.toggle()
             }
             callListeners(setting: "launchAtLogin")
         }
     }
     
-#if !STORE
-    public let updaterController: SPUStandardUpdaterController
-    
-    public var autoUpdateCheck: Bool = UserDefaults.standard.object(forKey: "autoUpdateCheckActive") != nil ? UserDefaults.standard.bool(forKey: "autoUpdateCheckActive") : true {
-        didSet {
-            UserDefaults.standard.setValue(autoUpdateCheck, forKey: "autoUpdateCheckActive")
-            updaterController.updater.automaticallyChecksForUpdates = autoUpdateCheck
-            callListeners(setting: "autoUpdateCheckActive")
-        }
-    }
-#endif
-    
     private var listeners: [String: [()->()]] = [:]
     
     init() {
-        
-#if !STORE
-        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
-        if UserDefaults.standard.object(forKey: "autoUpdateCheckActive") == nil {
-            autoUpdateCheck = updaterController.updater.automaticallyChecksForUpdates
-        }
-#endif
-        
         // Load launch at login status
-        if #available(macOS 13, *) {
-            launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
-        } else {
-            launchAtLogin = UserDefaults.standard.object(forKey: "launchAtLoginActive") != nil && UserDefaults.standard.bool(forKey: "launchAtLoginActive")
-        }
+        launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
     }
     
     public func addListener(setting: String, callback: @escaping () ->()) {

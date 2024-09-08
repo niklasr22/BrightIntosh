@@ -7,9 +7,8 @@
 
 import SwiftUI
 import KeyboardShortcuts
-#if !STORE
-import Sparkle
-#endif
+import StoreKit
+import OSLog
 
 final class BasicSettingsViewModel: ObservableObject {
     /*
@@ -76,11 +75,8 @@ struct BasicSettings: View {
     @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = Settings.shared.timerAutomationTimeout
     
-#if !STORE
-    @State private var autoUpdateCheck = Settings.shared.autoUpdateCheck
-#endif
-    
-    
+    @State private var entitledToUnrestrictedUse = false
+    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
     var body: some View {
         VStack(alignment: HorizontalAlignment.leading) {
@@ -140,18 +136,6 @@ struct BasicSettings: View {
                     KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
                 }
             }
-            
-#if !STORE
-            Section(header: Text("Updates").bold()) {
-                Toggle("Check automatically for updates", isOn: $autoUpdateCheck)
-                    .onChange(of: autoUpdateCheck) { value in
-                        Settings.shared.autoUpdateCheck = value
-                    }
-                Button("Check for updates") {
-                    Settings.shared.updaterController.checkForUpdates(nil)
-                }
-            }
-#endif
         }.frame(
             minWidth: 0,
             maxWidth: .infinity,
@@ -181,26 +165,49 @@ struct Acknowledgments: View {
     }
 }
 
-struct SettingsView: View {
+struct VersionView: View {
 #if STORE
     var title: String = "BrightIntosh SE v\(appVersion)"
 #else
     var title: String = "BrightIntosh v\(appVersion)"
 #endif
     
+    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
+    
+    var body: some View {
+        Label(title + (isUnrestrictedUser ? "" : " - Free Trial"), image: "LogoBordered").imageScale(.small)
+    }
+}
+
+struct SettingsTabs: View {
+    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
+    
+    var body: some View {
+        TabView {
+            if !isUnrestrictedUser {
+                BrightIntoshStoreView(showTrialExpiredWarning: true).tabItem {
+                    Text("Store")
+                }
+            }
+            BasicSettings().tabItem {
+                Text("General")
+            }
+            Acknowledgments().tabItem {
+                Text("Acknowledgments")
+            }
+        }
+    }
+}
+
+struct SettingsView: View {
     var body: some View {
         VStack {
             Text("Settings").font(.largeTitle)
-            TabView {
-                BasicSettings().tabItem {
-                    Text("General")
-                }
-                Acknowledgments().tabItem {
-                    Text("Acknowledgments")
-                }
-            }
-            Label(title, image: "LogoBordered").imageScale(.small)
-        }.padding()
+            SettingsTabs()
+            VersionView()
+        }
+        .padding()
+        .userStatusTask()
     }
 }
 
@@ -234,6 +241,11 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func showWindow(_ sender: Any?) {
+        window?.level = .floating
+        super.showWindow(sender)
     }
     
     func windowWillClose(_ notification: Notification) {

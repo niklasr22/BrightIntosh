@@ -1,6 +1,62 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Datenschutzerklärung](https://brightintosh.de/app_privacy_policy_de.html)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Politique de confidentialité](https://brightintosh.de/app_privacy_policy_en.html)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Política de privacidade](https://brightintosh.de/app_privacy_policy_en.html)"
+          }
+        }
+      }
+    },
+    "[Terms](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Bedingungen](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Términos](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Conditions](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Termos](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        }
+      }
+    },
     "%lld min" : {
       "localizations" : {
         "de" : {
@@ -21,19 +77,7 @@
             "value" : ""
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        },
         "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        },
-        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : ""
@@ -67,22 +111,10 @@
             "value" : "Quiénes somos"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quiénes somos"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mentions légales"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sobre nós"
           }
         },
         "pt-PT" : {
@@ -113,22 +145,10 @@
             "value" : "Aceptar"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aceptar"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Accepter"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aceitar"
           }
         },
         "pt-PT" : {
@@ -159,22 +179,10 @@
             "value" : "Agradecimientos"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Agradecimientos"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remerciements"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Agradecimentos"
           }
         },
         "pt-PT" : {
@@ -205,22 +213,10 @@
             "value" : "Activar"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activar"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activer"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ativar"
           }
         },
         "pt-PT" : {
@@ -251,22 +247,10 @@
             "value" : "Automatización"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatización"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automatisation"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automação"
           }
         },
         "pt-PT" : {
@@ -297,22 +281,10 @@
             "value" : "Umbral de nivel de batería"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Umbral de nivel de batería"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seuil de niveau de batterie"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limite do nível da bateria"
           }
         },
         "pt-PT" : {
@@ -322,6 +294,9 @@
           }
         }
       }
+    },
+    "BrightIntosh" : {
+
     },
     "BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk." : {
       "localizations" : {
@@ -343,22 +318,10 @@
             "value" : "BrightIntosh está diseñado para ser seguro para su MacBook Pro y no elude las protecciones del sistema operativo. BrightIntosh es un software de código abierto y, por tanto, no ofrece garantías, así que utilícelo bajo su propia responsabilidad."
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BrightIntosh está diseñado para ser seguro para su MacBook Pro y no elude las protecciones del sistema operativo. BrightIntosh es un software de código abierto y, por tanto, no ofrece garantías, así que utilícelo bajo su propia responsabilidad."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "BrightIntosh est conçu pour être sûr pour votre MacBook Pro et ne contourne pas les protections du système d'exploitation. BrightIntosh est un logiciel open source et n'est donc assorti d'aucune garantie ; vous l'utilisez donc à vos risques et périls."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O BrightIntosh foi projetado para ser seguro para o seu MacBook Pro e não ignora as proteções do sistema operacional. O BrightIntosh é um software de código aberto e, portanto, não tem garantias, portanto, use-o por sua própria conta e risco."
           }
         },
         "pt-PT" : {
@@ -389,22 +352,10 @@
             "value" : "Brillo"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brillo"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Luminosité"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brilho"
           }
         },
         "pt-PT" : {
@@ -435,28 +386,106 @@
             "value" : "Brillo:"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brillo:"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Luminosité:"
           }
         },
-        "pt-BR" : {
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Brilho:"
+          }
+        }
+      }
+    },
+    "Buy %@%@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für %1$@%2$@ kaufen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Buy %1$@%2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprar por %1$@%2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acheter pour %1$@%2$@"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brilho:"
+            "value" : "Comprar por %1$@%2$@"
+          }
+        }
+      }
+    },
+    "Click *Activate*" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke *Aktivieren*"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haga clic en *Activar*."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquer sur *Activer*"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique em *Ativar*"
+          }
+        }
+      }
+    },
+    "Click the %@ icon in your menu bar" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke das %@ Icon in der Menüleiste"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haga clic en el icono %@ de la barra de menús"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquez sur l'icône %@ dans votre barre de menu"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique no ícone %@ na sua barra de menu"
           }
         }
       }
@@ -481,22 +510,10 @@
             "value" : "Desactivar"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desactivar"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Désactiver"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desativar"
           }
         },
         "pt-PT" : {
@@ -527,22 +544,10 @@
             "value" : "Reducir brillo:"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reducir brillo:"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réduire la luminosité:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diminuir Brilho:"
           }
         },
         "pt-PT" : {
@@ -573,22 +578,10 @@
             "value" : "Desactivar después"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desactivar después"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Désactiver après"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desativar após"
           }
         },
         "pt-PT" : {
@@ -619,22 +612,10 @@
             "value" : "Desactivar temporizador"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desactivar temporizador"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Désactiver la minuterie"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desativar temporizador"
           }
         },
         "pt-PT" : {
@@ -665,22 +646,10 @@
             "value" : "Se desactiva cuando el nivel de la batería cae por debajo del"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se desactiva cuando el nivel de la batería cae por debajo del"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Désactivé lorsque le niveau de la batterie est inférieur à"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desativar quando o nível da bateria cair para menos de"
           }
         },
         "pt-PT" : {
@@ -691,7 +660,7 @@
         }
       }
     },
-    "Disclaimer:" : {
+    "Disclaimer" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -699,40 +668,22 @@
             "value" : "Haftungsausschluss"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disclaimer:"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Descargo de responsabilidad:"
-          }
-        },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Descargo de responsabilidad:"
+            "value" : "Descargo de responsabilidad"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clause de non-responsabilité:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Isenção de responsabilidade:"
+            "value" : "Clause de non-responsabilité"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Declaração de exoneração de responsabilidade:"
+            "value" : "Aviso legal"
           }
         }
       }
@@ -757,22 +708,10 @@
             "value" : "No aumente el brillo de las pantallas XDR externas"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No aumente el brillo de las pantallas XDR externas"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "N'augmentez pas la luminosité des écrans XDR externes"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Não aplique o aumento de brilho em telas XDR externas"
           }
         },
         "pt-PT" : {
@@ -803,28 +742,44 @@
             "value" : "Activar temporizador"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activar temporizador"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activer la minuterie"
           }
         },
-        "pt-BR" : {
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ativar temporizador"
+            "value" : "Ativar o temporizador"
+          }
+        }
+      }
+    },
+    "Enjoy the extra brightness" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genieße die extra Helligkeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disfruta del brillo extra"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profitez de la luminosité supplémentaire"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ativar o temporizador"
+            "value" : "Aproveite o brilho extra"
           }
         }
       }
@@ -849,74 +804,16 @@
             "value" : "General"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "General"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Général"
           }
         },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geral"
-          }
-        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Geral"
-          }
-        }
-      }
-    },
-    "How to use BrightIntosh:" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wie man BrightIntosh nutzt:"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "How to use BrightIntosh:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cómo utilizar BrightIntosh:"
-          }
-        },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cómo utilizar BrightIntosh:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comment utiliser BrightIntosh:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Como usar o BrightIntosh:"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Como utilizar o BrightIntosh:"
           }
         }
       }
@@ -941,22 +838,10 @@
             "value" : "Aumentar brillo:"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aumentar brillo:"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Augmenter la luminosité:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aumentar Brilho:"
           }
         },
         "pt-PT" : {
@@ -987,22 +872,10 @@
             "value" : "Aumento del brillo"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aumento del brillo"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Augmentation de la luminosité"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aumento do brilho"
           }
         },
         "pt-PT" : {
@@ -1033,22 +906,10 @@
             "value" : "Iniciar sesión al iniciar"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Iniciar sesión al iniciar"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lancer au démarrage"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Iniciar na inicialização"
           }
         },
         "pt-PT" : {
@@ -1080,28 +941,44 @@
             "value" : "Salir de la app"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerrar app"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quitter l'app"
           }
         },
-        "pt-BR" : {
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Encerrar App"
+            "value" : "Sair de uma aplicação"
+          }
+        }
+      }
+    },
+    "Restore Purchases" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Käufe wiederherstellen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurar compras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurer les achats"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sair de uma aplicação"
+            "value" : "Restaurar compras"
           }
         }
       }
@@ -1126,22 +1003,10 @@
             "value" : "Ajustes"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configuración"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réglages"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajustes"
           }
         },
         "pt-PT" : {
@@ -1172,28 +1037,72 @@
             "value" : "Funciones rápidas de teclado"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Funciones rápidas de teclado"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Raccourcis clavier"
           }
         },
-        "pt-BR" : {
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atalhos de Teclado"
+            "value" : "Atalhos de teclado"
+          }
+        }
+      }
+    },
+    "Start your free %lld day trial" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starte für %lld Tage kostenlos"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comienza tu prueba gratuita de %lld días"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commencez votre essai gratuit de %lld jours"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atalhos de teclado"
+            "value" : "Comece sua avaliação gratuita de %lld dias"
+          }
+        }
+      }
+    },
+    "Store" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Store"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tienda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boutique"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loja"
           }
         }
       }
@@ -1218,22 +1127,10 @@
             "value" : "Este dispositivo es incompatible"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este dispositivo es incompatible"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cet appareil est incompatible"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este dispositivo é incompatível"
           }
         },
         "pt-PT" : {
@@ -1264,22 +1161,10 @@
             "value" : "Aumento alternativo del brillo:"
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aumento alternativo del brillo:"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Commuter la luminosité augmentée:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alternar o aumento do brilho:"
           }
         },
         "pt-PT" : {
@@ -1310,22 +1195,10 @@
             "value" : "Lamentablemente, su dispositivo no es compatible con BrightIntosh."
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lamentablemente, su dispositivo no es compatible con BrightIntosh."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Malheureusement, votre appareil n'est pas pris en charge par BrightIntosh."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Infelizmente, seu dispositivo não é compatível com a BrightIntosh no momento."
           }
         },
         "pt-PT" : {
@@ -1336,94 +1209,86 @@
         }
       }
     },
-    "Welcome to BrightIntosh!" : {
+    "Unleash the Brightness!" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Willkommen bei BrightIntosh!"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Welcome to BrightIntosh!"
+            "value" : "Entfessle die maximale Helligkeit!"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¡Bienvenido a BrightIntosh!"
-          }
-        },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Bienvenido a BrightIntosh!"
+            "value" : "¡Desata el brillo!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bienvenue à BrightIntosh!"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bem-vindo à BrightIntosh!"
+            "value" : "Libérez le maximum de luminosité!"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bem-vindo ao BrightIntosh!"
+            "value" : "Libere o Brilho!"
           }
         }
       }
     },
-    "When the app is running you will see a sun icon in your menu bar that provides everything you need to use BrightIntosh." : {
+    "Unlock unrestricted access to BrightIntosh" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn die Anwendung ausgeführt wird, sehen Sie in Ihrer Menüleiste ein Sonnensymbol. Mit einem Klick öffnet sich ein Menü, welches alles enthält, was Sie für die Verwendung von BrightIntosh benötigen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When the app is running you will see a sun icon in your menu bar that provides everything you need to use BrightIntosh."
+            "value" : "Schalte uneingeschränkte Zugriff auf BrightIntosh frei"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuando la aplicación esté en funcionamiento, verá un icono en forma de sol en la barra de menús que le proporcionará todo lo que necesita para utilizar BrightIntosh."
-          }
-        },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuando la aplicación esté en funcionamiento, verá un icono en forma de sol en la barra de menús que le proporcionará todo lo que necesita para utilizar BrightIntosh."
+            "value" : "Desbloquear el acceso sin restricciones a BrightIntosh"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lorsque l'application est lancée, vous verrez une icône de soleil dans votre barre de menu qui fournit tout ce dont vous avez besoin pour utiliser BrightIntosh."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quando o aplicativo estiver em execução, você verá um ícone de sol na barra de menus que fornece tudo o que você precisa para usar o BrightIntosh."
+            "value" : "Débloquez l'accès illimité à BrightIntosh!"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quando a aplicação estiver a funcionar, verá um ícone de sol na sua barra de menu que fornece tudo o que precisa para utilizar o BrightIntosh."
+            "value" : "Desbloqueie acesso irrestrito ao BrightIntosh"
+          }
+        }
+      }
+    },
+    "You have access to BrightIntosh.\nEnjoy the brightness!" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast Zugriff auf BrightIntosh. Genieße die Helligkeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tienes acceso a BrightIntosh.\n¡Disfrute del brillo!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous avez accès à BrightIntosh.\nProfitez de la luminosité !"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você tem acesso ao BrightIntosh.\nAproveite o brilho!"
           }
         }
       }
@@ -1448,28 +1313,72 @@
             "value" : "Tu dispositivo no tiene una pantalla XDR integrada. El aumento del brillo solo se puede activar para pantallas XDR externas."
           }
         },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tu dispositivo no tiene una pantalla XDR integrada. El aumento del brillo solo se puede activar para pantallas XDR externas."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votre appareil ne dispose pas d'un écran XDR intégré. L'augmentation de la luminosité ne peut être activée que pour les écrans XDR externes."
           }
         },
-        "pt-BR" : {
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seu dispositivo não tem um monitor XDR integrado. O aumento do brilho só pode ser ativado para telas XDR externas."
+            "value" : "O seu dispositivo não tem um ecrã XDR incorporado. O aumento de brilho só pode ser ativado para ecrãs XDR externos."
+          }
+        }
+      }
+    },
+    "Your trial has expired" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die kostenlose Probezeit ist vorbei"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su versión de prueba ha caducado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre période d'essai a expiré"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O seu dispositivo não tem um ecrã XDR incorporado. O aumento de brilho só pode ser ativado para ecrãs XDR externos."
+            "value" : "A sua avaliação gratuita expirou"
+          }
+        }
+      }
+    },
+    "Your trial has expired. Unlock unrestricted access to BrightIntosh" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die kostenlose Probezeit ist vorbei. Schalte jetzt den uneingeschränkten Zugriff auf BrightIntosh frei."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su versión de prueba ha caducado. Desbloquee el acceso sin restricciones a BrightIntosh"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre période d'essai a expiré. Débloquez l'accès illimité à BrightIntosh."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A sua avaliação gratuita expirou. Desbloqueie acesso irrestrito ao BrightIntosh"
           }
         }
       }
