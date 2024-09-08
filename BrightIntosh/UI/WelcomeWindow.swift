@@ -30,48 +30,51 @@ struct IntroView: View {
                     .frame(maxWidth: .infinity)
                     .translucentCard(backgroundColor: .yellow)
                 }
-                
-                VStack(alignment: .leading, spacing: 10.0) {
-                    HStack {
-                        VStack(spacing: 10.0) {
-                            Image(systemName: "1.circle")
-                                .resizable()
-                                .frame(width: 25.0, height: 25.0)
-                                .foregroundColor(.brightintoshBlue)
-                            Text("Click the \(Image(systemName: "sun.max.circle")) icon in your menu bar")
-                                .multilineTextAlignment(.center)
-                                .font(.title3)
-                                .bold()
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                        }
+                VStack(spacing: 10.0) {
+                    HStack(alignment: .center) {
                         Spacer()
-                        VStack(spacing: 10.0) {
-                            Image(systemName: "2.circle")
-                                .resizable()
-                                .frame(width: 25.0, height: 25.0)
-                                .foregroundColor(.brightintoshBlue)
-                            Text("Click *Activate*")
-                                .multilineTextAlignment(.center)
-                                .font(.title3)
-                                .bold()
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                        }
+                        Image(systemName: "1.circle")
+                            .resizable()
+                            .frame(width: 25.0, height: 25.0)
+                            .foregroundColor(.brightintoshBlue)
                         Spacer()
-                        VStack(spacing: 10.0) {
-                            Image(systemName: "3.circle")
-                                .resizable()
-                                .frame(width: 25.0, height: 25.0)
-                                .foregroundColor(.brightintoshBlue)
-                            Text("Enjoy the extra brightness")
-                                .multilineTextAlignment(.center)
-                                .font(.title3)
-                                .bold()
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                        }
+                        Spacer()
+                        Image(systemName: "2.circle")
+                            .resizable()
+                            .frame(width: 25.0, height: 25.0)
+                            .foregroundColor(.brightintoshBlue)
+                        Spacer()
+                        Spacer()
+                        Image(systemName: "3.circle")
+                            .resizable()
+                            .frame(width: 25.0, height: 25.0)
+                            .foregroundColor(.brightintoshBlue)
+                        Spacer()
+                        
+                    }
+                    HStack(alignment: .top) {
+                        Spacer()
+                        Text("Click the \(Image(systemName: "sun.max.circle")) icon in your menu bar")
+                            .multilineTextAlignment(.center)
+                            .font(.title3)
+                            .bold()
+                            .frame(maxWidth: .infinity, alignment: .top)
+                        Spacer()
+                        Text("Click *Activate*")
+                            .multilineTextAlignment(.center)
+                            .font(.title3)
+                            .bold()
+                            .frame(maxWidth: .infinity, alignment: .top)
+                        Spacer()
+                        Text("Enjoy the extra brightness")
+                            .multilineTextAlignment(.center)
+                            .font(.title3)
+                            .bold()
+                            .frame(maxWidth: .infinity, alignment: .top)
                         Spacer()
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: 90.0)
+                .frame(maxWidth: .infinity, idealHeight: 0, maxHeight: 100.0)
                 .translucentCard()
                 
                 VStack(alignment: .leading, spacing: 10.0) {

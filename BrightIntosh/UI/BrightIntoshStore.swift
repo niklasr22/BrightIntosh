@@ -60,9 +60,11 @@ struct BrightIntoshStoreView: View {
                             if showTrialExpiredWarning && trial != nil && !trial!.stillEntitled() {
                                 Text("Your trial has expired. Unlock unrestricted access to BrightIntosh")
                                     .font(.title2)
+                                    .multilineTextAlignment(.center)
                             } else {
                                 Text("Unlock unrestricted access to BrightIntosh")
                                     .font(.title2)
+                                    .multilineTextAlignment(.center)
                             }
                             Button(action: {
                                 storeManager.purchase(product: product)
