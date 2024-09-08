@@ -18,8 +18,7 @@ struct BrightIntoshStoreView: View {
         category: "Store"
     )
     
-    private let storeManager = StoreManager()
-    
+    @ObservedObject private var storeManager = StoreManager()
     @ObservedObject private var entitlementHandler = EntitlementHandler.shared
     
     @State var purchaseCompleted = false
@@ -72,10 +71,14 @@ struct BrightIntoshStoreView: View {
                         Spacer()
                     }
                     RestorePurchasesButton()
+                    HStack {
+                        Text("[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)")
+                        Text("[Terms](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)")
+                    }
                     Spacer()
                 }
                 .onReceive(entitlementHandler.$isUnrestrictedUser, perform: { isUnrestrictedUser in
-                    purchaseCompleted = isUnrestrictedUser
+                    //purchaseCompleted = isUnrestrictedUser
                 })
                 .padding(20.0)
             }
@@ -87,4 +90,5 @@ struct BrightIntoshStoreView: View {
     BrightIntoshStoreView()
         .frame(width: 800, height: 600)
         .environment(\.trial, TrialData(purchaseDate: Date(timeInterval: -1_000_000, since: Date.now), currentDate: Date.now))
+        .environment(\.isUnrestrictedUser, false)
 }

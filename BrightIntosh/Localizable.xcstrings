@@ -1,6 +1,62 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Datenschutzerklärung](https://brightintosh.de/app_privacy_policy_de.html)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Politique de confidentialité](https://brightintosh.de/app_privacy_policy_en.html)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Política de privacidade](https://brightintosh.de/app_privacy_policy_en.html)"
+          }
+        }
+      }
+    },
+    "[Terms](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Bedingungen](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Términos](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Conditions](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Termos](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        }
+      }
+    },
     "%lld min" : {
       "localizations" : {
         "de" : {
