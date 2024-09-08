@@ -17,8 +17,11 @@ struct BrightIntoshStoreView: View {
         subsystem: "Settings View",
         category: "Store"
     )
-    @ObservedObject private var storeManager = StoreManager()
+    
+    private let storeManager = StoreManager()
+    
     @ObservedObject private var entitlementHandler = EntitlementHandler.shared
+    
     @State var purchaseCompleted = false
         
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool

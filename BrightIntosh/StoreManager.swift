@@ -9,7 +9,6 @@ import StoreKit
 
 class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
     @Published var products: [SKProduct] = []
-    @Published var purchasedProductIdentifiers: Set<String> = []
     
     override init() {
         super.init()
@@ -53,9 +52,8 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     
     private func complete(transaction: SKPaymentTransaction) {
         SKPaymentQueue.default().finishTransaction(transaction)
-        DispatchQueue.main.async {
-            print("Completed SM")
-            self.purchasedProductIdentifiers.insert(transaction.payment.productIdentifier)
+        Task {
+            _ = await EntitlementHandler.shared.checkAppEntitlements()
         }
     }
     
@@ -67,9 +65,8 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     
     private func restore(transaction: SKPaymentTransaction) {
         SKPaymentQueue.default().finishTransaction(transaction)
-        DispatchQueue.main.async {
-            print("Restored SM")
-            self.purchasedProductIdentifiers.insert(transaction.payment.productIdentifier)
+        Task {
+            _ = await EntitlementHandler.shared.checkAppEntitlements()
         }
     }
     

@@ -192,16 +192,16 @@
 				9CA026502AC9647E0068CC74 /* BrightnessManager.swift */,
 				9CA026522AC968430068CC74 /* BrightnessTechnique.swift */,
 				9C4163782ABD8FBD005B34B6 /* Constants.swift */,
+				9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */,
 				C1B521172A5EFCB300E9B7AC /* Info.plist */,
 				9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */,
 				C1B521142A5EF85500E9B7AC /* main.swift */,
 				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
 				9C56104F2ABF55A90066D6C9 /* Settings.swift */,
-				9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */,
+				9C59653D2C8DBB1400BFC9A6 /* StoreManager.swift */,
 				9C1C8BE92C8B4FC000754474 /* Trial.swift */,
 				9C5965392C8CCE7E00BFC9A6 /* UI */,
 				9CDE33C42B4317D70085F786 /* Utils.swift */,
-				9C59653D2C8DBB1400BFC9A6 /* StoreManager.swift */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";

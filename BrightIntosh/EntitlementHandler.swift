@@ -80,13 +80,11 @@ class EntitlementHandler: ObservableObject {
     
     func checkAppEntitlements() async -> Bool {
         do {
-            // Get the appTransaction.
             let shared = try await AppTransaction.shared
             if case .verified(let appTransaction) = shared {
                 // Hard-code the major version number in which the app's business model changed.
                 let newBusinessModelMajorVersion = "3"
 
-                // Get the major version number of the version the customer originally purchased.
                 let versionComponents = appTransaction.originalAppVersion.split(separator: ".")
                 let originalMajorVersion = versionComponents[0]
                 print(originalMajorVersion)
