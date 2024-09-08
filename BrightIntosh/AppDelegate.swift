@@ -26,7 +26,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         supportedDevice = isDeviceSupported()
        
-        welcomeWindow()
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             welcomeWindow()
         }
