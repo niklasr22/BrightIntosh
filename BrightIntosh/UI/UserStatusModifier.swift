@@ -35,16 +35,21 @@ private struct UserStatusTaskModifier: ViewModifier {
     @State var unrestrictedUser = false
     @State var trial: TrialData? = nil
     
+    @ObservedObject var entitlementHandler = EntitlementHandler.shared
+    
     func body(content: Content) -> some View {
         content
             .task {
 #if STORE
-                unrestrictedUser = await EntitlementHandler.shared.isUnrestrictedUser()
+                _ = await EntitlementHandler.shared.isUnrestrictedUser()
                 do {
                     trial = try await TrialData.getTrialData()
                 } catch {}
 #endif
             }
+            .onReceive(entitlementHandler.$isUnrestrictedUser, perform: { isUnrestricted in
+                unrestrictedUser = isUnrestricted
+            })
             .environment(\.isUnrestrictedUser, unrestrictedUser)
             .environment(\.trial, trial)
     }
