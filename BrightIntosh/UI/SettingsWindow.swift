@@ -174,8 +174,32 @@ struct VersionView: View {
     
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
+    @State var clicks = 0
+    
+    @State var ignoreAppTransaction = Settings.shared.ignoreAppTransaction
+    
     var body: some View {
         Label(title + (isUnrestrictedUser ? "" : " - Free Trial"), image: "LogoBordered").imageScale(.small)
+            .onTapGesture {
+                clicks += 1
+            }
+        if clicks >= 5 {
+            VStack {
+                Text("Test Settings").font(.title2)
+                Toggle(isOn: $ignoreAppTransaction) {
+                    Text("Test: Ignore App Transaction")
+                }
+                .onChange(of: ignoreAppTransaction) { _ in
+                    Settings.shared.ignoreAppTransaction = ignoreAppTransaction
+                    Task {
+                        _ = await EntitlementHandler.shared.isUnrestrictedUser()
+                    }
+                }
+                Button("Hide") {
+                    clicks = 0
+                }
+            }
+        }
     }
 }
 

@@ -12,6 +12,8 @@ import ServiceManagement
 final class Settings {
     static let shared: Settings = Settings()
     
+    public var ignoreAppTransaction = false
+    
     public var brightintoshActive: Bool = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
         didSet {
             UserDefaults.standard.setValue(brightintoshActive, forKey: "active")
