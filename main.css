@@ -21,7 +21,7 @@ div.content {
 
 .info {
     margin: auto;
-    width: 40%;
+    width: 60%;
     padding: 10px;
     font-size: 20px;
     text-align: center;
@@ -39,6 +39,11 @@ div.content {
     backdrop-filter: blur(10px);
     border-radius: 20px;
     box-shadow: #c0c0c0 0px 2px 5px;
+    padding: 30px;
+}
+
+.text-card {
+    text-align: left;
 }
 
 .compatibility-table .brand {
@@ -345,21 +350,15 @@ code .copy-btn {
     margin-bottom: 25px;
 }
 
-.animated-text {
-    --bg-size: 300%;
-    --color-bright: #ffe0b1;
-    --color-dark: #fdaf13;
+h2 {
+    --bg-size: 200%;
+    --color-bright: #a0a0a0;
+    --color-dark: #5d5d5d;
     color: transparent;
-    background: linear-gradient(90deg, var(--color-bright), var(--color-dark), var(--color-bright)) 0 0 / var(--bg-size) 100%;
+    background: linear-gradient(90deg, var(--color-dark), var(--color-bright), var(--color-dark)) 0 0 / var(--bg-size) 100%;
     background-clip: text;
     -webkit-background-clip: text;
-    animation: animated-gradient 5s infinite ease-out;
-}
-
-@keyframes animated-gradient {
-    to {
-        background-position: var(--bg-size) 0;
-    }
+    background-position: 0% 0;
 }
 
 .hidden {

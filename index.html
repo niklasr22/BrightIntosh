@@ -61,12 +61,18 @@
           </div>
         </div>
       </div>
+      <div class="info" id="trial">
+        <h2>Get started with a free trial</h2>
+        <p class="card text-card">
+          Use BrightIntosh free for three days after getting it from the Mac App Store!
+        </p>
+      </div>
       <div class="info" id="about">
         <h2>About</h2>
-        <p>
+        <p class="card text-card">
           BrightIntosh enables your MacBook Pro® to use the increased brightness (1000 nits) of its Liquid
           Retina XDR®
-          display anytime.
+          display anytime.<br />
           By default this is only possible when displaying HDR content.
           Please check the compatibility section for more information.
         </p>
@@ -99,7 +105,7 @@
       </div>
       <div class="info" id="disclaimer">
         <h2>Disclaimer</h2>
-        <p>
+        <p class="card text-card">
           This tool should not harm your display as macOS® is in full control over the display brightness.
           <br /><br />
           However this software comes with no warranty or guarantees. Users take full
@@ -107,6 +113,24 @@
           <br />
           By using the BrightIntosh application you accept the above.
         </p>
+      </div>
+      <div class="info" id="background">
+        <h2>How it works</h2>
+        <div class="card text-card">
+          <ol>
+            <li>BrightIntosh creates a small 1x1 pixel sized overlay with the brightest HDR color to get macOS to enable
+              the
+              full
+              HDR brightness for the screen.
+            </li>
+            <li>This pixel is hidden behind the rounded corner of the MacBook Pro's
+              screen.
+            </li>
+            <li>Then BrightIntosh performs a correction on the gamma values of the screen to lift the brightness
+              of the screen's entire content.
+            </li>
+            </ul>
+        </div>
       </div>
       <div class="info">
         <h2>Trademark notices</h2>
@@ -124,31 +148,8 @@
       <a href="./legal_notice.html">Legal notice / Impressum</a>
     </div>
   </div>
-  <div class="modal-overlay hidden" id="modal-overlay">
-    <div class="modal-window hidden" id="download-modal">
-      <div class="modal-background"></div>
-      <div class="modal-content">
-        <h2 class="animated-text">Shine bright!</h2>
-        <p>Thanks for downloading BrightIntosh!</p>
-        <p>If you want Brightintosh to have a bright future as well, please consider donating.<br />Your help is very
-          much appreciated.</p>
-        <div class="inline">
-          <a href="https://www.paypal.com/donate/?hosted_button_id=FTG9FJK4HLRTY"><button
-              class="btn paypal">PayPal</button></a>
-          <button class="btn gray" onclick="toggleModal('download-modal')">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
   <script>
     initComparisons();
-
-    function toggleModal(modalId) {
-      const modal = document.getElementById(modalId);
-      const overlay = document.getElementById("modal-overlay");
-      modal.classList.toggle("hidden");
-      overlay.classList.toggle("hidden");
-    }
   </script>
 </body>
 
