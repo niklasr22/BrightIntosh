@@ -1,6 +1,6 @@
 //
-//  Store.swift
-//  LiMeat
+//  EntitlementHandler.swift
+//  BrightIntosh
 //
 //  Created by Niklas Rousset on 04.07.24.
 //
@@ -79,23 +79,18 @@ class EntitlementHandler: ObservableObject {
     }
     
     func checkAppEntitlements() async -> Bool {
-        if CommandLine.arguments.contains("--no-app-transaction") || Settings.shared.ignoreAppTransaction {
-            return false
-        }
-            
         do {
             let shared = try await AppTransaction.shared
             if case .verified(let appTransaction) = shared {
                 // Hard-code the major version number in which the app's business model changed.
                 let newBusinessModelMajorVersion = "3"
-                let newBusinessModelMinorVersion = "1"
 
                 let versionComponents = appTransaction.originalAppVersion.split(separator: ".")
                 let originalMajorVersion = versionComponents[0]
-                let originalMinorVersion = versionComponents[1]
-                print("Original Version: \(appTransaction.originalAppVersion)")
+                print(originalMajorVersion)
+                print(appTransaction.debugDescription)
 
-                if originalMajorVersion < newBusinessModelMajorVersion || (originalMajorVersion == newBusinessModelMajorVersion && originalMinorVersion < newBusinessModelMinorVersion ) {
+                if originalMajorVersion < newBusinessModelMajorVersion {
                     return true
                 }
             }

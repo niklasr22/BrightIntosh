@@ -1,6 +1,6 @@
 //
-//  RestoringView.swift
-//  LiMeat
+//  RestorePurchasesButton.swift
+//  BrightIntosh
 //
 //  Created by Niklas Rousset on 04.07.24.
 //
