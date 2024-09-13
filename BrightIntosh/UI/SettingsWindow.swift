@@ -183,6 +183,7 @@ struct VersionView: View {
             .onTapGesture {
                 clicks += 1
             }
+#if STORE
         if clicks >= 5 {
             VStack {
                 Text("Test Settings").font(.title2)
@@ -200,6 +201,7 @@ struct VersionView: View {
                 }
             }
         }
+#endif
     }
 }
 
