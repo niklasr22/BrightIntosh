@@ -7,12 +7,28 @@
   <link rel="icon" type="image/x-icon" href="./brightintosh_sm.png">
   <link href="./fontawesome/css/all.min.css" rel="stylesheet" />
   <script src="slider.js"></script>
-  <title>BrightIntosh</title>
+  <title>BrightIntosh - Maximize Your MacBook Pro Display Brightness</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <meta name="description"
     content="BrightIntosh enables MacBook Pro to use the displays full brightness capabilities. It's a lightweight and open-source alternative to Vivid and Lunar.">
+  <meta name="description"
+    content="Unlock your MacBook Pro's full display brightness with BrightIntosh. Increase screen brightness beyond default limits using this lightweight, open-source app and alternative to Vivid and Lunar.">
   <meta name="keywords"
-    content="MacBook Pro, macOS, BrightIntosh, Brightness, outdoor, XDR, HDR, MacBook, Bright, display, BetterDisplay, Vivid, Lunar, open-source">
+    content="MacBook Pro, macOS, BrightIntosh, Brightness, outdoor, XDR, HDR, MacBook, Bright, display, BetterDisplay, Vivid, Lunar, open-source, brightness boost, maximum brightness, brighter">
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "BrightIntosh",
+        "operatingSystem": "macOS",
+        "applicationCategory": "Utilities",
+        "offers": {
+          "@type": "Offer",
+          "price": "1.99",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
 </head>
 
 <body>
@@ -21,17 +37,21 @@
       <a class="brand" href="index.html"><img class="logo" src="./brightintosh_sm.png" alt="BrightIntosh Logo"><span
           class="title">BrightIntosh</span></a>
       <span class="download">
-        <a class="appstore-download"
-          href="https://apps.apple.com/us/app/brightintosh/id6452471855?mt=12&amp;itsct=apps_box_badge&amp;itscg=30200"><img
-            src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/white/en-us?size=270x83&amp;releaseDate=1693267200"
-            alt="Download on the Mac App Store" style="width: 184px; height: 47px;"></a>
+        <a href="https://apps.apple.com/us/app/brightintosh/id6452471855?mt=12&itscg=30200&itsct=apps_box_badge&mttnsubad=6452471855"
+          style="display: inline-block;">
+          <img
+            src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/white/en-us?releaseDate=1693267200"
+            alt="Download on the App Store"
+            style="width: 141px; height: 47px; vertical-align: middle; object-fit: contain;" />
+        </a>
         <a href="https://github.com/niklasr22/BrightIntosh" class="github-btn hide-on-mobile"><i
             class="fa-brands fa-github"></i></a>
       </span>
     </div>
 
     <div class="content">
-      <div class="info large">
+      <div class="info large" id="comparison">
+        <h2>Unlock your MacBook Pro®'s Full Brightness</h2>
         <div class="img-comp-container">
           <div class="img-comp-img img-comp-base">
             <img src="demo_dark.webp" alt="MacBook Pro® with default maximum brightness">
@@ -41,7 +61,7 @@
           </div>
         </div>
       </div>
-      <div class="info">
+      <div class="info" id="about">
         <h2>About</h2>
         <p>
           BrightIntosh enables your MacBook Pro® to use the increased brightness (1000 nits) of its Liquid
@@ -51,9 +71,9 @@
           Please check the compatibility section for more information.
         </p>
       </div>
-      <div class="info">
+      <div class="info" id="compatibility">
         <h2>Compatibility</h2>
-        <div class="compatibility-table">
+        <div class="compatibility-table card">
           <div class="row">
             <div class="col example-image">
               <img src="./MacBookPro.webp" />
@@ -77,7 +97,7 @@
           </div>
         </div>
       </div>
-      <div class="info">
+      <div class="info" id="disclaimer">
         <h2>Disclaimer</h2>
         <p>
           This tool should not harm your display as macOS® is in full control over the display brightness.

@@ -31,9 +31,10 @@ div.content {
 
 .info.large {
     width: 60%;
+    padding: 0;
 }
 
-.compatibility-table {
+.card {
     background: #fff8;
     backdrop-filter: blur(10px);
     border-radius: 20px;
@@ -213,7 +214,7 @@ h2 {
 .img-comp-container {
     position: relative;
     width: 100%;
-    border-radius: 8px;
+    border-radius: 20px;
     overflow: hidden;
     box-shadow: #555 0px 2px 5px;
 }
