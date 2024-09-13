@@ -1,6 +1,6 @@
 //
-//  EntitlementHandler.swift
-//  BrightIntosh
+//  Store.swift
+//  LiMeat
 //
 //  Created by Niklas Rousset on 04.07.24.
 //
@@ -79,6 +79,10 @@ class EntitlementHandler: ObservableObject {
     }
     
     func checkAppEntitlements() async -> Bool {
+        if Settings.shared.ignoreAppTransaction {
+            return false
+        }
+            
         do {
             let shared = try await AppTransaction.shared
             if case .verified(let appTransaction) = shared {
