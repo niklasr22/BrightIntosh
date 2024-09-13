@@ -42,6 +42,11 @@ div.content {
     padding: 30px;
 }
 
+.sm-card {
+    display: inline-block;
+    padding: 15px;
+}
+
 .text-card {
     text-align: left;
 }
@@ -361,6 +366,37 @@ h2 {
     background-position: 0% 0;
 }
 
+:root {
+    --star-size: 30px;
+    --star-color: #fff;
+    --star-background: #fc9601;
+}
+
+.rating {
+    --percent: calc(var(--rating) / 5 * 100%);
+    display: inline-block;
+    font-size: var(--star-size);
+    height: var(--star-size);
+    line-height: 1;
+    text-align: left;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.rating::before {
+    content: '★★★★★';
+    background: linear-gradient(90deg, var(--star-background) 0%, var(--star-background) var(--percent), rgba(0, 0, 0, 1) var(--percent), rgba(0, 0, 0, 1) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: block;
+    position: relative;
+}
+
+.rating-numeric {
+    margin: 0;
+}
+
 .hidden {
     display: none;
 }
@@ -368,6 +404,10 @@ h2 {
 
 .hide-on-desktop {
     display: none;
+}
+
+.center {
+    text-align: center;
 }
 
 @media screen and (max-width: 1350px) {
