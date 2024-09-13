@@ -818,6 +818,9 @@
         }
       }
     },
+    "Hide" : {
+
+    },
     "Increase brightness:" : {
       "localizations" : {
         "de" : {
@@ -1106,6 +1109,12 @@
           }
         }
       }
+    },
+    "Test Settings" : {
+
+    },
+    "Test: Ignore App Transaction" : {
+
     },
     "This device is incompatible" : {
       "localizations" : {

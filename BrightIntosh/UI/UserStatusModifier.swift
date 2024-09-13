@@ -1,6 +1,6 @@
 //
-//  StoreModifier.swift
-//  LiMeat
+//  UserStatusModifier.swift
+//  BrightIntosh
 //
 //  Created by Niklas Rousset on 10.08.24.
 //
