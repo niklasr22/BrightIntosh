@@ -168,11 +168,12 @@ struct Acknowledgments: View {
 struct VersionView: View {
 #if STORE
     var title: String = "BrightIntosh SE v\(appVersion)"
+    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
 #else
     var title: String = "BrightIntosh v\(appVersion)"
+    private let isUnrestrictedUser: Bool = true
 #endif
     
-    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
     @State var clicks = 0
     
@@ -210,11 +211,13 @@ struct SettingsTabs: View {
     
     var body: some View {
         TabView {
+#if STORE
             if !isUnrestrictedUser {
                 BrightIntoshStoreView(showTrialExpiredWarning: true).tabItem {
                     Text("Store")
                 }
             }
+#endif
             BasicSettings().tabItem {
                 Text("General")
             }

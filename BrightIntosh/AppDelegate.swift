@@ -43,6 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
+#if STORE
         if await EntitlementHandler.shared.isUnrestrictedUser() {
             return true
         }
@@ -57,6 +58,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } catch {
             return false
         }
+#else
+        return true
+#endif
     }
     
     @objc func increaseBrightness() {
