@@ -2,42 +2,16 @@
   "sourceLanguage" : "en",
   "strings" : {
     "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)" : {
-    "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "[Datenschutzerklärung](https://brightintosh.de/app_privacy_policy_de.html)"
-            "value" : "[Datenschutzerklärung](https://brightintosh.de/app_privacy_policy_de.html)"
           }
         },
         "es" : {
-        "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[Politique de confidentialité](https://brightintosh.de/app_privacy_policy_en.html)"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[Política de privacidade](https://brightintosh.de/app_privacy_policy_en.html)"
-          }
-        }
-      }
-    },
-    "[Terms](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[Bedingungen](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
             "value" : "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)"
           }
         },
@@ -67,26 +41,8 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "[Términos](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
-            "value" : "[Términos](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[Conditions](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[Termos](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
-          }
-        }
-      }
-    },
-    "%lld min" : {
-      "localizations" : {
-        "de" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -116,19 +72,11 @@
           }
         },
         "es" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld min"
-          }
-        },
-        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : ""
           }
         },
-        "fr" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -350,9 +298,6 @@
     "BrightIntosh" : {
 
     },
-    "BrightIntosh" : {
-
-    },
     "BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk." : {
       "localizations" : {
         "de" : {
@@ -442,25 +387,14 @@
           }
         },
         "fr" : {
-        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Luminosité:"
             "value" : "Luminosité:"
           }
         },
         "pt-PT" : {
-        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brilho:"
-          }
-        }
-      }
-    },
-    "Buy %@%@" : {
-      "localizations" : {
-        "de" : {
             "value" : "Brilho:"
           }
         }
@@ -490,63 +424,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Acheter pour %1$@%2$@"
-            "value" : "Für %1$@%2$@ kaufen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Buy %1$@%2$@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comprar por %1$@%2$@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Acheter pour %1$@%2$@"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comprar por %1$@%2$@"
             "value" : "Comprar por %1$@%2$@"
           }
         }
       }
     },
     "Click *Activate*" : {
-    "Click *Activate*" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Klicke *Aktivieren*"
-            "value" : "Klicke *Aktivieren*"
           }
         },
-        "es" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Haga clic en *Activar*."
-            "value" : "Haga clic en *Activar*."
           }
         },
-        "fr" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cliquer sur *Activer*"
-            "value" : "Cliquer sur *Activer*"
           }
         },
-        "pt-PT" : {
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -558,31 +465,14 @@
     "Click the %@ icon in your menu bar" : {
       "localizations" : {
         "de" : {
-            "value" : "Clique em *Ativar*"
-          }
-        }
-      }
-    },
-    "Click the %@ icon in your menu bar" : {
-      "localizations" : {
-        "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klicke das %@ Icon in der Menüleiste"
             "value" : "Klicke das %@ Icon in der Menüleiste"
           }
         },
         "es" : {
-        "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Haga clic en el icono %@ de la barra de menús"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cliquez sur l'icône %@ dans votre barre de menu"
             "value" : "Haga clic en el icono %@ de la barra de menús"
           }
         },
@@ -596,18 +486,15 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clique no ícone %@ na sua barra de menu"
-            "value" : "Clique no ícone %@ na sua barra de menu"
           }
         }
       }
     },
     "Deactivate" : {
-    "Deactivate" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deaktivieren"
             "value" : "Deaktivieren"
           }
         },
@@ -615,25 +502,20 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deactivate"
-            "value" : "Deactivate"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desactivar"
-            "value" : "Desactivar"
           }
         },
-        "fr" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Désactiver"
-            "value" : "Désactiver"
           }
         },
-        "pt-PT" : {
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -645,35 +527,8 @@
     "Decrease brightness:" : {
       "localizations" : {
         "de" : {
-            "value" : "Desativar"
-          }
-        }
-      }
-    },
-    "Decrease brightness:" : {
-      "localizations" : {
-        "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Helligkeit verringern:"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Decrease brightness:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reducir brillo:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réduire la luminosité:"
             "value" : "Helligkeit verringern:"
           }
         },
@@ -806,7 +661,6 @@
       }
     },
     "Disclaimer" : {
-    "Disclaimer" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -818,20 +672,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Descargo de responsabilidad"
-            "value" : "Descargo de responsabilidad"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clause de non-responsabilité"
-            "value" : "Clause de non-responsabilité"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aviso legal"
             "value" : "Aviso legal"
           }
         }
@@ -906,12 +757,10 @@
       }
     },
     "Enjoy the extra brightness" : {
-    "Enjoy the extra brightness" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Genieße die extra Helligkeit"
             "value" : "Genieße die extra Helligkeit"
           }
         },
@@ -919,13 +768,11 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Disfruta del brillo extra"
-            "value" : "Disfruta del brillo extra"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Profitez de la luminosité supplémentaire"
             "value" : "Profitez de la luminosité supplémentaire"
           }
         },
@@ -933,18 +780,15 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aproveite o brilho extra"
-            "value" : "Aproveite o brilho extra"
           }
         }
       }
     },
     "General" : {
-    "General" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Allgemein"
             "value" : "Allgemein"
           }
         },
@@ -952,13 +796,11 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "General"
-            "value" : "General"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "General"
             "value" : "General"
           }
         },
@@ -966,13 +808,11 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Général"
-            "value" : "Général"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geral"
             "value" : "Geral"
           }
         }
@@ -1105,25 +945,14 @@
           }
         },
         "fr" : {
-        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quitter l'app"
             "value" : "Quitter l'app"
           }
         },
         "pt-PT" : {
-        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sair de uma aplicação"
-          }
-        }
-      }
-    },
-    "Restore Purchases" : {
-      "localizations" : {
-        "de" : {
             "value" : "Sair de uma aplicação"
           }
         }
@@ -1147,25 +976,11 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restaurer les achats"
-            "value" : "Käufe wiederherstellen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restaurar compras"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restaurer les achats"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Restaurar compras"
             "value" : "Restaurar compras"
           }
         }
@@ -1226,32 +1041,8 @@
           }
         },
         "fr" : {
-        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Raccourcis clavier"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atalhos de teclado"
-          }
-        }
-      }
-    },
-    "Start your free %lld day trial" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starte für %lld Tage kostenlos"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comienza tu prueba gratuita de %lld días"
             "value" : "Raccourcis clavier"
           }
         },
@@ -1281,36 +1072,11 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Commencez votre essai gratuit de %lld jours"
-            "value" : "Commencez votre essai gratuit de %lld jours"
           }
         },
         "pt-PT" : {
-        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comece sua avaliação gratuita de %lld dias"
-          }
-        }
-      }
-    },
-    "Store" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Store"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tienda"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Boutique"
             "value" : "Comece sua avaliação gratuita de %lld dias"
           }
         }
@@ -1339,7 +1105,6 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Loja"
             "value" : "Loja"
           }
         }
@@ -1454,32 +1219,25 @@
       }
     },
     "Unleash the Brightness!" : {
-    "Unleash the Brightness!" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Entfessle die maximale Helligkeit!"
-            "value" : "Entfessle die maximale Helligkeit!"
           }
         },
-        "es" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "¡Desata el brillo!"
-            "value" : "¡Desata el brillo!"
           }
         },
-        "fr" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Libérez le maximum de luminosité!"
-            "value" : "Libérez le maximum de luminosité!"
           }
         },
-        "pt-PT" : {
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1491,31 +1249,14 @@
     "Unlock unrestricted access to BrightIntosh" : {
       "localizations" : {
         "de" : {
-            "value" : "Libere o Brilho!"
-          }
-        }
-      }
-    },
-    "Unlock unrestricted access to BrightIntosh" : {
-      "localizations" : {
-        "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schalte uneingeschränkte Zugriff auf BrightIntosh frei"
             "value" : "Schalte uneingeschränkte Zugriff auf BrightIntosh frei"
           }
         },
         "es" : {
-        "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desbloquear el acceso sin restricciones a BrightIntosh"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Débloquez l'accès illimité à BrightIntosh!"
             "value" : "Desbloquear el acceso sin restricciones a BrightIntosh"
           }
         },
@@ -1529,38 +1270,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desbloqueie acesso irrestrito ao BrightIntosh"
-            "value" : "Desbloqueie acesso irrestrito ao BrightIntosh"
           }
         }
       }
     },
-    "You have access to BrightIntosh.\nEnjoy the brightness!" : {
     "You have access to BrightIntosh.\nEnjoy the brightness!" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Du hast Zugriff auf BrightIntosh. Genieße die Helligkeit"
-            "value" : "Du hast Zugriff auf BrightIntosh. Genieße die Helligkeit"
           }
         },
-        "es" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tienes acceso a BrightIntosh.\n¡Disfrute del brillo!"
-            "value" : "Tienes acceso a BrightIntosh.\n¡Disfrute del brillo!"
           }
         },
-        "fr" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vous avez accès à BrightIntosh.\nProfitez de la luminosité !"
-            "value" : "Vous avez accès à BrightIntosh.\nProfitez de la luminosité !"
           }
         },
-        "pt-PT" : {
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1572,37 +1305,14 @@
     "Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays." : {
       "localizations" : {
         "de" : {
-            "value" : "Você tem acesso ao BrightIntosh.\nAproveite o brilho!"
-          }
-        }
-      }
-    },
-    "Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays." : {
-      "localizations" : {
-        "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ihr Gerät verfügt nicht über ein eingebautes XDR-Display. Erhöhte Helligkeit kann nur für externe XDR-Displays aktiviert werden."
             "value" : "Ihr Gerät verfügt nicht über ein eingebautes XDR-Display. Erhöhte Helligkeit kann nur für externe XDR-Displays aktiviert werden."
           }
         },
         "en" : {
-        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tu dispositivo no tiene una pantalla XDR integrada. El aumento del brillo solo se puede activar para pantallas XDR externas."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Votre appareil ne dispose pas d'un écran XDR intégré. L'augmentation de la luminosité ne peut être activée que pour les écrans XDR externes."
             "value" : "Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays."
           }
         },
@@ -1622,38 +1332,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O seu dispositivo não tem um ecrã XDR incorporado. O aumento de brilho só pode ser ativado para ecrãs XDR externos."
-            "value" : "O seu dispositivo não tem um ecrã XDR incorporado. O aumento de brilho só pode ser ativado para ecrãs XDR externos."
           }
         }
       }
     },
-    "Your trial has expired" : {
     "Your trial has expired" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Die kostenlose Probezeit ist vorbei"
-            "value" : "Die kostenlose Probezeit ist vorbei"
           }
         },
-        "es" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Su versión de prueba ha caducado."
-            "value" : "Su versión de prueba ha caducado."
           }
         },
-        "fr" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votre période d'essai a expiré"
-            "value" : "Votre période d'essai a expiré"
           }
         },
-        "pt-PT" : {
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1665,31 +1367,14 @@
     "Your trial has expired. Unlock unrestricted access to BrightIntosh" : {
       "localizations" : {
         "de" : {
-            "value" : "A sua avaliação gratuita expirou"
-          }
-        }
-      }
-    },
-    "Your trial has expired. Unlock unrestricted access to BrightIntosh" : {
-      "localizations" : {
-        "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die kostenlose Probezeit ist vorbei. Schalte jetzt den uneingeschränkten Zugriff auf BrightIntosh frei."
             "value" : "Die kostenlose Probezeit ist vorbei. Schalte jetzt den uneingeschränkten Zugriff auf BrightIntosh frei."
           }
         },
         "es" : {
-        "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Su versión de prueba ha caducado. Desbloquee el acceso sin restricciones a BrightIntosh"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Votre période d'essai a expiré. Débloquez l'accès illimité à BrightIntosh."
             "value" : "Su versión de prueba ha caducado. Desbloquee el acceso sin restricciones a BrightIntosh"
           }
         },
@@ -1702,7 +1387,6 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A sua avaliação gratuita expirou. Desbloqueie acesso irrestrito ao BrightIntosh"
             "value" : "A sua avaliação gratuita expirou. Desbloqueie acesso irrestrito ao BrightIntosh"
           }
         }
