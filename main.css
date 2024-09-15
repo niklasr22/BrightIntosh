@@ -412,6 +412,10 @@ h2 {
     text-align: center;
 }
 
+.small {
+    font-size: 12px;
+}
+
 @media screen and (max-width: 1350px) {
 
     .head {
