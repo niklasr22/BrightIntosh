@@ -22,6 +22,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var automationManager: AutomationManager?
     var supportedDevice: Bool = false
     
+    
+    private var trialTimer: Timer?
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         supportedDevice = isDeviceSupported()
@@ -40,6 +43,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Register global hotkeys
         addKeyListeners()
+        
+        Settings.shared.addListener(setting: "brightintoshActive") {
+            if !Settings.shared.brightintoshActive {
+                self.stopTrialTimer()
+            }
+        }
+        
+        Task {
+            await isExtraBrightnessAllowed(offerUpgrade: true)
+        }
     }
     
     func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
@@ -54,6 +67,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     self.settingsWindowController.showWindow(nil)
                 }
             }
+            startTrialTimer()
             return stillEntitledToTrial
         } catch {
             return false
@@ -96,6 +110,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let controller = WelcomeWindowController(supportedDevice: supportedDevice)
         NSApp.runModal(for: controller.window!)
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
+    }
+    
+    func startTrialTimer() {
+        if trialTimer != nil {
+            return
+        }
+        // check every 5min
+        trialTimer = Timer(timeInterval: 300, repeats: true, block: {t in self.revalidateTrial()})
+        RunLoop.main.add(self.trialTimer!, forMode: RunLoop.Mode.common)
+    }
+    
+    func revalidateTrial() {
+        if !Settings.shared.brightintoshActive {
+            stopTrialTimer()
+            return
+        }
+        Task {
+            if !(await self.isExtraBrightnessAllowed(offerUpgrade: true)) {
+                // turn brightintosh off if user is not entitled
+                DispatchQueue.main.async {
+                    Settings.shared.brightintoshActive = false
+                }
+            } else {
+                stopTrialTimer()
+            }
+        }
+    }
+    
+    func stopTrialTimer() {
+        if trialTimer == nil {
+            return
+        }
+        self.trialTimer?.invalidate()
+        self.trialTimer = nil
     }
 
 }

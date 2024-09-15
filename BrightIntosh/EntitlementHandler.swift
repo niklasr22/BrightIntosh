@@ -21,8 +21,6 @@ class EntitlementHandler: ObservableObject {
         category: "Transaction Processing"
     )
     
-    private var updatesTask: Task<Void, Never>?
-    
     public static let shared = EntitlementHandler()
     
     @Published public var isUnrestrictedUser: Bool = false
