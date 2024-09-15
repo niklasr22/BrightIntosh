@@ -449,7 +449,8 @@ h2 {
     }
 
     .info {
-        width: 80%;
+        width: 90%;
+        font-size: 18px;
     }
 
     .info.large {
@@ -462,6 +463,10 @@ h2 {
 
     .hide-on-desktop {
         display: block;
+    }
+
+    .card>ol {
+        margin: 0;
     }
 }
 
