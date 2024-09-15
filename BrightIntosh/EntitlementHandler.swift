@@ -56,6 +56,7 @@ class EntitlementHandler: ObservableObject {
     }
     
     func isUnrestrictedUser() async -> Bool {
+        return false
         if await checkAppEntitlements() {
             DispatchQueue.main.async {
                 self.isUnrestrictedUser = true
@@ -91,8 +92,8 @@ class EntitlementHandler: ObservableObject {
 
                 let versionComponents = appTransaction.originalAppVersion.split(separator: ".")
                 let originalMajorVersion = versionComponents[0]
-                print(originalMajorVersion)
-                print(appTransaction.debugDescription)
+                print("Original Application Version: \(appTransaction.originalAppVersion)")
+                print("Original Purchase Date: \(appTransaction.originalPurchaseDate)")
 
                 if originalMajorVersion < newBusinessModelMajorVersion {
                     return true

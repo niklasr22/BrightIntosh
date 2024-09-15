@@ -5,10 +5,38 @@
 //  Created by Niklas Rousset on 06.09.24.
 //
 
+import Foundation
 import StoreKit
 
 enum TrialError: Error {
     case error
+    case noActualTimeError
+}
+
+extension Date {
+    static func getActualTime() async -> Date {
+#if STORE
+        guard let url = URL(string: "https://brightintosh.de/time.php") else {
+            return Date.now
+        }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            if let timestampString = String(data: data, encoding: .utf8),
+                let timestamp = TimeInterval(timestampString) {
+                let date = Date(timeIntervalSince1970: timestamp)
+                print("Received date \(date)")
+                return date
+            } else {
+                throw TrialError.noActualTimeError
+            }
+        } catch {
+            return Date.now
+        }
+#else
+        return Date.now
+#endif
+    }
 }
 
 public struct TrialData {
@@ -16,7 +44,6 @@ public struct TrialData {
     let currentDate: Date
     
     func getRemainingDays() -> Int {
-        
         if let expirationDate = getExpirationDate(), currentDate < expirationDate {
             return Calendar.current.dateComponents([.year, .month, .day], from: currentDate, to: expirationDate).day ?? 0
         }
@@ -38,7 +65,10 @@ public struct TrialData {
         do {
             let shared = try await AppTransaction.shared
             if case .verified(let appTransaction) = shared {
-                return TrialData(purchaseDate: appTransaction.originalPurchaseDate, currentDate: appTransaction.signedDate)
+                let originalDate = appTransaction.originalPurchaseDate
+                let currentDate = await Date.getActualTime()
+                return TrialData(purchaseDate: originalDate, currentDate: currentDate)
+                    
             }
         } catch {
             throw TrialError.error
