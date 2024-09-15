@@ -68,7 +68,6 @@ public struct TrialData {
                 let originalDate = appTransaction.originalPurchaseDate
                 let currentDate = await Date.getActualTime()
                 return TrialData(purchaseDate: originalDate, currentDate: currentDate)
-                    
             }
         } catch {
             throw TrialError.error
