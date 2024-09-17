@@ -10,6 +10,8 @@ import SwiftUI
 import StoreKit
 
 struct RestorePurchasesButton: View {
+    public let label: String
+    public let action: () async -> ()
     @State private var isRestoring = false
     
     var body: some View {
@@ -17,11 +19,10 @@ struct RestorePurchasesButton: View {
             isRestoring = true
             Task.detached {
                 defer { isRestoring = false }
-                try await AppStore.sync()
-                _ = await EntitlementHandler.shared.checkAppEntitlements()
+                await action()
             }
         }) {
-           Text("Restore Purchases")
+           Text(label)
                .frame(maxWidth: 220.0)
         }
         .buttonStyle(BrightIntoshButtonStyle(backgroundColor: .gray))
@@ -31,5 +32,5 @@ struct RestorePurchasesButton: View {
 }
 
 #Preview {
-    RestorePurchasesButton()
+    RestorePurchasesButton(label: "Restore Purchases", action: {})
 }
