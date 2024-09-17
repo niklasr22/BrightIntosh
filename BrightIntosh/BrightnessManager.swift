@@ -132,14 +132,13 @@ class BrightnessManager {
     
     func enableExtraBrightness() {
         // Put brightness value into device specific bounds, as earlier versions allowed storing higher brightness values.
-        let safeBrightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
+        let safeBrightness = max(1.0, min(getDeviceMaxBrightness() - 0.01, Settings.shared.brightness))
         
         if safeBrightness != Settings.shared.brightness {
             print("Fixing brightness")
-            Settings.shared.brightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
-        } else {
-            self.brightnessTechnique?.enable()
+            Settings.shared.brightness = safeBrightness
         }
+        self.brightnessTechnique?.enable()
     }
 }
 
