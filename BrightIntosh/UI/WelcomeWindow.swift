@@ -202,13 +202,13 @@ final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
     init(supportedDevice: Bool) {
         
         let welcomeWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 580, height: 580),
+            contentRect: NSRect(x: 0, y: 0, width: 580, height: 600),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
         )
         
-        let contentView = WelcomeView(supportedDevice: supportedDevice, closeWindow: welcomeWindow.close).frame(width: 550, height: 550)
+        let contentView = WelcomeView(supportedDevice: supportedDevice, closeWindow: welcomeWindow.close).frame(width: 550, height: 600)
             .userStatusTask()
         
         welcomeWindow.contentView = NSHostingView(rootView: contentView)
