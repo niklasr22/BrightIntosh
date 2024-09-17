@@ -53,12 +53,12 @@ class EntitlementHandler: ObservableObject {
         return true
     }
     
-    func isUnrestrictedUser() async -> Bool {
-        if isUnrestrictedUser {
+    func isUnrestrictedUser(refresh: Bool = false) async -> Bool {
+        if !Settings.shared.ignoreAppTransaction && isUnrestrictedUser {
             return true
         }
         
-        if await checkAppEntitlements() {
+        if await checkAppEntitlements(refresh: refresh) {
             DispatchQueue.main.async {
                 self.isUnrestrictedUser = true
             }

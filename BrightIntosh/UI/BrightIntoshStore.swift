@@ -78,13 +78,13 @@ struct BrightIntoshStoreView: View {
                     RestorePurchasesButton(label: "Restore In-App Purchase", action: {
                         do {
                             try await AppStore.sync()
-                            _ = await EntitlementHandler.shared.checkAppEntitlements()
+                            _ = await EntitlementHandler.shared.isUnrestrictedUser()
                         } catch {
                             print("Error while syncing")
                         }
                     })
                     RestorePurchasesButton(label: "Revalidate App Purchase", action: {
-                        _ = await EntitlementHandler.shared.checkAppEntitlements(refresh: true)
+                        _ = await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
                     })
                     HStack {
                         Text("[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)")
