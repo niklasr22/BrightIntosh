@@ -53,8 +53,12 @@ class EntitlementHandler: ObservableObject {
         return true
     }
     
-    func isUnrestrictedUser() async -> Bool {
-        if await checkAppEntitlements() {
+    func isUnrestrictedUser(refresh: Bool = false) async -> Bool {
+        if !Settings.shared.ignoreAppTransaction && isUnrestrictedUser {
+            return true
+        }
+        
+        if await checkAppEntitlements(refresh: refresh) {
             DispatchQueue.main.async {
                 self.isUnrestrictedUser = true
             }
@@ -76,13 +80,17 @@ class EntitlementHandler: ObservableObject {
         return false
     }
     
-    func checkAppEntitlements() async -> Bool {
+    func checkAppEntitlements(refresh: Bool = false) async -> Bool {
         if Settings.shared.ignoreAppTransaction {
             return false
         }
             
         do {
-            let shared = try await AppTransaction.shared
+            let shared = if refresh {
+                try await AppTransaction.refresh()
+            } else {
+                try await AppTransaction.shared
+            }
             if case .verified(let appTransaction) = shared {
                 // Hard-code the major version number in which the app's business model changed.
                 let newBusinessModelMajorVersion = "3"
@@ -96,6 +104,7 @@ class EntitlementHandler: ObservableObject {
                     return true
                 }
             }
+            
         } catch {
             logger.error("Fetching app transaction failed")
         }

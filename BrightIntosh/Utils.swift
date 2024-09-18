@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import StoreKit
 import IOKit
 
 func getModelIdentifier() -> String? {
@@ -32,4 +33,49 @@ func getDeviceMaxBrightness() -> Float {
         return 1.54
     }
     return 1.6
+}
+
+private func getAppTransaction() async -> VerificationResult<AppTransaction>? {
+    do {
+        let shared = try await AppTransaction.shared
+        return shared
+    } catch {
+        print("Fetching app transaction failed")
+    }
+    return nil
+}
+
+func generateReport() async -> String {
+    var report = "BrightIntosh Report:\n"
+    report += "OS-Version: \(ProcessInfo.processInfo.operatingSystemVersionString)\n"
+#if STORE
+    report += "Version: BrightIntosh SE v\(appVersion)\n"
+#else
+    report += "Version: BrightIntosh v\(appVersion)\n"
+#endif
+    if let sharedAppTransaction = await getAppTransaction() {
+        if case .verified(let appTransaction) = sharedAppTransaction {
+            report += "Original Purchase Date: \(appTransaction.originalPurchaseDate)\n"
+            report += "Original App Version: \(appTransaction.originalAppVersion)\n"
+            report += "Transaction for App Version: \(appTransaction.appVersion)\n"
+            report += "Transaction Environment: \(appTransaction.environment.rawValue)\n"
+        }
+        if case .unverified(_, let verificationError) = sharedAppTransaction {
+            report += "Error: App Transaction: \(verificationError.errorDescription ?? "no error description") - \(verificationError.failureReason ?? "no failure reason")\n"
+        }
+    } else {
+        report += "Error: App Transaction could not be fetched \n"
+    }
+    
+    let isUnrestricted = await EntitlementHandler.shared.isUnrestrictedUser()
+    report += "Unrestricted user: \(isUnrestricted)\n"
+    do {
+        let trial = try await TrialData.getTrialData()
+        report += "Trial: Start Date: \(trial.purchaseDate) Current Date: \(trial.currentDate) Remaining: \(trial.getRemainingDays())\n"
+    } catch {
+        report += "Error: Trial Data could not be fetched\n"
+    }
+    report += "Screens: \(NSScreen.screens.map{$0.localizedName})"
+    
+    return report
 }

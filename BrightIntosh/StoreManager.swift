@@ -53,7 +53,7 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     private func complete(transaction: SKPaymentTransaction) {
         SKPaymentQueue.default().finishTransaction(transaction)
         Task {
-            _ = await EntitlementHandler.shared.checkAppEntitlements()
+            _ = await EntitlementHandler.shared.isUnrestrictedUser()
         }
     }
     
@@ -66,7 +66,7 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     private func restore(transaction: SKPaymentTransaction) {
         SKPaymentQueue.default().finishTransaction(transaction)
         Task {
-            _ = await EntitlementHandler.shared.checkAppEntitlements()
+            _ = await EntitlementHandler.shared.isUnrestrictedUser()
         }
     }
     

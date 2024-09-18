@@ -68,9 +68,24 @@ struct BrightIntoshStoreView: View {
                         }
                     } else {
                         ProgressView()
+                        Button(action: {
+                            storeManager.fetchProducts()
+                        }) {
+                            Image(systemName: "arrow.counterclockwise")
+                        }
                         Spacer()
                     }
-                    RestorePurchasesButton()
+                    RestorePurchasesButton(label: "Restore In-App Purchase", action: {
+                        do {
+                            try await AppStore.sync()
+                            _ = await EntitlementHandler.shared.isUnrestrictedUser()
+                        } catch {
+                            print("Error while syncing")
+                        }
+                    })
+                    RestorePurchasesButton(label: "Revalidate App Purchase", action: {
+                        _ = await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
+                    })
                     HStack {
                         Text("[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)")
                         Text("[Terms](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)")

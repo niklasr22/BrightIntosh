@@ -79,70 +79,86 @@ struct BasicSettings: View {
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
     var body: some View {
-        VStack(alignment: HorizontalAlignment.leading) {
-            Section(header: Text("Brightness").bold()) {
-                Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
-                Slider(value: $viewModel.brightnessSlider, in: 1.0...getDeviceMaxBrightness()) {
-                    Text("Brightness")
-                }
-                if isDeviceSupported() {
-                    Toggle("Don't apply increased brightness to external XDR displays", isOn: $brightIntoshOnlyOnBuiltIn)
-                        .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
-                            Settings.shared.brightIntoshOnlyOnBuiltIn = value
-                        }
-                } else {
-                    Label("Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays.", systemImage: "exclamationmark.triangle.fill").foregroundColor(Color.yellow)
-                }
-            }
-            Section(header: Text("Automations").bold()) {
-                Toggle("Launch on login", isOn: $launchOnLogin)
-                    .onChange(of: launchOnLogin) { value in
-                        Settings.shared.launchAtLogin = value
+        ScrollView {
+            VStack(alignment: HorizontalAlignment.leading) {
+                Section(header: Text("Brightness").bold()) {
+                    Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
+                    Slider(value: $viewModel.brightnessSlider, in: 1.0...getDeviceMaxBrightness()) {
+                        Text("Brightness")
                     }
-                HStack {
-                    Toggle("Disable when battery level drops under", isOn: $viewModel.batteryAutomationToggle)
-                    TextField("Battery level threshold", value: $batteryLevelThreshold, format: .percent)
-                        .onChange(of: batteryLevelThreshold) { value in
-                            if !(0...100 ~= batteryLevelThreshold) {
-                                batteryLevelThreshold = max(0, min(batteryLevelThreshold, 100))
-                            } else {
-                                Settings.shared.batteryAutomationThreshold = value
+                    if isDeviceSupported() {
+                        Toggle("Don't apply increased brightness to external XDR displays", isOn: $brightIntoshOnlyOnBuiltIn)
+                            .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
+                                Settings.shared.brightIntoshOnlyOnBuiltIn = value
+                            }
+                    } else {
+                        Label("Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays.", systemImage: "exclamationmark.triangle.fill").foregroundColor(Color.yellow)
+                    }
+                }
+                Section(header: Text("Automations").bold()) {
+                    Toggle("Launch on login", isOn: $launchOnLogin)
+                        .onChange(of: launchOnLogin) { value in
+                            Settings.shared.launchAtLogin = value
+                        }
+                    HStack {
+                        Toggle("Disable when battery level drops under", isOn: $viewModel.batteryAutomationToggle)
+                        TextField("Battery level threshold", value: $batteryLevelThreshold, format: .percent)
+                            .onChange(of: batteryLevelThreshold) { value in
+                                if !(0...100 ~= batteryLevelThreshold) {
+                                    batteryLevelThreshold = max(0, min(batteryLevelThreshold, 100))
+                                } else {
+                                    Settings.shared.batteryAutomationThreshold = value
+                                }
+                            }
+                            .textFieldStyle(.roundedBorder)
+                            .frame(maxWidth: 60)
+                            .multilineTextAlignment(.center)
+                    }
+                    HStack {
+                        Toggle("Disable after", isOn: $viewModel.timerAutomationToggle)
+                        Picker(selection: $timerAutomationTimeout, label: EmptyView()) {
+                            ForEach(Array(stride(from: 10, to: 51, by: 10)), id: \.self) { minutes in
+                                Text("\(minutes) min").tag(minutes)
+                            }
+                            ForEach(Array(stride(from: 1, to: 5, by: 0.5)), id: \.self) { hours in
+                                Text(String(format: "%.1f h", hours)).tag(Int(hours * 60))
                             }
                         }
-                        .textFieldStyle(.roundedBorder)
-                        .frame(maxWidth: 60)
-                        .multilineTextAlignment(.center)
-                }
-                HStack {
-                    Toggle("Disable after", isOn: $viewModel.timerAutomationToggle)
-                    Picker(selection: $timerAutomationTimeout, label: EmptyView()) {
-                        ForEach(Array(stride(from: 10, to: 51, by: 10)), id: \.self) { minutes in
-                            Text("\(minutes) min").tag(minutes)
+                        .onChange(of: timerAutomationTimeout) { value in
+                            Settings.shared.timerAutomationTimeout = value
                         }
-                        ForEach(Array(stride(from: 1, to: 5, by: 0.5)), id: \.self) { hours in
-                            Text(String(format: "%.1f h", hours)).tag(Int(hours * 60))
+                        .frame(maxWidth: 80)
+                    }
+                }
+                Section(header: Text("Shortcuts").bold()) {
+                    Form {
+                        KeyboardShortcuts.Recorder("Toggle increased brightness:", name: .toggleBrightIntosh)
+                        KeyboardShortcuts.Recorder("Increase brightness:", name: .increaseBrightness)
+                        KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
+                    }
+                }
+                Section(header: Text("Information").bold()) {
+                    VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/) {
+                        Button(action: {
+                            Task {
+                                let report = await generateReport()
+                                let pasteboard = NSPasteboard.general
+                                pasteboard.declareTypes([.string], owner: nil)
+                                pasteboard.setString(report, forType: .string)
+                            }
+                        }) {
+                            Text("Generate and copy report")
                         }
                     }
-                    .onChange(of: timerAutomationTimeout) { value in
-                        Settings.shared.timerAutomationTimeout = value
-                    }
-                    .frame(maxWidth: 80)
                 }
-            }
-            Section(header: Text("Shortcuts").bold()) {
-                Form {
-                    KeyboardShortcuts.Recorder("Toggle increased brightness:", name: .toggleBrightIntosh)
-                    KeyboardShortcuts.Recorder("Increase brightness:", name: .increaseBrightness)
-                    KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
-                }
-            }
-        }.frame(
-            minWidth: 0,
-            maxWidth: .infinity,
-            minHeight: 0,
-            maxHeight: .infinity,
-            alignment: .topLeading
-        ).padding()
+            }.frame(
+                minWidth: 0,
+                maxWidth: .infinity,
+                minHeight: 0,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            ).padding()
+        }
     }
 }
 
