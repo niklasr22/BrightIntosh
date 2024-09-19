@@ -5,10 +5,10 @@
 //  Created by Niklas Rousset on 17.09.23.
 //
 
-import SwiftUI
 import KeyboardShortcuts
-import StoreKit
 import OSLog
+import StoreKit
+import SwiftUI
 
 final class BasicSettingsViewModel: ObservableObject {
     /*
@@ -29,13 +29,13 @@ final class BasicSettingsViewModel: ObservableObject {
         set { Settings.shared.batteryAutomation = newValue }
         get { return batteryAutomation }
     }
-    
+
     private var timerAutomation = Settings.shared.timerAutomation
     var timerAutomationToggle: Bool {
-        set { Settings.shared.timerAutomation = newValue}
-        get { return timerAutomation}
+        set { Settings.shared.timerAutomation = newValue }
+        get { return timerAutomation }
     }
-    
+
     init() {
         Settings.shared.addListener(setting: "brightintoshActive") {
             if Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
@@ -69,15 +69,15 @@ final class BasicSettingsViewModel: ObservableObject {
 
 struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
-    
+
     @State private var launchOnLogin = Settings.shared.launchAtLogin
     @State private var brightIntoshOnlyOnBuiltIn = Settings.shared.brightIntoshOnlyOnBuiltIn
     @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = Settings.shared.timerAutomationTimeout
-    
+
     @State private var entitledToUnrestrictedUse = false
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
-    
+
     var body: some View {
         ScrollView {
             VStack(alignment: HorizontalAlignment.leading) {
@@ -87,12 +87,18 @@ struct BasicSettings: View {
                         Text("Brightness")
                     }
                     if isDeviceSupported() {
-                        Toggle("Don't apply increased brightness to external XDR displays", isOn: $brightIntoshOnlyOnBuiltIn)
-                            .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
-                                Settings.shared.brightIntoshOnlyOnBuiltIn = value
-                            }
+                        Toggle(
+                            "Don't apply increased brightness to external XDR displays",
+                            isOn: $brightIntoshOnlyOnBuiltIn
+                        )
+                        .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
+                            Settings.shared.brightIntoshOnlyOnBuiltIn = value
+                        }
                     } else {
-                        Label("Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays.", systemImage: "exclamationmark.triangle.fill").foregroundColor(Color.yellow)
+                        Label(
+                            "Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays.",
+                            systemImage: "exclamationmark.triangle.fill"
+                        ).foregroundColor(Color.yellow)
                     }
                 }
                 Section(header: Text("Automations").bold()) {
@@ -101,23 +107,29 @@ struct BasicSettings: View {
                             Settings.shared.launchAtLogin = value
                         }
                     HStack {
-                        Toggle("Disable when battery level drops under", isOn: $viewModel.batteryAutomationToggle)
-                        TextField("Battery level threshold", value: $batteryLevelThreshold, format: .percent)
-                            .onChange(of: batteryLevelThreshold) { value in
-                                if !(0...100 ~= batteryLevelThreshold) {
-                                    batteryLevelThreshold = max(0, min(batteryLevelThreshold, 100))
-                                } else {
-                                    Settings.shared.batteryAutomationThreshold = value
-                                }
+                        Toggle(
+                            "Disable when battery level drops under",
+                            isOn: $viewModel.batteryAutomationToggle)
+                        TextField(
+                            "Battery level threshold", value: $batteryLevelThreshold,
+                            format: .percent
+                        )
+                        .onChange(of: batteryLevelThreshold) { value in
+                            if !(0...100 ~= batteryLevelThreshold) {
+                                batteryLevelThreshold = max(0, min(batteryLevelThreshold, 100))
+                            } else {
+                                Settings.shared.batteryAutomationThreshold = value
                             }
-                            .textFieldStyle(.roundedBorder)
-                            .frame(maxWidth: 60)
-                            .multilineTextAlignment(.center)
+                        }
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 60)
+                        .multilineTextAlignment(.center)
                     }
                     HStack {
                         Toggle("Disable after", isOn: $viewModel.timerAutomationToggle)
                         Picker(selection: $timerAutomationTimeout, label: EmptyView()) {
-                            ForEach(Array(stride(from: 10, to: 51, by: 10)), id: \.self) { minutes in
+                            ForEach(Array(stride(from: 10, to: 51, by: 10)), id: \.self) {
+                                minutes in
                                 Text("\(minutes) min").tag(minutes)
                             }
                             ForEach(Array(stride(from: 1, to: 5, by: 0.5)), id: \.self) { hours in
@@ -132,13 +144,16 @@ struct BasicSettings: View {
                 }
                 Section(header: Text("Shortcuts").bold()) {
                     Form {
-                        KeyboardShortcuts.Recorder("Toggle increased brightness:", name: .toggleBrightIntosh)
-                        KeyboardShortcuts.Recorder("Increase brightness:", name: .increaseBrightness)
-                        KeyboardShortcuts.Recorder("Decrease brightness:", name: .decreaseBrightness)
+                        KeyboardShortcuts.Recorder(
+                            "Toggle increased brightness:", name: .toggleBrightIntosh)
+                        KeyboardShortcuts.Recorder(
+                            "Increase brightness:", name: .increaseBrightness)
+                        KeyboardShortcuts.Recorder(
+                            "Decrease brightness:", name: .decreaseBrightness)
                     }
                 }
                 Section(header: Text("Information").bold()) {
-                    VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/) {
+                    VStack(alignment: /*@START_MENU_TOKEN@*/ .center /*@END_MENU_TOKEN@*/) {
                         Button(action: {
                             Task {
                                 let report = await generateReport()
@@ -182,58 +197,58 @@ struct Acknowledgments: View {
 }
 
 struct VersionView: View {
-#if STORE
-    var title: String = "BrightIntosh SE v\(appVersion)"
-    @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
-#else
-    var title: String = "BrightIntosh v\(appVersion)"
-    private let isUnrestrictedUser: Bool = true
-#endif
-    
-    
+    #if STORE
+        var title: String = "BrightIntosh SE v\(appVersion)"
+        @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
+    #else
+        var title: String = "BrightIntosh v\(appVersion)"
+        private let isUnrestrictedUser: Bool = true
+    #endif
+
     @State var clicks = 0
-    
+
     @State var ignoreAppTransaction = Settings.shared.ignoreAppTransaction
-    
+
     var body: some View {
-        Label(title + (isUnrestrictedUser ? "" : " - Free Trial"), image: "LogoBordered").imageScale(.small)
+        Label(title + (isUnrestrictedUser ? "" : " - Free Trial"), image: "LogoBordered")
+            .imageScale(.small)
             .onTapGesture {
                 clicks += 1
             }
-#if STORE
-        if clicks >= 5 {
-            VStack {
-                Text("Test Settings").font(.title2)
-                Toggle(isOn: $ignoreAppTransaction) {
-                    Text("Test: Ignore App Transaction")
-                }
-                .onChange(of: ignoreAppTransaction) { _ in
-                    Settings.shared.ignoreAppTransaction = ignoreAppTransaction
-                    Task {
-                        _ = await EntitlementHandler.shared.isUnrestrictedUser()
+        #if STORE
+            if clicks >= 5 {
+                VStack {
+                    Text("Test Settings").font(.title2)
+                    Toggle(isOn: $ignoreAppTransaction) {
+                        Text("Test: Ignore App Transaction")
+                    }
+                    .onChange(of: ignoreAppTransaction) { _ in
+                        Settings.shared.ignoreAppTransaction = ignoreAppTransaction
+                        Task {
+                            _ = await EntitlementHandler.shared.isUnrestrictedUser()
+                        }
+                    }
+                    Button("Hide") {
+                        clicks = 0
                     }
                 }
-                Button("Hide") {
-                    clicks = 0
-                }
             }
-        }
-#endif
+        #endif
     }
 }
 
 struct SettingsTabs: View {
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
-    
+
     var body: some View {
         TabView {
-#if STORE
-            if !isUnrestrictedUser {
-                BrightIntoshStoreView(showTrialExpiredWarning: true).tabItem {
-                    Text("Store")
+            #if STORE
+                if !isUnrestrictedUser {
+                    BrightIntoshStoreView(showTrialExpiredWarning: true).tabItem {
+                        Text("Store")
+                    }
                 }
-            }
-#endif
+            #endif
             BasicSettings().tabItem {
                 Text("General")
             }
@@ -247,7 +262,9 @@ struct SettingsTabs: View {
 struct SettingsView: View {
     var body: some View {
         VStack {
-            Text("Settings").font(.largeTitle)
+            if #unavailable(macOS 15) {
+                Text("Settings").font(.largeTitle)
+            }
             SettingsTabs()
             VersionView()
         }
@@ -262,37 +279,34 @@ struct SettingsView_Previews: PreviewProvider {
     }
 }
 
-
 final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     init() {
-        
+
         let settingsWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 500, height: 580),
-            styleMask: [.titled, .closable],
+            contentRect: NSRect(x: 0, y: 0, width: 650, height: 580),
+            styleMask: [.titled, .closable, .unifiedTitleAndToolbar],
             backing: .buffered,
             defer: false
         )
-        
-        let contentView = SettingsView().frame(width: 500, height: 580)
-        
+
+        let contentView = SettingsView().frame(width: 650, height: 580)
+
         settingsWindow.contentView = NSHostingView(rootView: contentView)
-        settingsWindow.titlebarAppearsTransparent = true
-        settingsWindow.titlebarSeparatorStyle = .none
         settingsWindow.center()
-        
+
         super.init(window: settingsWindow)
         settingsWindow.delegate = self
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func showWindow(_ sender: Any?) {
         window?.level = .floating
         super.showWindow(sender)
     }
-    
+
     func windowWillClose(_ notification: Notification) {
         NSApp.stopModal()
     }
