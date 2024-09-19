@@ -6,14 +6,18 @@
 //
 
 import Foundation
-import StoreKit
 import IOKit
+import StoreKit
 
 func getModelIdentifier() -> String? {
-    let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+    let service = IOServiceGetMatchingService(
+        kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
     var modelIdentifier: String?
-    if let modelData = IORegistryEntryCreateCFProperty(service, "model" as CFString, kCFAllocatorDefault, 0).takeRetainedValue() as? Data {
-        modelIdentifier = String(data: modelData, encoding: .utf8)?.trimmingCharacters(in: .controlCharacters)
+    if let modelData = IORegistryEntryCreateCFProperty(
+        service, "model" as CFString, kCFAllocatorDefault, 0
+    ).takeRetainedValue() as? Data {
+        modelIdentifier = String(data: modelData, encoding: .utf8)?.trimmingCharacters(
+            in: .controlCharacters)
     }
 
     IOObjectRelease(service)
@@ -29,10 +33,11 @@ func isDeviceSupported() -> Bool {
 
 func getDeviceMaxBrightness() -> Float {
     if let device = getModelIdentifier(),
-        sdr600nitsDevices.contains(device) {
-        return 1.54
+        sdr600nitsDevices.contains(device)
+    {
+        return 1.535
     }
-    return 1.6
+    return 1.59
 }
 
 private func getAppTransaction() async -> VerificationResult<AppTransaction>? {
@@ -48,11 +53,11 @@ private func getAppTransaction() async -> VerificationResult<AppTransaction>? {
 func generateReport() async -> String {
     var report = "BrightIntosh Report:\n"
     report += "OS-Version: \(ProcessInfo.processInfo.operatingSystemVersionString)\n"
-#if STORE
-    report += "Version: BrightIntosh SE v\(appVersion)\n"
-#else
-    report += "Version: BrightIntosh v\(appVersion)\n"
-#endif
+    #if STORE
+        report += "Version: BrightIntosh SE v\(appVersion)\n"
+    #else
+        report += "Version: BrightIntosh v\(appVersion)\n"
+    #endif
     if let sharedAppTransaction = await getAppTransaction() {
         if case .verified(let appTransaction) = sharedAppTransaction {
             report += "Original Purchase Date: \(appTransaction.originalPurchaseDate)\n"
@@ -61,21 +66,23 @@ func generateReport() async -> String {
             report += "Transaction Environment: \(appTransaction.environment.rawValue)\n"
         }
         if case .unverified(_, let verificationError) = sharedAppTransaction {
-            report += "Error: App Transaction: \(verificationError.errorDescription ?? "no error description") - \(verificationError.failureReason ?? "no failure reason")\n"
+            report +=
+                "Error: App Transaction: \(verificationError.errorDescription ?? "no error description") - \(verificationError.failureReason ?? "no failure reason")\n"
         }
     } else {
         report += "Error: App Transaction could not be fetched \n"
     }
-    
+
     let isUnrestricted = await EntitlementHandler.shared.isUnrestrictedUser()
     report += "Unrestricted user: \(isUnrestricted)\n"
     do {
         let trial = try await TrialData.getTrialData()
-        report += "Trial: Start Date: \(trial.purchaseDate) Current Date: \(trial.currentDate) Remaining: \(trial.getRemainingDays())\n"
+        report +=
+            "Trial: Start Date: \(trial.purchaseDate) Current Date: \(trial.currentDate) Remaining: \(trial.getRemainingDays())\n"
     } catch {
         report += "Error: Trial Data could not be fetched\n"
     }
     report += "Screens: \(NSScreen.screens.map{$0.localizedName})"
-    
+
     return report
 }
