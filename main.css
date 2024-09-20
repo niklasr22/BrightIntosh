@@ -416,6 +416,43 @@ h2 {
     font-size: 12px;
 }
 
+
+.collapsible-toggle {
+    background: none;
+    padding: 0;
+    color: #5d5d5d;
+    cursor: pointer;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.collapsible-toggle::before {
+    content: "▾";
+    font-family: monospace;
+    padding-right: 10px;
+}
+
+.collapsible-toggle.active::before {
+    content: "▴";
+}
+
+.collapsible-content {
+    max-height: 0;
+    padding-left: 20px;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.collapsible-content p {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
 @media screen and (max-width: 1350px) {
 
     .head {

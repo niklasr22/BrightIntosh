@@ -64,7 +64,7 @@
       <div class="info" id="trial">
         <h2>Get started with a free trial</h2>
         <div class="card text-card center">
-          Enjoy a 3-day free trial of BrightIntosh from the App Store!
+          Enjoy a 3-day free trial of BrightIntosh after getting it from the App Store!
           <br />
           After the trial, unlock the full app for just <strong>$1.99</strong>*.
           <br />
@@ -112,11 +112,61 @@
           </div>
         </div>
       </div>
+      <div class="info" id="faq">
+        <h2>FAQ</h2>
+        <div class="card text-card">
+          <div>
+            <button class="collapsible-toggle">I paid for BrightIntosh but it keeps asking to sign-in with
+              Apple-ID</button>
+            <div class="collapsible-content">
+              <p>Please close BrightIntosh and reboot your MacBook Pro. If the problem persists please contact us.
+              </p>
+            </div>
+          </div>
+          <div>
+            <button class="collapsible-toggle">The store in the settings window loads forever</button>
+            <div class="collapsible-content">
+              <p>Please close BrightIntosh and reboot your MacBook Pro as this is a problem with the communication with
+                the App Store. If the problem persists please contact us.
+              </p>
+            </div>
+          </div>
+          <div>
+            <button class="collapsible-toggle">Where can I find BrightIntosh Settings?</button>
+            <div class="collapsible-content">
+              <p>When BrightIntosh is running, you can access the settings by clicking on the sun icon in the menu bar
+                and selecting "Settings".</p>
+              </p>
+            </div>
+          </div>
+          <div>
+            <button class="collapsible-toggle">Why can't I control the extra brightness with the default brightness
+              keys?</button>
+            <div class="collapsible-content">
+              <p>Apple does not allow sandboxed third-party apps to control the display brightness using the default
+                keys.</p>
+              <p>You can adjust the brightness using the slider in the BrightIntosh settings or by using the custom
+                keyboard shortcuts.</p>
+            </div>
+          </div>
+          <div>
+            <button class="collapsible-toggle">How can I get support?</button>
+            <div class="collapsible-content">
+              <p>For support, please open an issue on our <a href="https://github.com/niklasr22/BrightIntosh/issues"
+                  aria-label="Contact us via GitHub">GitHub issue tracker</a> or contact us via <a
+                  href="mailto:byrousset@gmail.com" aria-label="Contact us via email">email</a> or <a
+                  href="https://x.com/BrightIntoshApp" aria-label="Contact us via X"><i
+                    class="fa-brands fa-square-x-twitter" title="X"></i></a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="info" id="background">
         <h2>How it works</h2>
         <div class="card text-card">
           <ol>
-            <li>BrightIntosh activates full HDR brightness on your MacBook Pro by creating a tiny 1x1 pixel overlay with
+            <li>BrightIntosh activates full HDR brightness on your MacBook Pro by creating a tiny 1x1 pixel overlay
+              with
               the brightest HDR color, prompting macOS to enable maximum screen brightness.
             </li>
             <li>This pixel is discreetly hidden behind the rounded corner of your MacBook Pro's display, making it
@@ -143,7 +193,8 @@
       </div>
       <div class="info">
         <h2>Trademark notices</h2>
-        App Store, Apple, Apple Pro Display XDR, MacBook Pro, macOS, Liquid Retina XDR and the Apple logo are trademarks
+        App Store, Apple, Apple Pro Display XDR, MacBook Pro, macOS, Liquid Retina XDR and the Apple logo are
+        trademarks
         of Apple Inc.,
         registered in the U.S. and other
         countries.
@@ -159,6 +210,19 @@
   </div>
   <script>
     initComparisons();
+
+    var collabpsibleToggles = document.getElementsByClassName("collapsible-toggle");
+    for (var i = 0; i < collabpsibleToggles.length; i++) {
+      collabpsibleToggles[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
+      });
+    }
   </script>
 </body>
 
