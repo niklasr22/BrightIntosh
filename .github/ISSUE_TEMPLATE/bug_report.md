@@ -10,7 +10,7 @@ assignees: niklasr22
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-** BrightIntosh Report **
+**BrightIntosh Report**
 ```
 Paste the contents copied with the *Generate and copy report* button in the BrightIntosh settings.
 ```
