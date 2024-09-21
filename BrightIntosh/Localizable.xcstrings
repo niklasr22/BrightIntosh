@@ -1144,6 +1144,34 @@
     "Test: Ignore App Transaction" : {
 
     },
+    "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es scheint ein Problem mit der Store-Verbindung zu geben. Bitte überprüfe deine Internetverbindung oder starte dein MacBook neu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parece haber un problema con la conexión a la tienda. Por favor, verifica tu conexión a Internet o intenta reiniciar tu MacBook."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il semble y avoir un problème avec la connexion au magasin. Veuillez vérifier votre connexion Internet ou essayer de redémarrer votre MacBook."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parece haver um problema com a conexão da loja. Verifique sua conexão com a Internet ou tente reiniciar seu MacBook."
+          }
+        }
+      }
+    },
     "This device is incompatible" : {
       "localizations" : {
         "de" : {
