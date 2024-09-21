@@ -9,6 +9,19 @@ import SwiftUI
 import StoreKit
 import OSLog
 
+struct InfoNote: View {
+    var infoText: String
+    var body: some View {
+        VStack {
+            Label(infoText, systemImage: "info.circle")
+        }
+        .padding(10)
+        .background(Color.brightintoshBlue)
+        .clipShape(RoundedRectangle(cornerRadius: 10.0))
+        .transition(.opacity)
+    }
+}
+
 struct BrightIntoshStoreView: View {
     public var showLogo: Bool = true
     public var showTrialExpiredWarning: Bool = true
@@ -25,7 +38,11 @@ struct BrightIntoshStoreView: View {
         
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     @Environment(\.trial) private var trial: TrialData?
+
+    @State private var showRestartNoteDueToSpinner = false
     
+    @State private var restoreAttempts = 0
+
     var body: some View {
         VStack {
             if purchaseCompleted || isUnrestrictedUser {
@@ -39,6 +56,9 @@ struct BrightIntoshStoreView: View {
                 Spacer()
             } else {
                 VStack {
+                    if restoreAttempts >= 3 || showRestartNoteDueToSpinner {
+                        InfoNote(infoText: "There seems to be an issue with the Store Connection. Please check your internet connection or try restarting you MacBook.")
+                    }
                     Spacer()
                     if let product = storeManager.products.first {
                         VStack {
@@ -67,12 +87,11 @@ struct BrightIntoshStoreView: View {
                             .buttonStyle(BrightIntoshButtonStyle())
                         }
                     } else {
+                        Spacer()
                         ProgressView()
-                        Button(action: {
-                            storeManager.fetchProducts()
-                        }) {
-                            Image(systemName: "arrow.counterclockwise")
-                        }
+                            .task {
+                                await delayNotLoadingRestartNote()
+                            }
                         Spacer()
                     }
                     RestorePurchasesButton(label: "Restore In-App Purchase", action: {
@@ -82,9 +101,11 @@ struct BrightIntoshStoreView: View {
                         } catch {
                             print("Error while syncing")
                         }
+                        restoreAttempts += 1
                     })
                     RestorePurchasesButton(label: "Revalidate App Purchase", action: {
                         _ = await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
+                        restoreAttempts += 1
                     })
                     HStack {
                         Text("[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)")
@@ -93,10 +114,20 @@ struct BrightIntoshStoreView: View {
                     Spacer()
                 }
                 .onReceive(entitlementHandler.$isUnrestrictedUser, perform: { isUnrestrictedUser in
-                    //purchaseCompleted = isUnrestrictedUser
+                    purchaseCompleted = isUnrestrictedUser
                 })
                 .padding(20.0)
             }
+        }.onAppear {
+            restoreAttempts = 0
+            showRestartNoteDueToSpinner = false
+        }
+    }
+    
+    private func delayNotLoadingRestartNote() async {
+        try? await Task.sleep(nanoseconds: 6_000_000_000)
+        withAnimation {
+            showRestartNoteDueToSpinner = true
         }
     }
 }
