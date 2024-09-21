@@ -10,7 +10,7 @@ import StoreKit
 import OSLog
 
 struct InfoNote: View {
-    var infoText: String
+    var infoText: LocalizedStringKey
     var body: some View {
         VStack {
             Label(infoText, systemImage: "info.circle")
@@ -57,7 +57,7 @@ struct BrightIntoshStoreView: View {
             } else {
                 VStack {
                     if restoreAttempts >= 3 || showRestartNoteDueToSpinner {
-                        InfoNote(infoText: "There seems to be an issue with the Store Connection. Please check your internet connection or try restarting you MacBook.")
+                        InfoNote(infoText: "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook.")
                     }
                     Spacer()
                     if let product = storeManager.products.first {
