@@ -9,6 +9,7 @@ import Cocoa
 import KeyboardShortcuts
 import ServiceManagement
 import StoreKit
+import CoreSpotlight
 
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -24,6 +25,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     
     private var trialTimer: Timer?
+    
+    private func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([NSUserActivityRestoring]?) -> Void) -> Bool {
+        print("Opened with spotlight")
+        if userActivity.activityType == CSSearchableItemActionType {
+            if let uniqueIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+                if uniqueIdentifier == "de.brightintosh.app.settings" {
+                    print("Opened with spotlight")
+                    DispatchQueue.main.async {
+                        self.settingsWindowController.showWindow(nil)
+                    }
+                    return true
+                }
+            }
+        }
+        return false
+    }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
@@ -53,6 +70,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             await isExtraBrightnessAllowed(offerUpgrade: true)
         }
+        
+        addSettingsToIndex()
     }
     
     func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
@@ -146,4 +165,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.trialTimer = nil
     }
 
+    
+    func addSettingsToIndex() {
+        let attributeSet = CSSearchableItemAttributeSet(contentType: UTType.application)
+        attributeSet.title = "BrightIntosh Settings"
+        attributeSet.contentDescription = "Open the settings of BrightIntosh"
+        attributeSet.thumbnailData = URL(string: "https://brightintosh.de/brightintosh_sm.png")!.dataRepresentation
+        
+        let item = CSSearchableItem(uniqueIdentifier: "de.brightintosh.app.settings", domainIdentifier: "de.brightintosh.app", attributeSet: attributeSet)
+        
+        CSSearchableIndex.default().indexSearchableItems([item]) { error in
+            if error != nil {
+                print(error?.localizedDescription)
+            } else {
+                print("Item indexed.")
+            }
+        }
+    }
 }
