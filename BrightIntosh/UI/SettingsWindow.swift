@@ -230,7 +230,6 @@ struct VersionView: View {
                 Button(action: {
                     NSWorkspace.shared.open(BrightIntoshUrls.twitter)
                 }) {
-                    //Image("X").resizable().aspectRatio(contentMode: .fit).frame(width: 16, height: 16)
                     Image("X")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
