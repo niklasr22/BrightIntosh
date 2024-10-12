@@ -16,16 +16,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     @objc private var toggleBrightIntosh: () -> ()
     
-    
-    
-#if STORE
-    private let BRIGHTINTOSH_URL = "https://brightintosh.de/index_nd.html"
-#else
-    private let BRIGHTINTOSH_URL = "https://brightintosh.de"
-#endif
-    
-    private let BRIGHTINTOSH_LEGAL_NOTICE_URL = "https://brightintosh.de/legal_notice.html"
-    
     private var statusItem: NSStatusItem!
     
     private let menu: NSMenu
@@ -91,6 +81,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         let aboutUsItem = NSMenuItem(title: String(localized: "About us"), action: #selector(openLegalNotice), keyEquivalent: "")
         aboutUsItem.target = self
         
+        let helpItem = NSMenuItem(title: String(localized: "Help"), action: #selector(openHelp), keyEquivalent: "")
+        helpItem.target = self
+        
         let quitItem = NSMenuItem(title: String(localized: "Quit"), action: #selector(exitBrightIntosh), keyEquivalent: "")
         quitItem.target = self
         
@@ -104,6 +97,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         menu.addItem(brightnessSliderItem)
         menu.addItem(NSMenuItem.separator())
         menu.addItem(settingsItem)
+        menu.addItem(helpItem)
         menu.addItem(aboutUsItem)
         menu.addItem(quitItem)
         if !supportedDevice {
@@ -221,11 +215,15 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     @objc func openWebsite() {
-        NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_URL)!)
+        NSWorkspace.shared.open(BrightIntoshUrls.web)
+    }
+    
+    @objc func openHelp() {
+        NSWorkspace.shared.open(BrightIntoshUrls.help)
     }
     
     @objc func openLegalNotice() {
-        NSWorkspace.shared.open(URL(string: BRIGHTINTOSH_LEGAL_NOTICE_URL)!)
+        NSWorkspace.shared.open(BrightIntoshUrls.legal)
     }
     
     func startRemainingTimePoller() {

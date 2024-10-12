@@ -9,6 +9,14 @@ import Carbon
 import KeyboardShortcuts
 import SwiftUI
 
+struct BrightIntoshUrls {
+    static let web = URL(string: "https://brightintosh.de")!
+    static let twitter = URL(string: "https://x.com/BrightIntoshApp")!
+    static let help = URL(string: "https://brightintosh.de#faq")!
+    static let time = URL(string: "https://brightintosh.de/time.php")!
+    static let legal = URL(string: "https://brightintosh.de/legal_notice.html")!
+}
+
 extension KeyboardShortcuts.Name {
     static let toggleBrightIntosh = Self("toggleIncreasedBrightness", default: .init(carbonKeyCode: kVK_ANSI_B, carbonModifiers: (0 | optionKey | cmdKey)))
     static let increaseBrightness = Self("increaseBrightness", default: .init(carbonKeyCode: kVK_ANSI_N, carbonModifiers: (0 | optionKey | cmdKey)))
