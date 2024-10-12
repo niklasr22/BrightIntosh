@@ -217,20 +217,22 @@ struct VersionView: View {
                     clicks += 1
                 }
             HStack {
-                Button(action: {
-                    NSWorkspace.shared.open(BrightIntoshUrls.help)
-                }, label: {
-                    Image(systemName: "questionmark.circle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 16, height: 16)
-                        .padding(4.0)
-                })
+                Button(
+                    action: {
+                        NSWorkspace.shared.open(BrightIntoshUrls.help)
+                    },
+                    label: {
+                        Image(systemName: "questionmark.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 16, height: 16)
+                            .padding(4.0)
+                    }
+                )
                 .help("Help")
                 Button(action: {
                     NSWorkspace.shared.open(BrightIntoshUrls.twitter)
                 }) {
-                    //Image("X").resizable().aspectRatio(contentMode: .fit).frame(width: 16, height: 16)
                     Image("X")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
