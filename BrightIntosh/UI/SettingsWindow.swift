@@ -210,11 +210,36 @@ struct VersionView: View {
     @State var ignoreAppTransaction = Settings.shared.ignoreAppTransaction
 
     var body: some View {
-        Label(title + (isUnrestrictedUser ? "" : " - Free Trial"), image: "LogoBordered")
-            .imageScale(.small)
-            .onTapGesture {
-                clicks += 1
+        VStack {
+            Label(title + (isUnrestrictedUser ? "" : " - Free Trial"), image: "LogoBordered")
+                .imageScale(.small)
+                .onTapGesture {
+                    clicks += 1
+                }
+            HStack {
+                Button(action: {
+                    NSWorkspace.shared.open(BrightIntoshUrls.help)
+                }, label: {
+                    Image(systemName: "questionmark.circle")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 16, height: 16)
+                        .padding(4.0)
+                })
+                .help("Help")
+                Button(action: {
+                    NSWorkspace.shared.open(BrightIntoshUrls.twitter)
+                }) {
+                    //Image("X").resizable().aspectRatio(contentMode: .fit).frame(width: 16, height: 16)
+                    Image("X")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 16, height: 16)
+                        .padding(4.0)
+                }
+                .help("X / Twitter")
             }
+        }
         #if STORE
             if clicks >= 5 {
                 VStack {
