@@ -16,12 +16,8 @@ enum TrialError: Error {
 extension Date {
     static func getActualTime() async -> Date {
 #if STORE
-        guard let url = URL(string: "https://brightintosh.de/time.php") else {
-            return Date.now
-        }
-        
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
+            let (data, _) = try await URLSession.shared.data(from: BrightIntoshUrls.time)
             if let timestampString = String(data: data, encoding: .utf8),
                 let timestamp = TimeInterval(timestampString) {
                 let date = Date(timeIntervalSince1970: timestamp)

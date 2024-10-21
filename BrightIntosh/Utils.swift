@@ -58,6 +58,7 @@ func generateReport() async -> String {
     #else
         report += "Version: BrightIntosh v\(appVersion)\n"
     #endif
+    report += "Model Identifier: \(getModelIdentifier() ?? "N/A")\n"
     if let sharedAppTransaction = await getAppTransaction() {
         if case .verified(let appTransaction) = sharedAppTransaction {
             report += "Original Purchase Date: \(appTransaction.originalPurchaseDate)\n"

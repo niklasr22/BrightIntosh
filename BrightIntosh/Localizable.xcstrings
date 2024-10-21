@@ -9,6 +9,12 @@
             "value" : "[Datenschutzerklärung](https://brightintosh.de/app_privacy_policy_de.html)"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35,6 +41,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "[Bedingungen](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Terms](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
           }
         },
         "es" : {
@@ -296,7 +308,14 @@
       }
     },
     "BrightIntosh" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh"
+          }
+        }
+      }
     },
     "BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk." : {
       "localizations" : {
@@ -410,7 +429,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Buy %1$@%2$@"
           }
         },
@@ -442,6 +461,12 @@
             "value" : "Klicke *Aktivieren*"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click *Activate*"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -468,6 +493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Klicke das %@ Icon in der Menüleiste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click the %@ icon in your menu bar"
           }
         },
         "es" : {
@@ -668,6 +699,12 @@
             "value" : "Haftungsausschluss"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disclaimer"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -764,6 +801,12 @@
             "value" : "Genieße die extra Helligkeit"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enjoy the extra brightness"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -826,6 +869,12 @@
             "value" : "Bericht erstellen und kopieren"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generate and copy report"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -846,8 +895,49 @@
         }
       }
     },
+    "Help" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilfe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayuda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aide"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajuda"
+          }
+        }
+      }
+    },
     "Hide" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide"
+          }
+        }
+      }
     },
     "Increase brightness:" : {
       "localizations" : {
@@ -925,6 +1015,12 @@
             "value" : "Information"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -980,7 +1076,6 @@
       }
     },
     "Quit" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1090,6 +1185,12 @@
             "value" : "Starte für %lld Tage kostenlos"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start your free %lld day trial"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1118,6 +1219,12 @@
             "value" : "Store"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Store"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1139,10 +1246,24 @@
       }
     },
     "Test Settings" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test Settings"
+          }
+        }
+      }
     },
     "Test: Ignore App Transaction" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test: Ignore App Transaction"
+          }
+        }
+      }
     },
     "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook." : {
       "localizations" : {
@@ -1150,6 +1271,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Es scheint ein Problem mit der Store-Verbindung zu geben. Bitte überprüfe deine Internetverbindung oder starte dein MacBook neu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook."
           }
         },
         "es" : {
@@ -1282,6 +1409,12 @@
             "value" : "Entfessle die maximale Helligkeit!"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unleash the Brightness!"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1310,6 +1443,12 @@
             "value" : "Schalte uneingeschränkte Zugriff auf BrightIntosh frei"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock unrestricted access to BrightIntosh"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1330,12 +1469,24 @@
         }
       }
     },
+    "X" : {
+
+    },
+    "X / Twitter" : {
+
+    },
     "You have access to BrightIntosh.\nEnjoy the brightness!" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Du hast Zugriff auf BrightIntosh. Genieße die Helligkeit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have access to BrightIntosh.\nEnjoy the brightness!"
           }
         },
         "es" : {
@@ -1400,6 +1551,12 @@
             "value" : "Die kostenlose Probezeit ist vorbei"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your trial has expired"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1426,6 +1583,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Die kostenlose Probezeit ist vorbei. Schalte jetzt den uneingeschränkten Zugriff auf BrightIntosh frei."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your trial has expired. Unlock unrestricted access to BrightIntosh"
           }
         },
         "es" : {
