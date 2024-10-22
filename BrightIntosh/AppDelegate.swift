@@ -168,7 +168,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func addSettingsToIndex() {
         let attributeSet = CSSearchableItemAttributeSet(contentType: UTType.application)
-        attributeSet.title = "BrightIntosh Settings"
+        attributeSet.title = NSLocalizedString("BrightIntosh Settings", comment: "")
         attributeSet.contentDescription = "Open the settings of BrightIntosh"
         attributeSet.thumbnailData = URL(string: "https://brightintosh.de/brightintosh_sm.png")!.dataRepresentation
         
