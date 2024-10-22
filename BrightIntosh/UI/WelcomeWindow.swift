@@ -77,6 +77,10 @@ struct IntroView: View {
                 .frame(maxWidth: .infinity, idealHeight: 0, maxHeight: 110.0)
                 .translucentCard()
                 
+                Text("**Note:** You can also use the \(Image(systemName: "magnifyingglass")) Spotlight Search to open the settings window by searching \"BrightIntosh Settings\"")
+                    .frame(maxWidth: .infinity)
+                    .translucentCard()
+                
                 VStack(alignment: .leading, spacing: 10.0) {
                     Text("Disclaimer")
                         .bold()
@@ -194,7 +198,7 @@ struct WelcomeView: View {
 struct WelcomeView_Previews: PreviewProvider {
     static var previews: some View {
         WelcomeView(closeWindow: {() in })
-            .frame(width: 580, height: 580)
+            .frame(width: 580, height: 680)
     }
 }
 
@@ -202,13 +206,13 @@ final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
     init(supportedDevice: Bool) {
         
         let welcomeWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 580, height: 600),
+            contentRect: NSRect(x: 0, y: 0, width: 580, height: 660),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
         )
         
-        let contentView = WelcomeView(supportedDevice: supportedDevice, closeWindow: welcomeWindow.close).frame(width: 550, height: 600)
+        let contentView = WelcomeView(supportedDevice: supportedDevice, closeWindow: welcomeWindow.close).frame(width: 550, height: 660)
             .userStatusTask()
         
         welcomeWindow.contentView = NSHostingView(rootView: contentView)
