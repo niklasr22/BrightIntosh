@@ -9,6 +9,7 @@ import Cocoa
 import KeyboardShortcuts
 import ServiceManagement
 import StoreKit
+import CoreSpotlight
 
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -21,9 +22,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var brightnessManager: BrightnessManager?
     var automationManager: AutomationManager?
     var supportedDevice: Bool = false
-    
+
     
     private var trialTimer: Timer?
+    
+    @MainActor
+    func application(
+        _ application: NSApplication,
+        continue userActivity: NSUserActivity,
+        restorationHandler: @escaping ([any NSUserActivityRestoring]) -> Void
+    ) -> Bool {
+        if userActivity.activityType == CSSearchableItemActionType,
+           let uniqueIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+            if uniqueIdentifier == "de.brightintosh.app.settings" {
+                self.settingsWindowController.showWindow(nil)
+                return true
+            }
+        }
+        return false
+    }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
@@ -53,6 +70,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             await isExtraBrightnessAllowed(offerUpgrade: true)
         }
+        
+        addSettingsToIndex()
     }
     
     func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
@@ -146,4 +165,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.trialTimer = nil
     }
 
+    
+    func addSettingsToIndex() {
+        let attributeSet = CSSearchableItemAttributeSet(contentType: UTType.application)
+        attributeSet.title = "BrightIntosh Settings"
+        attributeSet.contentDescription = "Open the settings of BrightIntosh"
+        attributeSet.thumbnailData = URL(string: "https://brightintosh.de/brightintosh_sm.png")!.dataRepresentation
+        
+        let item = CSSearchableItem(uniqueIdentifier: "de.brightintosh.app.settings", domainIdentifier: "de.brightintosh.app", attributeSet: attributeSet)
+        
+        CSSearchableIndex.default().indexSearchableItems([item]) { error in
+            if error != nil {
+                print(error?.localizedDescription ?? "An error occured while indexing the item.")
+            } else {
+                print("BrightIntosh settings item indexed.")
+            }
+        }
+    }
 }
