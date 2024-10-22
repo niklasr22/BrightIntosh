@@ -22,21 +22,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var brightnessManager: BrightnessManager?
     var automationManager: AutomationManager?
     var supportedDevice: Bool = false
-    
+
     
     private var trialTimer: Timer?
     
-    private func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([NSUserActivityRestoring]?) -> Void) -> Bool {
-        print("Opened with spotlight")
-        if userActivity.activityType == CSSearchableItemActionType {
-            if let uniqueIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
-                if uniqueIdentifier == "de.brightintosh.app.settings" {
-                    print("Opened with spotlight")
-                    DispatchQueue.main.async {
-                        self.settingsWindowController.showWindow(nil)
-                    }
-                    return true
-                }
+    @MainActor
+    func application(
+        _ application: NSApplication,
+        continue userActivity: NSUserActivity,
+        restorationHandler: @escaping ([any NSUserActivityRestoring]) -> Void
+    ) -> Bool {
+        if userActivity.activityType == CSSearchableItemActionType,
+           let uniqueIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+            if uniqueIdentifier == "de.brightintosh.app.settings" {
+                self.settingsWindowController.showWindow(nil)
+                return true
             }
         }
         return false
@@ -176,9 +176,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         CSSearchableIndex.default().indexSearchableItems([item]) { error in
             if error != nil {
-                print(error?.localizedDescription)
+                print(error?.localizedDescription ?? "An error occured while indexing the item.")
             } else {
-                print("Item indexed.")
+                print("BrightIntosh settings item indexed.")
             }
         }
     }
