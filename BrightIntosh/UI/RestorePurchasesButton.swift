@@ -18,7 +18,11 @@ struct RestorePurchasesButton: View {
         Button(action: {
             isRestoring = true
             Task.detached {
-                defer { isRestoring = false }
+                defer {
+                    DispatchQueue.main.sync {
+                        isRestoring = false
+                    }
+                }
                 await action()
             }
         }) {
