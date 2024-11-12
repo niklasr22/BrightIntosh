@@ -27,6 +27,13 @@ final class Settings {
             callListeners(setting: "brightIntoshOnlyOnBuiltIn")
         }
     }
+    
+    public var hideMenuBarItem: Bool = UserDefaults.standard.object(forKey: "hideMenuBarItem") != nil ? UserDefaults.standard.bool(forKey: "hideMenuBarItem") : false {
+        didSet {
+            UserDefaults.standard.setValue(hideMenuBarItem, forKey: "hideMenuBarItem")
+            callListeners(setting: "hideMenuBarItem")
+        }
+    }
 
     public var brightness: Float = UserDefaults.standard.object(forKey: "brightness") != nil ? UserDefaults.standard.float(forKey: "brightness") : getDeviceMaxBrightness() {
         didSet {

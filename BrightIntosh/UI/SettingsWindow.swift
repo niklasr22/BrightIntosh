@@ -69,7 +69,8 @@ final class BasicSettingsViewModel: ObservableObject {
 
 struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
-
+    
+    @State private var hideMenuBarItem = Settings.shared.hideMenuBarItem
     @State private var launchOnLogin = Settings.shared.launchAtLogin
     @State private var brightIntoshOnlyOnBuiltIn = Settings.shared.brightIntoshOnlyOnBuiltIn
     @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
@@ -152,18 +153,28 @@ struct BasicSettings: View {
                             "Decrease brightness:", name: .decreaseBrightness)
                     }
                 }
-                Section(header: Text("Information").bold()) {
-                    VStack(alignment: /*@START_MENU_TOKEN@*/ .center /*@END_MENU_TOKEN@*/) {
-                        Button(action: {
-                            Task {
-                                let report = await generateReport()
-                                let pasteboard = NSPasteboard.general
-                                pasteboard.declareTypes([.string], owner: nil)
-                                pasteboard.setString(report, forType: .string)
-                            }
-                        }) {
-                            Text("Generate and copy report")
+                Section(header: Text("General").bold()) {
+                    Toggle(
+                        "Hide menu bar item",
+                        isOn: $hideMenuBarItem)
+                    .onChange(of: hideMenuBarItem) { value in
+                        Settings.shared.hideMenuBarItem = value
+                    }
+                    if hideMenuBarItem {
+                        Label(
+                            "To open the settings window without the menu bar item, search for \"BrightIntosh Settings\" in the the macOS \(Image(systemName: "magnifyingglass")) Spotlight search.",
+                            systemImage: "exclamationmark.triangle.fill"
+                        ).foregroundColor(Color.yellow)
+                    }
+                    Button(action: {
+                        Task {
+                            let report = await generateReport()
+                            let pasteboard = NSPasteboard.general
+                            pasteboard.declareTypes([.string], owner: nil)
+                            pasteboard.setString(report, forType: .string)
                         }
+                    }) {
+                        Text("Generate and copy report")
                     }
                 }
             }.frame(

@@ -16,7 +16,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     @objc private var toggleBrightIntosh: () -> ()
     
-    private var statusItem: NSStatusItem!
+    private var statusItem: NSStatusItem?
     
     private let menu: NSMenu
     private var isOpen: Bool = false
@@ -56,8 +56,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         super.init()
         
         // Menu bar app
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        
         menu.delegate = self
         menu.minimumWidth = 280
         
@@ -109,7 +107,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         trialExpiredItem = NSMenuItem(title: String(localized: "Your trial has expired"), action: nil, keyEquivalent: "")
         trialExpiredItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "Your trial has expired")
         
-        statusItem.menu = menu
+        if !Settings.shared.hideMenuBarItem {
+            createStatusBarItem()
+        }
+        
         self.updateMenu()
         
         // Listen to settings
@@ -125,6 +126,15 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         Settings.shared.addListener(setting: "timerAutomation") {
             self.updateMenu()
         }
+        
+        Settings.shared.addListener(setting: "hideMenuBarItem") {
+            self.updateStatusBarItemVisibility()
+        }
+    }
+    
+    private func createStatusBarItem() {
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        statusItem?.menu = menu
     }
     
     private func createBrightnessSliderItem() -> (NSMenuItem, StyledSlider, NSTextField) {
@@ -155,6 +165,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     func updateMenu() {
+        guard let statusItem else { return }
+        
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: Settings.shared.brightintoshActive ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: Settings.shared.brightintoshActive ? "Increased brightness" : "Default brightness")
             button.toolTip = titleString
@@ -190,6 +202,18 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
                     self.menu.removeItem(self.trialExpiredItem)
                 }
             }
+        }
+    }
+    
+    func updateStatusBarItemVisibility() {
+        if Settings.shared.hideMenuBarItem {
+            if let statusItem = statusItem {
+                statusItem.menu = nil
+                NSStatusBar.system.removeStatusItem(statusItem)
+            }
+        } else {
+            createStatusBarItem()
+            updateMenu()
         }
     }
     
