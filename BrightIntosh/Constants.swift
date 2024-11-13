@@ -26,15 +26,15 @@ extension KeyboardShortcuts.Name {
 let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String)!
 
 #if DEBUG
-let supportedDevices = ["MacBookPro18,1", "MacBookPro18,2", "MacBookPro18,3", "MacBookPro18,4", "Mac14,6", "Mac14,10", "Mac14,5", "Mac14,9", "Mac15,7", "Mac15,9", "Mac15,11", "Mac15,6", "Mac15,8", "Mac15,10", "Mac15,3", "MacBookAir10,1"
+let supportedDevices = ["MacBookPro18,1", "MacBookPro18,2", "MacBookPro18,3", "MacBookPro18,4", "Mac14,6", "Mac14,10", "Mac14,5", "Mac14,9", "Mac15,7", "Mac15,9", "Mac15,11", "Mac15,6", "Mac15,8", "Mac15,10", "Mac15,3", "Mac16,1", "Mac16,6", "Mac16,8", "Mac16,7", "Mac16,5", "MacBookAir10,1"
 ]
 let externalXdrDisplays = ["Pro Display XDR", "C34H89x"]
 #else
-let supportedDevices = ["MacBookPro18,1", "MacBookPro18,2", "MacBookPro18,3", "MacBookPro18,4", "Mac14,6", "Mac14,10", "Mac14,5", "Mac14,9", "Mac15,7", "Mac15,9", "Mac15,11", "Mac15,6", "Mac15,8", "Mac15,10", "Mac15,3",
+let supportedDevices = ["MacBookPro18,1", "MacBookPro18,2", "MacBookPro18,3", "MacBookPro18,4", "Mac14,6", "Mac14,10", "Mac14,5", "Mac14,9", "Mac15,7", "Mac15,9", "Mac15,11", "Mac15,6", "Mac15,8", "Mac15,10", "Mac15,3", "Mac16,1", "Mac16,6", "Mac16,8", "Mac16,7", "Mac16,5"
 ]
 let externalXdrDisplays = ["Pro Display XDR"]
 #endif
-let sdr600nitsDevices = ["Mac15,3", "Mac15,6", "Mac15,7", "Mac15,8", "Mac15,9", "Mac15,10", "Mac15,11"]
+let sdr600nitsDevices = ["Mac15,3", "Mac15,6", "Mac15,7", "Mac15,8", "Mac15,9", "Mac15,10", "Mac15,11", "Mac16,1", "Mac16,6", "Mac16,8", "Mac16,7", "Mac16,5"]
 
 struct Acknowledgment: Identifiable {
     let id = UUID()
