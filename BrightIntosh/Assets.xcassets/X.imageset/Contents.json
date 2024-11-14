@@ -1,6 +1,16 @@
 {
   "images" : [
     {
+      "filename" : "logo_light.svg",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
       "filename" : "logo.svg",
       "idiom" : "universal"
     }
