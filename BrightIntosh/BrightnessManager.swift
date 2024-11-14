@@ -96,7 +96,8 @@ class BrightnessManager {
     
     func handlePotentialScreenUpdate() {
         let newScreens = NSScreen.screens
-        var changedScreens = newScreens.count != screens.count
+        let newXdrDisplays = getXDRDisplays()
+        var changedScreens = newScreens.count != screens.count || newXdrDisplays.count != xdrScreens.count
         if !changedScreens {
             for screen in screens {
                 let sameScreen = newScreens.filter({$0.displayId == screen.displayId }).first
@@ -110,7 +111,7 @@ class BrightnessManager {
         if changedScreens {
             print("Screen setup changed")
             screens = newScreens
-            xdrScreens = getXDRDisplays()
+            xdrScreens = newXdrDisplays
         }
         
         if !newScreens.isEmpty {
