@@ -96,4 +96,12 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func windowDidMove(_ notification: Notification) {
+        if let window = window, let screen = window.screen {
+            if window.frame.origin != getIdealPosition(screen: screen) {
+                reposition(screen: screen)
+            }
+        }
+    }
 }
