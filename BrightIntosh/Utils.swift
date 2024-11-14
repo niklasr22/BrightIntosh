@@ -79,11 +79,13 @@ func generateReport() async -> String {
     do {
         let trial = try await TrialData.getTrialData()
         report +=
-            "Trial: Start Date: \(trial.purchaseDate) Current Date: \(trial.currentDate) Remaining: \(trial.getRemainingDays())\n"
+            "Trial:\n - Start Date: \(trial.purchaseDate)\n - Current Date: \(trial.currentDate)\n - Remaining: \(trial.getRemainingDays())\n"
     } catch {
         report += "Error: Trial Data could not be fetched\n"
     }
-    report += "Screens: \(NSScreen.screens.map{$0.localizedName})"
-
+    report += "Screens: \(NSScreen.screens.map{$0.localizedName}.joined(separator: ", "))\n"
+    for screen in NSScreen.screens {
+        report += " - Screen \(NSScreen.screens.map{$0.localizedName}): \(screen.frame.width)x\(screen.frame.height)px\n"
+    }
     return report
 }
