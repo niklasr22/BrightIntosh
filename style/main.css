@@ -529,11 +529,21 @@ h2 {
         margin: 8px;
     }
 
+    .compatibility-table {
+        padding: 25px;
+    }
+
     .compatibility-table .row {
         display: block;
     }
 
     .compatibility-table .col {
         width: 100%;
+    }
+
+    .compatibility-table .col ul {
+        padding: 0;
+        text-align: center;
+        font-size: 16px;
     }
 }
