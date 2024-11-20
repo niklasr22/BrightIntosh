@@ -3,10 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="main.css">
-  <link rel="icon" type="image/x-icon" href="./brightintosh_sm.webp">
-  <link href="./fontawesome/css/all.min.css" rel="stylesheet" />
-  <script src="slider.js"></script>
+  <link rel="stylesheet" href="./style/main.css">
+  <link rel="icon" type="image/x-icon" href="./res/brightintosh_sm.webp">
+  <script src="./scripts/slider.js"></script>
   <title>BrightIntosh - Maximize Your MacBook Pro Display Brightness</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <meta name="description"
@@ -32,8 +31,8 @@
 <body>
   <div class="background">
     <div class="head">
-      <a class="brand" href="index.html"><img class="logo" src="./brightintosh_sm.webp" alt="BrightIntosh Logo"><span
-          class="title">BrightIntosh</span></a>
+      <a class="brand" href="index.html"><img class="logo" src="./res/brightintosh_sm.webp"
+          alt="BrightIntosh Logo"><span class="title">BrightIntosh</span></a>
       <span class="download">
         <a href="https://apps.apple.com/us/app/brightintosh/id6452471855?mt=12&itscg=30200&itsct=apps_box_badge&mttnsubad=6452471855"
           style="display: inline-block;">
@@ -42,8 +41,8 @@
             alt="Download on the App Store"
             style="width: 141px; height: 47px; vertical-align: middle; object-fit: contain;" />
         </a>
-        <a href="https://github.com/niklasr22/BrightIntosh" class="github-btn hide-on-mobile"><i
-            class="fa-brands fa-github"></i></a>
+        <a href="https://github.com/niklasr22/BrightIntosh" class="github-btn hide-on-mobile"><img
+            src="./res/github-mark.svg" alt="GitHub Logo" /></a>
       </span>
     </div>
 
@@ -52,10 +51,16 @@
         <h2>Unlock your MacBook Pro®'s Full Brightness</h2>
         <div class="img-comp-container">
           <div class="img-comp-img img-comp-base">
-            <img src="demo_dark.webp" alt="MacBook Pro® with default maximum brightness">
+            <picture>
+              <source srcset="./res/demo_dark_md.webp" media="(max-width: 1280px)">
+              <img src="./res/demo_dark.webp" alt="MacBook Pro® with default maximum brightness">
+            </picture>
           </div>
           <div class="img-comp-img img-comp-overlay" style="width: 0">
-            <img src="demo_bright.webp" alt="MacBook Pro® with increased brightness through BrightIntosh">
+            <picture>
+              <source srcset="./res/demo_bright_md.webp" media="(max-width: 1280px)">
+              <img src="./res/demo_bright.webp" alt="MacBook Pro® with increased brightness through BrightIntosh">
+            </picture>
           </div>
         </div>
       </div>
@@ -89,7 +94,10 @@
         <div class="compatibility-table card">
           <div class="row">
             <div class="col example-image">
-              <img src="./MacBookPro.webp" alt="Illustration of Apple MacBook Pro" />
+              <picture>
+                <source srcset="./res/MacBookPro_sm.webp" media="(max-width: 900px)">
+                <img src="./res/MacBookPro.webp" alt="Illustration of Apple MacBook Pro">
+              </picture>
             </div>
             <div class="col details">
               <p class="brand">MacBook Pro</p>
@@ -103,7 +111,10 @@
           </div>
           <div class="row">
             <div class="col example-image">
-              <img src="./ProDisplayXDR.webp" alt="Illustration of Apple Pro Display XDR" />
+              <picture>
+                <source srcset="./res/ProDisplayXDR_sm.webp" media="(max-width: 900px)">
+                <img src="./res/ProDisplayXDR.webp" alt="Illustration of Apple Pro Display XDR">
+              </picture>
             </div>
             <div class="col details">
               <p class="brand">Pro Display XDR</p>
@@ -228,9 +239,9 @@
       </div>
     </div>
     <div class="footer">
-      <span><a href="https://x.com/BrightIntoshApp" class="social"><i class="fa-brands fa-square-x-twitter"
-            title="X"></i></a> <a href="https://github.com/niklasr22/BrightIntosh" class="social"><i
-            class="fa-brands fa-github"></i></a></span>
+      <span><a href="https://x.com/BrightIntoshApp" class="social" title="Find us on X"><img class="invert"
+            src="./res/x_logo.svg" alt="X Logo" /></a> <a href="https://github.com/niklasr22/BrightIntosh"
+          class="social" title="Find us on GitHub"><img src="./res/github-mark.svg" alt="GitHub Logo" /></a></span>
       <a href="./privacy_policy.html">Privacy policy / Datenschutzerklärung</a>
       <a href="./legal_notice.html">Legal notice / Impressum</a>
     </div>

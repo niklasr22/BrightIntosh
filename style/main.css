@@ -124,9 +124,9 @@ div.content {
     margin-left: 10px;
 }
 
-.github-btn>i {
-    font-size: 47px;
-    height: 47px;
+.github-btn>img {
+    max-height: 47px;
+    max-width: 47px;
 }
 
 #version {
@@ -150,9 +150,14 @@ div.content {
     text-align: center;
 }
 
-.social {
-    font-size: 50px;
+.social > img {
+    max-height: 30px;
+    max-width: 30px;
     color: #000;
+}
+
+.invert {
+    filter: invert(1);
 }
 
 a {
