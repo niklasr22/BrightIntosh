@@ -148,6 +148,7 @@ div.content {
 .footer>* {
     display: block;
     text-align: center;
+    margin: 10px 0;
 }
 
 .social > img {
