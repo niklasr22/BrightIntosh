@@ -45,17 +45,17 @@ function initComparisons() {
         slider.style.top = (h / 2) - (slider.offsetHeight / 2) + "px";
         slider.style.left = (w / 2) + "px";
 
-        slider.addEventListener("mousedown", slideReady);
-        window.addEventListener("mouseup", slideFinish);
-        slider.addEventListener("touchstart", slideReady);
-        window.addEventListener("touchend", slideFinish);
+        slider.addEventListener("mousedown", slideReady, {passive: true});
+        window.addEventListener("mouseup", slideFinish, {passive: true});
+        slider.addEventListener("touchstart", slideReady, {passive: true});
+        window.addEventListener("touchend", slideFinish, {passive: true});
 
         function slideReady(e) {
             e.preventDefault();
             clicked = true;
 
-            window.addEventListener("mousemove", slideMove);
-            window.addEventListener("touchmove", slideMove);
+            window.addEventListener("mousemove", slideMove, {passive: true});
+            window.addEventListener("touchmove", slideMove, {passive: true});
         }
 
         function slideFinish() {
