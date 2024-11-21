@@ -546,4 +546,8 @@ h2 {
         text-align: center;
         font-size: 16px;
     }
+
+    .collapsible-toggle {
+        font-size: 18px;
+    }
 }
