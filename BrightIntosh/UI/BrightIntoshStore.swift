@@ -78,6 +78,14 @@ struct BrightIntoshStoreView: View {
                                     .font(.title2)
                                     .multilineTextAlignment(.center)
                             }
+                            if !isDeviceSupported() {
+                                Label(
+                                    "Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays.",
+                                    systemImage: "exclamationmark.triangle.fill"
+                                )
+                                .foregroundColor(Color.yellow)
+                                .frame(maxWidth: 400.0)
+                            }
                             Button(action: {
                                 storeManager.purchase(product: product)
                             }) {
