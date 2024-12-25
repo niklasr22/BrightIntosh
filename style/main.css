@@ -151,7 +151,7 @@ div.content {
     margin: 10px 0;
 }
 
-.social > img {
+.social>img {
     max-height: 30px;
     max-width: 30px;
     color: #000;
@@ -372,6 +372,11 @@ h2 {
     background-clip: text;
     -webkit-background-clip: text;
     background-position: 0% 0;
+}
+
+h2.christmas {
+    background: none;
+    color: #e64444;
 }
 
 :root {
