@@ -80,6 +80,11 @@ div.content {
 .compatibility-table ul {
     list-style: none;
     text-align: left;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
 }
 
 .head {
