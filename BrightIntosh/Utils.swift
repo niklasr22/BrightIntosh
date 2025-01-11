@@ -5,9 +5,25 @@
 //  Created by Niklas Rousset on 01.01.24.
 //
 
-import Foundation
 import IOKit
 import StoreKit
+import Cocoa
+
+func getXDRDisplays() -> [NSScreen] {
+    var xdrScreens: [NSScreen] = []
+    for screen in NSScreen.screens {
+        if ((isBuiltInScreen(screen: screen) && isDeviceSupported()) || (externalXdrDisplays.contains(screen.localizedName) && !Settings.shared.brightIntoshOnlyOnBuiltIn)) {
+            xdrScreens.append(screen)
+        }
+    }
+    return xdrScreens
+}
+
+func isBuiltInScreen(screen: NSScreen) -> Bool {
+    let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")]
+    let displayId: CGDirectDisplayID = screenNumber as! CGDirectDisplayID
+    return CGDisplayIsBuiltin(displayId) != 0
+}
 
 func getModelIdentifier() -> String? {
     let service = IOServiceGetMatchingService(
