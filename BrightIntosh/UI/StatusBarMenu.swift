@@ -74,6 +74,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         toggleTimerItem.target = self
         
         let settingsItem = NSMenuItem(title: String(localized: "Settings"), action: #selector(openSettings), keyEquivalent: "")
+        settingsItem.setShortcut(for: .openSettings)
         settingsItem.target = self
         
         let aboutUsItem = NSMenuItem(title: String(localized: "About us"), action: #selector(openLegalNotice), keyEquivalent: "")
