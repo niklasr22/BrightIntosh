@@ -35,7 +35,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if userActivity.activityType == CSSearchableItemActionType,
            let uniqueIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
             if uniqueIdentifier == "de.brightintosh.app.settings" {
-                self.settingsWindowController.showWindow(nil)
+                self.showSettingsWindow()
                 return true
             }
         }
@@ -83,7 +83,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let stillEntitledToTrial = (try await TrialData.getTrialData()).stillEntitled()
             if !stillEntitledToTrial && offerUpgrade {
                 DispatchQueue.main.async {
-                    self.settingsWindowController.showWindow(nil)
+                    self.showSettingsWindow()
                 }
             }
             startTrialTimer()
@@ -114,6 +114,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         KeyboardShortcuts.onKeyUp(for: .decreaseBrightness) {
             self.decreaseBrightness()
         }
+        KeyboardShortcuts.onKeyUp(for: .openSettings, action: {
+            self.showSettingsWindow()
+        })
     }
     
     @objc func toggleBrightIntosh() {
@@ -129,6 +132,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let controller = WelcomeWindowController(supportedDevice: supportedDevice)
         NSApp.runModal(for: controller.window!)
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
+    }
+    
+    func showSettingsWindow() {
+        self.settingsWindowController.showWindow(nil)
     }
     
     func startTrialTimer() {

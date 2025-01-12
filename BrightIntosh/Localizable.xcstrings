@@ -1146,6 +1146,9 @@
         }
       }
     },
+    "Open settings:" : {
+
+    },
     "Quit" : {
       "localizations" : {
         "de" : {
