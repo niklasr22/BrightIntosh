@@ -17,7 +17,7 @@ The brightness slider in the app controls how much you shift this range.
 You can still use your brightness keys to control the brightness.
 It comes with a handy menu bar item so you can toggle the increased brightness quickly and easily.
 
-> [!NOTE]
+> [!IMPORTANT]
 > This tool should not harm your display as it doesn't use any low-level API calls and your OS is in full control over the display, but there is no warranty.
 
 ## Preview
