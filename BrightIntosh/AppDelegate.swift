@@ -178,7 +178,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         attributeSet.title = NSLocalizedString("BrightIntosh Settings", comment: "")
         attributeSet.contentDescription = "Open the settings of BrightIntosh"
         attributeSet.thumbnailData = URL(string: "https://brightintosh.de/brightintosh_sm.png")!.dataRepresentation
-        
+        attributeSet.alternateNames = ["BrightIntosh Settings", "BrightIntosh", "Settings", "brightness"]
+
         let item = CSSearchableItem(uniqueIdentifier: "de.brightintosh.app.settings", domainIdentifier: "de.brightintosh.app", attributeSet: attributeSet)
         
         CSSearchableIndex.default().indexSearchableItems([item]) { error in
