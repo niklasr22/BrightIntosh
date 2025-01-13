@@ -12,8 +12,13 @@
 # BrightIntosh
 
 BrightIntosh enables your MacBook Pro M1 (or newer) to use the increased brightness (1000 nits) of its XDR display at any time. By default, this is only possible when displaying HDR content.
+BrightIntosh can shift your brightness range to higher values.
+The brightness slider in the app controls how much you shift this range.
+You can still use your brightness keys to control the brightness.
 It comes with a handy menu bar item so you can toggle the increased brightness quickly and easily.
-This tool should not harm your display as it doesn't use any low-level API calls and your OS is in full control over the display, but there is no warranty.
+
+> [!NOTE]
+> This tool should not harm your display as it doesn't use any low-level API calls and your OS is in full control over the display, but there is no warranty.
 
 ## Preview
 
