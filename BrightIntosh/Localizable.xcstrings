@@ -69,41 +69,6 @@
         }
       }
     },
-    "**Note:** You can also use the %@ Spotlight Search to open the settings window by searching \"BrightIntosh Settings\"" : {
-      "comment" : "Spotlight Search references the macOS feature. Use the term that is common in each of the languages for this feature.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "**Hinweis:** Sie können auch die %@ Spotlight-Suche verwenden, um das Einstellungsfenster zu öffnen, indem Sie \"BrightIntosh Einstellungen\" suchen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "**Note:** You can also use the %@ Spotlight Search to open the settings window by searching \"BrightIntosh Settings\"."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nota: También puedes usar la %@ Búsqueda de Spotlight para abrir la ventana de configuración buscando \"Configuraciones de BrightIntosh\"."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "**Remarque :** Vous pouvez également utiliser la recherche %@ Spotlight pour ouvrir la fenêtre des paramètres en recherchant \"Paramètres BrightIntosh\"."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nota: Também pode utilizar a pesquisa %@ Spotlight para abrir a janela de definições pesquisando \"Configurações do BrightIntosh\"."
-          }
-        }
-      }
-    },
     "%lld min" : {
       "localizations" : {
         "de" : {
@@ -350,8 +315,41 @@
             "value" : "BrightIntosh"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
+    },
+    "BrightIntosh can shift your brightness range to higher values. The brightness slider in this app controls how much you shift this range. You can still use your brightness keys to control the brightness." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh ermöglicht es Ihnen, den Helligkeitsbereich Ihres Bildschirms auf höhere Werte zu verschieben. Der Helligkeitsregler der App passt an, wie weit dieser Bereich verschoben wird. Sie können weiterhin Ihre regulären Helligkeitstasten verwenden, um die Helligkeit innerhalb dieses neuen Bereichs fein abzustimmen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh lets you shift your screen's brightness range to higher levels. The app’s brightness slider adjusts how far this range is shifted. You can still use your regular brightness keys to fine-tune the brightness within this new range."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh te permite cambiar el rango de brillo de tu pantalla a niveles más altos. El control deslizante de brillo de la aplicación ajusta cuánto se mueve este rango. Aún puedes usar tus teclas de brillo regulares para ajustar con precisión el brillo dentro de este nuevo rango."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh vous permet d'augmenter la plage de luminosité de votre écran à des niveaux plus élevés. Le curseur de luminosité de l'application ajuste la distance à laquelle cette plage est déplacée. Vous pouvez toujours utiliser vos touches de luminosité habituelles pour affiner la luminosité dans cette nouvelle plage."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh permite-lhe alterar o intervalo de brilho do seu ecrã para níveis mais elevados. O deslizante de brilho da aplicação ajusta até que ponto este intervalo é deslocado. Pode continuar a usar as suas teclas de brilho habituais para ajustar ainda mais o brilho dentro deste novo intervalo."
+          }
+        }
+      }
     },
     "BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk." : {
       "localizations" : {
@@ -423,35 +421,36 @@
       }
     },
     "Brightness" : {
+      "comment" : "Its THE brightness increase",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Helligkeit"
+            "value" : "Helligkeitssteigerung"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brightness"
+            "value" : "Brightness Increase"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brillo"
+            "value" : "Incremento de Brillo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Luminosité"
+            "value" : "Augmentation de la luminosité"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brilho"
+            "value" : "Aumento de Brilho"
           }
         }
       }
@@ -461,31 +460,31 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Helligkeit:"
+            "value" : "Helligkeitssteigerung:"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brightness:"
+            "value" : "Brightness Increase:"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brillo:"
+            "value" : "Aumento de Brillo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Luminosité:"
+            "value" : "Augmentation de la luminosité :"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brilho:"
+            "value" : "Aumento de Brilho:"
           }
         }
       }
@@ -1147,7 +1146,14 @@
       }
     },
     "Open settings:" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open settings:"
+          }
+        }
+      }
     },
     "Quit" : {
       "localizations" : {
@@ -1586,8 +1592,7 @@
             "value" : "X"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "X / Twitter" : {
       "localizations" : {
@@ -1597,8 +1602,75 @@
             "value" : "X / Twitter"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
+    },
+    "You can also use the %@ Spotlight Search to open the settings window by searching \"BrightIntosh Settings\"" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie können auch die %@ Spotlight-Suche verwenden, um das Einstellungsfenster zu öffnen, indem Sie \"BrightIntosh Einstellungen\" suchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can also use the %@ Spotlight Search to open the settings window by searching \"BrightIntosh Settings\""
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "También puedes usar el %@ Spotlight Search para abrir la ventana de configuración buscando \"Configuración de BrightIntosh\""
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous pouvez également utiliser la recherche %@ Spotlight  pour ouvrir la fenêtre des paramètres en recherchant \"Paramètres BrightIntosh\""
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pode também usar a pesquisa %@ Spotlight para abrir a janela de definições, pesquisando \"Configurações do BrightIntosh\""
+          }
+        }
+      }
+    },
+    "You can still use your brightness keys to control the brightness. This slider controls how much the brightness range is shifted up." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie können weiterhin Ihre Helligkeitstasten verwenden, um die Helligkeit anzupassen. Der Schieberegler steuert, wie stark der Helligkeitsbereich nach oben verschoben wird."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can still use your brightness keys to adjust the brightness. The slider controls how much the brightness range is shifted upward."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún puedes usar tus teclas de brillo para ajustar el brillo. El control deslizante determina cuánto se desplaza hacia arriba el rango de brillo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous pouvez toujours utiliser vos touches de luminosité pour ajuster la luminosité. Le curseur contrôle combien de la plage de luminosité est déplacée vers le haut."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda pode usar as suas teclas de brilho para ajustar o brilho. O deslizante controla quão para cima é deslocado o intervalo de brilho."
+          }
+        }
+      }
     },
     "You have access to BrightIntosh.\nEnjoy the brightness!" : {
       "localizations" : {

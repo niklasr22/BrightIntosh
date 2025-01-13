@@ -87,6 +87,10 @@ struct BasicSettings: View {
                     Slider(value: $viewModel.brightnessSlider, in: 1.0...getDeviceMaxBrightness()) {
                         Text("Brightness")
                     }
+                    Label(
+                        "You can still use your brightness keys to control the brightness. This slider controls how much the brightness range is shifted up.",
+                        systemImage: "info.circle"
+                    ).foregroundColor(Color.blue)
                     if isDeviceSupported() {
                         Toggle(
                             "Don't apply increased brightness to external XDR displays",
