@@ -76,10 +76,19 @@ struct IntroView: View {
                 }
                 .frame(maxWidth: .infinity, idealHeight: 0, maxHeight: 110.0)
                 .translucentCard()
-                
-                Text("**Note:** You can also use the \(Image(systemName: "magnifyingglass")) Spotlight Search to open the settings window by searching \"BrightIntosh Settings\"")
-                    .frame(maxWidth: .infinity)
-                    .translucentCard()
+                if supportedDevice {
+                    Label(
+                        "BrightIntosh can shift your brightness range to higher values. The brightness slider in this app controls how much you shift this range. You can still use your brightness keys to control the brightness.",
+                        systemImage: "info.circle"
+                    )
+                        .frame(maxWidth: .infinity)
+                        .translucentCard()
+                    
+                    Label("You can also use the \(Image(systemName: "magnifyingglass")) Spotlight Search to open the settings window by searching \"BrightIntosh Settings\"",
+                          systemImage: "info.circle")
+                        .frame(maxWidth: .infinity)
+                        .translucentCard()
+                }
                 
                 VStack(alignment: .leading, spacing: 10.0) {
                     Text("Disclaimer")
