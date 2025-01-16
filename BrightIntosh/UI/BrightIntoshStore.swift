@@ -97,8 +97,10 @@ struct BrightIntoshStoreView: View {
                     } else {
                         Spacer()
                         ProgressView()
-                            .task {
-                                await delayNotLoadingRestartNote()
+                            .onAppear {
+                                Task {
+                                    await delayNotLoadingRestartNote()
+                                }
                             }
                         Spacer()
                     }
@@ -133,9 +135,15 @@ struct BrightIntoshStoreView: View {
     }
     
     private func delayNotLoadingRestartNote() async {
-        try? await Task.sleep(nanoseconds: 6_000_000_000)
+        do {
+            try await Task.sleep(nanoseconds: 6_000_000_000)
+        } catch {
+            return
+        }
         withAnimation {
-            showRestartNoteDueToSpinner = true
+            if storeManager.products.isEmpty {
+                showRestartNoteDueToSpinner = true
+            }
         }
     }
 }
