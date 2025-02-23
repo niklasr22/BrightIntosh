@@ -193,14 +193,12 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             startRemainingTimePoller()
         }
         
-        Task {
+        Task { @MainActor in
             let trialExpired = !(await isExtraBrightnessAllowed(false))
-            DispatchQueue.main.async {
-                if trialExpired && !self.menu.items.contains(self.trialExpiredItem) {
-                    self.menu.addItem(self.trialExpiredItem)
-                } else if self.menu.items.contains(self.trialExpiredItem) {
-                    self.menu.removeItem(self.trialExpiredItem)
-                }
+            if trialExpired && !self.menu.items.contains(self.trialExpiredItem) {
+                self.menu.addItem(self.trialExpiredItem)
+            } else if self.menu.items.contains(self.trialExpiredItem) {
+                self.menu.removeItem(self.trialExpiredItem)
             }
         }
     }

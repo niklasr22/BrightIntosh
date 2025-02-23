@@ -11,7 +11,6 @@ import ServiceManagement
 import StoreKit
 import CoreSpotlight
 
-
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var overlayAvailable: Bool = false
@@ -82,8 +81,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             let stillEntitledToTrial = (try await TrialData.getTrialData()).stillEntitled()
             if !stillEntitledToTrial && offerUpgrade {
-                DispatchQueue.main.async {
-                    self.showSettingsWindow()
+                Task {
+                    await self.showSettingsWindow()
                 }
             }
             startTrialTimer()
@@ -115,7 +114,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.decreaseBrightness()
         }
         KeyboardShortcuts.onKeyUp(for: .openSettings, action: {
-            self.showSettingsWindow()
+            Task {
+                await self.showSettingsWindow()
+            }
         })
     }
     
@@ -127,6 +128,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Settings.shared.brightintoshActive.toggle()
     }
     
+    @MainActor
     func welcomeWindow() {
         NSApplication.shared.activate(ignoringOtherApps: true)
         let controller = WelcomeWindowController(supportedDevice: supportedDevice)
@@ -134,6 +136,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
     
+    @MainActor
     func showSettingsWindow() {
         self.settingsWindowController.showWindow(nil)
     }
@@ -143,7 +146,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         // check every 5min
-        trialTimer = Timer(timeInterval: 300, repeats: true, block: {t in self.revalidateTrial()})
+        trialTimer = Timer(timeInterval: 300, repeats: true, block: {t in
+            DispatchQueue.main.async {
+                self.revalidateTrial()
+            }
+        })
         RunLoop.main.add(self.trialTimer!, forMode: RunLoop.Mode.common)
     }
     
@@ -152,12 +159,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             stopTrialTimer()
             return
         }
-        Task {
+        Task { @MainActor in
             if !(await self.isExtraBrightnessAllowed(offerUpgrade: true)) {
                 // turn brightintosh off if user is not entitled
-                DispatchQueue.main.async {
-                    Settings.shared.brightintoshActive = false
-                }
+                Settings.shared.brightintoshActive = false
             } else {
                 stopTrialTimer()
             }

@@ -59,25 +59,24 @@ class EntitlementHandler: ObservableObject {
         }
         
         if await checkAppEntitlements(refresh: refresh) {
-            DispatchQueue.main.async {
-                self.isUnrestrictedUser = true
-            }
+            await setRestrictionState(true)
             return true
         }
         
         for await entitlement in Transaction.currentEntitlements {
             if entitlement.unsafePayloadValue.productID == Products.unrestrictedBrightIntosh,
                await self.verifyEntitlement(transaction: entitlement) {
-                DispatchQueue.main.async {
-                    self.isUnrestrictedUser = true
-                }
+                await setRestrictionState(true)
                 return true
             }
         }
-        DispatchQueue.main.async {
-            self.isUnrestrictedUser = false
-        }
+        await setRestrictionState(false)
         return false
+    }
+    
+    @MainActor
+    func setRestrictionState(_ isUnrestricted: Bool) {
+        self.isUnrestrictedUser = isUnrestricted
     }
     
     func checkAppEntitlements(refresh: Bool = false) async -> Bool {

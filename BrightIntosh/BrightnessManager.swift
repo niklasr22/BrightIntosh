@@ -14,12 +14,14 @@ extension NSScreen {
     }
 }
 
+
 class BrightnessManager {
     
     var brightnessTechnique: BrightnessTechnique?
     var screens: [NSScreen] = []
     var xdrScreens: [NSScreen] = []
     
+    @MainActor
     init(isExtraBrightnessAllowed: @escaping (Bool) async -> Bool) {
         setBrightnessTechnique()
         
@@ -49,15 +51,11 @@ class BrightnessManager {
             
             if Settings.shared.brightintoshActive {
                 
-                Task {
+                Task { @MainActor in
                     if await isExtraBrightnessAllowed(true) {
-                        DispatchQueue.main.async {
-                            self.enableExtraBrightness()
-                        }
+                        self.enableExtraBrightness()
                     } else {
-                        DispatchQueue.main.async {
-                            Settings.shared.brightintoshActive = false
-                        }
+                        Settings.shared.brightintoshActive = false
                     }
                 }
             } else {
@@ -83,7 +81,7 @@ class BrightnessManager {
         print("Activated Gamma Technique")
     }
     
-    @objc func handleScreenParameters(notification: Notification) {
+    @MainActor @objc func handleScreenParameters(notification: Notification) {
         handlePotentialScreenUpdate()
     }
     
@@ -94,7 +92,7 @@ class BrightnessManager {
         }
     }
     
-    func handlePotentialScreenUpdate() {
+    @MainActor func handlePotentialScreenUpdate() {
         let newScreens = NSScreen.screens
         let newXdrDisplays = getXDRDisplays()
         var changedScreens = newScreens.count != screens.count || newXdrDisplays.count != xdrScreens.count
@@ -131,6 +129,7 @@ class BrightnessManager {
         }
     }
     
+    @MainActor
     func enableExtraBrightness() {
         // Put brightness value into device specific bounds, as earlier versions allowed storing higher brightness values.
         let safeBrightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
