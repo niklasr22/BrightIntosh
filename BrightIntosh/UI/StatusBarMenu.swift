@@ -8,6 +8,7 @@
 import Cocoa
 import KeyboardShortcuts
 
+@MainActor
 class StatusBarMenu : NSObject, NSMenuDelegate {
     
     private var supportedDevice: Bool = false
@@ -254,23 +255,25 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         }
         
         self.remainingTimePoller = Timer(fire: Date.now, interval: 1.0, repeats: true, block: {t in
-            let remainingTime = max(0.0, self.automationManager.getRemainingTime())
-        
-            if remainingTime == 0 {
-                self.stopRemainingTimePoller()
+            Task { @MainActor in
+                let remainingTime = max(0.0, self.automationManager.getRemainingTime())
                 
-                self.updateMenu()
-                return
-            }
-            
-            let remainingHours = Int((remainingTime / 60).rounded(.down))
-            let remainingMinutes = Int(remainingTime.rounded(.down)) - (remainingHours * 60)
-            let remainingSeconds = Int((remainingTime - Double(Int(remainingTime))) * 60)
-            let timerString = remainingHours == 0 ? String(format: "%02d:%02d", remainingMinutes, remainingSeconds) : String(format: "%02d:%02d:%02d", remainingHours, remainingMinutes, remainingSeconds)
-            if #available(macOS 14, *) {
-                self.toggleTimerItem!.badge = NSMenuItemBadge(string: timerString)
-            } else {
-                self.toggleTimerItem!.title = String(localized: "Disable Timer") + timerString
+                if remainingTime == 0 {
+                    self.stopRemainingTimePoller()
+                    
+                    self.updateMenu()
+                    return
+                }
+                
+                let remainingHours = Int((remainingTime / 60).rounded(.down))
+                let remainingMinutes = Int(remainingTime.rounded(.down)) - (remainingHours * 60)
+                let remainingSeconds = Int((remainingTime - Double(Int(remainingTime))) * 60)
+                let timerString = remainingHours == 0 ? String(format: "%02d:%02d", remainingMinutes, remainingSeconds) : String(format: "%02d:%02d:%02d", remainingHours, remainingMinutes, remainingSeconds)
+                if #available(macOS 14, *) {
+                    self.toggleTimerItem!.badge = NSMenuItemBadge(string: timerString)
+                } else {
+                    self.toggleTimerItem!.title = String(localized: "Disable Timer") + timerString
+                }
             }
         })
         

@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class AutomationManager {
     private let batteryCheckInterval = 10.0
     private var batteryCheckTimer: Timer?
@@ -67,7 +68,11 @@ class AutomationManager {
             return
         }
         let batteryCheckDate = Date()
-        batteryCheckTimer = Timer(fire: batteryCheckDate, interval: batteryCheckInterval, repeats: true, block: {t in self.checkBatteryAutomation()})
+        batteryCheckTimer = Timer(fire: batteryCheckDate, interval: batteryCheckInterval, repeats: true, block: {t in
+            Task { @MainActor in
+                self.checkBatteryAutomation()
+            }
+        })
         RunLoop.main.add(batteryCheckTimer!, forMode: RunLoop.Mode.default)
         print("Started battery automation")
     }
@@ -98,7 +103,11 @@ class AutomationManager {
             return
         }
         let timeout = Settings.shared.timerAutomationTimeout
-        timerAutomationTimer = Timer(timeInterval: Double(timeout * 60), repeats: false, block: {t in self.timerAutomationCallback()})
+        timerAutomationTimer = Timer(timeInterval: Double(timeout * 60), repeats: false, block: { t in
+            Task { @MainActor in
+                self.timerAutomationCallback()
+            }
+        })
         RunLoop.main.add(self.timerAutomationTimer!, forMode: RunLoop.Mode.common)
     }
     

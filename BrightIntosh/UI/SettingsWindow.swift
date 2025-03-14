@@ -10,7 +10,8 @@ import OSLog
 import StoreKit
 import SwiftUI
 
-final class BasicSettingsViewModel: ObservableObject {
+@MainActor
+class BasicSettingsViewModel: ObservableObject {
     /*
      This View Model is used for settings that can be changed via shortcuts or another way other than the settings UI, so changes can be obeserved and showed in the UI.
      */

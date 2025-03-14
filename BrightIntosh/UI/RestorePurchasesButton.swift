@@ -11,7 +11,7 @@ import StoreKit
 
 struct RestorePurchasesButton: View {
     public let label: String
-    public let action: () async -> ()
+    public let action: @MainActor () async -> ()
     @State private var isRestoring = false
     
     var body: some View {

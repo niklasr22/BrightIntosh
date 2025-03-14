@@ -15,7 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var overlayAvailable: Bool = false
     
-    let settingsWindowController = SettingsWindowController()
+    @MainActor let settingsWindowController = SettingsWindowController()
     
     var statusBarMenu: StatusBarMenu?
     var brightnessManager: BrightnessManager?
@@ -25,8 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var trialTimer: Timer?
     
-    @MainActor
-    func application(
+    @MainActor func application(
         _ application: NSApplication,
         continue userActivity: NSUserActivity,
         restorationHandler: @escaping ([any NSUserActivityRestoring]) -> Void
@@ -41,7 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
     
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
+    @MainActor func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         supportedDevice = isDeviceSupported()
         
@@ -73,6 +72,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         addSettingsToIndex()
     }
     
+    @MainActor
     func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
 #if STORE
         if await EntitlementHandler.shared.isUnrestrictedUser() {
@@ -81,8 +81,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             let stillEntitledToTrial = (try await TrialData.getTrialData()).stillEntitled()
             if !stillEntitledToTrial && offerUpgrade {
-                Task {
-                    await self.showSettingsWindow()
+                Task { @MainActor in
+                    self.showSettingsWindow()
                 }
             }
             startTrialTimer()
@@ -96,14 +96,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func increaseBrightness() {
-        Settings.shared.brightness = min(getDeviceMaxBrightness(), Settings.shared.brightness + 0.05)
+        Task { @MainActor in
+            Settings.shared.brightness = min(getDeviceMaxBrightness(), Settings.shared.brightness + 0.05)
+        }
     }
     
     @objc func decreaseBrightness() {
-        Settings.shared.brightness = max(1.0, Settings.shared.brightness - 0.05)
+        Task { @MainActor in
+            Settings.shared.brightness = max(1.0, Settings.shared.brightness - 0.05)
+        }
     }
     
-    func addKeyListeners() {
+    @MainActor func addKeyListeners() {
         KeyboardShortcuts.onKeyUp(for: .toggleBrightIntosh) {
             self.toggleBrightIntosh()
         }
@@ -114,18 +118,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.decreaseBrightness()
         }
         KeyboardShortcuts.onKeyUp(for: .openSettings, action: {
-            Task {
-                await self.showSettingsWindow()
-            }
+            self.showSettingsWindow()
         })
     }
     
     @objc func toggleBrightIntosh() {
-        if !Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
-            return
+        Task { @MainActor in
+            
+            if !Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
+                return
+            }
+            
+            Settings.shared.brightintoshActive.toggle()
         }
-        
-        Settings.shared.brightintoshActive.toggle()
     }
     
     @MainActor
@@ -141,20 +146,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.settingsWindowController.showWindow(nil)
     }
     
+    @MainActor
     func startTrialTimer() {
         if trialTimer != nil {
             return
         }
         // check every 5min
         trialTimer = Timer(timeInterval: 300, repeats: true, block: {t in
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.revalidateTrial()
             }
         })
         RunLoop.main.add(self.trialTimer!, forMode: RunLoop.Mode.common)
     }
     
-    func revalidateTrial() {
+    @MainActor func revalidateTrial() {
         if !Settings.shared.brightintoshActive {
             stopTrialTimer()
             return

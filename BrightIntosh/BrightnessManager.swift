@@ -14,14 +14,13 @@ extension NSScreen {
     }
 }
 
-
+@MainActor
 class BrightnessManager {
     
     var brightnessTechnique: BrightnessTechnique?
     var screens: [NSScreen] = []
     var xdrScreens: [NSScreen] = []
     
-    @MainActor
     init(isExtraBrightnessAllowed: @escaping (Bool) async -> Bool) {
         setBrightnessTechnique()
         

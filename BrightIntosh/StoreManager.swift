@@ -7,7 +7,7 @@
 
 import StoreKit
 
-class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
+class StoreManager: NSObject, ObservableObject, SKPaymentTransactionObserver {
     @Published var products: [SKProduct] = []
     
     override init() {
@@ -22,9 +22,11 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
         request.start()
     }
     
+    @MainActor
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        DispatchQueue.main.async {
-            self.products = response.products
+        let newProducts = response.products as [SKProduct]
+        Task { @MainActor [newProducts] in
+            self.products = newProducts
         }
     }
     

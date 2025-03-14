@@ -14,7 +14,7 @@ public struct Products {
     static let unrestrictedBrightIntosh = "brightintosh_paid"
 }
 
-
+@MainActor
 class EntitlementHandler: ObservableObject {
     private let logger = Logger(
         subsystem: "Store Handler",
@@ -59,22 +59,21 @@ class EntitlementHandler: ObservableObject {
         }
         
         if await checkAppEntitlements(refresh: refresh) {
-            await setRestrictionState(true)
+            setRestrictionState(true)
             return true
         }
         
         for await entitlement in Transaction.currentEntitlements {
             if entitlement.unsafePayloadValue.productID == Products.unrestrictedBrightIntosh,
                await self.verifyEntitlement(transaction: entitlement) {
-                await setRestrictionState(true)
+                setRestrictionState(true)
                 return true
             }
         }
-        await setRestrictionState(false)
+        setRestrictionState(false)
         return false
     }
     
-    @MainActor
     func setRestrictionState(_ isUnrestricted: Bool) {
         self.isUnrestrictedUser = isUnrestricted
     }
@@ -83,7 +82,13 @@ class EntitlementHandler: ObservableObject {
         if Settings.shared.ignoreAppTransaction {
             return false
         }
-            
+        let alert = NSAlert()
+        alert.messageText = "New Business Model"
+        alert.informativeText = ""
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "Cancel")
+        alert.runModal()
         do {
             let shared = if refresh {
                 try await AppTransaction.refresh()

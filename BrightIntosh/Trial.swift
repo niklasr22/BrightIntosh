@@ -35,7 +35,7 @@ extension Date {
     }
 }
 
-public struct TrialData {
+public struct TrialData: Sendable {
     let purchaseDate: Date
     let currentDate: Date
     

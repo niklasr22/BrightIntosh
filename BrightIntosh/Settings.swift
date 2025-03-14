@@ -8,8 +8,8 @@
 import Foundation
 import ServiceManagement
 
-
-final class Settings {
+@MainActor
+class Settings {
     static let shared: Settings = Settings()
     
     public var ignoreAppTransaction = false

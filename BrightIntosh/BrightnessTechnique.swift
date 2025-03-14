@@ -8,6 +8,7 @@
 import Foundation
 import Cocoa
 
+@MainActor
 class BrightnessTechnique {
     fileprivate(set) var isEnabled: Bool = false
     
