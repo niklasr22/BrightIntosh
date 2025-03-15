@@ -6,6 +6,12 @@
 //
 
 import Cocoa
+import OSLog
+
+let overlayLogger = Logger(
+    subsystem: "Overlay Window",
+    category: "Core"
+)
 
 class OverlayWindow: NSWindow {
     
@@ -74,7 +80,6 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         }
         window.setFrame(rect, display: true)
         
-        
         if !fullsize {
             reposition(screen: screen)
         }
@@ -84,7 +89,8 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     }
     
     func reposition(screen: NSScreen) {
-        window?.setFrameOrigin(getIdealPosition(screen: screen))
+        let targetPosition = getIdealPosition(screen: screen)
+        window?.setFrameOrigin(targetPosition)
     }
     
     func getIdealPosition(screen: NSScreen) -> CGPoint {
@@ -99,8 +105,9 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     
     func windowDidMove(_ notification: Notification) {
         if let window = window, let screen = window.screen {
-            if window.frame.origin != getIdealPosition(screen: screen) {
-                reposition(screen: screen)
+            overlayLogger.info("Window moved to (\(window.frame.origin.x), \(window.frame.origin.y), current screen: \(screen.localizedName), expected screen: \(self.screen.localizedName)")
+            if window.frame.origin != getIdealPosition(screen: self.screen) {
+                reposition(screen: self.screen)
             }
         }
     }
