@@ -315,7 +315,8 @@
             "value" : "BrightIntosh"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "BrightIntosh can shift your brightness range to higher values. The brightness slider in this app controls how much you shift this range. You can still use your brightness keys to control the brightness." : {
       "localizations" : {
@@ -489,36 +490,36 @@
         }
       }
     },
-    "Buy %@%@" : {
+    "Buy %@" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Für %1$@%2$@ kaufen"
+            "value" : "Kaufen %@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buy %1$@%2$@"
+            "value" : "Buy %@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comprar por %1$@%2$@"
+            "value" : "Compra %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Acheter pour %1$@%2$@"
+            "value" : "Achetez %@"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comprar por %1$@%2$@"
+            "value" : "Comprar %@"
           }
         }
       }
@@ -1007,7 +1008,8 @@
             "value" : "Hide"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "Hide menu bar item" : {
       "localizations" : {
@@ -1147,10 +1149,34 @@
     },
     "Open settings:" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen öffnen:"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open settings:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir ajustes:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir les paramètres :"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir definições:"
           }
         }
       }
@@ -1333,7 +1359,8 @@
             "value" : "Test Settings"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "Test: Ignore App Transaction" : {
       "localizations" : {
@@ -1343,7 +1370,8 @@
             "value" : "Test: Ignore App Transaction"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook." : {
       "localizations" : {
@@ -1375,6 +1403,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parece haver um problema com a conexão da loja. Verifique sua conexão com a Internet ou tente reiniciar seu MacBook."
+          }
+        }
+      }
+    },
+    "There was an issue while loading the products. Please try again later." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Laden der Produkte ist ein Problem aufgetreten. Bitte versuchen Sie es später erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There was an issue while loading the products. Please try again later."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hubo un problema al cargar los productos. Por favor, inténtalo de nuevo más tarde."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il y a eu un problème lors du chargement des produits. Veuillez réessayer plus tard."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocorreu um erro ao carregar os produtos. Por favor, tente novamente mais tarde."
           }
         }
       }
@@ -1592,7 +1654,8 @@
             "value" : "X"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "X / Twitter" : {
       "localizations" : {
@@ -1602,7 +1665,8 @@
             "value" : "X / Twitter"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "You can also use the %@ Spotlight Search to open the settings window by searching \"BrightIntosh Settings\"" : {
       "localizations" : {

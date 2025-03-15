@@ -9,7 +9,7 @@ import IOKit
 import StoreKit
 import Cocoa
 
-func getXDRDisplays() -> [NSScreen] {
+@MainActor func getXDRDisplays() -> [NSScreen] {
     var xdrScreens: [NSScreen] = []
     for screen in NSScreen.screens {
         if ((isBuiltInScreen(screen: screen) && isDeviceSupported()) || (externalXdrDisplays.contains(screen.localizedName) && !Settings.shared.brightIntoshOnlyOnBuiltIn)) {

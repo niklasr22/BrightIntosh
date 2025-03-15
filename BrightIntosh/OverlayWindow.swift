@@ -89,9 +89,6 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     
     func getIdealPosition(screen: NSScreen) -> CGPoint {
         var position = screen.frame.origin
-        if isBuiltInScreen(screen: screen) {
-            position.x += screen.frame.width / 2
-        }
         position.y += screen.frame.height - 1
         return position
     }

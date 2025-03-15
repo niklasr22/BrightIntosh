@@ -10,11 +10,11 @@ import SwiftData
 import OSLog
 
 
-public struct Products {
-    static let unrestrictedBrightIntosh = "brightintosh_paid"
+public enum Products: String, CaseIterable {
+    case unrestrictedBrightIntosh = "brightintosh_paid"
 }
 
-
+@MainActor
 class EntitlementHandler: ObservableObject {
     private let logger = Logger(
         subsystem: "Store Handler",
@@ -41,6 +41,7 @@ class EntitlementHandler: ObservableObject {
             (Entitlement) Transaction ID \(t.id) for \(t.productID) is verified
             """)
             transaction = t
+            await transaction.finish()
         case .unverified(let t, let error):
             // Log failure and ignore unverified transactions
             logger.error("""
@@ -59,32 +60,30 @@ class EntitlementHandler: ObservableObject {
         }
         
         if await checkAppEntitlements(refresh: refresh) {
-            DispatchQueue.main.async {
-                self.isUnrestrictedUser = true
-            }
+            setRestrictionState(isUnrestricted: true)
             return true
         }
         
         for await entitlement in Transaction.currentEntitlements {
-            if entitlement.unsafePayloadValue.productID == Products.unrestrictedBrightIntosh,
+            if entitlement.unsafePayloadValue.productID == Products.unrestrictedBrightIntosh.rawValue,
                await self.verifyEntitlement(transaction: entitlement) {
-                DispatchQueue.main.async {
-                    self.isUnrestrictedUser = true
-                }
+                setRestrictionState(isUnrestricted: true)
                 return true
             }
         }
-        DispatchQueue.main.async {
-            self.isUnrestrictedUser = false
-        }
+        setRestrictionState(isUnrestricted: false)
         return false
+    }
+    
+    func setRestrictionState(isUnrestricted: Bool) {
+        self.isUnrestrictedUser = isUnrestricted
     }
     
     func checkAppEntitlements(refresh: Bool = false) async -> Bool {
         if Settings.shared.ignoreAppTransaction {
             return false
         }
-            
+        
         do {
             let shared = if refresh {
                 try await AppTransaction.refresh()
