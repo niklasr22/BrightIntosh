@@ -31,8 +31,9 @@ struct BrightIntoshStoreView: View {
         category: "Store"
     )
     
-    @ObservedObject private var storeManager = StoreManager()
     @ObservedObject private var entitlementHandler = EntitlementHandler.shared
+    
+    @State private var product: Product?
     
     @State var purchaseCompleted = false
         
@@ -40,7 +41,7 @@ struct BrightIntoshStoreView: View {
     @Environment(\.trial) private var trial: TrialData?
 
     @State private var showRestartNoteDueToSpinner = false
-    
+    @State private var productLoadingFailed = false
     @State private var restoreAttempts = 0
 
     var body: some View {
@@ -60,12 +61,12 @@ struct BrightIntoshStoreView: View {
                         InfoNote(infoText: "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook.")
                     }
                     Spacer()
-                    if let product = storeManager.products.first {
+                    if let product = product {
                         VStack {
                             if showLogo {
                                 Image("LogoBorderedHighRes").resizable().scaledToFit().frame(height: 90.0)
                             }
-                            Text(product.localizedTitle)
+                            Text(product.displayName)
                                 .bold()
                                 .font(.title)
                             
@@ -87,13 +88,17 @@ struct BrightIntoshStoreView: View {
                                 .frame(maxWidth: 400.0)
                             }
                             Button(action: {
-                                storeManager.purchase(product: product)
+                                Task {
+                                    await self.purchase()
+                                }
                             }) {
-                                Text("Buy \(product.priceLocale.currencySymbol ?? "$")\(product.price)")
+                                Text("Buy \(product.displayPrice)")
                                     .frame(maxWidth: 220.0)
                             }
                             .buttonStyle(BrightIntoshButtonStyle())
                         }
+                    } else if productLoadingFailed {
+                        Text("There was an issue while loading the products. Please try again later.")
                     } else {
                         Spacer()
                         ProgressView()
@@ -131,6 +136,40 @@ struct BrightIntoshStoreView: View {
         }.onAppear {
             restoreAttempts = 0
             showRestartNoteDueToSpinner = false
+        }.task {
+            do {
+                let availableProducts = Products.allCases.map { $0.rawValue }
+                let products = try await Product.products(for: availableProducts)
+                if let unrestrictedBrightIntosh = products.first(where: { $0.id == Products.unrestrictedBrightIntosh.rawValue }) {
+                    product = unrestrictedBrightIntosh
+                }
+            } catch {
+                productLoadingFailed = true
+                logger.error("Error while fetching products: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func purchase() async {
+        guard let product = product else {
+            return
+        }
+        do {
+            let result = try await product.purchase()
+            switch result {
+            case .success(let verificationResult):
+                if await entitlementHandler.verifyEntitlement(transaction: verificationResult) {
+                    entitlementHandler.setRestrictionState(isUnrestricted: true)
+                }
+            case .userCancelled:
+                logger.info("User cancelled purchase of \(product.displayName)")
+            case .pending:
+                break
+            @unknown default:
+                break
+            }
+        } catch {
+            logger.error("Error while purchasing: \(error.localizedDescription)")
         }
     }
     
@@ -141,7 +180,7 @@ struct BrightIntoshStoreView: View {
             return
         }
         withAnimation {
-            if storeManager.products.isEmpty {
+            if product == nil {
                 showRestartNoteDueToSpinner = true
             }
         }

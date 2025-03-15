@@ -13,13 +13,15 @@ class StoreManager: NSObject, ObservableObject, SKPaymentTransactionObserver {
     override init() {
         super.init()
         SKPaymentQueue.default().add(self)
-        fetchProducts()
     }
     
-    func fetchProducts() {
-        let request = SKProductsRequest(productIdentifiers: [Products.unrestrictedBrightIntosh])
-        request.delegate = self
-        request.start()
+    func fetchProducts() async -> [Product] {
+        do {
+            let availableProducts = Products.allCases.map { $0.rawValue }
+            return try await Product.products(for: availableProducts)
+        } catch {
+            return []
+        }
     }
     
     @MainActor
