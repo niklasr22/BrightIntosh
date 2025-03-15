@@ -14,16 +14,13 @@ import CoreSpotlight
 @MainActor
 class AppDelegate: NSObject {
     
-    private var overlayAvailable: Bool = false
+    private let settingsWindowController = SettingsWindowController()
     
-    let settingsWindowController = SettingsWindowController()
-    
-    var statusBarMenu: StatusBarMenu?
-    var brightnessManager: BrightnessManager?
-    var automationManager: AutomationManager?
-    var supportedDevice: Bool = false
+    private var statusBarMenu: StatusBarMenu?
+    private var brightnessManager: BrightnessManager?
+    private var automationManager: AutomationManager?
+    private var supportedDevice: Bool = false
 
-    
     private var trialTimer: Timer?
     
     func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
