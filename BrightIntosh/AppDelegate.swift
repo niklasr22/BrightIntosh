@@ -11,11 +11,12 @@ import ServiceManagement
 import StoreKit
 import CoreSpotlight
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+@MainActor
+class AppDelegate: NSObject {
     
     private var overlayAvailable: Bool = false
     
-    @MainActor let settingsWindowController = SettingsWindowController()
+    let settingsWindowController = SettingsWindowController()
     
     var statusBarMenu: StatusBarMenu?
     var brightnessManager: BrightnessManager?
@@ -25,54 +26,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private var trialTimer: Timer?
     
-    @MainActor func application(
-        _ application: NSApplication,
-        continue userActivity: NSUserActivity,
-        restorationHandler: @escaping ([any NSUserActivityRestoring]) -> Void
-    ) -> Bool {
-        if userActivity.activityType == CSSearchableItemActionType,
-           let uniqueIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
-            if uniqueIdentifier == "de.brightintosh.app.settings" {
-                self.showSettingsWindow()
-                return true
-            }
-        }
-        return false
-    }
-    
-    @MainActor func applicationDidFinishLaunching(_ aNotification: Notification) {
-        
-        supportedDevice = isDeviceSupported()
-        
-        if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
-            welcomeWindow()
-        }
-        
-        if !supportedDevice {
-            Settings.shared.brightIntoshOnlyOnBuiltIn = false
-        }
-        
-        brightnessManager = BrightnessManager(isExtraBrightnessAllowed: isExtraBrightnessAllowed)
-        automationManager = AutomationManager()
-        statusBarMenu = StatusBarMenu(supportedDevice: supportedDevice, automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh, isExtraBrightnessAllowed: isExtraBrightnessAllowed)
-        
-        // Register global hotkeys
-        addKeyListeners()
-        
-        Settings.shared.addListener(setting: "brightintoshActive") {
-            if !Settings.shared.brightintoshActive {
-                self.stopTrialTimer()
-            }
-        }
-        
-        Task {
-            await isExtraBrightnessAllowed(offerUpgrade: true)
-        }
-        
-        addSettingsToIndex()
-    }
-    
-    @MainActor
     func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
 #if STORE
         if await EntitlementHandler.shared.isUnrestrictedUser() {
@@ -107,7 +60,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    @MainActor func addKeyListeners() {
+    func addKeyListeners() {
         KeyboardShortcuts.onKeyUp(for: .toggleBrightIntosh) {
             self.toggleBrightIntosh()
         }
@@ -133,7 +86,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    @MainActor
     func welcomeWindow() {
         NSApplication.shared.activate(ignoringOtherApps: true)
         let controller = WelcomeWindowController(supportedDevice: supportedDevice)
@@ -141,12 +93,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         UserDefaults.standard.set(true, forKey: "agreementAccepted")
     }
     
-    @MainActor
     func showSettingsWindow() {
         self.settingsWindowController.showWindow(nil)
     }
     
-    @MainActor
     func startTrialTimer() {
         if trialTimer != nil {
             return
@@ -160,7 +110,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         RunLoop.main.add(self.trialTimer!, forMode: RunLoop.Mode.common)
     }
     
-    @MainActor func revalidateTrial() {
+    func revalidateTrial() {
         if !Settings.shared.brightintoshActive {
             stopTrialTimer()
             return
@@ -193,12 +143,64 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         let item = CSSearchableItem(uniqueIdentifier: "de.brightintosh.app.settings", domainIdentifier: "de.brightintosh.app", attributeSet: attributeSet)
         
-        CSSearchableIndex.default().indexSearchableItems([item]) { error in
-            if error != nil {
-                print(error?.localizedDescription ?? "An error occured while indexing the item.")
-            } else {
-                print("BrightIntosh settings item indexed.")
+        Task {
+            do {
+                try await CSSearchableIndex.default().indexSearchableItems([item])
+            } catch {
+                print("Error indexing settings")
             }
+        }
+    }
+}
+
+extension AppDelegate: NSApplicationDelegate {
+    
+    func application(
+        _ application: NSApplication,
+        continue userActivity: NSUserActivity,
+        restorationHandler: @escaping ([any NSUserActivityRestoring]) -> Void
+    ) -> Bool {
+        if userActivity.activityType == CSSearchableItemActionType,
+           let uniqueIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+            if uniqueIdentifier == "de.brightintosh.app.settings" {
+                self.showSettingsWindow()
+                return true
+            }
+        }
+        return false
+    }
+    
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        
+        supportedDevice = isDeviceSupported()
+        
+        if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
+            welcomeWindow()
+        }
+        
+        if !supportedDevice {
+            Settings.shared.brightIntoshOnlyOnBuiltIn = false
+        }
+        
+        brightnessManager = BrightnessManager(isExtraBrightnessAllowed: isExtraBrightnessAllowed)
+        automationManager = AutomationManager()
+        statusBarMenu = StatusBarMenu(supportedDevice: supportedDevice, automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh, isExtraBrightnessAllowed: isExtraBrightnessAllowed)
+        
+        // Register global hotkeys
+        addKeyListeners()
+        
+        Settings.shared.addListener(setting: "brightintoshActive") {
+            if !Settings.shared.brightintoshActive {
+                self.stopTrialTimer()
+            }
+        }
+        
+        Task {
+            await isExtraBrightnessAllowed(offerUpgrade: true)
+        }
+        
+        Task {
+            addSettingsToIndex()
         }
     }
 }
