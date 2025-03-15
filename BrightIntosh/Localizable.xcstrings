@@ -489,7 +489,11 @@
         }
       }
     },
+    "Buy %@" : {
+
+    },
     "Buy %@%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1378,6 +1382,9 @@
           }
         }
       }
+    },
+    "There was an issue while loading the products. Please try again later." : {
+
     },
     "This device is incompatible" : {
       "localizations" : {
