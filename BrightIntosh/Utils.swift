@@ -56,14 +56,8 @@ func getDeviceMaxBrightness() -> Float {
     return 1.59
 }
 
-private func getAppTransaction() async -> VerificationResult<AppTransaction>? {
-    do {
-        let shared = try await AppTransaction.shared
-        return shared
-    } catch {
-        print("Fetching app transaction failed")
-    }
-    return nil
+private func getAppTransaction() async throws -> VerificationResult<AppTransaction>? {
+    return try await AppTransaction.shared
 }
 
 func generateReport() async -> String {
@@ -75,33 +69,41 @@ func generateReport() async -> String {
         report += "Version: BrightIntosh v\(appVersion)\n"
     #endif
     report += "Model Identifier: \(getModelIdentifier() ?? "N/A")\n"
-    if let sharedAppTransaction = await getAppTransaction() {
-        if case .verified(let appTransaction) = sharedAppTransaction {
-            report += "Original Purchase Date: \(appTransaction.originalPurchaseDate)\n"
-            report += "Original App Version: \(appTransaction.originalAppVersion)\n"
-            report += "Transaction for App Version: \(appTransaction.appVersion)\n"
-            report += "Transaction Environment: \(appTransaction.environment.rawValue)\n"
+    do {
+        if let sharedAppTransaction = try await getAppTransaction() {
+            if case .verified(let appTransaction) = sharedAppTransaction {
+                report += "Original Purchase Date: \(appTransaction.originalPurchaseDate)\n"
+                report += "Original App Version: \(appTransaction.originalAppVersion)\n"
+                report += "Transaction for App Version: \(appTransaction.appVersion)\n"
+                report += "Transaction Environment: \(appTransaction.environment.rawValue)\n"
+            }
+            if case .unverified(_, let verificationError) = sharedAppTransaction {
+                report += "Error: App Transaction: \(verificationError.errorDescription ?? "no error description") - \(verificationError.failureReason ?? "no failure reason")\n"
+            }
+        } else {
+            report += "Error: No App Transaction available \n"
         }
-        if case .unverified(_, let verificationError) = sharedAppTransaction {
-            report +=
-                "Error: App Transaction: \(verificationError.errorDescription ?? "no error description") - \(verificationError.failureReason ?? "no failure reason")\n"
-        }
-    } else {
-        report += "Error: App Transaction could not be fetched \n"
+    } catch {
+        report += "Error: App Transaction could not be fetched: \(error.localizedDescription) \n"
     }
 
-    let isUnrestricted = try? await EntitlementHandler.shared.isUnrestrictedUser()
-    report += "Unrestricted user: \(isUnrestricted)\n"
+    do {
+        let isUnrestricted = try await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
+        report += "Unrestricted user: \(isUnrestricted)\n"
+    } catch {
+        report += "Error: EntitlementHandler threw an error: \(error.localizedDescription)\n"
+    }
     do {
         let trial = try await TrialData.getTrialData()
-        report +=
-            "Trial:\n - Start Date: \(trial.purchaseDate)\n - Current Date: \(trial.currentDate)\n - Remaining: \(trial.getRemainingDays())\n"
+        report += "Trial:\n - Start Date: \(trial.purchaseDate)\n - Current Date: \(trial.currentDate)\n - Remaining: \(trial.getRemainingDays())\n"
     } catch {
-        report += "Error: Trial Data could not be fetched\n"
+        report += "Error: Trial Data could not be fetched \(error.localizedDescription)\n"
     }
-    report += "Screens: \(NSScreen.screens.map{$0.localizedName}.joined(separator: ", "))\n"
+    
+    let screens = NSScreen.screens.map{$0.localizedName}
+    report += "Screens: \(screens.joined(separator: ", "))\n"
     for screen in NSScreen.screens {
-        report += " - Screen \(NSScreen.screens.map{$0.localizedName}): \(screen.frame.width)x\(screen.frame.height)px\n"
+        report += " - Screen \(screen.localizedName): \(screen.frame.width)x\(screen.frame.height)px\n"
     }
     return report
 }
