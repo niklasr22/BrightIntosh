@@ -328,13 +328,13 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     init() {
 
         let settingsWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 650, height: 580),
+            contentRect: NSRect(x: 0, y: 0, width: 650, height: 590),
             styleMask: [.titled, .closable, .unifiedTitleAndToolbar],
             backing: .buffered,
             defer: false
         )
 
-        let contentView = SettingsView().frame(width: 650, height: 580)
+        let contentView = SettingsView().frame(width: 650, height: 590)
 
         settingsWindow.contentView = NSHostingView(rootView: contentView)
         settingsWindow.center()
