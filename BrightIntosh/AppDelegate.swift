@@ -25,7 +25,7 @@ class AppDelegate: NSObject {
     
     func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
 #if STORE
-        if await EntitlementHandler.shared.isUnrestrictedUser() {
+        if let isUnrestricted = try? await EntitlementHandler.shared.isUnrestrictedUser(), isUnrestricted {
             return true
         }
         do {

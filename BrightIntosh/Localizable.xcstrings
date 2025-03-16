@@ -898,6 +898,18 @@
         }
       }
     },
+    "Error while fetching products: %@" : {
+
+    },
+    "Error while purchasing: %@" : {
+
+    },
+    "Error while restoring: %@" : {
+
+    },
+    "Error while revalidating: %@" : {
+
+    },
     "General" : {
       "localizations" : {
         "de" : {

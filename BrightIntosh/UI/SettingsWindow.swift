@@ -270,7 +270,7 @@ struct VersionView: View {
                     .onChange(of: ignoreAppTransaction) { _ in
                         Settings.shared.ignoreAppTransaction = ignoreAppTransaction
                         Task {
-                            _ = await EntitlementHandler.shared.isUnrestrictedUser()
+                            _ = try? await EntitlementHandler.shared.isUnrestrictedUser()
                         }
                     }
                     Button("Hide") {
