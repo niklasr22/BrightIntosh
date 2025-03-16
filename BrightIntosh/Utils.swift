@@ -56,14 +56,8 @@ func getDeviceMaxBrightness() -> Float {
     return 1.59
 }
 
-private func getAppTransaction() async -> VerificationResult<AppTransaction>? {
-    do {
-        let shared = try await AppTransaction.shared
-        return shared
-    } catch {
-        print("Fetching app transaction failed")
-    }
-    return nil
+private func getAppTransaction() async throws -> VerificationResult<AppTransaction>? {
+    return try await AppTransaction.shared
 }
 
 func generateReport() async -> String {
@@ -75,7 +69,8 @@ func generateReport() async -> String {
         report += "Version: BrightIntosh v\(appVersion)\n"
     #endif
     report += "Model Identifier: \(getModelIdentifier() ?? "N/A")\n"
-    if let sharedAppTransaction = await getAppTransaction() {
+    do {
+        if let sharedAppTransaction = try await getAppTransaction() {
         if case .verified(let appTransaction) = sharedAppTransaction {
             report += "Original Purchase Date: \(appTransaction.originalPurchaseDate)\n"
             report += "Original App Version: \(appTransaction.originalAppVersion)\n"
@@ -87,7 +82,10 @@ func generateReport() async -> String {
                 "Error: App Transaction: \(verificationError.errorDescription ?? "no error description") - \(verificationError.failureReason ?? "no failure reason")\n"
         }
     } else {
-        report += "Error: App Transaction could not be fetched \n"
+            report += "Error: No App Transaction available \n"
+        }
+    } catch {
+        report += "Error: App Transaction could not be fetched: \(error.localizedDescription) \n"
     }
 
     let isUnrestricted = try? await EntitlementHandler.shared.isUnrestrictedUser()
