@@ -9,14 +9,21 @@ import SwiftUI
 import StoreKit
 import OSLog
 
-struct InfoNote: View {
-    var infoText: LocalizedStringKey
+enum NoteStyle {
+    case info
+    case error
+}
+
+struct Note: View {
+    var text: String
+    var style: NoteStyle = .info
+    
     var body: some View {
         VStack {
-            Label(infoText, systemImage: "info.circle")
+            Label(text, systemImage: style == .info ? "info.circle" : "exclamationmark.triangle")
         }
-        .padding(10)
-        .background(Color.brightintoshBlue)
+        .padding(10)        
+        .background(style == .info ? Color.brightintoshBlue : Color.red)
         .clipShape(RoundedRectangle(cornerRadius: 10.0))
         .transition(.opacity)
     }
@@ -42,7 +49,8 @@ struct BrightIntoshStoreView: View {
 
     @State private var showRestartNoteDueToSpinner = false
     @State private var productLoadingFailed = false
-    @State private var restoreAttempts = 0
+    
+    @State private var transactionError: String?
 
     var body: some View {
         VStack {
@@ -57,8 +65,11 @@ struct BrightIntoshStoreView: View {
                 Spacer()
             } else {
                 VStack {
-                    if restoreAttempts >= 3 || showRestartNoteDueToSpinner {
-                        InfoNote(infoText: "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook.")
+                    if showRestartNoteDueToSpinner {
+                        Note(text: "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook.", style: .error)
+                    }
+                    if let transactionError = transactionError {
+                        Note(text: transactionError, style: .error)
                     }
                     Spacer()
                     if let product = product {
@@ -98,7 +109,7 @@ struct BrightIntoshStoreView: View {
                             .buttonStyle(BrightIntoshButtonStyle())
                         }
                     } else if productLoadingFailed {
-                        Text("There was an issue while loading the products. Please try again later.")
+                        Note(text: "There was an issue while loading the products. Please try again later.", style: .error)
                     } else {
                         Spacer()
                         ProgressView()
@@ -112,15 +123,17 @@ struct BrightIntoshStoreView: View {
                     RestorePurchasesButton(label: "Restore In-App Purchase", action: {
                         do {
                             try await AppStore.sync()
-                            _ = await EntitlementHandler.shared.isUnrestrictedUser()
+                            _ = try await EntitlementHandler.shared.isUnrestrictedUser()
                         } catch {
-                            print("Error while syncing")
+                            transactionError = String(localized: LocalizedStringResource("Error while restoring: \(error.localizedDescription)"))
                         }
-                        restoreAttempts += 1
                     })
                     RestorePurchasesButton(label: "Revalidate App Purchase", action: {
-                        _ = await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
-                        restoreAttempts += 1
+                        do {
+                            _ = try await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
+                        } catch {
+                            transactionError = String(localized: LocalizedStringResource("Error while revalidating: \(error.localizedDescription)"))
+                        }
                     })
                     HStack {
                         Text("[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)")
@@ -134,7 +147,6 @@ struct BrightIntoshStoreView: View {
                 .padding(20.0)
             }
         }.onAppear {
-            restoreAttempts = 0
             showRestartNoteDueToSpinner = false
         }.task {
             do {
@@ -143,8 +155,10 @@ struct BrightIntoshStoreView: View {
                 if let unrestrictedBrightIntosh = products.first(where: { $0.id == Products.unrestrictedBrightIntosh.rawValue }) {
                     product = unrestrictedBrightIntosh
                 }
+                transactionError = nil
             } catch {
                 productLoadingFailed = true
+                transactionError = String(localized: LocalizedStringResource("Error while fetching products: \(error.localizedDescription)"))
                 logger.error("Error while fetching products: \(error.localizedDescription)")
             }
         }
@@ -158,7 +172,7 @@ struct BrightIntoshStoreView: View {
             let result = try await product.purchase()
             switch result {
             case .success(let verificationResult):
-                if await entitlementHandler.verifyEntitlement(transaction: verificationResult) {
+                if try await entitlementHandler.verifyEntitlement(transaction: verificationResult) {
                     entitlementHandler.setRestrictionState(isUnrestricted: true)
                 }
             case .userCancelled:
@@ -168,8 +182,10 @@ struct BrightIntoshStoreView: View {
             @unknown default:
                 break
             }
+            transactionError = nil
         } catch {
             logger.error("Error while purchasing: \(error.localizedDescription)")
+            transactionError = String(localized: LocalizedStringResource("Error while purchasing: \(error.localizedDescription)"))
         }
     }
     
