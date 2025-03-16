@@ -90,7 +90,7 @@ func generateReport() async -> String {
         report += "Error: App Transaction could not be fetched \n"
     }
 
-    let isUnrestricted = await EntitlementHandler.shared.isUnrestrictedUser()
+    let isUnrestricted = try? await EntitlementHandler.shared.isUnrestrictedUser()
     report += "Unrestricted user: \(isUnrestricted)\n"
     do {
         let trial = try await TrialData.getTrialData()

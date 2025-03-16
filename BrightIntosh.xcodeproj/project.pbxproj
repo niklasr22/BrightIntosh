@@ -53,6 +53,8 @@
 		9CE3C37F2C8C8A1800E7FDBA /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */; };
 		9CE3C3812C8C8D3B00E7FDBA /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */; };
 		9CE3C3822C8C8D3B00E7FDBA /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */; };
+		9CEDBABC2D870EBA00490820 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9CEDBABB2D870EBA00490820 /* Products.storekit */; };
+		9CEDBABD2D870EBA00490820 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9CEDBABB2D870EBA00490820 /* Products.storekit */; };
 		C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
 		C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
 		C1B5215D2A5EFFDB00E9B7AC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B521142A5EF85500E9B7AC /* main.swift */; };
@@ -105,6 +107,7 @@
 		9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh.entitlements; sourceTree = "<group>"; };
 		9CEB41EF2A923723005D7A0D /* BrightIntosh_SE.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh_SE.entitlements; sourceTree = "<group>"; };
+		9CEDBABB2D870EBA00490820 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		C1B521142A5EF85500E9B7AC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C1B521172A5EFCB300E9B7AC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -198,6 +201,7 @@
 				9C1C8BE92C8B4FC000754474 /* Trial.swift */,
 				9C5965392C8CCE7E00BFC9A6 /* UI */,
 				9CDE33C42B4317D70085F786 /* Utils.swift */,
+				9CEDBABB2D870EBA00490820 /* Products.storekit */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -298,6 +302,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9CE3C37E2C8C89F600E7FDBA /* Localizable.xcstrings in Resources */,
+				9CEDBABD2D870EBA00490820 /* Products.storekit in Resources */,
 				9CE3C37D2C8C89F200E7FDBA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -307,6 +312,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9CE3C37F2C8C8A1800E7FDBA /* Localizable.xcstrings in Resources */,
+				9CEDBABC2D870EBA00490820 /* Products.storekit in Resources */,
 				9C9C78032A62AEE800778CAE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

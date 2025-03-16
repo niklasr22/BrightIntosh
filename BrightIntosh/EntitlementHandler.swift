@@ -25,14 +25,14 @@ class EntitlementHandler: ObservableObject {
     
     @Published public var isUnrestrictedUser: Bool = false
     
-    func verifyEntitlement(transaction verificationResult: VerificationResult<Transaction>) async -> Bool {
-        do {
-            let unsafeTransaction = verificationResult.unsafePayloadValue
-            logger.log("""
-            Processing transaction ID \(unsafeTransaction.id) for \
-            \(unsafeTransaction.productID)
-            """)
-        }
+    func verifyEntitlement(transaction verificationResult: VerificationResult<Transaction>) async throws -> Bool {
+   
+        let unsafeTransaction = verificationResult.unsafePayloadValue
+        
+        logger.log("""
+        Processing transaction ID \(unsafeTransaction.id) for \
+        \(unsafeTransaction.productID)
+        """)
         
         let transaction: Transaction
         switch verificationResult {
@@ -47,26 +47,26 @@ class EntitlementHandler: ObservableObject {
             logger.error("""
             (Entitlement) Transaction ID \(t.id) for \(t.productID) is unverified: \(error)
             """)
-            return false
+            throw error
         }
         
         logger.info("User is entitled to have the product \(transaction.productID)")
         return true
     }
     
-    func isUnrestrictedUser(refresh: Bool = false) async -> Bool {
+    func isUnrestrictedUser(refresh: Bool = false) async throws -> Bool {
         if !Settings.shared.ignoreAppTransaction && isUnrestrictedUser {
             return true
         }
         
-        if await checkAppEntitlements(refresh: refresh) {
+        if try await checkAppEntitlements(refresh: refresh) {
             setRestrictionState(isUnrestricted: true)
             return true
         }
         
         for await entitlement in Transaction.currentEntitlements {
             if entitlement.unsafePayloadValue.productID == Products.unrestrictedBrightIntosh.rawValue,
-               await self.verifyEntitlement(transaction: entitlement) {
+               try await self.verifyEntitlement(transaction: entitlement) {
                 setRestrictionState(isUnrestricted: true)
                 return true
             }
@@ -79,35 +79,41 @@ class EntitlementHandler: ObservableObject {
         self.isUnrestrictedUser = isUnrestricted
     }
     
-    func checkAppEntitlements(refresh: Bool = false) async -> Bool {
+    func checkAppEntitlements(refresh: Bool = false) async throws -> Bool  {
         if Settings.shared.ignoreAppTransaction {
             return false
         }
         
-        do {
-            let shared = if refresh {
-                try await AppTransaction.refresh()
-            } else {
-                try await AppTransaction.shared
-            }
-            if case .verified(let appTransaction) = shared {
-                // Hard-code the major version number in which the app's business model changed.
-                let newBusinessModelMajorVersion = "3"
+        let shared = if refresh {
+            try await AppTransaction.refresh()
+        } else {
+            try await AppTransaction.shared
+        }
+        if case .verified(let appTransaction) = shared {
+            // Hard-code the major version number in which the app's business model changed.
+            let newBusinessModelMajorVersion = "3"
 
-                let versionComponents = appTransaction.originalAppVersion.split(separator: ".")
-                let originalMajorVersion = versionComponents[0]
-                print("Original Application Version: \(appTransaction.originalAppVersion)")
-                print("Original Purchase Date: \(appTransaction.originalPurchaseDate)")
+            let versionComponents = appTransaction.originalAppVersion.split(separator: ".")
+            let originalMajorVersion = versionComponents[0]
+            print("Original Application Version: \(appTransaction.originalAppVersion)")
+            print("Original Purchase Date: \(appTransaction.originalPurchaseDate)")
 
-                if originalMajorVersion < newBusinessModelMajorVersion {
-                    return true
-                }
+            if originalMajorVersion < newBusinessModelMajorVersion {
+                return true
             }
-            
-        } catch {
-            logger.error("Fetching app transaction failed")
+        } else if case .unverified(_, let verificationError) = shared {
+            logger.error("App Transaction verification failed: \(verificationError)")
+            throw verificationError
         }
         return false
+    }
+    
+    func checkTransactionUpdates() {
+        /*Task {
+            for transaction in Transaction.updates {
+                
+            }
+        }*/
     }
 }
 
