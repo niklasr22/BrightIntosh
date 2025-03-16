@@ -99,9 +99,11 @@ func generateReport() async -> String {
     } catch {
         report += "Error: Trial Data could not be fetched\n"
     }
-    report += "Screens: \(NSScreen.screens.map{$0.localizedName}.joined(separator: ", "))\n"
+    
+    let screens = NSScreen.screens.map{$0.localizedName}
+    report += "Screens: \(screens.joined(separator: ", "))\n"
     for screen in NSScreen.screens {
-        report += " - Screen \(NSScreen.screens.map{$0.localizedName}): \(screen.frame.width)x\(screen.frame.height)px\n"
+        report += " - Screen \(screen.localizedName): \(screen.frame.width)x\(screen.frame.height)px\n"
     }
     return report
 }
