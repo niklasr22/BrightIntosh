@@ -200,4 +200,11 @@ extension AppDelegate: NSApplicationDelegate {
             addSettingsToIndex()
         }
     }
+    
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
+        if Settings.shared.hideMenuBarItem {
+            self.showSettingsWindow()
+        }
+        return false
+    }
 }

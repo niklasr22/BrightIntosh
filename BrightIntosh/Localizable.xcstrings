@@ -1612,36 +1612,36 @@
       }
     },
     "To open the settings window without the menu bar item, search for \"BrightIntosh Settings\" in the the macOS %@ Spotlight search." : {
-      "comment" : "Spotlight Search references the macOS feature. Use the term that is common in each of the languages for this feature.",
+      "comment" : "Spotlight Search and Launchpad reference macOS features. Use the term that is common or used by Apple in each of the languages for this feature.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um das Einstellungsfenster ohne das Menüleisten-Element zu öffnen, suchen Sie nach \"BrightIntosh Einstellungen\" in der macOS %@ Spotlight-Suche."
+            "value" : "Um das Einstellungsfenster ohne das Menüleisten-Element zu öffnen, starte BrightIntosh einfach über das Launchpad neu. Alternativ kannst du nach \"BrightIntosh Einstellungen\" in der macOS %@ Spotlight-Suche suchen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To open the settings window without the menu bar item, search for \"BrightIntosh Settings\" in the the macOS %@ Spotlight search."
+            "value" : "To open the settings window without the menu bar item simply restart BrightIntosh from the Launchpad. Alternatively, search for \"BrightIntosh Settings\" in the macOS %@ Spotlight search."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para abrir la ventana de configuración sin el elemento de la barra de menú, busca \"Configuraciones de BrightIntosh\" en la búsqueda Spotlight de macOS %@."
+            "value" : "Para abrir la ventana de configuraciones sin el elemento de la barra de menú, simplemente reinicia BrightIntosh desde el Launchpad. Alternativamente, busca \"Configuraciones de BrightIntosh\" en la búsqueda de Spotlight de macOS %@."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour ouvrir la fenêtre des paramètres sans l'élément de la barre de menu, recherchez \"Paramètres de BrightIntosh\" dans le %@ recherche Spotlight de macOS."
+            "value" : "Pour ouvrir la fenêtre des paramètres sans utiliser l'élément de la barre de menu, redémarrez simplement BrightIntosh depuis le Launchpad. Alternativement, recherchez \"Paramètres BrightIntosh\" dans la recherche Spotlight de macOS %@."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para abrir a janela de definições sem o item da barra de menus, procure por \"Definições BrightIntosh\" na pesquisa do Spotlight %@ do macOS."
+            "value" : "Para abrir a janela das definições sem o item da barra de menu, simplesmente reinicie o BrightIntosh a partir do Launchpad. Alternativamente, procure por \"Configurações do BrightIntosh\" na pesquisa Spotlight do macOS %@."
           }
         }
       }
