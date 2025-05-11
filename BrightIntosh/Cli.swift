@@ -16,43 +16,71 @@ import Foundation
     notifyUpdate()
 }
 
-@MainActor func setActiveState(active: Bool) {
+@MainActor func setActiveStateCli(active: Bool) {
     Settings.shared.brightintoshActive = active
+    notifyUpdate()
+}
+
+@MainActor func setBrightnessOffsetCli() {
+    if CommandLine.argc <= 2 {
+        print("Usage: brightintosh set <0-100>")
+        return
+    }
+    guard let brightnessValue = Int(CommandLine.arguments[2]), brightnessValue <= 100, brightnessValue >= 0 else {
+        print("Usage: brightintosh set <0-100>")
+        return
+    }
+    Settings.shared.brightness = 1.0 + (getDeviceMaxBrightness() - 1.0) * Float(brightnessValue) / 100.0
     notifyUpdate()
 }
 
 @MainActor func statusCli() {
     let status = Settings.shared.brightintoshActive
+    let brightness = Settings.shared.brightness
+    let brightnessPercentage = Int((brightness - 1.0) / (getDeviceMaxBrightness() - 1.0) * 100.0)
     print("Status: \(status ? "Enabled" : "Disabled")")
-    print("Brightness: \(Settings.shared.brightness)")
+    print("Brightness: \(brightnessPercentage)")
+}
+
+enum CliCommand: String, CaseIterable {
+    case enable = "enable"
+    case disable = "disable"
+    case set = "set"
+    case status = "status"
+    case toggle = "toggle"
+    case help = "help"
 }
 
 func helpCli() {
-    print("Available commands: toggle, enable, disable, status, help")
+    print("Available commands: \(CliCommand.allCases.map { $0.rawValue }.joined(separator: ", "))")
 }
 
 @MainActor func cliBase() -> Bool {
     if CommandLine.argc > 1 {
-        let command = CommandLine.arguments[1]
+        guard let command = CliCommand(rawValue: CommandLine.arguments[1]) else {
+            helpCli()
+            return false
+        }
+        
         switch command {
-        case "toggle":
+        case CliCommand.toggle:
             toggleCli()
             return true
-        case "enable":
-            setActiveState(active: true)
+        case CliCommand.enable:
+            setActiveStateCli(active: true)
             return true
-        case "disable":
-            setActiveState(active: false)
+        case CliCommand.disable:
+            setActiveStateCli(active: false)
             return true
-        case "status":
+        case CliCommand.set:
+            setBrightnessOffsetCli()
+            return true
+        case CliCommand.status:
             statusCli()
             return true
-        case "help":
+        case CliCommand.help:
             helpCli()
             return true
-        default:
-            helpCli()
-            break
         }
     }
     return false
