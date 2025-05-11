@@ -11,6 +11,7 @@
 		1E05D3962B90E50E006FE96A /* StatusBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */; };
 		9C17DFAB2DCF748000185CDA /* Cli.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C17DFAA2DCF747D00185CDA /* Cli.swift */; };
 		9C17DFAC2DCF748000185CDA /* Cli.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C17DFAA2DCF747D00185CDA /* Cli.swift */; };
+		9C17DFAF2DD0CA3500185CDA /* cli.sh in Resources */ = {isa = PBXBuildFile; fileRef = 9C17DFAD2DD0CA3200185CDA /* cli.sh */; };
 		9C1C8BE72C8B3EA300754474 /* UserStatusModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */; };
 		9C1C8BE82C8B4A1C00754474 /* UserStatusModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */; };
 		9C1C8BEA2C8B4FC000754474 /* Trial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C8BE92C8B4FC000754474 /* Trial.swift */; };
@@ -88,6 +89,7 @@
 /* Begin PBXFileReference section */
 		1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarMenu.swift; sourceTree = "<group>"; };
 		9C17DFAA2DCF747D00185CDA /* Cli.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cli.swift; sourceTree = "<group>"; };
+		9C17DFAD2DD0CA3200185CDA /* cli.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = cli.sh; sourceTree = "<group>"; };
 		9C1C8BE62C8B3EA300754474 /* UserStatusModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserStatusModifier.swift; sourceTree = "<group>"; };
 		9C1C8BE92C8B4FC000754474 /* Trial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trial.swift; sourceTree = "<group>"; };
 		9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightIntoshStore.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 		C1DF94472A5EF20000FA285F /* BrightIntosh */ = {
 			isa = PBXGroup;
 			children = (
+				9C17DFAD2DD0CA3200185CDA /* cli.sh */,
 				9C17DFAA2DCF747D00185CDA /* Cli.swift */,
 				C1DF94512A5EF20E00FA285F /* AppDelegate.swift */,
 				9C9C78022A62AEE800778CAE /* Assets.xcassets */,
@@ -318,6 +321,7 @@
 				9CE3C37F2C8C8A1800E7FDBA /* Localizable.xcstrings in Resources */,
 				9CEDBABC2D870EBA00490820 /* Products.storekit in Resources */,
 				9C9C78032A62AEE800778CAE /* Assets.xcassets in Resources */,
+				9C17DFAF2DD0CA3500185CDA /* cli.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
