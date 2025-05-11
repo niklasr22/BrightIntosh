@@ -273,6 +273,9 @@
         }
       }
     },
+    "Available commands:" : {
+
+    },
     "Battery level threshold" : {
       "localizations" : {
         "de" : {
@@ -317,6 +320,9 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "brightintosh %@" : {
+
     },
     "BrightIntosh can shift your brightness range to higher values. The brightness slider in this app controls how much you shift this range. You can still use your brightness keys to control the brightness." : {
       "localizations" : {
@@ -591,6 +597,9 @@
           }
         }
       }
+    },
+    "Close" : {
+
     },
     "Deactivate" : {
       "localizations" : {
@@ -1248,6 +1257,12 @@
           }
         }
       }
+    },
+    "Install BrightIntosh CLI" : {
+
+    },
+    "Install the BrightIntosh CLI" : {
+
     },
     "Launch on login" : {
       "localizations" : {
