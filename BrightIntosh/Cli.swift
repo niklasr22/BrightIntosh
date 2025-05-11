@@ -37,7 +37,7 @@ import Foundation
 @MainActor func statusCli() {
     let status = Settings.shared.brightintoshActive
     let brightness = Settings.shared.brightness
-    let brightnessPercentage = Int((brightness - 1.0) / (getDeviceMaxBrightness() - 1.0) * 100.0)
+    let brightnessPercentage = Int(round((brightness - 1.0) / (getDeviceMaxBrightness() - 1.0) * 100.0))
     print("Status: \(status ? "Enabled" : "Disabled")")
     print("Brightness: \(brightnessPercentage)")
 }
