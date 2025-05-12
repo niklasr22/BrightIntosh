@@ -68,6 +68,58 @@ class BasicSettingsViewModel: ObservableObject {
     }
 }
 
+struct CliInstallationSheet: View {
+    @Binding var isPresented: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("Install the BrightIntosh CLI")
+                .font(.title)
+            HStack {
+                Text(getCliInstallCommand())
+                    .textSelection(.enabled)
+                    .font(.caption)
+                    .monospaced()
+                Button(action: copyToClipboard) {
+                    Image(systemName: "document.on.document")
+                }
+            }
+                .frame(maxWidth: .infinity)
+                .padding(10)
+                .background(Color.black)
+                .foregroundStyle(.white)
+                .clipShape(.rect(cornerRadius: 15.0))
+            Text("Help")
+                .font(.title2)
+            Text(getHelpText())
+                .monospaced()
+                .font(.caption)
+                .frame(maxWidth: .infinity)
+                .padding(10)
+                .background(Color.black)
+                .foregroundStyle(.white)
+                .clipShape(.rect(cornerRadius: 15.0))
+            Button("Close") {
+                isPresented = false
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight:    .infinity)
+            .padding()
+            .navigationBarBackButtonHidden(false)
+    }
+    
+    func copyToClipboard() {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(getCliInstallCommand(), forType: .string)
+    }
+    
+    func getCliInstallCommand() -> String {
+        let bundlePath = Bundle.main.bundlePath
+        return "ln -s \"\(bundlePath)/Contents/Resources/cli.sh\" ~/.local/bin/brightintosh"
+    }
+}
+
 struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
     
@@ -79,6 +131,8 @@ struct BasicSettings: View {
 
     @State private var entitledToUnrestrictedUse = false
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
+    
+    @State private var showCliPopup = false
 
     var body: some View {
         ScrollView {
@@ -183,6 +237,11 @@ struct BasicSettings: View {
                     }) {
                         Text("Generate and copy report")
                     }
+                    Button(action: {
+                        showCliPopup = true
+                    }) {
+                        Text("Install BrightIntosh CLI")
+                    }
                 }
             }.frame(
                 minWidth: 0,
@@ -191,6 +250,9 @@ struct BasicSettings: View {
                 maxHeight: .infinity,
                 alignment: .topLeading
             ).padding()
+        }
+        .sheet(isPresented: $showCliPopup) {
+            CliInstallationSheet(isPresented: $showCliPopup)
         }
     }
 }
@@ -321,6 +383,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+            .frame(width: 650, height: 590)
     }
 }
 

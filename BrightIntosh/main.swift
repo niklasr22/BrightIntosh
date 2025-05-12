@@ -7,8 +7,12 @@
 
 import Cocoa
 
-let application = NSApplication.shared
+if cliBase() {
+    exit(0)
+}
 
+// GUI app
+let application = NSApplication.shared
 let delegate = AppDelegate()
 application.delegate = delegate
 

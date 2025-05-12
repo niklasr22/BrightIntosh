@@ -101,7 +101,8 @@
             "value" : ""
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "About us" : {
       "localizations" : {
@@ -591,6 +592,17 @@
           }
         }
       }
+    },
+    "Close" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      },
+      "shouldTranslate" : false
     },
     "Deactivate" : {
       "localizations" : {
@@ -1245,6 +1257,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aumento do brilho"
+          }
+        }
+      }
+    },
+    "Install BrightIntosh CLI" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh CLI installieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install BrightIntosh CLI"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar BrightIntosh CLI"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer BrightIntosh CLI"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar a CLI do BrightIntosh"
+          }
+        }
+      }
+    },
+    "Install the BrightIntosh CLI" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiere das BrightIntosh CLI"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install the BrightIntosh CLI"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar el CLI de BrightIntosh"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer le CLI BrightIntosh"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar o BrightIntosh CLI"
           }
         }
       }

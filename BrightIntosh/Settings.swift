@@ -14,56 +14,63 @@ class Settings {
     
     public var ignoreAppTransaction = false
     
-    public var brightintoshActive: Bool = UserDefaults.standard.object(forKey: "active") != nil ? UserDefaults.standard.bool(forKey: "active") : true {
+    private static func getUserDefault<T>(key: String, defaultValue: T) -> T {
+        if let value = UserDefaults.standard.object(forKey: key) as? T {
+            return value
+        }
+        return defaultValue
+    }
+
+    public var brightintoshActive: Bool = Settings.getUserDefault(key: "active", defaultValue: true) {
         didSet {
             UserDefaults.standard.setValue(brightintoshActive, forKey: "active")
             callListeners(setting: "brightintoshActive")
         }
     }
     
-    public var brightIntoshOnlyOnBuiltIn: Bool = UserDefaults.standard.object(forKey: "brightIntoshOnlyOnBuiltIn") != nil ? UserDefaults.standard.bool(forKey: "brightIntoshOnlyOnBuiltIn") : false {
+    public var brightIntoshOnlyOnBuiltIn: Bool = Settings.getUserDefault(key: "brightIntoshOnlyOnBuiltIn", defaultValue: false) {
         didSet {
-            UserDefaults.standard.setValue(brightintoshActive, forKey: "brightIntoshOnlyOnBuiltIn")
+            UserDefaults.standard.setValue(brightIntoshOnlyOnBuiltIn, forKey: "brightIntoshOnlyOnBuiltIn")
             callListeners(setting: "brightIntoshOnlyOnBuiltIn")
         }
     }
     
-    public var hideMenuBarItem: Bool = UserDefaults.standard.object(forKey: "hideMenuBarItem") != nil ? UserDefaults.standard.bool(forKey: "hideMenuBarItem") : false {
+    public var hideMenuBarItem: Bool = Settings.getUserDefault(key: "hideMenuBarItem", defaultValue: false) {
         didSet {
             UserDefaults.standard.setValue(hideMenuBarItem, forKey: "hideMenuBarItem")
             callListeners(setting: "hideMenuBarItem")
         }
     }
 
-    public var brightness: Float = UserDefaults.standard.object(forKey: "brightness") != nil ? UserDefaults.standard.float(forKey: "brightness") : getDeviceMaxBrightness() {
+    public var brightness: Float = Settings.getUserDefault(key: "brightness", defaultValue: getDeviceMaxBrightness()) {
         didSet {
             UserDefaults.standard.setValue(brightness, forKey: "brightness")
             callListeners(setting: "brightness")
         }
     }
     
-    public var batteryAutomation: Bool = UserDefaults.standard.object(forKey: "batteryAutomation") != nil ? UserDefaults.standard.bool(forKey: "batteryAutomation") : false {
+    public var batteryAutomation: Bool = Settings.getUserDefault(key: "batteryAutomation", defaultValue: false) {
         didSet {
             UserDefaults.standard.setValue(batteryAutomation, forKey: "batteryAutomation")
             callListeners(setting: "batteryAutomation")
         }
     }
     
-    public var batteryAutomationThreshold: Int = UserDefaults.standard.object(forKey: "batteryAutomationThreshold") != nil ? UserDefaults.standard.integer(forKey: "batteryAutomationThreshold") : 50 {
+    public var batteryAutomationThreshold: Int = Settings.getUserDefault(key: "batteryAutomationThreshold", defaultValue: 50) {
         didSet {
             UserDefaults.standard.setValue(batteryAutomationThreshold, forKey: "batteryAutomationThreshold")
             callListeners(setting: "batteryAutomationThreshold")
         }
     }
     
-    public var timerAutomation: Bool = UserDefaults.standard.object(forKey: "timerAutomation") != nil ? UserDefaults.standard.bool(forKey: "timerAutomation") : false {
+    public var timerAutomation: Bool = Settings.getUserDefault(key: "timerAutomation", defaultValue: false) {
         didSet {
             UserDefaults.standard.setValue(timerAutomation, forKey: "timerAutomation")
             callListeners(setting: "timerAutomation")
         }
     }
     
-    public var timerAutomationTimeout: Int = UserDefaults.standard.object(forKey: "timerAutomationTimeout") != nil ? UserDefaults.standard.integer(forKey: "timerAutomationTimeout") : 180 {
+    public var timerAutomationTimeout: Int = Settings.getUserDefault(key: "timerAutomationTimeout", defaultValue: 180) {
         didSet {
             UserDefaults.standard.setValue(timerAutomationTimeout, forKey: "timerAutomationTimeout")
             callListeners(setting: "timerAutomationTimeout")
@@ -91,6 +98,29 @@ class Settings {
     init() {
         // Load launch at login status
         launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
+        DistributedNotificationCenter.default().addObserver(
+            self,
+            selector: #selector(defaultsChanged(notification:)),
+            name: UserDefaults.didChangeNotification,
+            object: nil
+        )
+    }
+    
+    private func refreshState() {
+        brightintoshActive = Settings.getUserDefault(key: "active", defaultValue: true)
+        brightIntoshOnlyOnBuiltIn = Settings.getUserDefault(key: "brightIntoshOnlyOnBuiltIn", defaultValue: false)
+        hideMenuBarItem = Settings.getUserDefault(key: "hideMenuBarItem", defaultValue: false)
+        brightness = Settings.getUserDefault(key: "brightness", defaultValue: getDeviceMaxBrightness())
+        batteryAutomation = Settings.getUserDefault(key: "batteryAutomation", defaultValue: false)
+        batteryAutomationThreshold = Settings.getUserDefault(key: "batteryAutomationThreshold", defaultValue: 50)
+        timerAutomation = Settings.getUserDefault(key: "timerAutomation", defaultValue: false)
+        timerAutomationTimeout = Settings.getUserDefault(key: "timerAutomationTimeout", defaultValue: 180)
+    }
+    
+    @MainActor @objc
+    private func defaultsChanged(notification: Notification) {
+        print("Settings were updated externally")
+        refreshState()
     }
     
     public func addListener(setting: String, callback: @escaping () ->()) {
