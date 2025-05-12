@@ -101,7 +101,8 @@
             "value" : ""
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "About us" : {
       "localizations" : {
@@ -273,9 +274,6 @@
         }
       }
     },
-    "Available commands:" : {
-
-    },
     "Battery level threshold" : {
       "localizations" : {
         "de" : {
@@ -320,9 +318,6 @@
         }
       },
       "shouldTranslate" : false
-    },
-    "brightintosh %@" : {
-
     },
     "BrightIntosh can shift your brightness range to higher values. The brightness slider in this app controls how much you shift this range. You can still use your brightness keys to control the brightness." : {
       "localizations" : {
@@ -599,7 +594,15 @@
       }
     },
     "Close" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      },
+      "shouldTranslate" : false
     },
     "Deactivate" : {
       "localizations" : {
@@ -1259,10 +1262,72 @@
       }
     },
     "Install BrightIntosh CLI" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh CLI installieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install BrightIntosh CLI"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar BrightIntosh CLI"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer BrightIntosh CLI"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar a CLI do BrightIntosh"
+          }
+        }
+      }
     },
     "Install the BrightIntosh CLI" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiere das BrightIntosh CLI"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install the BrightIntosh CLI"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar el CLI de BrightIntosh"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer le CLI BrightIntosh"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar o BrightIntosh CLI"
+          }
+        }
+      }
     },
     "Launch on login" : {
       "localizations" : {
