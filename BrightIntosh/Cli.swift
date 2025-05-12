@@ -51,8 +51,26 @@ enum CliCommand: String, CaseIterable {
     case help = "help"
 }
 
+func getHelpText() -> String {
+    return
+"""
+BrightIntosh CLI
+Usage: brightintosh <command> [options]
+
+Note: This CLI is additional and does require the main app to be running.
+
+Commands:
+  enable       Enable BrightIntosh
+  disable      Disable BrightIntosh
+  set <value>  Set brightness offset (0-100)
+  status       Show current status and brightness
+  toggle       Toggle BrightIntosh on/off
+  help         Show this help message
+"""
+}
+
 func helpCli() {
-    print("Available commands: \(CliCommand.allCases.map { $0.rawValue }.joined(separator: ", "))")
+    print(getHelpText())
 }
 
 @MainActor func cliBase() -> Bool {

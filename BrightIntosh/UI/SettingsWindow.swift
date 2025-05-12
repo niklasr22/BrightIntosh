@@ -78,6 +78,7 @@ struct CliInstallationSheet: View {
             HStack {
                 Text(getCliInstallCommand())
                     .textSelection(.enabled)
+                    .font(.caption)
                     .monospaced()
                 Button(action: copyToClipboard) {
                     Image(systemName: "document.on.document")
@@ -88,15 +89,12 @@ struct CliInstallationSheet: View {
                 .background(Color.black)
                 .foregroundStyle(.white)
                 .clipShape(.rect(cornerRadius: 15.0))
-            Text("Available commands:")
+            Text("Help")
                 .font(.title2)
-            VStack (alignment: .leading) {
-                ForEach(CliCommand.allCases, id: \.self) { arg in
-                    Text("brightintosh \(arg.rawValue)")
-                        .monospaced()
-                }
-            }.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-
+            Text(getHelpText())
+                .monospaced()
+                .font(.caption)
+                .frame(maxWidth: .infinity)
                 .padding(10)
                 .background(Color.black)
                 .foregroundStyle(.white)
@@ -239,13 +237,11 @@ struct BasicSettings: View {
                     }) {
                         Text("Generate and copy report")
                     }
-#if STORE
                     Button(action: {
                         showCliPopup = true
                     }) {
                         Text("Install BrightIntosh CLI")
                     }
-#endif
                 }
             }.frame(
                 minWidth: 0,
