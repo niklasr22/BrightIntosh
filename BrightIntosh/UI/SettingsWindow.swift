@@ -94,7 +94,7 @@ struct CliInstallationSheet: View {
             Text(getHelpText())
                 .monospaced()
                 .font(.caption)
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(10)
                 .background(Color.black)
                 .foregroundStyle(.white)

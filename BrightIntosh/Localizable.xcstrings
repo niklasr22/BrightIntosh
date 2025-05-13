@@ -1589,7 +1589,7 @@
       },
       "shouldTranslate" : false
     },
-    "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook." : {
+    "There seems to be an issue with the store connection. Please check your internet connection and try restarting your MacBook." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1600,7 +1600,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook."
+            "value" : "There seems to be an issue with the store connection. Please check your internet connection and try restarting your MacBook."
           }
         },
         "es" : {
@@ -1619,40 +1619,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parece haver um problema com a conexão da loja. Verifique sua conexão com a Internet ou tente reiniciar seu MacBook."
-          }
-        }
-      }
-    },
-    "There was an issue while loading the products. Please try again later." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beim Laden der Produkte ist ein Problem aufgetreten. Bitte versuchen Sie es später erneut."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "There was an issue while loading the products. Please try again later."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hubo un problema al cargar los productos. Por favor, inténtalo de nuevo más tarde."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il y a eu un problème lors du chargement des produits. Veuillez réessayer plus tard."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ocorreu um erro ao carregar os produtos. Por favor, tente novamente mais tarde."
           }
         }
       }
