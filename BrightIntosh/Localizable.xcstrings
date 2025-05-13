@@ -1623,41 +1623,6 @@
         }
       }
     },
-    "There was an issue while loading the products. Please try again later." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beim Laden der Produkte ist ein Problem aufgetreten. Bitte versuchen Sie es später erneut."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "There was an issue while loading the products. Please try again later."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hubo un problema al cargar los productos. Por favor, inténtalo de nuevo más tarde."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il y a eu un problème lors du chargement des produits. Veuillez réessayer plus tard."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ocorreu um erro ao carregar os produtos. Por favor, tente novamente mais tarde."
-          }
-        }
-      }
-    },
     "This device is incompatible" : {
       "localizations" : {
         "de" : {
