@@ -49,7 +49,6 @@ struct BrightIntoshStoreView: View {
     @Environment(\.trial) private var trial: TrialData?
 
     @State private var showRestartNoteDueToSpinner = false
-    @State private var productLoadingFailed = false
     
     @State private var transactionError: String?
 
@@ -109,8 +108,6 @@ struct BrightIntoshStoreView: View {
                             }
                             .buttonStyle(BrightIntoshButtonStyle())
                         }
-                    } else if productLoadingFailed {
-                        Note(text: "There was an issue while loading the products. Please try again later.", style: .error)
                     } else {
                         Spacer()
                         ProgressView()
@@ -158,7 +155,6 @@ struct BrightIntoshStoreView: View {
                 }
                 transactionError = nil
             } catch {
-                productLoadingFailed = true
                 transactionError = String(localized: LocalizedStringResource("Error while fetching products: \(error.localizedDescription)"))
                 logger.error("Error while fetching products: \(error.localizedDescription)")
             }
