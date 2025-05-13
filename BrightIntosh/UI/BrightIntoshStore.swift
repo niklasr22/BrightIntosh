@@ -66,7 +66,7 @@ struct BrightIntoshStoreView: View {
             } else {
                 VStack {
                     if showRestartNoteDueToSpinner {
-                        Note(text: "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook.", style: .error)
+                        Note(text: "There seems to be an issue with the store connection. Please check your internet connection and try restarting your MacBook.", style: .error)
                     }
                     if let transactionError = transactionError {
                         Note(text: transactionError, style: .error)
