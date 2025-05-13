@@ -57,7 +57,9 @@ func getDeviceMaxBrightness() -> Float {
 }
 
 func getStoreKitErrorMessage(_ error: StoreKitError) -> String {
-    return "\(error.localizedDescription) (StoreKitError), \(String(describing: error.errorDescription)), \(String(describing: error.recoverySuggestion))"
+    let errorDescription = error.errorDescription ?? "N/A"
+    let recoverySuggestion = error.recoverySuggestion ?? "N/A"
+    return "\(error.localizedDescription) (StoreKitError), \(errorDescription), \(recoverySuggestion)"
 }
 
 private func getAppTransaction() async throws -> VerificationResult<AppTransaction>? {
