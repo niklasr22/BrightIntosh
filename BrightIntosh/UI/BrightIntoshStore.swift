@@ -122,6 +122,8 @@ struct BrightIntoshStoreView: View {
                         do {
                             try await AppStore.sync()
                             _ = try await EntitlementHandler.shared.isUnrestrictedUser()
+                        } catch let error as StoreKitError {
+                            transactionError = String(localized: LocalizedStringResource("Error while restoring: \(getStoreKitErrorMessage(error))"))
                         } catch {
                             transactionError = String(localized: LocalizedStringResource("Error while restoring: \(error.localizedDescription)"))
                         }
@@ -129,6 +131,8 @@ struct BrightIntoshStoreView: View {
                     RestorePurchasesButton(label: "Revalidate App Purchase", action: {
                         do {
                             _ = try await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
+                        } catch let error as StoreKitError {
+                            transactionError = String(localized: LocalizedStringResource("Error while revalidating: \(getStoreKitErrorMessage(error))"))
                         } catch {
                             transactionError = String(localized: LocalizedStringResource("Error while revalidating: \(error.localizedDescription)"))
                         }
@@ -154,6 +158,9 @@ struct BrightIntoshStoreView: View {
                     product = unrestrictedBrightIntosh
                 }
                 transactionError = nil
+            } catch let error as StoreKitError {
+                transactionError = String(localized: LocalizedStringResource("Error while fetching products: \(getStoreKitErrorMessage(error))"))
+                logger.error("Error while fetching products: \(getStoreKitErrorMessage(error))")
             } catch {
                 transactionError = String(localized: LocalizedStringResource("Error while fetching products: \(error.localizedDescription)"))
                 logger.error("Error while fetching products: \(error.localizedDescription)")
@@ -180,9 +187,12 @@ struct BrightIntoshStoreView: View {
                 break
             }
             transactionError = nil
+        } catch let error as StoreKitError {
+            transactionError = String(localized: LocalizedStringResource("Error while purchasing: \(getStoreKitErrorMessage(error))"))
+            logger.error("Error while purchasing: \(getStoreKitErrorMessage(error))")
         } catch {
-            logger.error("Error while purchasing: \(error.localizedDescription)")
             transactionError = String(localized: LocalizedStringResource("Error while purchasing: \(error.localizedDescription)"))
+            logger.error("Error while purchasing: \(error.localizedDescription)")
         }
     }
     
