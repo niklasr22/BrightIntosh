@@ -21,6 +21,7 @@ struct Note: View {
     var body: some View {
         VStack {
             Label(text, systemImage: style == .info ? "info.circle" : "exclamationmark.triangle")
+                .frame(maxWidth: .infinity)
         }
         .padding(10)        
         .background(style == .info ? Color.brightintoshBlue : Color.red)
