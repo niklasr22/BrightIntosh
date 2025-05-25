@@ -1853,7 +1853,7 @@
       },
       "shouldTranslate" : false
     },
-    "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook." : {
+    "There seems to be an issue with the store connection. Please check your internet connection and try restarting your MacBook." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1864,7 +1864,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook."
+            "value" : "There seems to be an issue with the store connection. Please check your internet connection and try restarting your MacBook."
           }
         },
         "es" : {

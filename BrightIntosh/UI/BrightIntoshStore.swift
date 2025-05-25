@@ -21,6 +21,7 @@ struct Note: View {
     var body: some View {
         VStack {
             Label(text, systemImage: style == .info ? "info.circle" : "exclamationmark.triangle")
+                .frame(maxWidth: .infinity)
         }
         .padding(10)        
         .background(style == .info ? Color.brightintoshBlue : Color.red)
@@ -48,7 +49,6 @@ struct BrightIntoshStoreView: View {
     @Environment(\.trial) private var trial: TrialData?
 
     @State private var showRestartNoteDueToSpinner = false
-    @State private var productLoadingFailed = false
     
     @State private var transactionError: String?
 
@@ -66,7 +66,7 @@ struct BrightIntoshStoreView: View {
             } else {
                 VStack {
                     if showRestartNoteDueToSpinner {
-                        Note(text: "There seems to be an issue with the store connection. Please check your internet connection or try restarting you MacBook.", style: .error)
+                        Note(text: "There seems to be an issue with the store connection. Please check your internet connection and try restarting your MacBook.", style: .error)
                     }
                     if let transactionError = transactionError {
                         Note(text: transactionError, style: .error)
@@ -108,8 +108,6 @@ struct BrightIntoshStoreView: View {
                             }
                             .buttonStyle(BrightIntoshButtonStyle())
                         }
-                    } else if productLoadingFailed {
-                        Note(text: "There was an issue while loading the products. Please try again later.", style: .error)
                     } else {
                         Spacer()
                         ProgressView()
@@ -124,6 +122,8 @@ struct BrightIntoshStoreView: View {
                         do {
                             try await AppStore.sync()
                             _ = try await EntitlementHandler.shared.isUnrestrictedUser()
+                        } catch let error as StoreKitError {
+                            transactionError = String(localized: LocalizedStringResource("Error while restoring: \(getStoreKitErrorMessage(error))"))
                         } catch {
                             transactionError = String(localized: LocalizedStringResource("Error while restoring: \(error.localizedDescription)"))
                         }
@@ -131,6 +131,8 @@ struct BrightIntoshStoreView: View {
                     RestorePurchasesButton(label: "Revalidate App Purchase", action: {
                         do {
                             _ = try await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
+                        } catch let error as StoreKitError {
+                            transactionError = String(localized: LocalizedStringResource("Error while revalidating: \(getStoreKitErrorMessage(error))"))
                         } catch {
                             transactionError = String(localized: LocalizedStringResource("Error while revalidating: \(error.localizedDescription)"))
                         }
@@ -156,8 +158,10 @@ struct BrightIntoshStoreView: View {
                     product = unrestrictedBrightIntosh
                 }
                 transactionError = nil
+            } catch let error as StoreKitError {
+                transactionError = String(localized: LocalizedStringResource("Error while fetching products: \(getStoreKitErrorMessage(error))"))
+                logger.error("Error while fetching products: \(getStoreKitErrorMessage(error))")
             } catch {
-                productLoadingFailed = true
                 transactionError = String(localized: LocalizedStringResource("Error while fetching products: \(error.localizedDescription)"))
                 logger.error("Error while fetching products: \(error.localizedDescription)")
             }
@@ -183,9 +187,12 @@ struct BrightIntoshStoreView: View {
                 break
             }
             transactionError = nil
+        } catch let error as StoreKitError {
+            transactionError = String(localized: LocalizedStringResource("Error while purchasing: \(getStoreKitErrorMessage(error))"))
+            logger.error("Error while purchasing: \(getStoreKitErrorMessage(error))")
         } catch {
-            logger.error("Error while purchasing: \(error.localizedDescription)")
             transactionError = String(localized: LocalizedStringResource("Error while purchasing: \(error.localizedDescription)"))
+            logger.error("Error while purchasing: \(error.localizedDescription)")
         }
     }
     
