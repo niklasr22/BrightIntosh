@@ -27,6 +27,12 @@
             "value" : "[Politique de confidentialité](https://brightintosh.de/app_privacy_policy_en.html)"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[プライバシーポリシー](https://brightintosh.de/app_privacy_policy_en.html)"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59,6 +65,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "[Conditions](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[規約](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
           }
         },
         "pt-PT" : {
@@ -130,6 +142,12 @@
             "value" : "Mentions légales"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お問い合わせ"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -162,6 +180,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Accepter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "わかりました"
           }
         },
         "pt-PT" : {
@@ -198,6 +222,12 @@
             "value" : "Remerciements"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "謝辞"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -230,6 +260,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効にする"
           }
         },
         "pt-PT" : {
@@ -266,6 +302,12 @@
             "value" : "Automatisation"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オートメーション"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -298,6 +340,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seuil de niveau de batterie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バッテリー残量しきい値"
           }
         },
         "pt-PT" : {
@@ -345,6 +393,12 @@
             "value" : "BrightIntosh vous permet d'augmenter la plage de luminosité de votre écran à des niveaux plus élevés. Le curseur de luminosité de l'application ajuste la distance à laquelle cette plage est déplacée. Vous pouvez toujours utiliser vos touches de luminosité habituelles pour affiner la luminosité dans cette nouvelle plage."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntoshは画面の明るさの範囲をずらします。このアプリの明るさスライダーではこの範囲を調整できます。通常の明るさキーでは明るさを微調整できます。"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -377,6 +431,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "BrightIntosh est conçu pour être sûr pour votre MacBook Pro et ne contourne pas les protections du système d'exploitation. BrightIntosh est un logiciel open source et n'est donc assorti d'aucune garantie ; vous l'utilisez donc à vos risques et périls."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntoshはmacOSの保護を回避せず、MacBook Proにとって安全であるよう設計されています。BrightIntoshはオープンソースで、保証は一切ございませんので、自己責任でご利用ください。"
           }
         },
         "pt-PT" : {
@@ -414,6 +474,12 @@
             "value" : "Paramètres de BrightIntosh"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntoshの設定"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -447,6 +513,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Augmentation de la luminosité"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明るさ"
           }
         },
         "pt-PT" : {
@@ -483,6 +555,12 @@
             "value" : "Augmentation de la luminosité :"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明るさ："
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -515,6 +593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Achetez %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@で購入する"
           }
         },
         "pt-PT" : {
@@ -551,6 +635,12 @@
             "value" : "Cliquer sur *Activer*"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "*有効にする*をクリック"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -583,6 +673,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cliquez sur l'icône %@ dans votre barre de menu"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーの %@ アイコンをクリック"
           }
         },
         "pt-PT" : {
@@ -630,6 +726,12 @@
             "value" : "Désactiver"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効にする"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -662,6 +764,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réduire la luminosité:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暗くする："
           }
         },
         "pt-PT" : {
@@ -698,6 +806,12 @@
             "value" : "Désactiver après"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次の時間経過後、無効にする"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -730,6 +844,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Désactiver la minuterie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タイマーを無効にする"
           }
         },
         "pt-PT" : {
@@ -766,6 +886,12 @@
             "value" : "Désactivé lorsque le niveau de la batterie est inférieur à"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バッテリー残量が次を下回ったら無効にする"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -798,6 +924,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clause de non-responsabilité"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免責事項"
           }
         },
         "pt-PT" : {
@@ -834,6 +966,12 @@
             "value" : "N'augmentez pas la luminosité des écrans XDR externes"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外部XDRディスプレイには適用しない"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -866,6 +1004,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activer la minuterie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タイマーを有効にする"
           }
         },
         "pt-PT" : {
@@ -902,6 +1046,12 @@
             "value" : "Profitez de la luminosité supplémentaire"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "さらに明るくなった画面をお楽しみください"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -934,6 +1084,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erreur lors de la récupération des produits : %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "製品の取得中にエラーが発生しました: %@"
           }
         },
         "pt-PT" : {
@@ -970,6 +1126,12 @@
             "value" : "Erreur lors de l'achat : %@"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入中にエラーが発生しました: %@"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1002,6 +1164,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erreur lors de la restauration : %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入の復元中にエラーが発生しました: %@"
           }
         },
         "pt-PT" : {
@@ -1038,6 +1206,12 @@
             "value" : "Erreur lors de la revalidation : %@"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入の再検証中にエラーが発生しました: %@"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1070,6 +1244,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Général"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一般"
           }
         },
         "pt-PT" : {
@@ -1106,6 +1286,12 @@
             "value" : "Générer et copier le rapport"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "レポートをコピーする"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1138,6 +1324,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aide"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ヘルプ"
           }
         },
         "pt-PT" : {
@@ -1185,6 +1377,12 @@
             "value" : "Masquer l'élément de la barre de menu"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーの項目を隠す"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1217,6 +1415,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Augmenter la luminosité:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "さらに明るくする："
           }
         },
         "pt-PT" : {
@@ -1253,6 +1457,12 @@
             "value" : "Augmentation de la luminosité"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効にする"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1285,6 +1495,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installer BrightIntosh CLI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh CLIをインストール"
           }
         },
         "pt-PT" : {
@@ -1321,6 +1537,12 @@
             "value" : "Installer le CLI BrightIntosh"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh CLIをインストール"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1353,6 +1575,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lancer au démarrage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン時に開く"
           }
         },
         "pt-PT" : {
@@ -1389,6 +1617,12 @@
             "value" : "Ouvrir les paramètres :"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定を開く："
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1421,6 +1655,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quitter l'app"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終了"
           }
         },
         "pt-PT" : {
@@ -1457,6 +1697,12 @@
             "value" : "Réglages"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1489,6 +1735,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Raccourcis clavier"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ショートカット"
           }
         },
         "pt-PT" : {
@@ -1525,6 +1777,12 @@
             "value" : "Commencez votre essai gratuit de %lld jours"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld日間の無料トライアルを開始する"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1557,6 +1815,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boutique"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入"
           }
         },
         "pt-PT" : {
@@ -1615,6 +1879,12 @@
             "value" : "Il semble y avoir un problème avec la connexion au magasin. Veuillez vérifier votre connexion Internet ou essayer de redémarrer votre MacBook."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ストアとの接続に問題があるようです。インターネット接続を確認し、MacBookを再起動してみてください。"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1647,6 +1917,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cet appareil est incompatible"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイスは対応していません"
           }
         },
         "pt-PT" : {
@@ -1684,6 +1960,12 @@
             "value" : "Pour ouvrir la fenêtre des paramètres sans utiliser l'élément de la barre de menu, redémarrez simplement BrightIntosh depuis le Launchpad. Alternativement, recherchez \"Paramètres BrightIntosh\" dans la recherche Spotlight de macOS %@."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーのアイコンを使わずに設定画面を開くには、既にBrightIntoshを開いた状態でLaunchpadから起動してください。また、Spotlightから”BrightIntoshの設定”を検索することもできます。"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1716,6 +1998,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Commuter la luminosité augmentée:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面を明るくする："
           }
         },
         "pt-PT" : {
@@ -1752,6 +2040,12 @@
             "value" : "Malheureusement, votre appareil n'est pas pris en charge par BrightIntosh."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "残念ながら、BrightIntoshはこのデバイスをサポートしていません。"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1786,6 +2080,12 @@
             "value" : "Libérez le maximum de luminosité!"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明るさを解放しましょう！"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1818,6 +2118,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Débloquez l'accès illimité à BrightIntosh!"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntoshをロック解除する"
           }
         },
         "pt-PT" : {
@@ -1876,6 +2182,12 @@
             "value" : "Vous pouvez également utiliser la recherche %@ Spotlight  pour ouvrir la fenêtre des paramètres en recherchant \"Paramètres BrightIntosh\""
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "また、 %@ Spotlight検索から”BrightIntoshの設定”を検索して設定画面を開くこともできます。"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1908,6 +2220,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vous pouvez toujours utiliser vos touches de luminosité pour ajuster la luminosité. Le curseur contrôle combien de la plage de luminosité est déplacée vers le haut."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーボードでも明るさを調整できます。このスライダーでは明るさの範囲をずらせます。"
           }
         },
         "pt-PT" : {
@@ -1944,6 +2262,12 @@
             "value" : "Vous avez accès à BrightIntosh.\nProfitez de la luminosité !"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntoshにアクセスできます。明るさをお楽しみください！"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1976,6 +2300,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votre appareil ne dispose pas d'un écran XDR intégré. L'augmentation de la luminosité ne peut être activée que pour les écrans XDR externes."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お使いのデバイスには内蔵XDRディスプレイが無いようです。明るさを上げられるのは外部XDRディスプレイのみになります。"
           }
         },
         "pt-PT" : {
@@ -2012,6 +2342,12 @@
             "value" : "Votre période d'essai a expiré"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "トライアル期間が終了しました"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2044,6 +2380,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votre période d'essai a expiré. Débloquez l'accès illimité à BrightIntosh."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "試用期間が終了しました。使い続けるにはBrightIntoshをロック解除してください"
           }
         },
         "pt-PT" : {
