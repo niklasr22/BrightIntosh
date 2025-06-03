@@ -27,6 +27,12 @@
             "value" : "[Politique de confidentialité](https://brightintosh.de/app_privacy_policy_en.html)"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Politica sulla Privacy](https://brightintosh.de/app_privacy_policy_en.html)"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -65,6 +71,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "[Conditions](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Termini](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)"
           }
         },
         "ja" : {
@@ -142,6 +154,12 @@
             "value" : "Mentions légales"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su di noi"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -180,6 +198,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Accepter"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accetto"
           }
         },
         "ja" : {
@@ -222,6 +246,12 @@
             "value" : "Remerciements"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riconoscimenti"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -260,6 +290,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attiva"
           }
         },
         "ja" : {
@@ -302,6 +338,12 @@
             "value" : "Automatisation"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automazioni"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -340,6 +382,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seuil de niveau de batterie"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soglia del livello di batteria"
           }
         },
         "ja" : {
@@ -393,6 +441,12 @@
             "value" : "BrightIntosh vous permet d'augmenter la plage de luminosité de votre écran à des niveaux plus élevés. Le curseur de luminosité de l'application ajuste la distance à laquelle cette plage est déplacée. Vous pouvez toujours utiliser vos touches de luminosité habituelles pour affiner la luminosité dans cette nouvelle plage."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh ti permette di regolare la luminosità del tuo schermo a livelli avanzati attraverso lo slider dell’app. Puoi comunque regolare la luminosità con i tasti della luminosità per la combinazione perfetta col range dello slider."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -431,6 +485,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "BrightIntosh est conçu pour être sûr pour votre MacBook Pro et ne contourne pas les protections du système d'exploitation. BrightIntosh est un logiciel open source et n'est donc assorti d'aucune garantie ; vous l'utilisez donc à vos risques et périls."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh è stato creato per essere sicuro per il tuo MacBook Pro e non bypassa alcuna protezione del sistema operativo. BrightIntosh è un software open source e viene fornito senza garanzia quindi usalo a tuo rischio."
           }
         },
         "ja" : {
@@ -474,6 +534,12 @@
             "value" : "Paramètres de BrightIntosh"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -513,6 +579,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Augmentation de la luminosité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luminosità"
           }
         },
         "ja" : {
@@ -555,6 +627,12 @@
             "value" : "Augmentation de la luminosité :"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incremento della luminosità:"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -593,6 +671,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Achetez %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acquista %@"
           }
         },
         "ja" : {
@@ -635,6 +719,12 @@
             "value" : "Cliquer sur *Activer*"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clicca *Attiva*"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -673,6 +763,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cliquez sur l'icône %@ dans votre barre de menu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clicca l'icona di %@ nella barra del menù"
           }
         },
         "ja" : {
@@ -726,6 +822,12 @@
             "value" : "Désactiver"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disattiva"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -764,6 +866,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réduire la luminosité:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riduci la luminosità:"
           }
         },
         "ja" : {
@@ -806,6 +914,12 @@
             "value" : "Désactiver après"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabilita dopo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -844,6 +958,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Désactiver la minuterie"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabilita il timer"
           }
         },
         "ja" : {
@@ -886,6 +1006,12 @@
             "value" : "Désactivé lorsque le niveau de la batterie est inférieur à"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabilita quando il livello di batteria scende a"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -924,6 +1050,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clause de non-responsabilité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dichiarazione di non responsabilità"
           }
         },
         "ja" : {
@@ -966,6 +1098,12 @@
             "value" : "N'augmentez pas la luminosité des écrans XDR externes"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non applicare l’incremento della luminosità sugli schermi XDR esterni"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1004,6 +1142,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activer la minuterie"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abilita il timer"
           }
         },
         "ja" : {
@@ -1046,6 +1190,12 @@
             "value" : "Profitez de la luminosité supplémentaire"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goditi la luminosità extra"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1084,6 +1234,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erreur lors de la récupération des produits : %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile ottenere i prodotti: %@"
           }
         },
         "ja" : {
@@ -1126,6 +1282,12 @@
             "value" : "Erreur lors de l'achat : %@"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore nell’acquisto: %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1164,6 +1326,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erreur lors de la restauration : %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore nel ripristino: %@"
           }
         },
         "ja" : {
@@ -1206,6 +1374,12 @@
             "value" : "Erreur lors de la revalidation : %@"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore nella riconvalida: %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1244,6 +1418,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Général"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generale"
           }
         },
         "ja" : {
@@ -1286,6 +1466,12 @@
             "value" : "Générer et copier le rapport"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genera e copia il report"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1324,6 +1510,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aide"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aiuto"
           }
         },
         "ja" : {
@@ -1377,6 +1569,12 @@
             "value" : "Masquer l'élément de la barre de menu"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascondi dalla barra del menù"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1415,6 +1613,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Augmenter la luminosité:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incrementa la luminosità:"
           }
         },
         "ja" : {
@@ -1457,6 +1661,12 @@
             "value" : "Augmentation de la luminosité"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incrementa la luminosità"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1495,6 +1705,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installer BrightIntosh CLI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installa BrightIntosh CLI"
           }
         },
         "ja" : {
@@ -1537,6 +1753,12 @@
             "value" : "Installer le CLI BrightIntosh"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installa BrightIntosh CLI"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1575,6 +1797,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lancer au démarrage"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri all’avvio"
           }
         },
         "ja" : {
@@ -1617,6 +1845,12 @@
             "value" : "Ouvrir les paramètres :"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri le impostazioni:"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1655,6 +1889,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quitter l'app"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esci"
           }
         },
         "ja" : {
@@ -1697,6 +1937,12 @@
             "value" : "Réglages"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1735,6 +1981,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Raccourcis clavier"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scorciatoie"
           }
         },
         "ja" : {
@@ -1777,6 +2029,12 @@
             "value" : "Commencez votre essai gratuit de %lld jours"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizia la prova gratuita di %lld giorni"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1815,6 +2073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boutique"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Negozio"
           }
         },
         "ja" : {
@@ -1879,6 +2143,12 @@
             "value" : "Il semble y avoir un problème avec la connexion au magasin. Veuillez vérifier votre connexion Internet ou essayer de redémarrer votre MacBook."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembra esserci un problema con la connessione al negozio. Per favore verifica la connessione e prova a riavviare il tuo MacBook."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1917,6 +2187,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cet appareil est incompatible"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo dispositivo non è compatibile."
           }
         },
         "ja" : {
@@ -1960,6 +2236,12 @@
             "value" : "Pour ouvrir la fenêtre des paramètres sans utiliser l'élément de la barre de menu, redémarrez simplement BrightIntosh depuis le Launchpad. Alternativement, recherchez \"Paramètres BrightIntosh\" dans la recherche Spotlight de macOS %@."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per aprire le impostazioni senza il bottone nella barra del menù riavvia BrightIntosh dal Launchpad; altrimenti cerca \"Impostazioni di BrightIntosh\" nello Spotlight %@ di MacOS."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1998,6 +2280,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Commuter la luminosité augmentée:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attiva/Disattiva l’incremento della luminosità:"
           }
         },
         "ja" : {
@@ -2040,6 +2328,12 @@
             "value" : "Malheureusement, votre appareil n'est pas pris en charge par BrightIntosh."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sfortunatamente il tuo dispositivo non è al momento supportato da BrightIntosh."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2080,6 +2374,12 @@
             "value" : "Libérez le maximum de luminosité!"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libera la Luminosità!"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2118,6 +2418,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Débloquez l'accès illimité à BrightIntosh!"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sblocca l’accesso illimitato a BrightIntosh"
           }
         },
         "ja" : {
@@ -2182,6 +2488,12 @@
             "value" : "Vous pouvez également utiliser la recherche %@ Spotlight  pour ouvrir la fenêtre des paramètres en recherchant \"Paramètres BrightIntosh\""
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puoi anche usare %@ nella ricerca dello Spotlight e aprire le impostazioni cercando \"Impostazioni di BrightIntosh\""
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2220,6 +2532,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vous pouvez toujours utiliser vos touches de luminosité pour ajuster la luminosité. Le curseur contrôle combien de la plage de luminosité est déplacée vers le haut."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puoi utilizzare comunque i tasti della luminosità per regolarla. Lo slider controlla quanto la luminosità deve essere incrementata."
           }
         },
         "ja" : {
@@ -2262,6 +2580,12 @@
             "value" : "Vous avez accès à BrightIntosh.\nProfitez de la luminosité !"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai accesso a BrightIntosh. Goditi la luminosità!"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2300,6 +2624,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votre appareil ne dispose pas d'un écran XDR intégré. L'augmentation de la luminosité ne peut être activée que pour les écrans XDR externes."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo dispositivo non ha un display XDR. L’incremento della luminosità può essere abilitato per gli schermi XDR esterni."
           }
         },
         "ja" : {
@@ -2342,6 +2672,12 @@
             "value" : "Votre période d'essai a expiré"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua prova gratuita è scaduta."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2380,6 +2716,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votre période d'essai a expiré. Débloquez l'accès illimité à BrightIntosh."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua prova gratuita è scaduta. Sblocca l’accesso illimitato a BrightIntosh."
           }
         },
         "ja" : {
