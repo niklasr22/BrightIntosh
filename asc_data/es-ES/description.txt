@@ -1,0 +1,19 @@
+Nota: Después de una prueba gratuita de tres días, la aplicación necesita ser desbloqueada a través de una compra única.
+
+Esta aplicación de código abierto utiliza las capacidades HDR de tu MacBook Pro para aumentar el brillo máximo de tu pantalla en cualquier aplicación.
+La aplicación ofrece varias configuraciones como niveles de brillo, accesos directos y automatizaciones para hacer tu experiencia lo más conveniente posible.
+
+Los dispositivos compatibles son:
+
+- MacBook Pro M4 de 2024 (Identificadores de Modelo: Mac16,1, Mac16,5, Mac16,6, Mac16,7, Mac16,8)
+- MacBook Pro M3 de 2023 (Identificadores de Modelo: Mac15,3, Mac15,6, Mac15,7, Mac15,8, Mac15,9, Mac15,10, Mac15,11)
+- MacBook Pro M2 de 14" / 16" de 2023 (Identificadores de Modelo: Mac14,5, Mac14,6, Mac14,9, Mac14,10)
+- MacBook Pro M1 de 14" / 16" de 2021 (Identificadores de Modelo: MacBookPro18,1, MacBookPro18,2, MacBookPro18,3, MacBookPro18,4)
+- Pro Display XDR
+
+Buenos indicadores son las siguientes dos preguntas: ¿La pantalla de tu MacBook tiene un notch, y dice MacBook Pro en la parte inferior de tu dispositivo?
+
+Características:
+- Controla el brillo máximo de tu pantalla con un práctico menú en la barra de menús
+- Accesos directos de teclado
+- Abre la configuración a través de la búsqueda de Spotlight buscando "BrightIntosh Settings" o un acceso directo de teclado (Predeterminado: Cmd+Opción+Shift+B)

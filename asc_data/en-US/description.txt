@@ -1,0 +1,19 @@
+Note: After a free three-day trial the app needs to be unlocked via a one-time purchase.
+
+This open-source application makes use of HDR capabilities of your MacBook Pro to increase the maximum brightness of your display for any app!
+The app provides various settings like brightness levels, shortcuts and automations to make your experience as convenient as possible.
+
+Supported devices are:
+
+- MacBook Pro M4 from 2024 (Model Identifiers: Mac16,1, Mac16,5, Mac16,6, Mac16,7, Mac16,8)
+- MacBook Pro M3 from 2023 (Model Identifiers: Mac15,3, Mac15,6, Mac15,7, Mac15,8, Mac15,9, Mac15,10, Mac15,11)
+- MacBook Pro M2 14" / 16" from 2023 (Model Identifiers: Mac14,5, Mac14,6, Mac14,9, Mac14,10)
+- MacBook Pro M1 14" / 16" from 2021 (Model Identifiers: MacBookPro18,1, MacBookPro18,2, MacBookPro18,3, MacBookPro18,4)
+- Pro Display XDR
+
+Good indicators are the following two questions: Does the display of your MacBook have a notch, and does it say MacBook Pro on the underside of your device?
+
+Features:
+- Control your maximum screen brightness with a handy menu bar
+- Keyboard shortcuts
+- Open settings through the Spotlight search by searching "BrightIntosh Settings" or a keyboard shortcut (Default: Cmd+Option+Shift+B)

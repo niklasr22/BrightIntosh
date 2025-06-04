@@ -1,0 +1,19 @@
+Nota: Dopo una prova gratuita di tre giorni, l'app deve essere sbloccata tramite un acquisto una tantum.
+
+Questa applicazione open-source sfrutta le capacità HDR del tuo MacBook Pro per aumentare la luminosità massima del tuo display per qualsiasi app!
+L'app offre diverse impostazioni come livelli di luminosità, scorciatoie e automazioni per rendere la tua esperienza il più conveniente possibile.
+
+I dispositivi supportati sono:
+
+- MacBook Pro M4 del 2024 (Identificatori di modello: Mac16,1, Mac16,5, Mac16,6, Mac16,7, Mac16,8)
+- MacBook Pro M3 del 2023 (Identificatori di modello: Mac15,3, Mac15,6, Mac15,7, Mac15,8, Mac15,9, Mac15,10, Mac15,11)
+- MacBook Pro M2 14" / 16" del 2023 (Identificatori di modello: Mac14,5, Mac14,6, Mac14,9, Mac14,10)
+- MacBook Pro M1 14" / 16" del 2021 (Identificatori di modello: MacBookPro18,1, MacBookPro18,2, MacBookPro18,3, MacBookPro18,4)
+- Pro Display XDR
+
+Buoni indicatori sono le seguenti due domande: Il display del tuo MacBook ha un notch e c'è scritto MacBook Pro sulla parte inferiore del tuo dispositivo?
+
+Caratteristiche:
+- Controlla la luminosità massima dello schermo con un comodo menu nella barra dei menu
+- Scorciatoie da tastiera
+- Apri le impostazioni tramite la ricerca Spotlight cercando "BrightIntosh Settings" o una scorciatoia da tastiera (Predefinito: Cmd+Option+Shift+B)

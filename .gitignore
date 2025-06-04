@@ -6,3 +6,8 @@ xcuserdata
 .DS_Store
 
 dev-tools
+
+# Release Tool
+asc_data/**/keywords.txt
+asc_data/**/whats_new.txt
+asc.yml
