@@ -6,3 +6,6 @@ xcuserdata
 
 .vscode
 dev-tools
+
+asc_data/
+asc.yml
