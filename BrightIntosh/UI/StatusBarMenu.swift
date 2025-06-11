@@ -27,7 +27,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var toggleTimerItem: NSMenuItem!
     private var toggleIncreasedBrightnessItem: NSMenuItem!
     private var trialExpiredItem: NSMenuItem!
-    private var brightnessSlider: StyledSlider!
+    private var brightnessSlider: NSSlider!
     private var brightnessValueDisplay: NSTextField!
     
     private var remainingTimePoller: Timer?
@@ -137,7 +137,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         statusItem?.menu = menu
     }
     
-    private func createBrightnessSliderItem() -> (NSMenuItem, StyledSlider, NSTextField) {
+    private func createBrightnessSliderItem() -> (NSMenuItem, NSSlider, NSTextField) {
         let brightnessSliderItem = NSMenuItem()
         
         let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 280, height: 35))
@@ -146,7 +146,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         let horizontalOffset = 15.0
         let sliderY = (sliderContainerView.frame.height - sliderHeight) / 2
         
-        let brightnessSlider = StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
+        //let brightnessSlider = StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
+        let brightnessSlider = NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
         brightnessSlider.target = self
         brightnessSlider.frame = NSRect(x: horizontalOffset, y: sliderY, width: sliderWidth, height: sliderHeight)
         brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]

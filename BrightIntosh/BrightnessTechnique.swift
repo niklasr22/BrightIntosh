@@ -95,7 +95,7 @@ class GammaTechnique: BrightnessTechnique {
             }
             let overlayWindowController = OverlayWindowController(screen: screen)
             overlayWindowControllers[displayId] = overlayWindowController
-            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 1, height: 1)
+            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 100, height: 100)
             overlayWindowController.open(rect: rect)
         }
     }
