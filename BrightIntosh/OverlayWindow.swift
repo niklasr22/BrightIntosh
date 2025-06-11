@@ -20,7 +20,7 @@ class OverlayWindow: NSWindow {
     
     init(fullsize: Bool = false) {
         self.fullsize = fullsize
-        let rect = NSRect(x: 0, y: 0, width: 1, height: 1)
+        let rect = NSRect(x: 0, y: 0, width: 100, height: 100)
         
         
         if fullsize {
@@ -95,7 +95,8 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     
     func getIdealPosition(screen: NSScreen) -> CGPoint {
         var position = screen.frame.origin
-        position.y += screen.frame.height - 1
+        position.x += 10
+        position.y += 500
         return position
     }
     

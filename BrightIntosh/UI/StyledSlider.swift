@@ -96,6 +96,13 @@ class StyledSliderCell: NSSliderCell {
     }
 }
 
+extension NSSlider {
+    func getNormalizedSliderValue() -> Double {
+        return (Double(self.doubleValue) - self.minValue) / (self.maxValue - self.minValue)
+    }
+}
+
+
 class StyledSlider: NSSlider {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -106,10 +113,10 @@ class StyledSlider: NSSlider {
         self.cell = StyledSliderCell()
     }
     
-    func getNormalizedSliderValue() -> Double {
+    /*@objc override func getNormalizedSliderValue() -> Double {
         if let cell = self.cell as? StyledSliderCell {
             return cell.getNormalizedSliderValue()
         }
         return 0.0
-    }
+    }*/
 }
