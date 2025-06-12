@@ -50,6 +50,7 @@ struct BrightIntoshStoreView: View {
 
     @State private var showRestartNoteDueToSpinner = false
     
+    @State private var fetchingError: String?
     @State private var transactionError: String?
 
     var body: some View {
@@ -70,6 +71,9 @@ struct BrightIntoshStoreView: View {
                     }
                     if let transactionError = transactionError {
                         Note(text: transactionError, style: .error)
+                    }
+                    if let fetchingError = fetchingError {
+                        Note(text: fetchingError, style: .error)
                     }
                     Spacer()
                     if let product = product {
@@ -157,12 +161,12 @@ struct BrightIntoshStoreView: View {
                 if let unrestrictedBrightIntosh = products.first(where: { $0.id == Products.unrestrictedBrightIntosh.rawValue }) {
                     product = unrestrictedBrightIntosh
                 }
-                transactionError = nil
+                fetchingError = nil
             } catch let error as StoreKitError {
-                transactionError = String(localized: LocalizedStringResource("Error while fetching products: \(getStoreKitErrorMessage(error))"))
+                fetchingError = String(localized: LocalizedStringResource("Error while fetching products: \(getStoreKitErrorMessage(error))"))
                 logger.error("Error while fetching products: \(getStoreKitErrorMessage(error))")
             } catch {
-                transactionError = String(localized: LocalizedStringResource("Error while fetching products: \(error.localizedDescription)"))
+                fetchingError = String(localized: LocalizedStringResource("Error while fetching products: \(error.localizedDescription)"))
                 logger.error("Error while fetching products: \(error.localizedDescription)")
             }
         }
@@ -179,14 +183,18 @@ struct BrightIntoshStoreView: View {
                 if try await entitlementHandler.verifyEntitlement(transaction: verificationResult) {
                     entitlementHandler.setRestrictionState(isUnrestricted: true)
                 }
+                transactionError = nil
+                fetchingError = nil
             case .userCancelled:
                 logger.info("User cancelled purchase of \(product.displayName)")
+                transactionError = String(localized: LocalizedStringResource("Purchase was cancelled."))
             case .pending:
+                transactionError = String(localized: LocalizedStringResource("Purchase is pending. Please check your purchase history in the App Store."))
                 break
             @unknown default:
+                transactionError = String(localized: LocalizedStringResource("An unkown error occurred while purchasing."))
                 break
             }
-            transactionError = nil
         } catch let error as StoreKitError {
             transactionError = String(localized: LocalizedStringResource("Error while purchasing: \(getStoreKitErrorMessage(error))"))
             logger.error("Error while purchasing: \(getStoreKitErrorMessage(error))")
