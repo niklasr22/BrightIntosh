@@ -47,6 +47,11 @@ func isDeviceSupported() -> Bool {
     return false
 }
 
+func connectionAvailable() -> Bool {
+    // TODO: check internet connection
+    return false;
+}
+
 func getDeviceMaxBrightness() -> Float {
     if let device = getModelIdentifier(),
         sdr600nitsDevices.contains(device)
@@ -94,7 +99,7 @@ func generateReport() async -> String {
     }
 
     do {
-        let isUnrestricted = try await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
+        let isUnrestricted = try await EntitlementHandler.shared.isUnrestrictedUser()
         report += "Unrestricted user: \(isUnrestricted)\n"
     } catch {
         report += "Error: EntitlementHandler threw an error: \(error.localizedDescription)\n"

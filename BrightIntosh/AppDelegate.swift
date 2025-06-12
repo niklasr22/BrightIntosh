@@ -25,8 +25,13 @@ class AppDelegate: NSObject {
     
     func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
 #if STORE
-        if let isUnrestricted = try? await EntitlementHandler.shared.isUnrestrictedUser(), isUnrestricted {
-            return true
+        do {
+            // TODO: add timeout for checks that take to long and ask for internet access
+            if try await EntitlementHandler.shared.isUnrestrictedUser() {
+                return true
+            }
+        } catch let error {
+            print("Error while checking entitlement: \(error)")
         }
         do {
             let stillEntitledToTrial = (try await TrialData.getTrialData()).stillEntitled()
