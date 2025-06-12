@@ -14,7 +14,7 @@ class Settings {
     
     public var ignoreAppTransaction = false
     
-    private static func getUserDefault<T>(key: String, defaultValue: T) -> T {
+    public static func getUserDefault<T>(key: String, defaultValue: T) -> T {
         if let value = UserDefaults.standard.object(forKey: key) as? T {
             return value
         }

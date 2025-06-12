@@ -14,6 +14,8 @@ public enum Products: String, CaseIterable {
     case unrestrictedBrightIntosh = "brightintosh_paid"
 }
 
+let CACHED_UNRESTRICTED_USER_KEY: String = "cachedUnrestrictedUser"
+
 @MainActor
 class EntitlementHandler: ObservableObject {
     private let logger = Logger(
@@ -24,6 +26,8 @@ class EntitlementHandler: ObservableObject {
     public static let shared = EntitlementHandler()
     
     @Published public var isUnrestrictedUser: Bool = false
+    
+    private var checkOnReconnect: Bool = false
     
     func verifyEntitlement(transaction verificationResult: VerificationResult<Transaction>) async throws -> Bool {
    
@@ -56,11 +60,20 @@ class EntitlementHandler: ObservableObject {
     
     func isUnrestrictedUser(refresh: Bool = false) async throws -> Bool {
         if !Settings.shared.ignoreAppTransaction && isUnrestrictedUser {
+            print("User is unrestricted, no need to check")
+            return true
+        }
+        
+        if !connectionAvailable() && Settings.getUserDefault(key: CACHED_UNRESTRICTED_USER_KEY, defaultValue: false) {
+            checkOnReconnect = true;
+            print("User was verified previously, checking on reconnect")
             return true
         }
         
         if try await checkAppEntitlements(refresh: refresh) {
             setRestrictionState(isUnrestricted: true)
+            checkOnReconnect = false;
+            print("Checked App Entitlement successfully")
             return true
         }
         
@@ -68,15 +81,23 @@ class EntitlementHandler: ObservableObject {
             if entitlement.unsafePayloadValue.productID == Products.unrestrictedBrightIntosh.rawValue,
                try await self.verifyEntitlement(transaction: entitlement) {
                 setRestrictionState(isUnrestricted: true)
+                checkOnReconnect = false;
+                print("Checked In App Purchase successfully")
                 return true
             }
         }
+        print("User is restricted")
         setRestrictionState(isUnrestricted: false)
         return false
     }
     
+    func shouldReverify() -> Bool {
+        return checkOnReconnect
+    }
+    
     func setRestrictionState(isUnrestricted: Bool) {
         self.isUnrestrictedUser = isUnrestricted
+        UserDefaults.setValue(isUnrestricted, forKey: CACHED_UNRESTRICTED_USER_KEY)
     }
     
     func checkAppEntitlements(refresh: Bool = false) async throws -> Bool  {
