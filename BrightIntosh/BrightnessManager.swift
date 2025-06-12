@@ -20,12 +20,16 @@ class BrightnessManager {
     var brightnessTechnique: BrightnessTechnique?
     var screens: [NSScreen] = []
     var xdrScreens: [NSScreen] = []
+    var enabled: Bool = false
+    var isExtraBrightnessAllowed: (Bool) async -> Bool = { _ in true }
     
     init(isExtraBrightnessAllowed: @escaping (Bool) async -> Bool) {
+        self.isExtraBrightnessAllowed = isExtraBrightnessAllowed
+        
         setBrightnessTechnique()
         
         if Settings.shared.brightintoshActive {
-            enableExtraBrightness()
+            activateSafely()
         }
         
         // Observe displays
@@ -49,14 +53,7 @@ class BrightnessManager {
             print("Toggled increased brightness. Active: \(Settings.shared.brightintoshActive)")
             
             if Settings.shared.brightintoshActive {
-                
-                Task { @MainActor in
-                    if await isExtraBrightnessAllowed(true) {
-                        self.enableExtraBrightness()
-                    } else {
-                        Settings.shared.brightintoshActive = false
-                    }
-                }
+                self.activateSafely()
             } else {
                 self.brightnessTechnique?.disable()
             }
@@ -72,6 +69,21 @@ class BrightnessManager {
         }
         
         screens = getXDRDisplays()
+    }
+    
+    func activateSafely() {
+        Task(priority: .userInitiated) { @MainActor in
+            print("Working")
+            if await isExtraBrightnessAllowed(true) {
+                print("Permission checks done")
+                self.enabled = true
+                self.enableExtraBrightness()
+            } else {
+                print("Permission checks failed")
+                Settings.shared.brightintoshActive = false
+            }
+            print("Done")
+        }
     }
     
     func setBrightnessTechnique() {
@@ -111,6 +123,10 @@ class BrightnessManager {
             xdrScreens = newXdrDisplays
         }
         
+        guard enabled else {
+            return
+        }
+        
         if !newScreens.isEmpty {
             if let brightnessTechnique = brightnessTechnique, Settings.shared.brightintoshActive {
                 if !brightnessTechnique.isEnabled {
@@ -129,7 +145,7 @@ class BrightnessManager {
     }
     
     @MainActor
-    func enableExtraBrightness() {
+    private func enableExtraBrightness() {
         // Put brightness value into device specific bounds, as earlier versions allowed storing higher brightness values.
         let safeBrightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
         
