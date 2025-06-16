@@ -142,7 +142,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private func createBrightnessSliderItem() -> (NSMenuItem, NSSlider, NSTextField) {
         let brightnessSliderItem = NSMenuItem()
         
-        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 280, height: 35))
+        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 280, height: 30.0))
         let sliderWidth = 190.0
         let sliderHeight = 30.0
         let horizontalOffset = 15.0
@@ -150,7 +150,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         //let brightnessSlider = StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
         
-        let brightnessSlider = if #available(macOS 27.0, *) {
+        let brightnessSlider = if #available(macOS 26.0, *) {
                 NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))        } else {
             StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
         }
@@ -163,7 +163,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         brightnessValueDisplay.isBordered = false
         brightnessValueDisplay.isSelectable = false
         brightnessValueDisplay.drawsBackground = false
-        brightnessValueDisplay.setFrameOrigin(NSPoint(x: sliderContainerView.frame.width - horizontalOffset - brightnessValueDisplay.frame.width, y: sliderContainerView.frame.height / 2.0 - brightnessValueDisplay.frame.height / 2.0))
+        brightnessValueDisplay.setFrameOrigin(NSPoint(x: sliderContainerView.frame.width - horizontalOffset - brightnessValueDisplay.frame.width, y: sliderContainerView.frame.height / 2.0 - brightnessValueDisplay.frame.height / 2.0 + (brightnessValueDisplay.font?.descender ?? 0.0)))
         
         sliderContainerView.addSubview(brightnessSlider)
         sliderContainerView.addSubview(brightnessValueDisplay)
