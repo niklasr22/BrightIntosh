@@ -150,8 +150,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         let horizontalOffset = 15.0
         let sliderY = (sliderContainerView.frame.height - sliderHeight) / 2
         
-        //let brightnessSlider = StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
-        
         let brightnessSlider = if #available(macOS 26.0, *) {
                 NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))        } else {
             StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))

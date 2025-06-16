@@ -18,15 +18,23 @@ struct Note: View {
     var text: String
     var style: NoteStyle = .info
     
-    var body: some View {
+    var content: some View {
         VStack {
             Label(text, systemImage: style == .info ? "info.circle" : "exclamationmark.triangle")
                 .frame(maxWidth: .infinity)
+                .transition(.opacity)
         }
-        .padding(10)        
-        .background(style == .info ? Color.brightintoshBlue : Color.red)
-        .clipShape(RoundedRectangle(cornerRadius: 10.0))
-        .transition(.opacity)
+        .padding(10)
+    }
+    
+    var body: some View {
+        if #available(macOS 26.0, *) {
+            content.glassEffect(.regular.tint(style == .info ? Color.brightintoshBlue : Color("ErrorColor")), in: .rect(cornerRadius: 10.0))
+        } else {
+            content
+                .background(style == .info ? Color.brightintoshBlue : Color("ErrorColor"))
+                .clipShape(RoundedRectangle(cornerRadius: 10.0))
+        }
     }
 }
 
