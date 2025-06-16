@@ -75,6 +75,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         toggleTimerItem.target = self
         
         let settingsItem = NSMenuItem(title: String(localized: "Settings"), action: #selector(openSettings), keyEquivalent: "")
+        settingsItem.image = NSImage(systemSymbolName: "gear", accessibilityDescription: String(localized: "Settings"))
         settingsItem.setShortcut(for: .openSettings)
         settingsItem.target = self
         
@@ -82,6 +83,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         aboutUsItem.target = self
         
         let helpItem = NSMenuItem(title: String(localized: "Help"), action: #selector(openHelp), keyEquivalent: "")
+        helpItem.image = NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: String(localized: "Help"))
         helpItem.target = self
         
         let quitItem = NSMenuItem(title: String(localized: "Quit"), action: #selector(exitBrightIntosh), keyEquivalent: "")
