@@ -112,11 +112,4 @@ class StyledSlider: NSSlider {
         super.init(frame: frameRect)
         self.cell = StyledSliderCell()
     }
-    
-    /*@objc override func getNormalizedSliderValue() -> Double {
-        if let cell = self.cell as? StyledSliderCell {
-            return cell.getNormalizedSliderValue()
-        }
-        return 0.0
-    }*/
 }
