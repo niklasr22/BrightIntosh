@@ -58,6 +58,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         menu.minimumWidth = 280
         
         titleItem = NSMenuItem(title: titleString, action: #selector(openWebsite), keyEquivalent: "")
+        titleItem.image = NSImage(named: "LogoLG")
+        titleItem.image?.size = CGSize(width: 28, height: 28)
         
         let brightnessSliderElements = createBrightnessSliderItem()
         let brightnessSliderItem = brightnessSliderElements.0
