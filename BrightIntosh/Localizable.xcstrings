@@ -150,6 +150,12 @@
             "state" : "translated",
             "value" : "%lld min"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 分钟"
+          }
         }
       }
     },
@@ -363,16 +369,6 @@
     },
     "An unkown error occurred while purchasing." : {
       "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "购买时发生未知错误。"
-          }
-        }
-      }
-    },
-    "An unkown error occurred while purchasing." : {
-      "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -413,6 +409,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ocorreu um erro desconhecido durante a compra."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "购买时发生未知错误。"
           }
         }
       }
@@ -2168,26 +2170,6 @@
     },
     "Purchase is pending. Please check your purchase history in the App Store." : {
       "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "购买正在等待处理。请在 App Store 中查看您的购买历史记录。"
-          }
-        }
-      }
-    },
-    "Purchase was cancelled." : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "购买已取消。"
-          }
-        }
-      }
-    },
-    "Purchase is pending. Please check your purchase history in the App Store." : {
-      "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2228,6 +2210,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compra pendente. Por favor, verifique o seu histórico de compras na App Store."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "购买待处理。请在 App Store 中检查您的购买历史记录。"
           }
         }
       }
@@ -2274,6 +2262,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compra foi cancelada."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "购买已取消。"
           }
         }
       }
