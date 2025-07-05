@@ -41,7 +41,6 @@ private struct UserStatusTaskModifier: ViewModifier {
         content
             .task {
 #if STORE
-                _ = try? await  EntitlementHandler.shared.isUnrestrictedUser()
                 do {
                     trial = try await TrialData.getTrialData()
                 } catch {}
@@ -49,6 +48,7 @@ private struct UserStatusTaskModifier: ViewModifier {
             }
             .onReceive(entitlementHandler.$isUnrestrictedUser, perform: { isUnrestricted in
                 unrestrictedUser = isUnrestricted
+                print("Unrestricted User Status: \(unrestrictedUser)")
             })
             .environment(\.isUnrestrictedUser, unrestrictedUser)
             .environment(\.trial, trial)

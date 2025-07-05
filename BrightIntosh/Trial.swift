@@ -71,3 +71,30 @@ public struct TrialData: Sendable {
         throw TrialError.error
     }
 }
+
+@MainActor
+public class TrialHandler: ObservableObject {
+    public static let shared = TrialHandler()
+    
+    @Published var status: AuthorizationStatus = .pending
+    
+    private func loadTrialStatus() async -> AuthorizationStatus {
+        guard !Settings.getUserDefault(key: "trialExpired", defaultValue: false) else {
+            return .unauthorized
+        }
+        do {
+            let stillEntitledToTrial = (try await TrialData.getTrialData()).stillEntitled()
+            if !stillEntitledToTrial {
+                UserDefaults.standard.setValue(true, forKey: "trialExpired")
+            }
+            return stillEntitledToTrial ? .authorized : .unauthorized
+        } catch {
+            return .unauthorized
+        }
+    }
+    
+    func updateTrialState() async -> AuthorizationStatus {
+        status = await loadTrialStatus()
+        return status
+    }
+}

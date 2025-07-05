@@ -32,8 +32,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     private var remainingTimePoller: Timer?
     
-    private let isExtraBrightnessAllowed: (Bool) async -> Bool
-    
 #if STORE && DEBUG
     private let titleString = "BrightIntosh SE (v\(appVersion)-dev)"
 #elseif STORE
@@ -44,13 +42,12 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private let titleString = "BrightIntosh (v\(appVersion))"
 #endif
     
-    init(supportedDevice: Bool, automationManager: AutomationManager, settingsWindowController: SettingsWindowController, toggleBrightIntosh: @escaping () -> (), isExtraBrightnessAllowed: @escaping (Bool) async -> Bool) {
+    init(supportedDevice: Bool, automationManager: AutomationManager, settingsWindowController: SettingsWindowController, toggleBrightIntosh: @escaping () -> ()) {
         self.toggleBrightIntosh = toggleBrightIntosh
         
         self.supportedDevice = supportedDevice
         self.automationManager = automationManager
         self.settingsWindowController = settingsWindowController
-        self.isExtraBrightnessAllowed = isExtraBrightnessAllowed
         
         menu = NSMenu()
         
@@ -108,6 +105,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         trialExpiredItem = NSMenuItem(title: String(localized: "Your trial has expired"), action: nil, keyEquivalent: "")
         trialExpiredItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "Your trial has expired")
+        trialExpiredItem.isHidden = true
+        menu.addItem(trialExpiredItem)
         
         if !Settings.shared.hideMenuBarItem {
             createStatusBarItem()
@@ -190,18 +189,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         brightnessSlider.floatValue = Settings.shared.brightness
         brightnessValueDisplay.stringValue = "\(Int(round(brightnessSlider.getNormalizedSliderValue() * 100.0)))%"
         
-        if isOpen {
-            startRemainingTimePoller()
-        }
-        
-        Task { @MainActor in
-            let trialExpired = !(await isExtraBrightnessAllowed(false))
-            if trialExpired && !self.menu.items.contains(self.trialExpiredItem) {
-                self.menu.addItem(self.trialExpiredItem)
-            } else if self.menu.items.contains(self.trialExpiredItem) {
-                self.menu.removeItem(self.trialExpiredItem)
-            }
-        }
+        self.trialExpiredItem.isHidden = Authorizer.shared.isAllowed()
     }
     
     func updateStatusBarItemVisibility() {
@@ -260,7 +248,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
                 
                 if remainingTime == 0 {
                     self.stopRemainingTimePoller()
-                    
                     self.updateMenu()
                     return
                 }
@@ -290,6 +277,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     func menuWillOpen(_ menu: NSMenu) {
         startTimePollerIfApplicable()
+        updateMenu()
+        isOpen = true
     }
     
     func startTimePollerIfApplicable() {
@@ -298,7 +287,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         } else if !Settings.shared.timerAutomation {
             self.stopRemainingTimePoller()
         }
-        isOpen = true
     }
     
     func menuDidClose(_ menu: NSMenu) {

@@ -11,6 +11,7 @@ import ServiceManagement
 import StoreKit
 import CoreSpotlight
 
+
 @MainActor
 class AppDelegate: NSObject {
     
@@ -20,35 +21,6 @@ class AppDelegate: NSObject {
     private var brightnessManager: BrightnessManager?
     private var automationManager: AutomationManager?
     private var supportedDevice: Bool = false
-
-    private var trialTimer: Timer?
-    
-    func isExtraBrightnessAllowed(offerUpgrade: Bool) async -> Bool {
-#if STORE
-        do {
-            // TODO: add timeout for checks that take to long and ask for internet access
-            if try await EntitlementHandler.shared.isUnrestrictedUser() {
-                return true
-            }
-        } catch let error {
-            print("Error while checking entitlement: \(error)")
-        }
-        do {
-            let stillEntitledToTrial = (try await TrialData.getTrialData()).stillEntitled()
-            if !stillEntitledToTrial && offerUpgrade {
-                Task { @MainActor in
-                    self.showSettingsWindow()
-                }
-            }
-            startTrialTimer()
-            return stillEntitledToTrial
-        } catch {
-            return false
-        }
-#else
-        return true
-#endif
-    }
     
     @objc func increaseBrightness() {
         Task { @MainActor in
@@ -79,7 +51,6 @@ class AppDelegate: NSObject {
     
     @objc func toggleBrightIntosh() {
         Task { @MainActor in
-            
             if !Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
                 return
             }
@@ -97,42 +68,6 @@ class AppDelegate: NSObject {
     
     func showSettingsWindow() {
         self.settingsWindowController.showWindow(nil)
-    }
-    
-    func startTrialTimer() {
-        if trialTimer != nil {
-            return
-        }
-        // check every 5min
-        trialTimer = Timer(timeInterval: 300, repeats: true, block: {t in
-            Task { @MainActor in
-                self.revalidateTrial()
-            }
-        })
-        RunLoop.main.add(self.trialTimer!, forMode: RunLoop.Mode.common)
-    }
-    
-    func revalidateTrial() {
-        if !Settings.shared.brightintoshActive {
-            stopTrialTimer()
-            return
-        }
-        Task { @MainActor in
-            if !(await self.isExtraBrightnessAllowed(offerUpgrade: true)) {
-                // turn brightintosh off if user is not entitled
-                Settings.shared.brightintoshActive = false
-            } else {
-                stopTrialTimer()
-            }
-        }
-    }
-    
-    func stopTrialTimer() {
-        if trialTimer == nil {
-            return
-        }
-        self.trialTimer?.invalidate()
-        self.trialTimer = nil
     }
 
     
@@ -184,21 +119,20 @@ extension AppDelegate: NSApplicationDelegate {
             Settings.shared.brightIntoshOnlyOnBuiltIn = false
         }
         
-        brightnessManager = BrightnessManager(isExtraBrightnessAllowed: isExtraBrightnessAllowed)
+        brightnessManager = BrightnessManager()
         automationManager = AutomationManager()
-        statusBarMenu = StatusBarMenu(supportedDevice: supportedDevice, automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh, isExtraBrightnessAllowed: isExtraBrightnessAllowed)
+        statusBarMenu = StatusBarMenu(supportedDevice: supportedDevice, automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh)
         
         // Register global hotkeys
         addKeyListeners()
         
         Settings.shared.addListener(setting: "brightintoshActive") {
-            if !Settings.shared.brightintoshActive {
-                self.stopTrialTimer()
+            print("Active state changed")
+            /* Show Settings Store Window, when user is not authorized */
+            guard !Authorizer.shared.isAllowed() else { return }
+            Task { @MainActor in
+                self.showSettingsWindow()
             }
-        }
-        
-        Task {
-            await isExtraBrightnessAllowed(offerUpgrade: true)
         }
         
         Task {
