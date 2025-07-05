@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public enum AuthorizationStatus: Comparable, Sendable {
     case unauthorized
@@ -21,17 +22,29 @@ public class Authorizer: ObservableObject {
     @Published var status: AuthorizationStatus = .pending
     
     private var authorizationTimer: Timer?
+    private var cancellables = Set<AnyCancellable>()
     
     init() {
 #if STORE
         startAuthorizationTimer()
+        
+        
+        EntitlementHandler.shared.$status.sink { newStatus in
+            self.update(purchaseStatus: newStatus, trialStatus: TrialHandler.shared.status)
+        }.store(in: &cancellables)
+        
+        TrialHandler.shared.$status.sink { newStatus in
+            self.update(purchaseStatus: EntitlementHandler.shared.status, trialStatus: newStatus)
+        }.store(in: &cancellables)
+        
 #else
         status = .authorizedUnlimited
 #endif
     }
     
-    func update() {
-        status = max(EntitlementHandler.shared.status, TrialHandler.shared.status)
+    func update(purchaseStatus: AuthorizationStatus, trialStatus: AuthorizationStatus) {
+        status = max(purchaseStatus, trialStatus)
+        print("Auth status updated: \(status)")
         if authorizationTimer != nil && status == .authorizedUnlimited {
             // Attempt authorization check until unlimited state is reached
             stopAuthorizationTimer()
@@ -87,7 +100,6 @@ public actor ValidationCoordinator {
             } catch {
                 print("Validation failed: \(error)")
             }
-            await Authorizer.shared.update()
         }
         
         currentValidationTask = task

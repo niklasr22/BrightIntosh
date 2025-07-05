@@ -66,7 +66,7 @@ class EntitlementHandler: ObservableObject {
         
         if Settings.getUserDefault(key: CACHED_UNRESTRICTED_USER_KEY, defaultValue: false) {
             setRestrictionState(.authorized)
-            print("User was verified previously, checking on reconnect")
+            print("User was verified previously, authorizing now but validating again")
         }
         
         if try await checkAppEntitlements(refresh: refresh) {
