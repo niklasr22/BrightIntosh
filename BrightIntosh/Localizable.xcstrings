@@ -367,7 +367,7 @@
         }
       }
     },
-    "An unkown error occurred while purchasing." : {
+    "An unknown error occurred while purchasing." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -378,7 +378,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An unkown error occurred while purchasing."
+            "value" : "An unknown error occurred while purchasing."
           }
         },
         "es" : {

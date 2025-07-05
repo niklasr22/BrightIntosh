@@ -194,7 +194,7 @@ struct BrightIntoshStoreView: View {
                 transactionError = String(localized: LocalizedStringResource("Purchase is pending. Please check your purchase history in the App Store."))
                 break
             @unknown default:
-                transactionError = String(localized: LocalizedStringResource("An unkown error occurred while purchasing."))
+                transactionError = String(localized: LocalizedStringResource("An unknown error occurred while purchasing."))
                 break
             }
         } catch let error as StoreKitError {
