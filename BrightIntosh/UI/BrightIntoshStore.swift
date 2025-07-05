@@ -126,6 +126,7 @@ struct BrightIntoshStoreView: View {
                         do {
                             try await AppStore.sync()
                             _ = try await EntitlementHandler.shared.isUnrestrictedUser()
+                            transactionError = nil
                         } catch let error as StoreKitError {
                             transactionError = String(localized: LocalizedStringResource("Error while restoring: \(getStoreKitErrorMessage(error))"))
                         } catch {
@@ -135,6 +136,7 @@ struct BrightIntoshStoreView: View {
                     RestorePurchasesButton(label: "Revalidate App Purchase", action: {
                         do {
                             _ = try await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
+                            transactionError = nil
                         } catch let error as StoreKitError {
                             transactionError = String(localized: LocalizedStringResource("Error while revalidating: \(getStoreKitErrorMessage(error))"))
                         } catch {
@@ -181,7 +183,7 @@ struct BrightIntoshStoreView: View {
             switch result {
             case .success(let verificationResult):
                 if try await entitlementHandler.verifyEntitlement(transaction: verificationResult) {
-                    entitlementHandler.setRestrictionState(isUnrestricted: true)
+                    entitlementHandler.setRestrictionState(.authorizedUnlimited)
                 }
                 transactionError = nil
                 fetchingError = nil
@@ -192,7 +194,7 @@ struct BrightIntoshStoreView: View {
                 transactionError = String(localized: LocalizedStringResource("Purchase is pending. Please check your purchase history in the App Store."))
                 break
             @unknown default:
-                transactionError = String(localized: LocalizedStringResource("An unkown error occurred while purchasing."))
+                transactionError = String(localized: LocalizedStringResource("An unknown error occurred while purchasing."))
                 break
             }
         } catch let error as StoreKitError {

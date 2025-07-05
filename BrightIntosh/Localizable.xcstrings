@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)" : {
+      "comment" : "",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -106,11 +107,12 @@
       }
     },
     "%lld min" : {
+      "comment" : "x min (Minutes)",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : ""
+            "value" : "%lld Min"
           }
         },
         "en" : {
@@ -122,23 +124,40 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : ""
+            "value" : "%lld min"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : ""
+            "value" : "%lld min"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 分"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : ""
+            "value" : "%lld min"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 分钟"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "About us" : {
       "localizations" : {
@@ -348,8 +367,50 @@
         }
       }
     },
-    "An unkown error occurred while purchasing." : {
+    "An unknown error occurred while purchasing." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Kauf ist ein unbekannter Fehler aufgetreten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An unknown error occurred while purchasing."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocurrió un error desconocido durante la compra."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une erreur inconnue est survenue lors de l'achat."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si è verificato un errore sconosciuto durante l'acquisto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入中に不明なエラーが発生しました。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocorreu um erro desconhecido durante a compra."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -899,8 +960,7 @@
             "value" : "Close"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "Deactivate" : {
       "localizations" : {
@@ -1742,8 +1802,7 @@
             "value" : "Hide"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "Hide menu bar item" : {
       "localizations" : {
@@ -2111,16 +2170,100 @@
     },
     "Purchase is pending. Please check your purchase history in the App Store." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Kauf ist ausstehend. Bitte überprüfen Sie Ihre Kaufhistorie im App Store."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchase is pending. Please check your purchase history in the App Store."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La compra está pendiente. Por favor, verifica tu historial de compras en la App Store."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'achat est en attente. Veuillez vérifier votre historique d'achats dans l'App Store."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'acquisto è in sospeso. Si prega di controllare la cronologia degli acquisti nell'App Store."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入が保留中です。App Storeの購入履歴をご確認ください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compra pendente. Por favor, verifique o seu histórico de compras na App Store."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "购买正在等待处理。请在 App Store 中查看您的购买历史记录。"
+            "value" : "购买待处理。请在 App Store 中检查您的购买历史记录。"
           }
         }
       }
     },
     "Purchase was cancelled." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Kauf wurde abgebrochen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchase was cancelled."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La compra fue cancelada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'achat a été annulé."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acquisto annullato."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入はキャンセルされました。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compra foi cancelada."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2397,8 +2540,7 @@
             "value" : "Test Settings"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "Test: Ignore App Transaction" : {
       "localizations" : {
@@ -2408,8 +2550,7 @@
             "value" : "Test: Ignore App Transaction"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "There seems to be an issue with the store connection. Please check your internet connection and try restarting your MacBook." : {
       "localizations" : {
@@ -2784,8 +2925,7 @@
             "value" : "X"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "X / Twitter" : {
       "localizations" : {
@@ -2795,8 +2935,7 @@
             "value" : "X / Twitter"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "You can also use the %@ Spotlight Search to open the settings window by searching \"BrightIntosh Settings\"" : {
       "localizations" : {

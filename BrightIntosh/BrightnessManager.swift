@@ -7,6 +7,7 @@
 
 import Foundation
 import Cocoa
+import Combine
 
 extension NSScreen {
     var displayId: CGDirectDisplayID? {
@@ -21,11 +22,10 @@ class BrightnessManager {
     var screens: [NSScreen] = []
     var xdrScreens: [NSScreen] = []
     var enabled: Bool = false
-    var isExtraBrightnessAllowed: (Bool) async -> Bool = { _ in true }
     
-    init(isExtraBrightnessAllowed: @escaping (Bool) async -> Bool) {
-        self.isExtraBrightnessAllowed = isExtraBrightnessAllowed
-        
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
         setBrightnessTechnique()
         
         if Settings.shared.brightintoshActive {
@@ -48,13 +48,18 @@ class BrightnessManager {
             object: nil
         )
         
+        // Observe entitlement
+        Authorizer.shared.$status.sink { newStatus in
+            if newStatus == .unauthorized && Settings.shared.brightintoshActive {
+                Settings.shared.brightintoshActive = false
+            }
+        }.store(in: &cancellables)
+        
         // Add settings listeners
         Settings.shared.addListener(setting: "brightintoshActive") {
-            print("Toggled increased brightness. Active: \(Settings.shared.brightintoshActive)")
-            
             if Settings.shared.brightintoshActive {
                 self.activateSafely()
-            } else {
+            } else if self.enabled {
                 self.brightnessTechnique?.disable()
             }
         }
@@ -72,17 +77,11 @@ class BrightnessManager {
     }
     
     func activateSafely() {
-        Task(priority: .userInitiated) { @MainActor in
-            print("Working")
-            if await isExtraBrightnessAllowed(true) {
-                print("Permission checks done")
-                self.enabled = true
-                self.enableExtraBrightness()
-            } else {
-                print("Permission checks failed")
-                Settings.shared.brightintoshActive = false
-            }
-            print("Done")
+        if Authorizer.shared.isAllowed() {
+            self.enabled = true
+            self.enableExtraBrightness()
+        } else {
+            Settings.shared.brightintoshActive = false
         }
     }
     

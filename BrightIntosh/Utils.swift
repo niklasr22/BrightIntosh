@@ -9,6 +9,12 @@ import IOKit
 import StoreKit
 import Cocoa
 
+
+enum TimeoutError: Error {
+    case timeout
+}
+
+
 @MainActor func getXDRDisplays() -> [NSScreen] {
     var xdrScreens: [NSScreen] = []
     for screen in NSScreen.screens {
@@ -45,11 +51,6 @@ func isDeviceSupported() -> Bool {
         return true
     }
     return false
-}
-
-func connectionAvailable() -> Bool {
-    // TODO: check internet connection
-    return false;
 }
 
 func getDeviceMaxBrightness() -> Float {

@@ -59,8 +59,6 @@ class AutomationManager {
                 self.stopTimerAutomation()
             }
         }
-        
-        
     }
     
     func startBatteryAutomation() {
