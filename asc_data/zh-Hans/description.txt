@@ -1,0 +1,19 @@
+说明：在免费三天试用期后，应用需要通过一次性购买来解锁。
+
+这是一个开源应用程序，利用您的 MacBook Pro 的 HDR 功能来提高显示器的最大亮度，适用于任何应用程序！
+此应用提供多种设置，如亮度级别、快捷方式和自动化，以使您的体验尽可能方便。
+
+支持的设备：
+
+- 2024 年之后的 MacBook Pro M4 (型号代码: Mac16,1, Mac16,5, Mac16,6, Mac16,7, Mac16,8)
+- 2023 年之后的 MacBook Pro M3 (型号代码: Mac15,3, Mac15,6, Mac15,7, Mac15,8, Mac15,9, Mac15,10, Mac15,11)
+- 2023 年之后的 MacBook Pro M2 14" / 16" (型号代码: Mac14,5, Mac14,6, Mac14,9, Mac14,10)
+- 2021 年之后的 MacBook Pro M1 14" / 16" (型号代码: MacBookPro18,1, MacBookPro18,2, MacBookPro18,3, MacBookPro18,4)
+- Pro Display XDR
+
+简单来说就是以下两个问题：您的 MacBook 显示器是否有凹口？设备底部是否标有 MacBook Pro？
+
+特点：
+- 通过菜单栏控制您的最大屏幕亮度
+- 方便的键盘快捷键
+- 通过 Spotlight 搜索 "BrightIntosh 设置" 或键盘快捷键（默认：Cmd+Option+Shift+B）打开设置
