@@ -41,6 +41,35 @@ func getBatteryCapacity() -> Int? {
     return nil
 }
 
+func isPowerAdapterConnected() -> Bool {
+    do {
+        guard let powerSourcesInformation = IOPSCopyPowerSourcesInfo()?.takeRetainedValue() else {
+            throw BatteryReadingError.error
+        }
+        
+        guard let powerSources: NSArray = IOPSCopyPowerSourcesList(powerSourcesInformation)?.takeRetainedValue() else {
+            throw BatteryReadingError.error
+        }
+        
+        for powerSource in powerSources {
+            guard let info: NSDictionary = IOPSGetPowerSourceDescription(powerSourcesInformation, powerSource as CFTypeRef)?.takeUnretainedValue() else {
+                throw BatteryReadingError.error
+            }
+            
+            if let name = info[kIOPSNameKey] as? String {
+                if name == "InternalBattery-0" {
+                    if let powerSourceState = info[kIOPSPowerSourceStateKey] as? String {
+                        return powerSourceState == "AC Power"
+                    }
+                }
+            }
+        }
+    } catch {
+        return false
+    }
+    return false
+}
+
 /// Runs checks if increased brightness activation would be toggling an immediate deactivation through the battery automation.
 /// If this is the case, an alert is shown to let the user decide wether to continue by deactivating the automation or not,
 /// - Returns: Bool wether increased brightness can be enabled or not

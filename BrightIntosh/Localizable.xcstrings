@@ -1222,6 +1222,9 @@
         }
       }
     },
+    "Disable when on battery, enable when plugged in" : {
+
+    },
     "Disclaimer" : {
       "localizations" : {
         "de" : {

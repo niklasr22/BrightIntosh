@@ -36,6 +36,12 @@ class BasicSettingsViewModel: ObservableObject {
         set { Settings.shared.timerAutomation = newValue }
         get { return timerAutomation }
     }
+    
+    private var powerAdapterAutomation = Settings.shared.powerAdapterAutomation
+    var powerAdapterAutomationToggle: Bool {
+        set { Settings.shared.powerAdapterAutomation = newValue }
+        get { return powerAdapterAutomation }
+    }
 
     init() {
         Settings.shared.addListener(setting: "brightintoshActive") {
@@ -62,6 +68,12 @@ class BasicSettingsViewModel: ObservableObject {
         Settings.shared.addListener(setting: "timerAutomation") {
             if self.timerAutomation != Settings.shared.timerAutomation {
                 self.timerAutomation = Settings.shared.timerAutomation
+                self.objectWillChange.send()
+            }
+        }
+        Settings.shared.addListener(setting: "powerAdapterAutomation") {
+            if self.powerAdapterAutomation != Settings.shared.powerAdapterAutomation {
+                self.powerAdapterAutomation = Settings.shared.powerAdapterAutomation
                 self.objectWillChange.send()
             }
         }
@@ -185,6 +197,9 @@ struct BasicSettings: View {
                         .frame(maxWidth: 60)
                         .multilineTextAlignment(.center)
                     }
+                    Toggle(
+                        "Disable when on battery, enable when plugged in",
+                        isOn: $viewModel.powerAdapterAutomationToggle)
                     HStack {
                         Toggle("Disable after", isOn: $viewModel.timerAutomationToggle)
                         Picker(selection: $timerAutomationTimeout, label: EmptyView()) {

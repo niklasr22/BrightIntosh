@@ -12,11 +12,19 @@ class AutomationManager {
     private let batteryCheckInterval = 10.0
     private var batteryCheckTimer: Timer?
     
+    private let powerAdapterCheckInterval = 5.0
+    private var powerAdapterCheckTimer: Timer?
+    private var lastPowerAdapterState: Bool?
+    
     private var timerAutomationTimer: Timer?
     
     init() {
         if Settings.shared.batteryAutomation {
             startBatteryAutomation()
+        }
+        
+        if Settings.shared.powerAdapterAutomation {
+            startPowerAdapterAutomation()
         }
         
         Settings.shared.addListener(setting: "batteryAutomation") {
@@ -26,6 +34,16 @@ class AutomationManager {
                 self.startBatteryAutomation()
             } else {
                 self.stopBatteryAutomation()
+            }
+        }
+        
+        Settings.shared.addListener(setting: "powerAdapterAutomation") {
+            print("Toggled power adapter automation. Active: \(Settings.shared.powerAdapterAutomation)")
+            
+            if Settings.shared.powerAdapterAutomation {
+                self.startPowerAdapterAutomation()
+            } else {
+                self.stopPowerAdapterAutomation()
             }
         }
         
@@ -130,6 +148,50 @@ class AutomationManager {
     
     func getRemainingTime() -> Double {
         return timerAutomationTimer != nil ? Date.now.distance(to: timerAutomationTimer!.fireDate) / 60 : 0.0
+    }
+    
+    func startPowerAdapterAutomation() {
+        if powerAdapterCheckTimer != nil {
+            return
+        }
+        lastPowerAdapterState = isPowerAdapterConnected()
+        let powerAdapterCheckDate = Date()
+        powerAdapterCheckTimer = Timer(fire: powerAdapterCheckDate, interval: powerAdapterCheckInterval, repeats: true, block: {t in
+            Task { @MainActor in
+                self.checkPowerAdapterAutomation()
+            }
+        })
+        RunLoop.main.add(powerAdapterCheckTimer!, forMode: RunLoop.Mode.default)
+        print("Started power adapter automation")
+    }
+    
+    func stopPowerAdapterAutomation() {
+        if powerAdapterCheckTimer != nil {
+            powerAdapterCheckTimer?.invalidate()
+            powerAdapterCheckTimer = nil
+            lastPowerAdapterState = nil
+        }
+    }
+    
+    func checkPowerAdapterAutomation() {
+        let currentPowerState = isPowerAdapterConnected()
+        
+        if lastPowerAdapterState != currentPowerState {
+            lastPowerAdapterState = currentPowerState
+            
+            if currentPowerState {
+                if !Settings.shared.brightintoshActive {
+                    print("Power adapter connected. Activating increased brightness.")
+                    Settings.shared.brightintoshActive = true
+                }
+            } else {
+                if Settings.shared.brightintoshActive {
+                    print("Power adapter disconnected. Deactivating increased brightness.")
+                    Settings.shared.brightintoshActive = false
+                    stopTimerAutomation()
+                }
+            }
+        }
     }
     
 }
