@@ -123,7 +123,7 @@ struct WelcomeStoreView: View {
     var body: some View {
         VStack {
             VStack {
-                if !trial.stillEntitled() {
+                if !isUnrestrictedUser && !trial.stillEntitled() {
                     Text("Your trial has expired")
                         .font(.largeTitle)
                         .bold()
@@ -147,6 +147,11 @@ struct WelcomeStoreView: View {
             if !isUnrestrictedUser && trial.stillEntitled() && trial.getRemainingDays() > 0 {
                 Button(action: onContinue) {
                     Text("Start your free \(trial.getRemainingDays()) day trial")
+                }
+                .buttonStyle(BrightIntoshButtonStyle())
+            } else if isUnrestrictedUser {
+                Button(action: onContinue) {
+                    Text("Activate")
                 }
                 .buttonStyle(BrightIntoshButtonStyle())
             }
