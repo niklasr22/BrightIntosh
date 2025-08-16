@@ -17,13 +17,11 @@ struct RestorePurchasesButton: View {
     var body: some View {
         Button(action: {
             isRestoring = true
-            Task.detached {
-                defer {
-                    DispatchQueue.main.sync {
-                        isRestoring = false
-                    }
-                }
+            Task {
                 await action()
+                await MainActor.run {
+                    isRestoring = false
+                }
             }
         }) {
            Text(label)
