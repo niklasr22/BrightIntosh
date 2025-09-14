@@ -12,9 +12,9 @@ class AutomationManager {
     private let batteryCheckInterval = 10.0
     private var batteryCheckTimer: Timer?
     
-    private let powerAdapterCheckInterval = 5.0
+    private let powerAdapterCheckInterval = 2.0
     private var powerAdapterCheckTimer: Timer?
-    private var lastPowerAdapterState: Bool?
+    private var lastPowerAdapterPluggedInState: Bool?
     
     private var timerAutomationTimer: Timer?
     
@@ -154,7 +154,7 @@ class AutomationManager {
         if powerAdapterCheckTimer != nil {
             return
         }
-        lastPowerAdapterState = isPowerAdapterConnected()
+        lastPowerAdapterPluggedInState = isPowerAdapterConnected()
         let powerAdapterCheckDate = Date()
         powerAdapterCheckTimer = Timer(fire: powerAdapterCheckDate, interval: powerAdapterCheckInterval, repeats: true, block: {t in
             Task { @MainActor in
@@ -169,17 +169,17 @@ class AutomationManager {
         if powerAdapterCheckTimer != nil {
             powerAdapterCheckTimer?.invalidate()
             powerAdapterCheckTimer = nil
-            lastPowerAdapterState = nil
+            lastPowerAdapterPluggedInState = nil
         }
     }
     
     func checkPowerAdapterAutomation() {
-        let currentPowerState = isPowerAdapterConnected()
+        let currentPowerStatePluggedIn = isPowerAdapterConnected()
         
-        if lastPowerAdapterState != currentPowerState {
-            lastPowerAdapterState = currentPowerState
+        if lastPowerAdapterPluggedInState != currentPowerStatePluggedIn {
+            lastPowerAdapterPluggedInState = currentPowerStatePluggedIn
             
-            if currentPowerState {
+            if currentPowerStatePluggedIn {
                 if !Settings.shared.brightintoshActive {
                     print("Power adapter connected. Activating increased brightness.")
                     Settings.shared.brightintoshActive = true
