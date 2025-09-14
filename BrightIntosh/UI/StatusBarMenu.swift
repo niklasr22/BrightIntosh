@@ -10,6 +10,8 @@ import KeyboardShortcuts
 
 @MainActor
 class StatusBarMenu : NSObject, NSMenuDelegate {
+    // Store reference to slider container for resizing
+    private var sliderContainerViewRef: NSView?
     
     private var supportedDevice: Bool = false
     private var automationManager: AutomationManager
@@ -143,32 +145,62 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     private func createBrightnessSliderItem() -> (NSMenuItem, NSSlider, NSTextField) {
         let brightnessSliderItem = NSMenuItem()
-        
-        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: 280, height: 30.0))
-        let sliderWidth = 190.0
-        let sliderHeight = 30.0
-        let horizontalOffset = 15.0
-        let sliderY = (sliderContainerView.frame.height - sliderHeight) / 2
-        
+
+        let minWidth = menu.minimumWidth
+        let containerHeight: CGFloat = 30.0
+        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: minWidth, height: containerHeight))
+        self.sliderContainerViewRef = sliderContainerView
+
         let brightnessSlider = if #available(macOS 26.0, *) {
-                NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))        } else {
+            NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
+        } else {
             StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
         }
         brightnessSlider.target = self
-        brightnessSlider.frame = NSRect(x: horizontalOffset, y: sliderY, width: sliderWidth, height: sliderHeight)
-        brightnessSlider.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin]
-        
+        sliderContainerView.addSubview(brightnessSlider)
+
         let brightnessValueDisplay = NSTextField(string: "100%")
+        brightnessValueDisplay.alignment = .right
         brightnessValueDisplay.isEditable = false
         brightnessValueDisplay.isBordered = false
         brightnessValueDisplay.isSelectable = false
         brightnessValueDisplay.drawsBackground = false
-        brightnessValueDisplay.setFrameOrigin(NSPoint(x: sliderContainerView.frame.width - horizontalOffset - brightnessValueDisplay.frame.width, y: sliderContainerView.frame.height / 2.0 - brightnessValueDisplay.frame.height / 2.0 + (brightnessValueDisplay.font?.descender ?? 0.0)))
-        
-        sliderContainerView.addSubview(brightnessSlider)
         sliderContainerView.addSubview(brightnessValueDisplay)
+
+        layoutSliderAndValueDisplay(in: sliderContainerView)
         brightnessSliderItem.view = sliderContainerView
         return (brightnessSliderItem, brightnessSlider, brightnessValueDisplay)
+    }
+
+    private func updateSliderContainerWidth() {
+        guard let sliderContainerView = self.sliderContainerViewRef else { return }
+        let menuWidth = max(menu.size.width, menu.minimumWidth)
+        var frame = sliderContainerView.frame
+        frame.size.width = menuWidth
+        sliderContainerView.frame = frame
+
+        layoutSliderAndValueDisplay(in: sliderContainerView)
+    }
+
+    private func layoutSliderAndValueDisplay(in container: NSView) {
+        let sliderWidth = 220.0
+        let sliderHeight = 30.0
+        let horizontalOffset = 15.0
+        let sliderY = (container.frame.height - sliderHeight) / 2
+        if let brightnessSlider = container.subviews.first(where: { $0 is NSSlider }) as? NSSlider {
+            brightnessSlider.frame = NSRect(x: horizontalOffset, y: sliderY, width: sliderWidth, height: sliderHeight)
+        }
+        if let brightnessValueDisplay = container.subviews.first(where: { $0 is NSTextField }) as? NSTextField {
+            let valueFont = brightnessValueDisplay.font ?? NSFont.systemFont(ofSize: NSFont.systemFontSize)
+            let maxValueString = "100%" as NSString
+            let valueAttributes: [NSAttributedString.Key: Any] = [.font: valueFont]
+            let valueSize = maxValueString.size(withAttributes: valueAttributes)
+            let valueWidth = ceil(valueSize.width) + 5.0
+            let valueHeight = ceil(valueSize.height)
+            let valueX = container.frame.width - horizontalOffset - valueWidth
+            let valueY = (container.frame.height - valueHeight) / 2.0
+            brightnessValueDisplay.frame = NSRect(x: valueX, y: valueY, width: valueWidth, height: valueHeight)
+        }
     }
     
     func updateMenu() {
@@ -285,6 +317,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     func menuWillOpen(_ menu: NSMenu) {
         startTimePollerIfApplicable()
         updateMenu()
+        updateSliderContainerWidth()
         isOpen = true
     }
     
