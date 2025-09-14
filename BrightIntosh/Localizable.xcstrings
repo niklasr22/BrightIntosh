@@ -959,6 +959,12 @@
             "state" : "translated",
             "value" : "Close"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
         }
       }
     },
@@ -1223,7 +1229,57 @@
       }
     },
     "Disable when on battery, enable when plugged in" : {
-
+      "comment" : "make it short and use common terminology for power adapter related descriptions for computers",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deaktivieren bei Akkubetrieb, aktivieren bei Netzbetrieb"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable when running on battery, enable when connected to power"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivar con batería, activar al conectar a la corriente"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactiver sur batterie, activer sur secteur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabilita in modalità batteria, abilita quando collegato all'alimentatore"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バッテリー使用時は無効、電源接続時は有効"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desativar quando estiver a usar bateria, ativar quando ligado à corrente"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "电池供电时禁用，连接电源时启用"
+          }
+        }
+      }
     },
     "Disclaimer" : {
       "localizations" : {
