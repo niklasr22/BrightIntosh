@@ -63,6 +63,13 @@ class Settings {
         }
     }
     
+    public var powerAdapterAutomation: Bool = Settings.getUserDefault(key: "powerAdapterAutomation", defaultValue: false) {
+        didSet {
+            UserDefaults.standard.setValue(powerAdapterAutomation, forKey: "powerAdapterAutomation")
+            callListeners(setting: "powerAdapterAutomation")
+        }
+    }
+    
     public var timerAutomation: Bool = Settings.getUserDefault(key: "timerAutomation", defaultValue: false) {
         didSet {
             UserDefaults.standard.setValue(timerAutomation, forKey: "timerAutomation")
@@ -113,6 +120,7 @@ class Settings {
         brightness = Settings.getUserDefault(key: "brightness", defaultValue: getDeviceMaxBrightness())
         batteryAutomation = Settings.getUserDefault(key: "batteryAutomation", defaultValue: false)
         batteryAutomationThreshold = Settings.getUserDefault(key: "batteryAutomationThreshold", defaultValue: 50)
+        powerAdapterAutomation = Settings.getUserDefault(key: "powerAdapterAutomation", defaultValue: false)
         timerAutomation = Settings.getUserDefault(key: "timerAutomation", defaultValue: false)
         timerAutomationTimeout = Settings.getUserDefault(key: "timerAutomationTimeout", defaultValue: 180)
     }
