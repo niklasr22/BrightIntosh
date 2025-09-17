@@ -48,10 +48,10 @@
 		9CA026532AC968430068CC74 /* BrightnessTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026522AC968430068CC74 /* BrightnessTechnique.swift */; };
 		9CA026542AC968430068CC74 /* BrightnessTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026522AC968430068CC74 /* BrightnessTechnique.swift */; };
 		9CA026552AC96B260068CC74 /* BrightnessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026502AC9647E0068CC74 /* BrightnessManager.swift */; };
-		9CBF7A382E000BB800B45A40 /* BrightIntoshLiquidGlass.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CBF7A372E000BB800B45A40 /* BrightIntoshLiquidGlass.icon */; };
-		9CBF7A392E000BB800B45A40 /* BrightIntoshLiquidGlass.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CBF7A372E000BB800B45A40 /* BrightIntoshLiquidGlass.icon */; };
 		9CA8FECD2E0707CA00D8525A /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8FECC2E0707B800D8525A /* Authorizer.swift */; };
 		9CA8FECE2E0707CA00D8525A /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8FECC2E0707B800D8525A /* Authorizer.swift */; };
+		9CBF7A382E000BB800B45A40 /* BrightIntoshLiquidGlass.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CBF7A372E000BB800B45A40 /* BrightIntoshLiquidGlass.icon */; };
+		9CBF7A392E000BB800B45A40 /* BrightIntoshLiquidGlass.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CBF7A372E000BB800B45A40 /* BrightIntoshLiquidGlass.icon */; };
 		9CCAC9372C3AF53B00B105D1 /* EntitlementHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */; };
 		9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
 		9CDE33C52B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
@@ -414,7 +414,7 @@
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh_SE.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 78;
+				CURRENT_PROJECT_VERSION = 79;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -442,7 +442,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 4.5.1;
+				MARKETING_VERSION = 5.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = BrightIntosh;
 				SDKROOT = auto;
@@ -466,7 +466,7 @@
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh_SE.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 78;
+				CURRENT_PROJECT_VERSION = 79;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -494,7 +494,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 4.5.1;
+				MARKETING_VERSION = 5.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = BrightIntosh;
 				SDKROOT = auto;
@@ -516,7 +516,7 @@
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 78;
+				CURRENT_PROJECT_VERSION = 79;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -544,7 +544,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 4.5.1;
+				MARKETING_VERSION = 5.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -567,7 +567,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 78;
+				CURRENT_PROJECT_VERSION = 79;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -595,7 +595,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 4.5.1;
+				MARKETING_VERSION = 5.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
