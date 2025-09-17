@@ -183,13 +183,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
 
     private func layoutSliderAndValueDisplay(in container: NSView) {
-        let sliderWidth = 220.0
-        let sliderHeight = 30.0
         let horizontalOffset = 15.0
-        let sliderY = (container.frame.height - sliderHeight) / 2
-        if let brightnessSlider = container.subviews.first(where: { $0 is NSSlider }) as? NSSlider {
-            brightnessSlider.frame = NSRect(x: horizontalOffset, y: sliderY, width: sliderWidth, height: sliderHeight)
-        }
+        var valueX = 0.0
         if let brightnessValueDisplay = container.subviews.first(where: { $0 is NSTextField }) as? NSTextField {
             let valueFont = brightnessValueDisplay.font ?? NSFont.systemFont(ofSize: NSFont.systemFontSize)
             let maxValueString = "100%" as NSString
@@ -197,9 +192,15 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             let valueSize = maxValueString.size(withAttributes: valueAttributes)
             let valueWidth = ceil(valueSize.width) + 5.0
             let valueHeight = ceil(valueSize.height)
-            let valueX = container.frame.width - horizontalOffset - valueWidth
+            valueX = container.frame.width - horizontalOffset - valueWidth
             let valueY = (container.frame.height - valueHeight) / 2.0
             brightnessValueDisplay.frame = NSRect(x: valueX, y: valueY, width: valueWidth, height: valueHeight)
+        }
+        let sliderWidth = valueX - horizontalOffset * 2.0
+        let sliderHeight = 30.0
+        let sliderY = (container.frame.height - sliderHeight) / 2
+        if let brightnessSlider = container.subviews.first(where: { $0 is NSSlider }) as? NSSlider {
+            brightnessSlider.frame = NSRect(x: horizontalOffset, y: sliderY, width: sliderWidth, height: sliderHeight)
         }
     }
     
