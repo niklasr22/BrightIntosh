@@ -92,7 +92,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         menu.addItem(titleItem)
         menu.addItem(toggleIncreasedBrightnessItem)
-        if Settings.shared.brightintoshActive {
+        if BrightIntoshSettings.shared.brightintoshActive {
             menu.addItem(toggleTimerItem!)
         }
         menu.addItem(NSMenuItem.separator())
@@ -114,26 +114,26 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         trialExpiredItem.isHidden = true
         menu.addItem(trialExpiredItem)
         
-        if !Settings.shared.hideMenuBarItem {
+        if !BrightIntoshSettings.shared.hideMenuBarItem {
             createStatusBarItem()
         }
         
         self.updateMenu()
         
         // Listen to settings
-        Settings.shared.addListener(setting: "brightintoshActive") {
+        BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
             self.updateMenu()
         }
         
-        Settings.shared.addListener(setting: "brightness") {
+        BrightIntoshSettings.shared.addListener(setting: "brightness") {
             self.updateMenu()
         }
         
-        Settings.shared.addListener(setting: "timerAutomation") {
+        BrightIntoshSettings.shared.addListener(setting: "timerAutomation") {
             self.updateMenu()
         }
         
-        Settings.shared.addListener(setting: "hideMenuBarItem") {
+        BrightIntoshSettings.shared.addListener(setting: "hideMenuBarItem") {
             self.updateStatusBarItemVisibility()
         }
     }
@@ -152,9 +152,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         self.sliderContainerViewRef = sliderContainerView
 
         let brightnessSlider = if #available(macOS 26.0, *) {
-            NSSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
+            NSSlider(value: Double(BrightIntoshSettings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
         } else {
-            StyledSlider(value: Double(Settings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
+            StyledSlider(value: Double(BrightIntoshSettings.shared.brightness), minValue: 1.0, maxValue: Double(getDeviceMaxBrightness()), target: self, action: #selector(brightnessSliderMoved))
         }
         brightnessSlider.target = self
         sliderContainerView.addSubview(brightnessSlider)
@@ -208,17 +208,17 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         guard let statusItem else { return }
         
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: Settings.shared.brightintoshActive ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: Settings.shared.brightintoshActive ? "Increased brightness" : "Default brightness")
+            button.image = NSImage(systemSymbolName: BrightIntoshSettings.shared.brightintoshActive ? "sun.max.circle.fill" : "sun.max.circle", accessibilityDescription: BrightIntoshSettings.shared.brightintoshActive ? "Increased brightness" : "Default brightness")
             button.toolTip = titleString
         }
         
-        toggleIncreasedBrightnessItem.title = Settings.shared.brightintoshActive ? String(localized: "Deactivate") : String(localized: "Activate")
-        toggleTimerItem.title = Settings.shared.timerAutomation ? String(localized: "Disable Timer") : String(localized: "Enable Timer")
-        if #available(macOS 14, *), !Settings.shared.timerAutomation {
+        toggleIncreasedBrightnessItem.title = BrightIntoshSettings.shared.brightintoshActive ? String(localized: "Deactivate") : String(localized: "Activate")
+        toggleTimerItem.title = BrightIntoshSettings.shared.timerAutomation ? String(localized: "Disable Timer") : String(localized: "Enable Timer")
+        if #available(macOS 14, *), !BrightIntoshSettings.shared.timerAutomation {
             toggleTimerItem.badge = nil
         }
         
-        if Settings.shared.brightintoshActive {
+        if BrightIntoshSettings.shared.brightintoshActive {
             if !menu.items.contains(toggleTimerItem) {
                 menu.insertItem(toggleTimerItem!, at: 2)
             }
@@ -226,14 +226,14 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             menu.removeItem(toggleTimerItem!)
         }
         
-        brightnessSlider.floatValue = Settings.shared.brightness
+        brightnessSlider.floatValue = BrightIntoshSettings.shared.brightness
         brightnessValueDisplay.stringValue = "\(Int(round(brightnessSlider.getNormalizedSliderValue() * 100.0)))%"
         
         self.trialExpiredItem.isHidden = Authorizer.shared.isAllowed()
     }
     
     func updateStatusBarItemVisibility() {
-        if Settings.shared.hideMenuBarItem {
+        if BrightIntoshSettings.shared.hideMenuBarItem {
             if let statusItem = statusItem {
                 statusItem.menu = nil
                 NSStatusBar.system.removeStatusItem(statusItem)
@@ -253,7 +253,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     @objc func brightnessSliderMoved(slider: NSSlider) {
-        Settings.shared.brightness = slider.floatValue
+        BrightIntoshSettings.shared.brightness = slider.floatValue
     }
     
     @objc func openSettings() {
@@ -262,7 +262,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     @objc func toggleTimerAutomation() {
-        Settings.shared.timerAutomation.toggle()
+        BrightIntoshSettings.shared.timerAutomation.toggle()
     }
     
     @objc func openWebsite() {
@@ -323,9 +323,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     func startTimePollerIfApplicable() {
-        if Settings.shared.timerAutomation {
+        if BrightIntoshSettings.shared.timerAutomation {
             self.startRemainingTimePoller()
-        } else if !Settings.shared.timerAutomation {
+        } else if !BrightIntoshSettings.shared.timerAutomation {
             self.stopRemainingTimePoller()
         }
     }

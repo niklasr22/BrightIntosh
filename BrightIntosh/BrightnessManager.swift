@@ -28,7 +28,7 @@ class BrightnessManager {
     init() {
         setBrightnessTechnique()
         
-        if Settings.shared.brightintoshActive {
+        if BrightIntoshSettings.shared.brightintoshActive {
             activateSafely()
         }
         
@@ -50,26 +50,26 @@ class BrightnessManager {
         
         // Observe entitlement
         Authorizer.shared.$status.sink { newStatus in
-            if newStatus == .unauthorized && Settings.shared.brightintoshActive {
-                Settings.shared.brightintoshActive = false
+            if newStatus == .unauthorized && BrightIntoshSettings.shared.brightintoshActive {
+                BrightIntoshSettings.shared.brightintoshActive = false
             }
         }.store(in: &cancellables)
         
         // Add settings listeners
-        Settings.shared.addListener(setting: "brightintoshActive") {
-            if Settings.shared.brightintoshActive {
+        BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
+            if BrightIntoshSettings.shared.brightintoshActive {
                 self.activateSafely()
             } else if self.enabled {
                 self.brightnessTechnique?.disable()
             }
         }
         
-        Settings.shared.addListener(setting: "brightness") {
-            print("Set brightness to \(Settings.shared.brightness)")
+        BrightIntoshSettings.shared.addListener(setting: "brightness") {
+            print("Set brightness to \(BrightIntoshSettings.shared.brightness)")
             self.brightnessTechnique?.adjustBrightness()
         }
         
-        Settings.shared.addListener(setting: "brightIntoshOnlyOnBuiltIn") {
+        BrightIntoshSettings.shared.addListener(setting: "brightIntoshOnlyOnBuiltIn") {
             self.handlePotentialScreenUpdate()
         }
         
@@ -81,7 +81,7 @@ class BrightnessManager {
             self.enabled = true
             self.enableExtraBrightness()
         } else {
-            Settings.shared.brightintoshActive = false
+            BrightIntoshSettings.shared.brightintoshActive = false
         }
     }
     
@@ -127,7 +127,7 @@ class BrightnessManager {
         }
         
         if !newScreens.isEmpty {
-            if let brightnessTechnique = brightnessTechnique, Settings.shared.brightintoshActive {
+            if let brightnessTechnique = brightnessTechnique, BrightIntoshSettings.shared.brightintoshActive {
                 if !brightnessTechnique.isEnabled {
                     print("Enable extra brightness after screen setup change")
                     self.enableExtraBrightness()
@@ -146,11 +146,11 @@ class BrightnessManager {
     @MainActor
     private func enableExtraBrightness() {
         // Put brightness value into device specific bounds, as earlier versions allowed storing higher brightness values.
-        let safeBrightness = max(1.0, min(getDeviceMaxBrightness(), Settings.shared.brightness))
+        let safeBrightness = max(1.0, min(getDeviceMaxBrightness(), BrightIntoshSettings.shared.brightness))
         
-        if safeBrightness != Settings.shared.brightness {
+        if safeBrightness != BrightIntoshSettings.shared.brightness {
             print("Fixing brightness")
-            Settings.shared.brightness = safeBrightness
+            BrightIntoshSettings.shared.brightness = safeBrightness
         }
         self.brightnessTechnique?.enable()
     }

@@ -65,12 +65,12 @@ func isPowerAdapterConnected() -> Bool {
 /// If this is the case, an alert is shown to let the user decide wether to continue by deactivating the automation or not,
 /// - Returns: Bool wether increased brightness can be enabled or not
 @MainActor func checkBatteryAutomationContradiction() -> Bool {
-    if Settings.shared.batteryAutomation {
-        if let batteryCapacity = getBatteryCapacity(), batteryCapacity <= Settings.shared.batteryAutomationThreshold {
+    if BrightIntoshSettings.shared.batteryAutomation {
+        if let batteryCapacity = getBatteryCapacity(), batteryCapacity <= BrightIntoshSettings.shared.batteryAutomationThreshold {
             let alert = createBatteryAutomationContradictionAlert()
             let result = alert.runModal()
             if result == NSApplication.ModalResponse.alertFirstButtonReturn {
-                Settings.shared.batteryAutomation = false
+                BrightIntoshSettings.shared.batteryAutomation = false
             } else if result == NSApplication.ModalResponse.alertSecondButtonReturn {
                 return false
             }
