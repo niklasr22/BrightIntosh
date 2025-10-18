@@ -18,7 +18,7 @@ enum TimeoutError: Error {
 @MainActor func getXDRDisplays() -> [NSScreen] {
     var xdrScreens: [NSScreen] = []
     for screen in NSScreen.screens {
-        if ((isBuiltInScreen(screen: screen) && isDeviceSupported()) || (externalXdrDisplays.contains(screen.localizedName) && !Settings.shared.brightIntoshOnlyOnBuiltIn)) {
+        if ((isBuiltInScreen(screen: screen) && isDeviceSupported()) || (externalXdrDisplays.contains(screen.localizedName) && !BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn)) {
             xdrScreens.append(screen)
         }
     }

@@ -12,12 +12,12 @@ import Foundation
 }
 
 @MainActor func toggleCli() {
-    Settings.shared.brightintoshActive.toggle()
+    BrightIntoshSettings.shared.brightintoshActive.toggle()
     notifyUpdate()
 }
 
 @MainActor func setActiveStateCli(active: Bool) {
-    Settings.shared.brightintoshActive = active
+    BrightIntoshSettings.shared.brightintoshActive = active
     notifyUpdate()
 }
 
@@ -30,13 +30,13 @@ import Foundation
         print("Usage: brightintosh set <0-100>")
         return
     }
-    Settings.shared.brightness = 1.0 + (getDeviceMaxBrightness() - 1.0) * Float(brightnessValue) / 100.0
+    BrightIntoshSettings.shared.brightness = 1.0 + (getDeviceMaxBrightness() - 1.0) * Float(brightnessValue) / 100.0
     notifyUpdate()
 }
 
 @MainActor func statusCli() {
-    let status = Settings.shared.brightintoshActive
-    let brightness = Settings.shared.brightness
+    let status = BrightIntoshSettings.shared.brightintoshActive
+    let brightness = BrightIntoshSettings.shared.brightness
     let brightnessPercentage = Int(round((brightness - 1.0) / (getDeviceMaxBrightness() - 1.0) * 100.0))
     print("Status: \(status ? "Enabled" : "Disabled")")
     print("Brightness: \(brightnessPercentage)")

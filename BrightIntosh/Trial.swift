@@ -79,7 +79,7 @@ public class TrialHandler: ObservableObject {
     @Published var status: AuthorizationStatus = .pending
     
     private func loadTrialStatus() async -> AuthorizationStatus {
-        guard !Settings.getUserDefault(key: "trialExpired", defaultValue: false) else {
+        guard !BrightIntoshSettings.getUserDefault(key: "trialExpired", defaultValue: false) else {
             return .unauthorized
         }
         do {
