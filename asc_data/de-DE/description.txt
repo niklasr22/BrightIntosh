@@ -4,6 +4,7 @@ Diese Open-Source-Anwendung nutzt die HDR-Funktionen Ihres MacBook Pro, um die m
 
 Unterstützte Geräte sind:
 
+- MacBook Pro M5 14" von 2025 (Modellbezeichner: Mac17,2) 
 - MacBook Pro M4 von 2024 (Modellbezeichner: Mac16,1, Mac16,5, Mac16,6, Mac16,7, Mac16,8)
 - MacBook Pro M3 von 2023 (Modellbezeichner: Mac15,3, Mac15,6, Mac15,7, Mac15,8, Mac15,9, Mac15,10, Mac15,11)
 - MacBook Pro M2 14" / 16" von 2023 (Modellbezeichner: Mac14,5, Mac14,6, Mac14,9, Mac14,10)

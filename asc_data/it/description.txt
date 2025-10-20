@@ -5,6 +5,7 @@ L'app offre diverse impostazioni come livelli di luminosità, scorciatoie e auto
 
 I dispositivi supportati sono:
 
+- MacBook Pro M5 14" del 2025 (Identificatore di modello: Mac17,2)
 - MacBook Pro M4 del 2024 (Identificatori di modello: Mac16,1, Mac16,5, Mac16,6, Mac16,7, Mac16,8)
 - MacBook Pro M3 del 2023 (Identificatori di modello: Mac15,3, Mac15,6, Mac15,7, Mac15,8, Mac15,9, Mac15,10, Mac15,11)
 - MacBook Pro M2 14" / 16" del 2023 (Identificatori di modello: Mac14,5, Mac14,6, Mac14,9, Mac14,10)
