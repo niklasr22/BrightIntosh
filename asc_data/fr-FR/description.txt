@@ -5,6 +5,7 @@ L'application propose divers paramètres tels que les niveaux de luminosité, le
 
 Les appareils pris en charge sont :
 
+- MacBook Pro M5 14" de 2025 (Identifiant de modèle : Mac17,2)
 - MacBook Pro M4 de 2024 (Identifiants de modèle : Mac16,1, Mac16,5, Mac16,6, Mac16,7, Mac16,8)
 - MacBook Pro M3 de 2023 (Identifiants de modèle : Mac15,3, Mac15,6, Mac15,7, Mac15,8, Mac15,9, Mac15,10, Mac15,11)
 - MacBook Pro M2 14" / 16" de 2023 (Identifiants de modèle : Mac14,5, Mac14,6, Mac14,9, Mac14,10)
