@@ -15,6 +15,7 @@ class AutomationManager {
     private let powerAdapterCheckInterval = 2.0
     private var powerAdapterCheckTimer: Timer?
     private var lastPowerAdapterPluggedInState: Bool?
+    private var wasBrightnessPreUnplugActive = false;
     
     private var timerAutomationTimer: Timer?
     
@@ -155,6 +156,7 @@ class AutomationManager {
             return
         }
         lastPowerAdapterPluggedInState = isPowerAdapterConnected()
+        wasBrightnessPreUnplugActive = false
         let powerAdapterCheckDate = Date()
         powerAdapterCheckTimer = Timer(fire: powerAdapterCheckDate, interval: powerAdapterCheckInterval, repeats: true, block: {t in
             Task { @MainActor in
@@ -180,11 +182,12 @@ class AutomationManager {
             lastPowerAdapterPluggedInState = currentPowerStatePluggedIn
             
             if currentPowerStatePluggedIn {
-                if !Settings.shared.brightintoshActive {
+                if !Settings.shared.brightintoshActive && wasBrightnessPreUnplugActive {
                     print("Power adapter connected. Activating increased brightness.")
                     Settings.shared.brightintoshActive = true
                 }
             } else {
+                wasBrightnessPreUnplugActive = Settings.shared.brightintoshActive
                 if Settings.shared.brightintoshActive {
                     print("Power adapter disconnected. Deactivating increased brightness.")
                     Settings.shared.brightintoshActive = false
@@ -193,5 +196,4 @@ class AutomationManager {
             }
         }
     }
-    
 }
