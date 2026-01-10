@@ -1462,7 +1462,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "斷開電源時停用，接入電源時恢復前狀態"
+            "value" : "斷開電源時停用，接入電源時恢復原先狀態"
           }
         }
       }
@@ -2042,7 +2042,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "產生並複製報告"
+            "value" : "生成並複製報告"
           }
         }
       }
@@ -3193,7 +3193,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "切換增加亮度："
+            "value" : "開啟／關閉亮度增強："
           }
         }
       }
@@ -3503,7 +3503,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "您仍然可以使用亮度調節鍵來調整亮度。滑桿控制亮度範圍向上移動的振幅。"
+            "value" : "您仍然可以使用亮度調節鍵來調整亮度。透過滑桿控制增加的亮度範圍。"
           }
         }
       }
