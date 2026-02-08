@@ -18,23 +18,36 @@ struct Note: View {
     var text: String
     var style: NoteStyle = .info
     
-    var content: some View {
-        VStack {
+    @ViewBuilder
+    var body: some View {
+        let themeColor = style == .info ? Color.brightintoshBlue : Color("ErrorColor")
+        
+        let content = VStack {
             Label(text, systemImage: style == .info ? "info.circle" : "exclamationmark.triangle")
                 .frame(maxWidth: .infinity)
                 .transition(.opacity)
         }
         .padding(10)
-    }
-    
-    var body: some View {
+
+        #if swift(>=6.2)
         if #available(macOS 26.0, *) {
-            content.glassEffect(.regular.tint(style == .info ? Color.brightintoshBlue : Color("ErrorColor")), in: .rect(cornerRadius: 10.0))
+            content.glassEffect(
+                .regular.tint(themeColor),
+                in: .rect(cornerRadius: 10.0)
+            )
         } else {
-            content
-                .background(style == .info ? Color.brightintoshBlue : Color("ErrorColor"))
-                .clipShape(RoundedRectangle(cornerRadius: 10.0))
+            fallback(to: content, color: themeColor)
         }
+        #else
+        fallback(to: content, color: themeColor)
+        #endif
+    }
+
+    @ViewBuilder
+    private func fallback(to content: some View, color: Color) -> some View {
+        content
+            .background(color)
+            .clipShape(RoundedRectangle(cornerRadius: 10.0))
     }
 }
 

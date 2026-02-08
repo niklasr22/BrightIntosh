@@ -31,26 +31,37 @@ struct BrightIntoshButtonStyle: ButtonStyle {
 }
 
 private struct CardModifier: ViewModifier {
-    public var backgroundColor: Color
-    public var opacity: Double
+    var backgroundColor: Color
+    var opacity: Double
     
+    @ViewBuilder
     func body(content: Content) -> some View {
+        #if swift(>=6.2)
         if #available(macOS 26.0, *) {
             content
                 .foregroundStyle(.black)
                 .padding(20.0)
                 .glassEffect(in: .rect(cornerRadius: 10.0))
         } else {
-            content
-                .foregroundStyle(.black)
-                .padding(20.0)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(backgroundColor)
-                        .opacity(opacity)
-                        .shadow(radius: 3)
-                 )
+            fallback(content)
         }
+        #else
+        fallback(content)
+        #endif
+    }
+
+    // encapsulate the fallback to avoid duplicating the styling code
+    @ViewBuilder
+    private func fallback(_ content: Content) -> some View {
+        content
+            .foregroundStyle(.black)
+            .padding(20.0)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(backgroundColor)
+                    .opacity(opacity)
+                    .shadow(radius: 3)
+            )
     }
 }
 
