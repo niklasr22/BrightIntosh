@@ -35,22 +35,15 @@ private struct CardModifier: ViewModifier {
     public var opacity: Double
     
     func body(content: Content) -> some View {
-        if #available(macOS 26.0, *) {
-            content
-                .foregroundStyle(.black)
-                .padding(20.0)
-                .glassEffect(in: .rect(cornerRadius: 10.0))
-        } else {
-            content
-                .foregroundStyle(.black)
-                .padding(20.0)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(backgroundColor)
-                        .opacity(opacity)
-                        .shadow(radius: 3)
-                 )
-        }
+        content
+            .foregroundStyle(.black)
+            .padding(20.0)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(backgroundColor)
+                    .opacity(opacity)
+                    .shadow(radius: 3)
+             )
     }
 }
 
