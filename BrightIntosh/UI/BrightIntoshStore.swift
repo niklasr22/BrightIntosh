@@ -28,13 +28,9 @@ struct Note: View {
     }
     
     var body: some View {
-        if #available(macOS 26.0, *) {
-            content.glassEffect(.regular.tint(style == .info ? Color.brightintoshBlue : Color("ErrorColor")), in: .rect(cornerRadius: 10.0))
-        } else {
-            content
-                .background(style == .info ? Color.brightintoshBlue : Color("ErrorColor"))
-                .clipShape(RoundedRectangle(cornerRadius: 10.0))
-        }
+        content
+            .background(style == .info ? Color.brightintoshBlue : Color("ErrorColor"))
+            .clipShape(RoundedRectangle(cornerRadius: 10.0))
     }
 }
 
