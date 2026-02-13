@@ -8,14 +8,22 @@
 import Foundation
 import ServiceManagement
 
+extension UserDefaults {
+    @objc dynamic var active: Bool {
+        return bool(forKey: "active")
+    }
+}
+
 @MainActor
 class BrightIntoshSettings {
     static let shared: BrightIntoshSettings = BrightIntoshSettings()
     
     public var ignoreAppTransaction = false
     
+    public static let defaults = UserDefaults(suiteName: defaultsSuiteName)!
+    
     public static func getUserDefault<T>(key: String, defaultValue: T) -> T {
-        if let value = UserDefaults(suiteName:"group.de.brightintosh.app")!.object(forKey: key) as? T {
+        if let value = defaults.object(forKey: key) as? T {
             return value
         }
         return defaultValue
@@ -23,63 +31,63 @@ class BrightIntoshSettings {
 
     public var brightintoshActive: Bool = BrightIntoshSettings.getUserDefault(key: "active", defaultValue: true) {
         didSet {
-            UserDefaults(suiteName:"group.de.brightintosh.app")!.setValue(brightintoshActive, forKey: "active")
+            BrightIntoshSettings.defaults.setValue(brightintoshActive, forKey: "active")
             callListeners(setting: "brightintoshActive")
         }
     }
     
     public var brightIntoshOnlyOnBuiltIn: Bool = BrightIntoshSettings.getUserDefault(key: "brightIntoshOnlyOnBuiltIn", defaultValue: false) {
         didSet {
-            UserDefaults(suiteName:"group.de.brightintosh.app")!.setValue(brightIntoshOnlyOnBuiltIn, forKey: "brightIntoshOnlyOnBuiltIn")
+            BrightIntoshSettings.defaults.setValue(brightIntoshOnlyOnBuiltIn, forKey: "brightIntoshOnlyOnBuiltIn")
             callListeners(setting: "brightIntoshOnlyOnBuiltIn")
         }
     }
     
     public var hideMenuBarItem: Bool = BrightIntoshSettings.getUserDefault(key: "hideMenuBarItem", defaultValue: false) {
         didSet {
-            UserDefaults(suiteName:"group.de.brightintosh.app")!.setValue(hideMenuBarItem, forKey: "hideMenuBarItem")
+            BrightIntoshSettings.defaults.setValue(hideMenuBarItem, forKey: "hideMenuBarItem")
             callListeners(setting: "hideMenuBarItem")
         }
     }
 
     public var brightness: Float = BrightIntoshSettings.getUserDefault(key: "brightness", defaultValue: getDeviceMaxBrightness()) {
         didSet {
-            UserDefaults(suiteName:"group.de.brightintosh.app")!.setValue(brightness, forKey: "brightness")
+            BrightIntoshSettings.defaults.setValue(brightness, forKey: "brightness")
             callListeners(setting: "brightness")
         }
     }
     
     public var batteryAutomation: Bool = BrightIntoshSettings.getUserDefault(key: "batteryAutomation", defaultValue: false) {
         didSet {
-            UserDefaults(suiteName:"group.de.brightintosh.app")!.setValue(batteryAutomation, forKey: "batteryAutomation")
+            BrightIntoshSettings.defaults.setValue(batteryAutomation, forKey: "batteryAutomation")
             callListeners(setting: "batteryAutomation")
         }
     }
     
     public var batteryAutomationThreshold: Int = BrightIntoshSettings.getUserDefault(key: "batteryAutomationThreshold", defaultValue: 50) {
         didSet {
-            UserDefaults(suiteName:"group.de.brightintosh.app")!.setValue(batteryAutomationThreshold, forKey: "batteryAutomationThreshold")
+            BrightIntoshSettings.defaults.setValue(batteryAutomationThreshold, forKey: "batteryAutomationThreshold")
             callListeners(setting: "batteryAutomationThreshold")
         }
     }
     
     public var powerAdapterAutomation: Bool = BrightIntoshSettings.getUserDefault(key: "powerAdapterAutomation", defaultValue: false) {
         didSet {
-            UserDefaults(suiteName:"group.de.brightintosh.app")!.setValue(powerAdapterAutomation, forKey: "powerAdapterAutomation")
+            BrightIntoshSettings.defaults.setValue(powerAdapterAutomation, forKey: "powerAdapterAutomation")
             callListeners(setting: "powerAdapterAutomation")
         }
     }
     
     public var timerAutomation: Bool = BrightIntoshSettings.getUserDefault(key: "timerAutomation", defaultValue: false) {
         didSet {
-            UserDefaults(suiteName:"group.de.brightintosh.app")!.setValue(timerAutomation, forKey: "timerAutomation")
+            BrightIntoshSettings.defaults.setValue(timerAutomation, forKey: "timerAutomation")
             callListeners(setting: "timerAutomation")
         }
     }
     
     public var timerAutomationTimeout: Int = BrightIntoshSettings.getUserDefault(key: "timerAutomationTimeout", defaultValue: 180) {
         didSet {
-            UserDefaults(suiteName:"group.de.brightintosh.app")!.setValue(timerAutomationTimeout, forKey: "timerAutomationTimeout")
+            BrightIntoshSettings.defaults.setValue(timerAutomationTimeout, forKey: "timerAutomationTimeout")
             callListeners(setting: "timerAutomationTimeout")
         }
     }
@@ -102,6 +110,8 @@ class BrightIntoshSettings {
     
     private var listeners: [String: [()->()]] = [:]
     
+    var observer: NSKeyValueObservation?
+    
     init() {
         // Load launch at login status
         launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
@@ -111,6 +121,7 @@ class BrightIntoshSettings {
             name: UserDefaults.didChangeNotification,
             object: nil
         )
+        migrateUserDefaultsToAppGroups();
     }
     
     private func refreshState() {
@@ -143,6 +154,23 @@ class BrightIntoshSettings {
             setting_listeners.forEach { callback in
                 callback()
             }
+        }
+    }
+    
+    private func migrateUserDefaultsToAppGroups() {
+        let userDefaults = UserDefaults.standard
+        let didMigrateToAppGroups = "didMigrateToAppGroups"
+        
+        if !BrightIntoshSettings.defaults.bool(forKey: didMigrateToAppGroups) {
+            for key in userDefaults.dictionaryRepresentation().keys {
+                BrightIntoshSettings.defaults.set(userDefaults.dictionaryRepresentation()[key], forKey: key)
+            }
+            BrightIntoshSettings.defaults.set(true, forKey: didMigrateToAppGroups)
+            BrightIntoshSettings.defaults.synchronize()
+            refreshState();
+            print("Successfully migrated defaults")
+        } else {
+            print("No need to migrate defaults")
         }
     }
 }

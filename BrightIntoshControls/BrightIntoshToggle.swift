@@ -12,11 +12,9 @@ import Foundation
 
 
 struct BrightIntoshControlToggle: ControlWidget {
-    static let kind: String = "de.brightintosh.app.BrightIntoshControls.bup"
-
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(
-            kind: Self.kind,
+            kind: brightintoshActiveControlKind,
             provider: Provider()
         ) { value in
             ControlWidgetToggle(
@@ -45,7 +43,7 @@ extension BrightIntoshControlToggle {
         }
 
         func currentValue() async throws -> Bool {
-            let isRunning = UserDefaults(suiteName: "group.de.brightintosh.app")!.bool(forKey: "active")
+            let isRunning = UserDefaults(suiteName: defaultsSuiteName)!.bool(forKey: "active")
             return isRunning
         }
     }
@@ -59,8 +57,7 @@ struct ToggleBrightIntoshIntent: SetValueIntent {
 
     func perform() async throws -> some IntentResult {
         // Trigger main app via distributed notification; handled in AppDelegate
-        let name = Notification.Name("de.brightintosh.intent.setActive")
-        DistributedNotificationCenter.default().postNotificationName(name, object: nil, userInfo: nil, deliverImmediately: true)
+        DistributedNotificationCenter.default().postNotificationName(controlActiveToggleNotificationName, object: nil, userInfo: nil, deliverImmediately: true)
         return .result()
     }
 }

@@ -11,6 +11,7 @@ import ServiceManagement
 import StoreKit
 import CoreSpotlight
 import SwiftUI
+import WidgetKit
 
 @MainActor
 class BrightIntoshAppDelegate: NSObject {
@@ -127,7 +128,10 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
         addKeyListeners()
         
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
-            print("Active state changed")
+            if #available(macOS 26.0, *) {
+                ControlCenter.shared.reloadControls(ofKind: brightintoshActiveControlKind)
+            }
+            print("Brightness: \(BrightIntoshSettings.shared.brightintoshActive ? "ON" : "OFF")")
             /* Show Settings Store Window, when user is not authorized */
             guard !Authorizer.shared.isAllowed() else { return }
             Task { @MainActor in
@@ -142,7 +146,7 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
         DistributedNotificationCenter.default().addObserver(
             self,
             selector: #selector(alarm(notification:)),
-            name: Notification.Name("de.brightintosh.intent.setActive"),
+            name: controlActiveToggleNotificationName,
             object: nil
         )
         
@@ -166,11 +170,7 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
 @main
 struct AppWithMenuBarExtra: App {
     @NSApplicationDelegateAdaptor private var appDelegate: BrightIntoshAppDelegate
-    @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
     @Environment(\.openSettings) private var openSettings
-    
-    @ObservedObject var viewModel = BasicSettingsViewModel()
 
-    var body: some Scene {
-    }
+    var body: some Scene {}
 }
