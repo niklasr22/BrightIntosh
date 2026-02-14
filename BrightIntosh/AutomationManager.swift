@@ -20,61 +20,61 @@ class AutomationManager {
     private var timerAutomationTimer: Timer?
     
     init() {
-        if Settings.shared.batteryAutomation {
+        if BrightIntoshSettings.shared.batteryAutomation {
             startBatteryAutomation()
         }
         
-        if Settings.shared.powerAdapterAutomation {
+        if BrightIntoshSettings.shared.powerAdapterAutomation {
             startPowerAdapterAutomation()
         }
         
-        Settings.shared.addListener(setting: "batteryAutomation") {
-            print("Toggled battery automation. Active: \(Settings.shared.batteryAutomation)")
+        BrightIntoshSettings.shared.addListener(setting: "batteryAutomation") {
+            print("Toggled battery automation. Active: \(BrightIntoshSettings.shared.batteryAutomation)")
             
-            if Settings.shared.batteryAutomation {
+            if BrightIntoshSettings.shared.batteryAutomation {
                 self.startBatteryAutomation()
             } else {
                 self.stopBatteryAutomation()
             }
         }
         
-        Settings.shared.addListener(setting: "powerAdapterAutomation") {
-            print("Toggled power adapter automation. Active: \(Settings.shared.powerAdapterAutomation)")
+        BrightIntoshSettings.shared.addListener(setting: "powerAdapterAutomation") {
+            print("Toggled power adapter automation. Active: \(BrightIntoshSettings.shared.powerAdapterAutomation)")
             
-            if Settings.shared.powerAdapterAutomation {
+            if BrightIntoshSettings.shared.powerAdapterAutomation {
                 self.startPowerAdapterAutomation()
             } else {
                 self.stopPowerAdapterAutomation()
             }
         }
         
-        if Settings.shared.timerAutomation && Settings.shared.brightintoshActive {
+        if BrightIntoshSettings.shared.timerAutomation && BrightIntoshSettings.shared.brightintoshActive {
             startTimerAutomation()
         }
         
-        Settings.shared.addListener(setting: "timerAutomation") {
-            print("Toggled Timer automation. Active: \(Settings.shared.timerAutomation)")
+        BrightIntoshSettings.shared.addListener(setting: "timerAutomation") {
+            print("Toggled Timer automation. Active: \(BrightIntoshSettings.shared.timerAutomation)")
             
-            if Settings.shared.timerAutomation && Settings.shared.brightintoshActive {
+            if BrightIntoshSettings.shared.timerAutomation && BrightIntoshSettings.shared.brightintoshActive {
                 self.startTimerAutomation()
             } else {
                 self.stopTimerAutomation()
             }
         }
         
-        Settings.shared.addListener(setting: "timerAutomationTimeout") {
-            print("Changed Timer Automation Timeout: \(Settings.shared.timerAutomationTimeout)")
+        BrightIntoshSettings.shared.addListener(setting: "timerAutomationTimeout") {
+            print("Changed Timer Automation Timeout: \(BrightIntoshSettings.shared.timerAutomationTimeout)")
             
-            if Settings.shared.timerAutomation && Settings.shared.brightintoshActive{
+            if BrightIntoshSettings.shared.timerAutomation && BrightIntoshSettings.shared.brightintoshActive{
                 self.restartTimerAutomation()
             }
         }
         
-        Settings.shared.addListener(setting: "brightintoshActive") {
-            if Settings.shared.brightintoshActive && Settings.shared.timerAutomation {
+        BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
+            if BrightIntoshSettings.shared.brightintoshActive && BrightIntoshSettings.shared.timerAutomation {
                 self.startTimerAutomation()
                 print("Toggled increased Brightness with timeout. Timer started.")
-            } else if !Settings.shared.brightintoshActive {
+            } else if !BrightIntoshSettings.shared.brightintoshActive {
                 self.stopTimerAutomation()
             }
         }
@@ -102,24 +102,24 @@ class AutomationManager {
     }
     
     func checkBatteryAutomation() {
-        if !Settings.shared.brightintoshActive {
+        if !BrightIntoshSettings.shared.brightintoshActive {
             return
         }
         if let batteryCapacity = getBatteryCapacity() {
-            let threshold = Settings.shared.batteryAutomationThreshold
+            let threshold = BrightIntoshSettings.shared.batteryAutomationThreshold
             if batteryCapacity <= threshold {
                 print("Battery level dropped below \(threshold)%. Deactivating increased brightness.")
-                Settings.shared.brightintoshActive = false
+                BrightIntoshSettings.shared.brightintoshActive = false
                 stopTimerAutomation()
             }
         }
     }
     
     func startTimerAutomation() {
-        if timerAutomationTimer != nil || !Settings.shared.brightintoshActive {
+        if timerAutomationTimer != nil || !BrightIntoshSettings.shared.brightintoshActive {
             return
         }
-        let timeout = Settings.shared.timerAutomationTimeout
+        let timeout = BrightIntoshSettings.shared.timerAutomationTimeout
         timerAutomationTimer = Timer(timeInterval: Double(timeout * 60), repeats: false, block: { t in
             Task { @MainActor in
                 self.timerAutomationCallback()
@@ -143,7 +143,7 @@ class AutomationManager {
     
     func timerAutomationCallback() {
         print("Timer fired. Deactivating increased brightness.")
-        Settings.shared.brightintoshActive = false
+        BrightIntoshSettings.shared.brightintoshActive = false
         stopTimerAutomation()
     }
     
@@ -182,15 +182,15 @@ class AutomationManager {
             lastPowerAdapterPluggedInState = currentPowerStatePluggedIn
             
             if currentPowerStatePluggedIn {
-                if !Settings.shared.brightintoshActive && wasBrightnessPreUnplugActive {
+                if !BrightIntoshSettings.shared.brightintoshActive && wasBrightnessPreUnplugActive {
                     print("Power adapter connected. Activating increased brightness.")
-                    Settings.shared.brightintoshActive = true
+                    BrightIntoshSettings.shared.brightintoshActive = true
                 }
             } else {
-                wasBrightnessPreUnplugActive = Settings.shared.brightintoshActive
-                if Settings.shared.brightintoshActive {
+                wasBrightnessPreUnplugActive = BrightIntoshSettings.shared.brightintoshActive
+                if BrightIntoshSettings.shared.brightintoshActive {
                     print("Power adapter disconnected. Deactivating increased brightness.")
-                    Settings.shared.brightintoshActive = false
+                    BrightIntoshSettings.shared.brightintoshActive = false
                     stopTimerAutomation()
                 }
             }

@@ -114,7 +114,7 @@ class GammaTechnique: BrightnessTechnique {
         super.adjustBrightness()
         
         if isEnabled {
-            let gamma = Settings.shared.brightness
+            let gamma = BrightIntoshSettings.shared.brightness
             overlayWindowControllers.values.forEach { controller in
                 if let displayId = controller.screen.displayId, let gammaTable = gammaTables[displayId] {
                     gammaTable.setTableForScreen(displayId: displayId, factor: gamma)

@@ -10,12 +10,13 @@ import KeyboardShortcuts
 import ServiceManagement
 import StoreKit
 import CoreSpotlight
-
+import SwiftUI
+import WidgetKit
 
 @MainActor
-class AppDelegate: NSObject {
+class BrightIntoshAppDelegate: NSObject {
     
-    private let settingsWindowController = SettingsWindowController()
+    private lazy var settingsWindowController = SettingsWindowController()
     
     private var statusBarMenu: StatusBarMenu?
     private var brightnessManager: BrightnessManager?
@@ -24,13 +25,13 @@ class AppDelegate: NSObject {
     
     @objc func increaseBrightness() {
         Task { @MainActor in
-            Settings.shared.brightness = min(getDeviceMaxBrightness(), Settings.shared.brightness + 0.05)
+            BrightIntoshSettings.shared.brightness = min(getDeviceMaxBrightness(), BrightIntoshSettings.shared.brightness + 0.05)
         }
     }
     
     @objc func decreaseBrightness() {
         Task { @MainActor in
-            Settings.shared.brightness = max(1.0, Settings.shared.brightness - 0.05)
+            BrightIntoshSettings.shared.brightness = max(1.0, BrightIntoshSettings.shared.brightness - 0.05)
         }
     }
     
@@ -51,11 +52,11 @@ class AppDelegate: NSObject {
     
     @objc func toggleBrightIntosh() {
         Task { @MainActor in
-            if !Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
+            if !BrightIntoshSettings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
                 return
             }
             
-            Settings.shared.brightintoshActive.toggle()
+            BrightIntoshSettings.shared.brightintoshActive.toggle()
         }
     }
     
@@ -90,7 +91,7 @@ class AppDelegate: NSObject {
     }
 }
 
-extension AppDelegate: NSApplicationDelegate {
+extension BrightIntoshAppDelegate: NSApplicationDelegate {
     
     func application(
         _ application: NSApplication,
@@ -108,6 +109,9 @@ extension AppDelegate: NSApplicationDelegate {
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        if cliBase() {
+            exit(0);
+        }
         
         supportedDevice = isDeviceSupported()
         
@@ -116,7 +120,7 @@ extension AppDelegate: NSApplicationDelegate {
         }
         
         if !supportedDevice {
-            Settings.shared.brightIntoshOnlyOnBuiltIn = false
+            BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn = false
         }
         
         brightnessManager = BrightnessManager()
@@ -126,8 +130,13 @@ extension AppDelegate: NSApplicationDelegate {
         // Register global hotkeys
         addKeyListeners()
         
-        Settings.shared.addListener(setting: "brightintoshActive") {
-            print("Active state changed")
+        BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
+#if swift(>=6.2)
+            if #available(macOS 26.0, *) {
+                ControlCenter.shared.reloadControls(ofKind: brightintoshActiveControlKind)
+            }
+#endif
+            print("Brightness: \(BrightIntoshSettings.shared.brightintoshActive ? "ON" : "OFF")")
             /* Show Settings Store Window, when user is not authorized */
             guard !Authorizer.shared.isAllowed() else { return }
             Task { @MainActor in
@@ -138,12 +147,22 @@ extension AppDelegate: NSApplicationDelegate {
         Task {
             addSettingsToIndex()
         }
+        
+        ProcessInfo.processInfo.disableSuddenTermination()
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
-        if Settings.shared.hideMenuBarItem {
+        if BrightIntoshSettings.shared.hideMenuBarItem {
             self.showSettingsWindow()
         }
         return false
     }
+}
+
+@main
+struct AppWithMenuBarExtra: App {
+    @NSApplicationDelegateAdaptor private var appDelegate: BrightIntoshAppDelegate
+    @Environment(\.openSettings) private var openSettings
+
+    var body: some Scene {}
 }

@@ -15,65 +15,65 @@ class BasicSettingsViewModel: ObservableObject {
     /*
      This View Model is used for settings that can be changed via shortcuts or another way other than the settings UI, so changes can be obeserved and showed in the UI.
      */
-    private var brightIntoshActive = Settings.shared.brightintoshActive
+    private var brightIntoshActive = BrightIntoshSettings.shared.brightintoshActive
     var brightIntoshActiveToggle: Bool {
-        set { Settings.shared.brightintoshActive = newValue }
+        set { BrightIntoshSettings.shared.brightintoshActive = newValue }
         get { return brightIntoshActive }
     }
-    private var brightness = Settings.shared.brightness
+    private var brightness = BrightIntoshSettings.shared.brightness
     var brightnessSlider: Float {
-        set { Settings.shared.brightness = newValue }
+        set { BrightIntoshSettings.shared.brightness = newValue }
         get { return brightness }
     }
-    private var batteryAutomation = Settings.shared.batteryAutomation
+    private var batteryAutomation = BrightIntoshSettings.shared.batteryAutomation
     var batteryAutomationToggle: Bool {
-        set { Settings.shared.batteryAutomation = newValue }
+        set { BrightIntoshSettings.shared.batteryAutomation = newValue }
         get { return batteryAutomation }
     }
 
-    private var timerAutomation = Settings.shared.timerAutomation
+    private var timerAutomation = BrightIntoshSettings.shared.timerAutomation
     var timerAutomationToggle: Bool {
-        set { Settings.shared.timerAutomation = newValue }
+        set { BrightIntoshSettings.shared.timerAutomation = newValue }
         get { return timerAutomation }
     }
     
-    private var powerAdapterAutomation = Settings.shared.powerAdapterAutomation
+    private var powerAdapterAutomation = BrightIntoshSettings.shared.powerAdapterAutomation
     var powerAdapterAutomationToggle: Bool {
-        set { Settings.shared.powerAdapterAutomation = newValue }
+        set { BrightIntoshSettings.shared.powerAdapterAutomation = newValue }
         get { return powerAdapterAutomation }
     }
 
     init() {
-        Settings.shared.addListener(setting: "brightintoshActive") {
-            if Settings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
-                Settings.shared.brightintoshActive = false
+        BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
+            if BrightIntoshSettings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
+                BrightIntoshSettings.shared.brightintoshActive = false
             }
-            if self.brightIntoshActive != Settings.shared.brightintoshActive {
-                self.brightIntoshActive = Settings.shared.brightintoshActive
+            if self.brightIntoshActive != BrightIntoshSettings.shared.brightintoshActive {
+                self.brightIntoshActive = BrightIntoshSettings.shared.brightintoshActive
                 self.objectWillChange.send()
             }
         }
-        Settings.shared.addListener(setting: "brightness") {
-            if self.brightness != Settings.shared.brightness {
-                self.brightness = Settings.shared.brightness
+        BrightIntoshSettings.shared.addListener(setting: "brightness") {
+            if self.brightness != BrightIntoshSettings.shared.brightness {
+                self.brightness = BrightIntoshSettings.shared.brightness
                 self.objectWillChange.send()
             }
         }
-        Settings.shared.addListener(setting: "batteryAutomation") {
-            if self.batteryAutomation != Settings.shared.batteryAutomation {
-                self.batteryAutomation = Settings.shared.batteryAutomation
+        BrightIntoshSettings.shared.addListener(setting: "batteryAutomation") {
+            if self.batteryAutomation != BrightIntoshSettings.shared.batteryAutomation {
+                self.batteryAutomation = BrightIntoshSettings.shared.batteryAutomation
                 self.objectWillChange.send()
             }
         }
-        Settings.shared.addListener(setting: "timerAutomation") {
-            if self.timerAutomation != Settings.shared.timerAutomation {
-                self.timerAutomation = Settings.shared.timerAutomation
+        BrightIntoshSettings.shared.addListener(setting: "timerAutomation") {
+            if self.timerAutomation != BrightIntoshSettings.shared.timerAutomation {
+                self.timerAutomation = BrightIntoshSettings.shared.timerAutomation
                 self.objectWillChange.send()
             }
         }
-        Settings.shared.addListener(setting: "powerAdapterAutomation") {
-            if self.powerAdapterAutomation != Settings.shared.powerAdapterAutomation {
-                self.powerAdapterAutomation = Settings.shared.powerAdapterAutomation
+        BrightIntoshSettings.shared.addListener(setting: "powerAdapterAutomation") {
+            if self.powerAdapterAutomation != BrightIntoshSettings.shared.powerAdapterAutomation {
+                self.powerAdapterAutomation = BrightIntoshSettings.shared.powerAdapterAutomation
                 self.objectWillChange.send()
             }
         }
@@ -135,11 +135,11 @@ struct CliInstallationSheet: View {
 struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
     
-    @State private var hideMenuBarItem = Settings.shared.hideMenuBarItem
-    @State private var launchOnLogin = Settings.shared.launchAtLogin
-    @State private var brightIntoshOnlyOnBuiltIn = Settings.shared.brightIntoshOnlyOnBuiltIn
-    @State private var batteryLevelThreshold = Settings.shared.batteryAutomationThreshold
-    @State private var timerAutomationTimeout = Settings.shared.timerAutomationTimeout
+    @State private var hideMenuBarItem = BrightIntoshSettings.shared.hideMenuBarItem
+    @State private var launchOnLogin = BrightIntoshSettings.shared.launchAtLogin
+    @State private var brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn
+    @State private var batteryLevelThreshold = BrightIntoshSettings.shared.batteryAutomationThreshold
+    @State private var timerAutomationTimeout = BrightIntoshSettings.shared.timerAutomationTimeout
 
     @State private var entitledToUnrestrictedUse = false
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
@@ -164,7 +164,7 @@ struct BasicSettings: View {
                             isOn: $brightIntoshOnlyOnBuiltIn
                         )
                         .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
-                            Settings.shared.brightIntoshOnlyOnBuiltIn = value
+                            BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn = value
                         }
                     } else {
                         Label(
@@ -176,7 +176,7 @@ struct BasicSettings: View {
                 Section(header: Text("Automations").bold()) {
                     Toggle("Launch on login", isOn: $launchOnLogin)
                         .onChange(of: launchOnLogin) { value in
-                            Settings.shared.launchAtLogin = value
+                            BrightIntoshSettings.shared.launchAtLogin = value
                         }
                     HStack {
                         Toggle(
@@ -190,7 +190,7 @@ struct BasicSettings: View {
                             if !(0...100 ~= batteryLevelThreshold) {
                                 batteryLevelThreshold = max(0, min(batteryLevelThreshold, 100))
                             } else {
-                                Settings.shared.batteryAutomationThreshold = value
+                                BrightIntoshSettings.shared.batteryAutomationThreshold = value
                             }
                         }
                         .textFieldStyle(.roundedBorder)
@@ -212,7 +212,7 @@ struct BasicSettings: View {
                             }
                         }
                         .onChange(of: timerAutomationTimeout) { value in
-                            Settings.shared.timerAutomationTimeout = value
+                            BrightIntoshSettings.shared.timerAutomationTimeout = value
                         }
                         .frame(maxWidth: 80)
                     }
@@ -234,7 +234,7 @@ struct BasicSettings: View {
                         "Hide menu bar item",
                         isOn: $hideMenuBarItem)
                     .onChange(of: hideMenuBarItem) { value in
-                        Settings.shared.hideMenuBarItem = value
+                        BrightIntoshSettings.shared.hideMenuBarItem = value
                     }
                     if hideMenuBarItem {
                         Label(
@@ -302,7 +302,7 @@ struct VersionView: View {
 
     @State var clicks = 0
 
-    @State var ignoreAppTransaction = Settings.shared.ignoreAppTransaction
+    @State var ignoreAppTransaction = BrightIntoshSettings.shared.ignoreAppTransaction
 
     var body: some View {
         VStack {
@@ -345,7 +345,7 @@ struct VersionView: View {
                         Text("Test: Ignore App Transaction")
                     }
                     .onChange(of: ignoreAppTransaction) { _ in
-                        Settings.shared.ignoreAppTransaction = ignoreAppTransaction
+                        BrightIntoshSettings.shared.ignoreAppTransaction = ignoreAppTransaction
                         Task {
                             _ = try? await EntitlementHandler.shared.isUnrestrictedUser()
                         }

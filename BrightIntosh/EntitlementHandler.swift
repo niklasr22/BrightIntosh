@@ -59,12 +59,12 @@ class EntitlementHandler: ObservableObject {
     }
     
     func isUnrestrictedUser(refresh: Bool = false) async throws -> Bool {
-        if !Settings.shared.ignoreAppTransaction && isUnrestrictedUser {
+        if !BrightIntoshSettings.shared.ignoreAppTransaction && isUnrestrictedUser {
             print("User is unrestricted, no need to check")
             return true
         }
         
-        if Settings.getUserDefault(key: CACHED_UNRESTRICTED_USER_KEY, defaultValue: false) {
+        if BrightIntoshSettings.getUserDefault(key: CACHED_UNRESTRICTED_USER_KEY, defaultValue: false) {
             setRestrictionState(.authorized)
             print("User was verified previously, authorizing now but validating again")
         }
@@ -96,7 +96,7 @@ class EntitlementHandler: ObservableObject {
     }
     
     func checkAppEntitlements(refresh: Bool = false) async throws -> Bool  {
-        if Settings.shared.ignoreAppTransaction {
+        if BrightIntoshSettings.shared.ignoreAppTransaction {
             return false
         }
         
