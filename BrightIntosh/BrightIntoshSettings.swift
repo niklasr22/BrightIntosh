@@ -122,6 +122,14 @@ class BrightIntoshSettings {
             object: nil
         )
         migrateUserDefaultsToAppGroups();
+        
+        observer = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (defaults, change) in
+            Task { @MainActor in
+                if let newValue = change.newValue, newValue != self.brightintoshActive {
+                    self.brightintoshActive = newValue;
+                }
+            }
+        })
     }
     
     private func refreshState() {
@@ -166,11 +174,8 @@ class BrightIntoshSettings {
                 BrightIntoshSettings.defaults.set(userDefaults.dictionaryRepresentation()[key], forKey: key)
             }
             BrightIntoshSettings.defaults.set(true, forKey: didMigrateToAppGroups)
-            BrightIntoshSettings.defaults.synchronize()
             refreshState();
             print("Successfully migrated defaults")
-        } else {
-            print("No need to migrate defaults")
         }
     }
 }

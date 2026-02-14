@@ -53,10 +53,6 @@
 		9CBF7A392E000BB800B45A40 /* BrightIntoshLiquidGlass.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CBF7A372E000BB800B45A40 /* BrightIntoshLiquidGlass.icon */; };
 		9CCAC9372C3AF53B00B105D1 /* EntitlementHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */; };
 		9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
-		9CCFCB612EA2390000E2DB3E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CCFCB602EA2390000E2DB3E /* WidgetKit.framework */; };
-		9CCFCB632EA2390000E2DB3E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CCFCB622EA2390000E2DB3E /* SwiftUI.framework */; };
-		9CCFCB722EA2390100E2DB3E /* BrightIntoshControlsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CCFCB5F2EA2390000E2DB3E /* BrightIntoshControlsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		9CCFCB782EA23F4D00E2DB3E /* BrightIntoshControlsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CCFCB5F2EA2390000E2DB3E /* BrightIntoshControlsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9CDE33C52B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
 		9CDE33C62B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
 		9CE3C37D2C8C89F200E7FDBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C9C78022A62AEE800778CAE /* Assets.xcassets */; };
@@ -64,25 +60,29 @@
 		9CE3C37F2C8C8A1800E7FDBA /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */; };
 		9CE3C3812C8C8D3B00E7FDBA /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */; };
 		9CE3C3822C8C8D3B00E7FDBA /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */; };
+		9CEA0E382F40857D00284E1A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CCFCB602EA2390000E2DB3E /* WidgetKit.framework */; };
+		9CEA0E392F40857D00284E1A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CCFCB622EA2390000E2DB3E /* SwiftUI.framework */; };
+		9CEA0E462F40857E00284E1A /* WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CEA0E372F40857D00284E1A /* WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9CEA0E4D2F4086B200284E1A /* WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CEA0E372F40857D00284E1A /* WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
 		C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
 		C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D044EA2A60205E0022B970 /* OverlayWindow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		9CCFCB702EA2390100E2DB3E /* PBXContainerItemProxy */ = {
+		9CEA0E442F40857E00284E1A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C1DF943D2A5EF20000FA285F /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 9CCFCB5E2EA2390000E2DB3E;
-			remoteInfo = BrightIntoshControlsExtension;
+			remoteGlobalIDString = 9CEA0E362F40857D00284E1A;
+			remoteInfo = WidgetsExtension;
 		};
-		9CCFCB792EA23F4D00E2DB3E /* PBXContainerItemProxy */ = {
+		9CEA0E4E2F4086B200284E1A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C1DF943D2A5EF20000FA285F /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 9CCFCB5E2EA2390000E2DB3E;
-			remoteInfo = BrightIntoshControlsExtension;
+			remoteGlobalIDString = 9CEA0E362F40857D00284E1A;
+			remoteInfo = WidgetsExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -102,7 +102,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				9CCFCB722EA2390100E2DB3E /* BrightIntoshControlsExtension.appex in Embed Foundation Extensions */,
+				9CEA0E4D2F4086B200284E1A /* WidgetsExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -113,7 +113,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				9CCFCB782EA23F4D00E2DB3E /* BrightIntoshControlsExtension.appex in Embed Foundation Extensions */,
+				9CEA0E462F40857E00284E1A /* WidgetsExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -154,12 +154,13 @@
 		9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntitlementHandler.swift; sourceTree = "<group>"; };
 		9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorePurchasesButton.swift; sourceTree = "<group>"; };
-		9CCFCB5F2EA2390000E2DB3E /* BrightIntoshControlsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BrightIntoshControlsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CCFCB602EA2390000E2DB3E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		9CCFCB622EA2390000E2DB3E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		9CCFCB802EA24C6A00E2DB3E /* BrightIntoshControlsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BrightIntoshControlsExtension.entitlements; sourceTree = "<group>"; };
 		9CDE33C42B4317D70085F786 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
+		9CEA0E372F40857D00284E1A /* WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CEA0E652F40A81800284E1A /* WidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetsExtension.entitlements; sourceTree = "<group>"; };
 		9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh.entitlements; sourceTree = "<group>"; };
 		9CEB41EF2A923723005D7A0D /* BrightIntosh_SE.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh_SE.entitlements; sourceTree = "<group>"; };
 		9CEDBABB2D870EBA00490820 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
@@ -172,18 +173,25 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		9CCFCB762EA2390100E2DB3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		9CEA0E472F40857E00284E1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 9CCFCB5E2EA2390000E2DB3E /* BrightIntoshControlsExtension */;
+			target = 9CEA0E362F40857D00284E1A /* WidgetsExtension */;
+		};
+		9CEA0E622F408B2800284E1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SharedConstants.swift,
+			);
+			target = 9CEA0E362F40857D00284E1A /* WidgetsExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		9C881F092F3F30BF0056FAEF /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
-		9CCFCB642EA2390000E2DB3E /* BrightIntoshControls */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (9CCFCB762EA2390100E2DB3E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BrightIntoshControls; sourceTree = "<group>"; };
+		9C881F092F3F30BF0056FAEF /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (9CEA0E622F408B2800284E1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
+		9CEA0E3A2F40857D00284E1A /* Widgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (9CEA0E472F40857E00284E1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Widgets; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,12 +203,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9CCFCB5C2EA2390000E2DB3E /* Frameworks */ = {
+		9CEA0E342F40857D00284E1A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CCFCB632EA2390000E2DB3E /* SwiftUI.framework in Frameworks */,
-				9CCFCB612EA2390000E2DB3E /* WidgetKit.framework in Frameworks */,
+				9CEA0E392F40857D00284E1A /* SwiftUI.framework in Frameworks */,
+				9CEA0E382F40857D00284E1A /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,11 +252,12 @@
 		C1DF943C2A5EF20000FA285F = {
 			isa = PBXGroup;
 			children = (
+				9CEA0E652F40A81800284E1A /* WidgetsExtension.entitlements */,
 				9C881F092F3F30BF0056FAEF /* Shared */,
 				9CCFCB802EA24C6A00E2DB3E /* BrightIntoshControlsExtension.entitlements */,
 				C1DF94572A5EF66200FA285F /* README.md */,
 				C1DF94472A5EF20000FA285F /* BrightIntosh */,
-				9CCFCB642EA2390000E2DB3E /* BrightIntoshControls */,
+				9CEA0E3A2F40857D00284E1A /* Widgets */,
 				C1DF94462A5EF20000FA285F /* Products */,
 				9C4163752ABD8FA4005B34B6 /* Frameworks */,
 			);
@@ -259,7 +268,7 @@
 			children = (
 				C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */,
 				9C8803822A72625E00476017 /* BrightIntosh.app */,
-				9CCFCB5F2EA2390000E2DB3E /* BrightIntoshControlsExtension.appex */,
+				9CEA0E372F40857D00284E1A /* WidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -309,7 +318,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				9CCFCB7A2EA23F4D00E2DB3E /* PBXTargetDependency */,
+				9CEA0E452F40857E00284E1A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9C881F092F3F30BF0056FAEF /* Shared */,
@@ -322,27 +331,26 @@
 			productReference = 9C8803822A72625E00476017 /* BrightIntosh.app */;
 			productType = "com.apple.product-type.application";
 		};
-		9CCFCB5E2EA2390000E2DB3E /* BrightIntoshControlsExtension */ = {
+		9CEA0E362F40857D00284E1A /* WidgetsExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9CCFCB772EA2390100E2DB3E /* Build configuration list for PBXNativeTarget "BrightIntoshControlsExtension" */;
+			buildConfigurationList = 9CEA0E482F40857E00284E1A /* Build configuration list for PBXNativeTarget "WidgetsExtension" */;
 			buildPhases = (
-				9CCFCB5B2EA2390000E2DB3E /* Sources */,
-				9CCFCB5C2EA2390000E2DB3E /* Frameworks */,
-				9CCFCB5D2EA2390000E2DB3E /* Resources */,
+				9CEA0E332F40857D00284E1A /* Sources */,
+				9CEA0E342F40857D00284E1A /* Frameworks */,
+				9CEA0E352F40857D00284E1A /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				9C881F092F3F30BF0056FAEF /* Shared */,
-				9CCFCB642EA2390000E2DB3E /* BrightIntoshControls */,
+				9CEA0E3A2F40857D00284E1A /* Widgets */,
 			);
-			name = BrightIntoshControlsExtension;
+			name = WidgetsExtension;
 			packageProductDependencies = (
 			);
-			productName = BrightIntoshControlsExtension;
-			productReference = 9CCFCB5F2EA2390000E2DB3E /* BrightIntoshControlsExtension.appex */;
+			productName = WidgetsExtension;
+			productReference = 9CEA0E372F40857D00284E1A /* WidgetsExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		C1B521472A5EFF5800E9B7AC /* BrightIntosh */ = {
@@ -358,7 +366,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				9CCFCB712EA2390100E2DB3E /* PBXTargetDependency */,
+				9CEA0E4F2F4086B200284E1A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9C881F092F3F30BF0056FAEF /* Shared */,
@@ -378,14 +386,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2600;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					9C8803732A72625E00476017 = {
 						LastSwiftMigration = 1430;
 					};
-					9CCFCB5E2EA2390000E2DB3E = {
-						CreatedOnToolsVersion = 26.0.1;
+					9CEA0E362F40857D00284E1A = {
+						CreatedOnToolsVersion = 26.2;
 					};
 					C1B521472A5EFF5800E9B7AC = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -419,19 +427,12 @@
 			targets = (
 				C1B521472A5EFF5800E9B7AC /* BrightIntosh */,
 				9C8803732A72625E00476017 /* BrightIntosh (Store Editon) */,
-				9CCFCB5E2EA2390000E2DB3E /* BrightIntoshControlsExtension */,
+				9CEA0E362F40857D00284E1A /* WidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		9CCFCB5D2EA2390000E2DB3E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		9CE3C37C2C8C89DF00E7FDBA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -440,6 +441,13 @@
 				9CE3C37D2C8C89F200E7FDBA /* Assets.xcassets in Resources */,
 				9CBF7A382E000BB800B45A40 /* BrightIntoshLiquidGlass.icon in Resources */,
 				9C17DFB02DD1F3DA00185CDA /* cli.sh in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CEA0E352F40857D00284E1A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,7 +495,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9CCFCB5B2EA2390000E2DB3E /* Sources */ = {
+		9CEA0E332F40857D00284E1A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -527,15 +535,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		9CCFCB712EA2390100E2DB3E /* PBXTargetDependency */ = {
+		9CEA0E452F40857E00284E1A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9CCFCB5E2EA2390000E2DB3E /* BrightIntoshControlsExtension */;
-			targetProxy = 9CCFCB702EA2390100E2DB3E /* PBXContainerItemProxy */;
+			target = 9CEA0E362F40857D00284E1A /* WidgetsExtension */;
+			targetProxy = 9CEA0E442F40857E00284E1A /* PBXContainerItemProxy */;
 		};
-		9CCFCB7A2EA23F4D00E2DB3E /* PBXTargetDependency */ = {
+		9CEA0E4F2F4086B200284E1A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9CCFCB5E2EA2390000E2DB3E /* BrightIntoshControlsExtension */;
-			targetProxy = 9CCFCB792EA23F4D00E2DB3E /* PBXContainerItemProxy */;
+			target = 9CEA0E362F40857D00284E1A /* WidgetsExtension */;
+			targetProxy = 9CEA0E4E2F4086B200284E1A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -645,13 +653,12 @@
 			};
 			name = Release;
 		};
-		9CCFCB742EA2390100E2DB3E /* Debug */ = {
+		9CEA0E492F40857E00284E1A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = BrightIntoshControlsExtension.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_ENTITLEMENTS = WidgetsExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -659,8 +666,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = BrightIntoshControls/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BrightIntoshControls;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Widgets;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -668,9 +675,9 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app.BrightIntoshControls;
+				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app.Widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
@@ -683,14 +690,12 @@
 			};
 			name = Debug;
 		};
-		9CCFCB752EA2390100E2DB3E /* Release */ = {
+		9CEA0E4A2F40857E00284E1A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = BrightIntoshControlsExtension.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_ENTITLEMENTS = WidgetsExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9K32WDUN2H;
@@ -698,8 +703,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = BrightIntoshControls/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BrightIntoshControls;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Widgets;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -707,9 +712,9 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app.BrightIntoshControls;
+				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.app.Widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
@@ -883,6 +888,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.0;
 			};
@@ -941,6 +947,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 6.0;
 			};
@@ -958,11 +965,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9CCFCB772EA2390100E2DB3E /* Build configuration list for PBXNativeTarget "BrightIntoshControlsExtension" */ = {
+		9CEA0E482F40857E00284E1A /* Build configuration list for PBXNativeTarget "WidgetsExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9CCFCB742EA2390100E2DB3E /* Debug */,
-				9CCFCB752EA2390100E2DB3E /* Release */,
+				9CEA0E492F40857E00284E1A /* Debug */,
+				9CEA0E4A2F40857E00284E1A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

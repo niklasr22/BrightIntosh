@@ -109,6 +109,9 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        if cliBase() {
+            exit(0);
+        }
         
         supportedDevice = isDeviceSupported()
         
@@ -128,9 +131,11 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
         addKeyListeners()
         
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
+#if swift(>=6.2)
             if #available(macOS 26.0, *) {
                 ControlCenter.shared.reloadControls(ofKind: brightintoshActiveControlKind)
             }
+#endif
             print("Brightness: \(BrightIntoshSettings.shared.brightintoshActive ? "ON" : "OFF")")
             /* Show Settings Store Window, when user is not authorized */
             guard !Authorizer.shared.isAllowed() else { return }
@@ -143,13 +148,6 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
             addSettingsToIndex()
         }
         
-        DistributedNotificationCenter.default().addObserver(
-            self,
-            selector: #selector(alarm(notification:)),
-            name: controlActiveToggleNotificationName,
-            object: nil
-        )
-        
         ProcessInfo.processInfo.disableSuddenTermination()
     }
     
@@ -159,12 +157,6 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
         }
         return false
     }
-    
-    @MainActor @objc
-    private func alarm(notification: Notification) {
-        toggleBrightIntosh()
-    }
-    
 }
 
 @main

@@ -10,7 +10,6 @@ import SwiftUI
 import WidgetKit
 import Foundation
 
-
 struct BrightIntoshControlToggle: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(
@@ -22,7 +21,8 @@ struct BrightIntoshControlToggle: ControlWidget {
                 isOn: value,
                 action: ToggleBrightIntoshIntent()
             ) { isRunning in
-                Label(isRunning ? "On" : "Off", systemImage: "sun.max.circle")
+                Image(systemName: "sun.max.circle")
+                Text(isRunning ? "On" : "Off")
             }
         }
         .displayName("BrightIntosh Toggle")
@@ -31,11 +31,6 @@ struct BrightIntoshControlToggle: ControlWidget {
 }
 
 extension BrightIntoshControlToggle {
-    struct Value {
-        var isRunning: Bool
-        var name: String
-    }
-
     struct Provider: ControlValueProvider {
         
         var previewValue: Bool {
@@ -50,14 +45,15 @@ extension BrightIntoshControlToggle {
 }
 
 struct ToggleBrightIntoshIntent: SetValueIntent {
-    static let title: LocalizedStringResource = "BrightIntosh toggle"
+    static let title: LocalizedStringResource = "BrightIntosh Toggle"
 
     @Parameter(title: "BrightIntosh is active")
     var value: Bool
 
     func perform() async throws -> some IntentResult {
         // Trigger main app via distributed notification; handled in AppDelegate
-        DistributedNotificationCenter.default().postNotificationName(controlActiveToggleNotificationName, object: nil, userInfo: nil, deliverImmediately: true)
+        //DistributedNotificationCenter.default().postNotificationName(controlActiveToggleNotificationName, object: nil, userInfo: nil, deliverImmediately: true)
+        UserDefaults(suiteName: defaultsSuiteName)!.setValue(value, forKey: "active")
         return .result()
     }
 }
