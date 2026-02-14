@@ -6,19 +6,12 @@
 //
 import Foundation
 
-@MainActor func notifyUpdate() {
-    let center = DistributedNotificationCenter.default()
-    center.postNotificationName(UserDefaults.didChangeNotification, object: nil, userInfo: nil, deliverImmediately: true)
-}
-
 @MainActor func toggleCli() {
     BrightIntoshSettings.shared.brightintoshActive.toggle()
-    notifyUpdate()
 }
 
 @MainActor func setActiveStateCli(active: Bool) {
     BrightIntoshSettings.shared.brightintoshActive = active
-    notifyUpdate()
 }
 
 @MainActor func setBrightnessOffsetCli() {
@@ -26,12 +19,11 @@ import Foundation
         print("Usage: brightintosh set <0-100>")
         return
     }
-    guard let brightnessValue = Int(CommandLine.arguments[2]), brightnessValue <= 100, brightnessValue >= 0 else {
+    guard let brightnessValue = Int(CommandLine.arguments[3]), brightnessValue <= 100, brightnessValue >= 0 else {
         print("Usage: brightintosh set <0-100>")
         return
     }
     BrightIntoshSettings.shared.brightness = 1.0 + (getDeviceMaxBrightness() - 1.0) * Float(brightnessValue) / 100.0
-    notifyUpdate()
 }
 
 @MainActor func statusCli() {
@@ -49,6 +41,7 @@ enum CliCommand: String, CaseIterable {
     case status = "status"
     case toggle = "toggle"
     case help = "help"
+    case cli = "cli"
 }
 
 func getHelpText() -> String {
@@ -75,31 +68,36 @@ func helpCli() {
 
 @MainActor func cliBase() -> Bool {
     if CommandLine.argc > 1 {
-        guard let command = CliCommand(rawValue: CommandLine.arguments[1]) else {
-            helpCli()
+        guard let cliMode = CliCommand(rawValue: CommandLine.arguments[1]), cliMode == .cli else {
             return false
         }
         
-        switch command {
-        case CliCommand.toggle:
-            toggleCli()
-            return true
-        case CliCommand.enable:
-            setActiveStateCli(active: true)
-            return true
-        case CliCommand.disable:
-            setActiveStateCli(active: false)
-            return true
-        case CliCommand.set:
-            setBrightnessOffsetCli()
-            return true
-        case CliCommand.status:
-            statusCli()
-            return true
-        case CliCommand.help:
+        guard CommandLine.argc > 2 else {
+            helpCli()
+            return true;
+        }
+        
+        guard let command = CliCommand(rawValue: CommandLine.arguments[2]) else {
             helpCli()
             return true
         }
+        
+        switch command {
+        case .toggle:
+            toggleCli()
+        case .enable:
+            setActiveStateCli(active: true)
+        case .disable:
+            setActiveStateCli(active: false)
+        case .set:
+            setBrightnessOffsetCli()
+        case .status:
+            statusCli()
+        case .help:
+            helpCli()
+        case .cli:
+            helpCli()
+        }
     }
-    return false
+    return true
 }

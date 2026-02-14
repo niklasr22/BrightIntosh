@@ -19,4 +19,4 @@ APP_ROOT="$(dirname "$SCRIPT_DIR")"
 BRIGHTINTOSH_EXEC="$APP_ROOT/MacOS/BrightIntosh"
 
 # Run the executable with all the passed arguments
-"$BRIGHTINTOSH_EXEC" "$@"
+"$BRIGHTINTOSH_EXEC" cli "$@"

@@ -16,7 +16,7 @@ import WidgetKit
 @MainActor
 class BrightIntoshAppDelegate: NSObject {
     
-    private let settingsWindowController = SettingsWindowController()
+    private lazy var settingsWindowController = SettingsWindowController()
     
     private var statusBarMenu: StatusBarMenu?
     private var brightnessManager: BrightnessManager?

@@ -12,6 +12,10 @@ extension UserDefaults {
     @objc dynamic var active: Bool {
         return bool(forKey: "active")
     }
+    
+    @objc dynamic var brightness: Float {
+        return float(forKey: "brightness")
+    }
 }
 
 @MainActor
@@ -110,8 +114,9 @@ class BrightIntoshSettings {
     
     private var listeners: [String: [()->()]] = [:]
     
-    var observer: NSKeyValueObservation?
-    
+    var activeObserver: NSKeyValueObservation?
+    var brightnessObserver: NSKeyValueObservation?
+
     init() {
         // Load launch at login status
         launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
@@ -123,10 +128,17 @@ class BrightIntoshSettings {
         )
         migrateUserDefaultsToAppGroups();
         
-        observer = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (defaults, change) in
+        activeObserver = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (defaults, change) in
             Task { @MainActor in
                 if let newValue = change.newValue, newValue != self.brightintoshActive {
                     self.brightintoshActive = newValue;
+                }
+            }
+        })
+        brightnessObserver = BrightIntoshSettings.defaults.observe(\.brightness, options: [.initial, .new], changeHandler: { (defaults, change) in
+            Task { @MainActor in
+                if let newValue = change.newValue, newValue != self.brightness {
+                    self.brightness = newValue;
                 }
             }
         })
