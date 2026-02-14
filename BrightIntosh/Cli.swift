@@ -15,7 +15,7 @@ import Foundation
 }
 
 @MainActor func setBrightnessOffsetCli() {
-    if CommandLine.argc <= 2 {
+    if CommandLine.argc <= 3 {
         print("Usage: brightintosh set <0-100>")
         return
     }
@@ -98,6 +98,7 @@ func helpCli() {
         case .cli:
             helpCli()
         }
+        return true
     }
-    return true
+    return false
 }
