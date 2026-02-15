@@ -135,6 +135,7 @@ struct CliInstallationSheet: View {
 struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
     
+    @State private var showInDock = BrightIntoshSettings.shared.showInDock
     @State private var hideMenuBarItem = BrightIntoshSettings.shared.hideMenuBarItem
     @State private var launchOnLogin = BrightIntoshSettings.shared.launchAtLogin
     @State private var brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn
@@ -163,8 +164,8 @@ struct BasicSettings: View {
                             "Don't apply increased brightness to external XDR displays",
                             isOn: $brightIntoshOnlyOnBuiltIn
                         )
-                        .onChange(of: brightIntoshOnlyOnBuiltIn) { value in
-                            BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn = value
+                        .onChange(of: brightIntoshOnlyOnBuiltIn) { _, new in
+                            BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn = new
                         }
                     } else {
                         Label(
@@ -175,8 +176,8 @@ struct BasicSettings: View {
                 }
                 Section(header: Text("Automations").bold()) {
                     Toggle("Launch on login", isOn: $launchOnLogin)
-                        .onChange(of: launchOnLogin) { value in
-                            BrightIntoshSettings.shared.launchAtLogin = value
+                        .onChange(of: launchOnLogin) { _, new in
+                            BrightIntoshSettings.shared.launchAtLogin = new
                         }
                     HStack {
                         Toggle(
@@ -186,11 +187,11 @@ struct BasicSettings: View {
                             "Battery level threshold", value: $batteryLevelThreshold,
                             format: .percent
                         )
-                        .onChange(of: batteryLevelThreshold) { value in
+                        .onChange(of: batteryLevelThreshold) { _, new in
                             if !(0...100 ~= batteryLevelThreshold) {
                                 batteryLevelThreshold = max(0, min(batteryLevelThreshold, 100))
                             } else {
-                                BrightIntoshSettings.shared.batteryAutomationThreshold = value
+                                BrightIntoshSettings.shared.batteryAutomationThreshold = new
                             }
                         }
                         .textFieldStyle(.roundedBorder)
@@ -211,8 +212,8 @@ struct BasicSettings: View {
                                 Text(String(format: "%.1f h", hours)).tag(Int(hours * 60))
                             }
                         }
-                        .onChange(of: timerAutomationTimeout) { value in
-                            BrightIntoshSettings.shared.timerAutomationTimeout = value
+                        .onChange(of: timerAutomationTimeout) { _, new in
+                            BrightIntoshSettings.shared.timerAutomationTimeout = new
                         }
                         .frame(maxWidth: 80)
                     }
@@ -233,14 +234,20 @@ struct BasicSettings: View {
                     Toggle(
                         "Hide menu bar item",
                         isOn: $hideMenuBarItem)
-                    .onChange(of: hideMenuBarItem) { value in
-                        BrightIntoshSettings.shared.hideMenuBarItem = value
+                    .onChange(of: hideMenuBarItem) { _, new in
+                        BrightIntoshSettings.shared.hideMenuBarItem = new
                     }
                     if hideMenuBarItem {
                         Label(
                             "To open the settings window without the menu bar item, search for \"BrightIntosh Settings\" in the the macOS \(Image(systemName: "magnifyingglass")) Spotlight search.",
                             systemImage: "exclamationmark.triangle.fill"
                         ).foregroundColor(Color.yellow)
+                    }
+                    Toggle(
+                        "Show in dock",
+                        isOn: $showInDock)
+                    .onChange(of: showInDock) { _, new in
+                        BrightIntoshSettings.shared.showInDock = new
                     }
                     Button(action: {
                         Task {
@@ -344,7 +351,7 @@ struct VersionView: View {
                     Toggle(isOn: $ignoreAppTransaction) {
                         Text("Test: Ignore App Transaction")
                     }
-                    .onChange(of: ignoreAppTransaction) { _ in
+                    .onChange(of: ignoreAppTransaction) {
                         BrightIntoshSettings.shared.ignoreAppTransaction = ignoreAppTransaction
                         Task {
                             _ = try? await EntitlementHandler.shared.isUnrestrictedUser()

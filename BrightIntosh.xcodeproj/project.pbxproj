@@ -156,7 +156,6 @@
 		9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorePurchasesButton.swift; sourceTree = "<group>"; };
 		9CCFCB602EA2390000E2DB3E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		9CCFCB622EA2390000E2DB3E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		9CCFCB802EA24C6A00E2DB3E /* BrightIntoshControlsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BrightIntoshControlsExtension.entitlements; sourceTree = "<group>"; };
 		9CDE33C42B4317D70085F786 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		9CE3C3802C8C8D3B00E7FDBA /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		9CEA0E372F40857D00284E1A /* WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,7 +163,6 @@
 		9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh.entitlements; sourceTree = "<group>"; };
 		9CEB41EF2A923723005D7A0D /* BrightIntosh_SE.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh_SE.entitlements; sourceTree = "<group>"; };
 		9CEDBABB2D870EBA00490820 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
-		C1B521172A5EFCB300E9B7AC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D044EA2A60205E0022B970 /* OverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindow.swift; sourceTree = "<group>"; };
 		C1DF94502A5EF20E00FA285F /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
@@ -254,7 +252,6 @@
 			children = (
 				9CEA0E652F40A81800284E1A /* WidgetsExtension.entitlements */,
 				9C881F092F3F30BF0056FAEF /* Shared */,
-				9CCFCB802EA24C6A00E2DB3E /* BrightIntoshControlsExtension.entitlements */,
 				C1DF94572A5EF66200FA285F /* README.md */,
 				C1DF94472A5EF20000FA285F /* BrightIntosh */,
 				9CEA0E3A2F40857D00284E1A /* Widgets */,
@@ -289,7 +286,6 @@
 				9CA026522AC968430068CC74 /* BrightnessTechnique.swift */,
 				9C4163782ABD8FBD005B34B6 /* Constants.swift */,
 				9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */,
-				C1B521172A5EFCB300E9B7AC /* Info.plist */,
 				9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */,
 				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
 				9C56104F2ABF55A90066D6C9 /* BrightIntoshSettings.swift */,
