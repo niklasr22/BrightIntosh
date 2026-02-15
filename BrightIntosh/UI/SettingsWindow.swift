@@ -149,7 +149,7 @@ struct BasicSettings: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: HorizontalAlignment.leading) {
+            Form() {
                 Section(header: Text("Brightness").bold()) {
                     Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
                     Slider(value: $viewModel.brightnessSlider, in: 1.0...getDeviceMaxBrightness()) {
@@ -174,61 +174,49 @@ struct BasicSettings: View {
                         ).foregroundColor(Color.yellow)
                     }
                 }
+                Section(header: Text("Timer").bold()) {
+                    Picker(selection: $timerAutomationTimeout, label: Text("Disable after")) {
+                        ForEach(Array(stride(from: 10, to: 51, by: 10)), id: \.self) {
+                            minutes in
+                            Text("\(minutes) min").tag(minutes)
+                        }
+                        ForEach(Array(stride(from: 1, to: 5, by: 0.5)), id: \.self) { hours in
+                            Text(String(format: "%.1f h", hours)).tag(Int(hours * 60))
+                        }
+                    }
+                    .onChange(of: timerAutomationTimeout) { _, new in
+                        BrightIntoshSettings.shared.timerAutomationTimeout = new
+                    }
+                }
                 Section(header: Text("Automations").bold()) {
                     Toggle("Launch on login", isOn: $launchOnLogin)
                         .onChange(of: launchOnLogin) { _, new in
                             BrightIntoshSettings.shared.launchAtLogin = new
                         }
-                    HStack {
-                        Toggle(
-                            "Disable when battery level drops under",
-                            isOn: $viewModel.batteryAutomationToggle)
-                        TextField(
-                            "Battery level threshold", value: $batteryLevelThreshold,
-                            format: .percent
-                        )
-                        .onChange(of: batteryLevelThreshold) { _, new in
-                            if !(0...100 ~= batteryLevelThreshold) {
-                                batteryLevelThreshold = max(0, min(batteryLevelThreshold, 100))
-                            } else {
-                                BrightIntoshSettings.shared.batteryAutomationThreshold = new
-                            }
+                    Picker(selection: $batteryLevelThreshold, label: Text("Disable when battery level drops under")) {
+                        Text("Never").tag(100)
+                        ForEach(Array(stride(from: 5, to: 100, by: 5)), id: \.self) {
+                            percent in
+                            Text("\(percent) %").tag(percent)
                         }
-                        .textFieldStyle(.roundedBorder)
-                        .frame(maxWidth: 60)
-                        .multilineTextAlignment(.center)
+                    }
+                    .onChange(of: batteryLevelThreshold) { _, new in
+                        BrightIntoshSettings.shared.batteryAutomation = batteryLevelThreshold != 100
+                        BrightIntoshSettings.shared.batteryAutomationThreshold = new
                     }
                     Toggle(
                         "Disable when on battery, enable when plugged in",
                         isOn: $viewModel.powerAdapterAutomationToggle)
-                    HStack {
-                        Toggle("Disable after", isOn: $viewModel.timerAutomationToggle)
-                        Picker(selection: $timerAutomationTimeout, label: EmptyView()) {
-                            ForEach(Array(stride(from: 10, to: 51, by: 10)), id: \.self) {
-                                minutes in
-                                Text("\(minutes) min").tag(minutes)
-                            }
-                            ForEach(Array(stride(from: 1, to: 5, by: 0.5)), id: \.self) { hours in
-                                Text(String(format: "%.1f h", hours)).tag(Int(hours * 60))
-                            }
-                        }
-                        .onChange(of: timerAutomationTimeout) { _, new in
-                            BrightIntoshSettings.shared.timerAutomationTimeout = new
-                        }
-                        .frame(maxWidth: 80)
-                    }
                 }
                 Section(header: Text("Shortcuts").bold()) {
-                    Form {
-                        KeyboardShortcuts.Recorder(
-                            "Toggle increased brightness:", name: .toggleBrightIntosh)
-                        KeyboardShortcuts.Recorder(
-                            "Increase brightness:", name: .increaseBrightness)
-                        KeyboardShortcuts.Recorder(
-                            "Decrease brightness:", name: .decreaseBrightness)
-                        KeyboardShortcuts.Recorder(
-                            "Open settings:", name: .openSettings)
-                    }
+                    KeyboardShortcuts.Recorder(
+                        "Toggle increased brightness:", name: .toggleBrightIntosh)
+                    KeyboardShortcuts.Recorder(
+                        "Increase brightness:", name: .increaseBrightness)
+                    KeyboardShortcuts.Recorder(
+                        "Decrease brightness:", name: .decreaseBrightness)
+                    KeyboardShortcuts.Recorder(
+                        "Open settings:", name: .openSettings)
                 }
                 Section(header: Text("General").bold()) {
                     Toggle(
@@ -265,13 +253,15 @@ struct BasicSettings: View {
                         Text("Install BrightIntosh CLI")
                     }
                 }
-            }.frame(
+            }
+            .formStyle(.grouped)
+            .frame(
                 minWidth: 0,
                 maxWidth: .infinity,
                 minHeight: 0,
                 maxHeight: .infinity,
                 alignment: .topLeading
-            ).padding()
+            )
         }
         .sheet(isPresented: $showCliPopup) {
             CliInstallationSheet(isPresented: $showCliPopup)
