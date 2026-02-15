@@ -11,3 +11,4 @@ dev-tools
 asc_data/**/keywords.txt
 asc_data/**/whats_new.txt
 asc.yml
+list.json
