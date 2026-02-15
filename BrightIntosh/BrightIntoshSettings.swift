@@ -96,6 +96,13 @@ class BrightIntoshSettings {
         }
     }
     
+    public var showInDock: Bool = BrightIntoshSettings.getUserDefault(key: "showInDock", defaultValue: false) {
+        didSet {
+            BrightIntoshSettings.defaults.setValue(showInDock, forKey: "showInDock")
+            callListeners(setting: "showInDock")
+        }
+    }
+    
     public var launchAtLogin: Bool = false {
         didSet {
         let service = SMAppService.mainApp

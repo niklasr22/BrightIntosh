@@ -109,6 +109,7 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        self.applyActivationPolicy()
         if cliBase() {
             exit(0);
         }
@@ -144,6 +145,10 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
             }
         }
         
+        BrightIntoshSettings.shared.addListener(setting: "showInDock", callback: {
+            self.applyActivationPolicy()
+        });
+        
         Task {
             addSettingsToIndex()
         }
@@ -151,11 +156,33 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
         ProcessInfo.processInfo.disableSuddenTermination()
     }
     
+    func applyActivationPolicy() {
+        if BrightIntoshSettings.shared.showInDock {
+            NSApp.setActivationPolicy(.regular)
+        } else {
+            NSApp.setActivationPolicy(.accessory)
+        }
+    }
+    
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
         if BrightIntoshSettings.shared.hideMenuBarItem {
             self.showSettingsWindow()
         }
         return false
+    }
+    
+    @objc func openSettings() {
+        self.showSettingsWindow()
+    }
+    
+    func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+        let menu = NSMenu(title: "BrightIntosh")
+        
+        let settingsItem = NSMenuItem(title: String(localized: "Settings"), action: #selector(openSettings), keyEquivalent: "")
+        settingsItem.image = NSImage(systemSymbolName: "gear", accessibilityDescription: String(localized: "Settings"))
+        menu.addItem(settingsItem)
+        
+        return menu
     }
 }
 
