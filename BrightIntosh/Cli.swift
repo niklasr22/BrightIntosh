@@ -23,7 +23,7 @@ import Foundation
         print("Usage: brightintosh set <0-100>")
         return
     }
-    BrightIntoshSettings.shared.brightness = 1.0 + (getDeviceMaxBrightness() - 1.0) * Float(brightnessValue) / 100.0
+    BrightIntoshSettings.shared.cliBrightness = 1.0 + (getDeviceMaxBrightness() - 1.0) * Float(brightnessValue) / 100.0
 }
 
 @MainActor func statusCli() {

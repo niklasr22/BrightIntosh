@@ -13,8 +13,8 @@ extension UserDefaults {
         return bool(forKey: "active")
     }
     
-    @objc dynamic var brightness: Float {
-        return float(forKey: "brightness")
+    @objc dynamic var cliBrightness: Float {
+        return float(forKey: "cliBrightness")
     }
 }
 
@@ -60,6 +60,14 @@ class BrightIntoshSettings {
             callListeners(setting: "brightness")
         }
     }
+    
+    public var cliBrightness: Float = BrightIntoshSettings.getUserDefault(key: "cliBrightness", defaultValue: getDeviceMaxBrightness()) {
+        didSet {
+            BrightIntoshSettings.defaults.setValue(cliBrightness, forKey: "cliBrightness")
+            callListeners(setting: "cliBrightness")
+        }
+    }
+    
     
     public var batteryAutomation: Bool = BrightIntoshSettings.getUserDefault(key: "batteryAutomation", defaultValue: false) {
         didSet {
@@ -122,17 +130,11 @@ class BrightIntoshSettings {
     private var listeners: [String: [()->()]] = [:]
     
     var activeObserver: NSKeyValueObservation?
-    var brightnessObserver: NSKeyValueObservation?
+    var cliBrightnessObserver: NSKeyValueObservation?
 
     init() {
         // Load launch at login status
         launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
-        DistributedNotificationCenter.default().addObserver(
-            self,
-            selector: #selector(defaultsChanged(notification:)),
-            name: UserDefaults.didChangeNotification,
-            object: nil
-        )
         migrateUserDefaultsToAppGroups();
         
         activeObserver = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (defaults, change) in
@@ -142,9 +144,9 @@ class BrightIntoshSettings {
                 }
             }
         })
-        brightnessObserver = BrightIntoshSettings.defaults.observe(\.brightness, options: [.initial, .new], changeHandler: { (defaults, change) in
+        cliBrightnessObserver = BrightIntoshSettings.defaults.observe(\.cliBrightness, options: [.initial, .new], changeHandler: { (defaults, change) in
             Task { @MainActor in
-                if let newValue = change.newValue, newValue != self.brightness {
+                if let newValue = change.newValue, self.brightness != newValue {
                     self.brightness = newValue;
                 }
             }
@@ -161,12 +163,6 @@ class BrightIntoshSettings {
         powerAdapterAutomation = BrightIntoshSettings.getUserDefault(key: "powerAdapterAutomation", defaultValue: false)
         timerAutomation = BrightIntoshSettings.getUserDefault(key: "timerAutomation", defaultValue: false)
         timerAutomationTimeout = BrightIntoshSettings.getUserDefault(key: "timerAutomationTimeout", defaultValue: 180)
-    }
-    
-    @MainActor @objc
-    private func defaultsChanged(notification: Notification) {
-        print("Settings were updated externally")
-        refreshState()
     }
     
     public func addListener(setting: String, callback: @escaping () ->()) {
