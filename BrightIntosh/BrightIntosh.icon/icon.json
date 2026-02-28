@@ -1,0 +1,37 @@
+{
+  "fill": {
+    "solid": "display-p3:0.16471,0.64706,0.90980,1.00000"
+  },
+  "groups": [
+    {
+      "layers": [
+        {
+          "glass": false,
+          "image-name": "brightintosh2026.png",
+          "name": "brightintosh2026",
+          "position": {
+            "scale": 1.2,
+            "translation-in-points": [
+              0,
+              32
+            ]
+          }
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
+      },
+      "translucency": {
+        "enabled": true,
+        "value": 0.5
+      }
+    }
+  ],
+  "supported-platforms": {
+    "circles": [
+      "watchOS"
+    ],
+    "squares": "shared"
+  }
+}
