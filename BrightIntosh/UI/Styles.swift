@@ -9,8 +9,7 @@
 import SwiftUI
 
 extension Color {
-    public static let brightintoshBlue = Color(red: 0.25, green: 0.67, blue: 0.79)
-    public static let brightintoshBluePressed = Color(red: 0.36, green: 0.74, blue: 0.84)
+    public static let brightintoshBlue = Color(red: 0.165, green: 0.647, blue: 0.910)
 }
 
 extension LinearGradient {
