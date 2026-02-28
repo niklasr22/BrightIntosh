@@ -128,7 +128,7 @@ struct CliInstallationSheet: View {
     
     func getCliInstallCommand() -> String {
         let bundlePath = Bundle.main.bundlePath
-        return "ln -s \"\(bundlePath)/Contents/Resources/cli.sh\" ~/.local/bin/brightintosh"
+        return "echo \"alias brightintosh='\(bundlePath)/Contents/Resources/cli.sh'\" >> ~/.zshrc && source ~/.zshrc"
     }
 }
 
