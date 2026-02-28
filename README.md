@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="https://github.com/niklasr22/BrightIntosh/assets/75939868/fd6b544e-d86d-4ab5-94af-eda67aeb0a88">
+  <img width="256" height="256" alt="BrightIntosh-iOS-Default-256x256@1x" src="https://github.com/user-attachments/assets/02136d9a-11e1-49f8-bd16-8c23fe02acfc" />
 </p>
 <p align="center">
   <a href="https://www.brightintosh.de">View our website</a><br/><br/>
