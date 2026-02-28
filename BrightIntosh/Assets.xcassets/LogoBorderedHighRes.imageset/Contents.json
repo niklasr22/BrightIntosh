@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "brightintosh_512.png",
+      "filename" : "BrightIntosh-iOS-Default-512x512@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "brightintosh_512 1.png",
+      "filename" : "BrightIntosh-iOS-Default-512x512@1x 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "brightintosh_512 2.png",
+      "filename" : "BrightIntosh-iOS-Default-512x512@1x 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -1,12 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "brightintosh_32.png",
+      "filename" : "BrightIntosh-iOS-Default-32x32@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "brightintosh_64.png",
+      "filename" : "BrightIntosh-iOS-Default-64x64@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

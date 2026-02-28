@@ -49,8 +49,6 @@
 		9CA026552AC96B260068CC74 /* BrightnessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026502AC9647E0068CC74 /* BrightnessManager.swift */; };
 		9CA8FECD2E0707CA00D8525A /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8FECC2E0707B800D8525A /* Authorizer.swift */; };
 		9CA8FECE2E0707CA00D8525A /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8FECC2E0707B800D8525A /* Authorizer.swift */; };
-		9CBF7A382E000BB800B45A40 /* BrightIntoshLiquidGlass.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CBF7A372E000BB800B45A40 /* BrightIntoshLiquidGlass.icon */; };
-		9CBF7A392E000BB800B45A40 /* BrightIntoshLiquidGlass.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CBF7A372E000BB800B45A40 /* BrightIntoshLiquidGlass.icon */; };
 		9CCAC9372C3AF53B00B105D1 /* EntitlementHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */; };
 		9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
 		9CDE33C52B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
@@ -64,6 +62,8 @@
 		9CEA0E392F40857D00284E1A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CCFCB622EA2390000E2DB3E /* SwiftUI.framework */; };
 		9CEA0E462F40857E00284E1A /* WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CEA0E372F40857D00284E1A /* WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9CEA0E4D2F4086B200284E1A /* WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CEA0E372F40857D00284E1A /* WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9CF9A5102F4C5D9F00DD4FD9 /* BrightIntosh.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CF9A50F2F4C5D9F00DD4FD9 /* BrightIntosh.icon */; };
+		9CF9A5112F4C5D9F00DD4FD9 /* BrightIntosh.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CF9A50F2F4C5D9F00DD4FD9 /* BrightIntosh.icon */; };
 		C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
 		C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
 		C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D044EA2A60205E0022B970 /* OverlayWindow.swift */; };
@@ -150,7 +150,6 @@
 		9CA026502AC9647E0068CC74 /* BrightnessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessManager.swift; sourceTree = "<group>"; };
 		9CA026522AC968430068CC74 /* BrightnessTechnique.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessTechnique.swift; sourceTree = "<group>"; };
 		9CA8FECC2E0707B800D8525A /* Authorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorizer.swift; sourceTree = "<group>"; };
-		9CBF7A372E000BB800B45A40 /* BrightIntoshLiquidGlass.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = BrightIntoshLiquidGlass.icon; sourceTree = "<group>"; };
 		9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntitlementHandler.swift; sourceTree = "<group>"; };
 		9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorePurchasesButton.swift; sourceTree = "<group>"; };
@@ -163,6 +162,7 @@
 		9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh.entitlements; sourceTree = "<group>"; };
 		9CEB41EF2A923723005D7A0D /* BrightIntosh_SE.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = BrightIntosh_SE.entitlements; sourceTree = "<group>"; };
 		9CEDBABB2D870EBA00490820 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
+		9CF9A50F2F4C5D9F00DD4FD9 /* BrightIntosh.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = BrightIntosh.icon; sourceTree = "<group>"; };
 		C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D044EA2A60205E0022B970 /* OverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindow.swift; sourceTree = "<group>"; };
 		C1DF94502A5EF20E00FA285F /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
@@ -293,7 +293,7 @@
 				9C5965392C8CCE7E00BFC9A6 /* UI */,
 				9CDE33C42B4317D70085F786 /* Utils.swift */,
 				9CEDBABB2D870EBA00490820 /* Products.storekit */,
-				9CBF7A372E000BB800B45A40 /* BrightIntoshLiquidGlass.icon */,
+				9CF9A50F2F4C5D9F00DD4FD9 /* BrightIntosh.icon */,
 			);
 			path = BrightIntosh;
 			sourceTree = "<group>";
@@ -433,9 +433,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CF9A5112F4C5D9F00DD4FD9 /* BrightIntosh.icon in Resources */,
 				9CE3C37E2C8C89F600E7FDBA /* Localizable.xcstrings in Resources */,
 				9CE3C37D2C8C89F200E7FDBA /* Assets.xcassets in Resources */,
-				9CBF7A382E000BB800B45A40 /* BrightIntoshLiquidGlass.icon in Resources */,
 				9C17DFB02DD1F3DA00185CDA /* cli.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -451,9 +451,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CF9A5102F4C5D9F00DD4FD9 /* BrightIntosh.icon in Resources */,
 				9CE3C37F2C8C8A1800E7FDBA /* Localizable.xcstrings in Resources */,
 				9C9C78032A62AEE800778CAE /* Assets.xcassets in Resources */,
-				9CBF7A392E000BB800B45A40 /* BrightIntoshLiquidGlass.icon in Resources */,
 				9C17DFAF2DD0CA3500185CDA /* cli.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -548,7 +548,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = BrightIntoshLiquidGlass;
+				ASSETCATALOG_COMPILER_APPICON_NAME = BrightIntosh;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh_SE.entitlements;
@@ -601,7 +601,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = BrightIntoshLiquidGlass;
+				ASSETCATALOG_COMPILER_APPICON_NAME = BrightIntosh;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh_SE.entitlements;
@@ -725,7 +725,7 @@
 		C1B521582A5EFF5900E9B7AC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = BrightIntoshLiquidGlass;
+				ASSETCATALOG_COMPILER_APPICON_NAME = BrightIntosh;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
@@ -776,7 +776,7 @@
 		C1B521592A5EFF5900E9B7AC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = BrightIntoshLiquidGlass;
+				ASSETCATALOG_COMPILER_APPICON_NAME = BrightIntosh;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BrightIntosh/BrightIntosh.entitlements;
