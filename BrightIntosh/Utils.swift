@@ -14,6 +14,34 @@ enum TimeoutError: Error {
     case timeout
 }
 
+private func withTimeout<T: Sendable>(
+    seconds: Double,
+    operation: @escaping @Sendable () async throws -> T
+) async throws -> T {
+    try await withThrowingTaskGroup(of: T.self) { group in
+        group.addTask {
+            try await operation()
+        }
+        group.addTask {
+            let nanoseconds = UInt64(seconds * 1_000_000_000)
+            try await Task.sleep(nanoseconds: nanoseconds)
+            throw TimeoutError.timeout
+        }
+
+        let result = try await group.next()
+        group.cancelAll()
+
+        guard let result else {
+            throw TimeoutError.timeout
+        }
+        return result
+    }
+}
+
+private func timeoutErrorMessage(_ context: String, seconds: Double) -> String {
+    "\(context) timed out after \(Int(seconds))s"
+}
+
 
 @MainActor func getXDRDisplays() -> [NSScreen] {
     var xdrScreens: [NSScreen] = []
@@ -73,6 +101,7 @@ private func getAppTransaction() async throws -> VerificationResult<AppTransacti
 }
 
 func generateReport() async -> String {
+    let timeoutSeconds = 3.0
     var report = "BrightIntosh Report:\n"
     report += "OS-Version: \(ProcessInfo.processInfo.operatingSystemVersionString)\n"
     #if STORE
@@ -82,7 +111,9 @@ func generateReport() async -> String {
     #endif
     report += "Model Identifier: \(getModelIdentifier() ?? "N/A")\n"
     do {
-        if let sharedAppTransaction = try await getAppTransaction() {
+        if let sharedAppTransaction = try await (withTimeout(seconds: timeoutSeconds) {
+            try await getAppTransaction()
+        }) {
             if case .verified(let appTransaction) = sharedAppTransaction {
                 report += "Original Purchase Date: \(appTransaction.originalPurchaseDate)\n"
                 report += "Original App Version: \(appTransaction.originalAppVersion)\n"
@@ -95,27 +126,36 @@ func generateReport() async -> String {
         } else {
             report += "Error: No App Transaction available \n"
         }
+    } catch TimeoutError.timeout {
+        report += "Error: \(timeoutErrorMessage("App Transaction lookup", seconds: timeoutSeconds))\n"
     } catch {
         report += "Error: App Transaction could not be fetched: \(error.localizedDescription) \n"
     }
 
     do {
-        let isUnrestricted = try await EntitlementHandler.shared.isUnrestrictedUser()
+        let isUnrestricted = try await withTimeout(seconds: timeoutSeconds) {
+            try await EntitlementHandler.shared.isUnrestrictedUser()
+        }
         report += "Unrestricted user: \(isUnrestricted)\n"
+    } catch TimeoutError.timeout {
+        report += "Error: \(timeoutErrorMessage("Entitlement check", seconds: timeoutSeconds))\n"
     } catch {
         report += "Error: EntitlementHandler threw an error: \(error.localizedDescription)\n"
     }
     do {
-        let trial = try await TrialData.getTrialData()
+        let trial = try await withTimeout(seconds: timeoutSeconds) {
+            try await TrialData.getTrialData()
+        }
         report += "Trial:\n - Start Date: \(trial.purchaseDate)\n - Current Date: \(trial.currentDate)\n - Remaining: \(trial.getRemainingDays())\n"
+    } catch TimeoutError.timeout {
+        report += "Error: \(timeoutErrorMessage("Trial data lookup", seconds: timeoutSeconds))\n"
     } catch {
         report += "Error: Trial Data could not be fetched \(error.localizedDescription)\n"
     }
     
-    let screens = NSScreen.screens.map{$0.localizedName}
-    report += "Screens: \(screens.joined(separator: ", "))\n"
+    report += "Screens:\n"
     for screen in NSScreen.screens {
-        report += " - Screen \(screen.localizedName): \(screen.frame.width)x\(screen.frame.height)px\n"
+        report += " - \(screen.localizedName): \(screen.frame.width)x\(screen.frame.height)px\n"
     }
     return report
 }
