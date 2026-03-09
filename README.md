@@ -4,7 +4,7 @@
 </p>
 <p align="center">
   <a href="https://www.brightintosh.de">View our website</a><br/><br/>
-  <a href="https://apps.apple.com/us/app/brightintosh/id6452471855?mt=12&itscg=30200&itsct=apps_box_badge&mttnsubad=6452471855" style="display: inline-block;">
+  <a href="https://apps.apple.com/app/apple-store/id6452471855?pt=126521145&ct=github&mt=8" style="display: inline-block;">
     <img src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us?releaseDate=1693267200" alt="Download on the App Store" style="width: 246px; height: 82px; vertical-align: middle; object-fit: contain;" />
   </a>
 </p>
