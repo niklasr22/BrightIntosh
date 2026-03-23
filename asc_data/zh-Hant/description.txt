@@ -4,12 +4,12 @@
 
 支持的设备包括：
 
-- MacBook Pro M5 14"（发布于 2025 年，Model identifier: Mac17,2） 
+- MacBook Pro M5（发布于 2025 / 2026 年，Model identifier: Mac17,2, Mac17,6, Mac17,7, Mac17,8, Mac17,9） 
 - MacBook Pro M4（发布于 2024 年，Model Identifiers: Mac16,1、Mac16,5、Mac16,6、Mac16,7、Mac16,8）
 - MacBook Pro M3（发布于 2023 年，Model Identifiers: Mac15,3、Mac15,6、Mac15,7、Mac15,8、Mac15,9、Mac15,10、Mac15,11）
 - MacBook Pro M2 14" / 16"（发布于 2023 年，Model Identifiers: Mac14,5、Mac14,6、Mac14,9、Mac14,10）
 - MacBook Pro M1 14" / 16"（发布于 2021 年，Model Identifiers: MacBookPro18,1、MacBookPro18,2、MacBookPro18,3、MacBookPro18,4）
-- Pro Display XDR
+- Studio Display XDR / Pro Display XDR
 
 判断是否受支持的两个可靠指标是：您的 MacBook 的显示屏是否有刘海？以及设备底部是否标有 MacBook Pro？
 
