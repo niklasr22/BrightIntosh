@@ -144,7 +144,7 @@ class BrightIntoshSettings {
                 }
             }
         })
-        cliBrightnessObserver = BrightIntoshSettings.defaults.observe(\.cliBrightness, options: [.initial, .new], changeHandler: { (defaults, change) in
+        cliBrightnessObserver = BrightIntoshSettings.defaults.observe(\.cliBrightness, options: [.new], changeHandler: { (defaults, change) in
             Task { @MainActor in
                 if let newValue = change.newValue, self.brightness != newValue {
                     self.brightness = newValue;
