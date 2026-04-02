@@ -69,6 +69,7 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         self.screen = screen
         self.fullsize = fullsize
         let overlayWindow = OverlayWindow(fullsize: fullsize)
+        overlayWindow.title = "BrightIntosh Overlay \(String(describing: screen.displayId))"
         
         super.init(window: overlayWindow)
         overlayWindow.delegate = self
