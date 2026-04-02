@@ -6,11 +6,12 @@
       "scale" : "1x"
     },
     {
-      "filename" : "BrightIntosh-iOS-Default-64x64@2x.png",
+      "filename" : "BrightIntosh-iOS-Default-40x40@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "BrightIntosh-iOS-Default-40x40@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

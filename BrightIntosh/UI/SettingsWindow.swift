@@ -408,6 +408,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
+        settingsWindow.title = "BrightIntosh Settings"
 
         let contentView = SettingsView().frame(width: 650, height: 590)
 

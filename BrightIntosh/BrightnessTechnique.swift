@@ -73,25 +73,24 @@ class GammaTable {
 class GammaTechnique: BrightnessTechnique {
     
     private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
-    private var gammaTables: [CGDirectDisplayID: GammaTable] = [:]
+    private var pendingBrightnessPollTask: Task<Void, Never>?
+    private let hdrReadyThreshold = 1.05
+    private let overlayRecreateInterval = 8
     
     override init() {
         super.init()
     }
     
     override func enable() {
-        getXDRDisplays().forEach {
-            enableScreen(screen: $0)
-        }
-        print("Enabling")
         isEnabled = true
-        adjustBrightness()
+        screenUpdate(screens: getXDRDisplays())
     }
     
     override func enableScreen(screen: NSScreen) {
         if let displayId = screen.displayId {
-            if !gammaTables.keys.contains(displayId) {
-                gammaTables[displayId] = GammaTable.createFromCurrentGammaTable(displayId: displayId)
+            if let overlayWindowController = overlayWindowControllers[displayId] {
+                overlayWindowController.updateScreen(screen: screen)
+                return
             }
             let overlayWindowController = OverlayWindowController(screen: screen)
             overlayWindowControllers[displayId] = overlayWindowController
@@ -102,11 +101,12 @@ class GammaTechnique: BrightnessTechnique {
     
     override func disable() {
         isEnabled = false
+        pendingBrightnessPollTask?.cancel()
+        pendingBrightnessPollTask = nil
         overlayWindowControllers.values.forEach { controller in
             controller.window?.close()
         }
         overlayWindowControllers.removeAll()
-        gammaTables.removeAll()
         resetGammaTable()
     }
     
@@ -114,9 +114,11 @@ class GammaTechnique: BrightnessTechnique {
         super.adjustBrightness()
         
         if isEnabled {
+            resetGammaTable()
             let gamma = BrightIntoshSettings.shared.brightness
             overlayWindowControllers.values.forEach { controller in
-                if let displayId = controller.screen.displayId, let gammaTable = gammaTables[displayId] {
+                if let displayId = controller.screen.displayId,
+                   let gammaTable = GammaTable.createFromCurrentGammaTable(displayId: displayId) {
                     gammaTable.setTableForScreen(displayId: displayId, factor: gamma)
                 }
             }
@@ -134,21 +136,97 @@ class GammaTechnique: BrightnessTechnique {
         
         toBeDeactivated.forEach { displayId in
             overlayWindowControllers[displayId]?.window?.close()
-            gammaTables[displayId]?.setTableForScreen(displayId: displayId)
-            gammaTables.removeValue(forKey: displayId)
             overlayWindowControllers.removeValue(forKey: displayId)
         }
+        
+        resetGammaTable()
         
         screens.forEach { screen in
             if let displayId = screen.displayId {
                 if overlayWindowControllers.keys.contains(displayId) {
-                    overlayWindowControllers[displayId]?.reposition(screen: screen)
+                    overlayWindowControllers[displayId]?.updateScreen(screen: screen)
                 } else {
                     enableScreen(screen: screen)
                 }
             }
         }
         
-        adjustBrightness()
+        
+        pollForHDRAndAdjustBrightness(screens: screens)
+    }
+    
+    private func pollForHDRAndAdjustBrightness(screens: [NSScreen]) {
+        pendingBrightnessPollTask?.cancel()
+        
+        guard !screens.isEmpty else {
+            return
+        }
+        
+        pendingBrightnessPollTask = Task { @MainActor in
+            for attempt in 1...80 {
+                guard !Task.isCancelled, self.isEnabled else {
+                    return
+                }
+                
+                let refreshedScreens = self.refreshedScreens(matching: screens)
+                let readyScreens = refreshedScreens.filter { self.isHDRReady(screen: $0) }
+                
+                if readyScreens.count == screens.count {
+                    print("HDR ready for all screens after \(attempt) checks")
+                    self.adjustBrightness()
+                    return
+                }
+                
+                if attempt % self.overlayRecreateInterval == 0 {
+                    let stuckScreens = refreshedScreens.filter { !self.isHDRReady(screen: $0) }
+                    if !stuckScreens.isEmpty {
+                        self.rebuildOverlayWindows(for: stuckScreens)
+                    }
+                }
+                
+                if attempt == 1 || attempt % 10 == 0 {
+                    let screenStates = refreshedScreens.map {
+                        "(\(String(describing: $0.displayId)): \($0.maximumExtendedDynamicRangeColorComponentValue) / \($0.maximumReferenceExtendedDynamicRangeColorComponentValue))"
+                    }.joined(separator: ", ")
+                    print("Waiting for HDR readiness \(readyScreens.count)/\(screens.count): \(screenStates)")
+                }
+                
+                try? await Task.sleep(for: .milliseconds(250))
+            }
+            
+            print("HDR readiness polling timed out, skipping gamma apply")
+        }
+    }
+    
+    private func refreshedScreens(matching screens: [NSScreen]) -> [NSScreen] {
+        screens.compactMap { targetScreen in
+            guard let displayId = targetScreen.displayId else {
+                return nil
+            }
+            
+            return NSScreen.screens.first(where: { $0.displayId == displayId }) ?? targetScreen
+        }
+    }
+    
+    private func isHDRReady(screen: NSScreen) -> Bool {
+        let maxEdrValue = Double(screen.maximumExtendedDynamicRangeColorComponentValue)
+        let maxReferenceEdrValue = Double(screen.maximumReferenceExtendedDynamicRangeColorComponentValue)
+        return maxEdrValue > hdrReadyThreshold
+    }
+    
+    private func rebuildOverlayWindows(for screens: [NSScreen]) {
+        for screen in screens {
+            guard let displayId = screen.displayId else {
+                continue
+            }
+            
+            print("Rebuilding HDR window for \(displayId)")
+            overlayWindowControllers[displayId]?.window?.close()
+            
+            let overlayWindowController = OverlayWindowController(screen: screen)
+            overlayWindowControllers[displayId] = overlayWindowController
+            let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 1, height: 1)
+            overlayWindowController.open(rect: rect)
+        }
     }
 }

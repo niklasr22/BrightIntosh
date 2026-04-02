@@ -52,6 +52,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         self.settingsWindowController = settingsWindowController
         
         menu = NSMenu()
+        menu.title = "BrightIntosh Status Bar Item"
         
         super.init()
         

@@ -227,6 +227,7 @@ final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
+        welcomeWindow.title = "BrightIntosh Onboarding"
         
         let contentView = WelcomeView(supportedDevice: supportedDevice, closeWindow: welcomeWindow.close).frame(width: 550, height: 740)
             .userStatusTask()
