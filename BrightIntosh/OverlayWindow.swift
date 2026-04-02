@@ -57,10 +57,6 @@ class OverlayWindow: NSWindow {
         overlay?.screenUpdate(screen: screen)
     }
     
-    func recreateMetalOverlay(screen: NSScreen) {
-        installMetalOverlay(screen: screen)
-    }
-    
     private func installMetalOverlay(screen: NSScreen) {
         overlay = Overlay(frame: frame, multiplyCompositing: self.fullsize)
         overlay?.screenUpdate(screen: screen)
@@ -106,21 +102,6 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         }
         
         window.screenUpdate(screen: screen)
-        window.orderFrontRegardless()
-        
-        if !fullsize {
-            reposition(screen: screen)
-        }
-    }
-    
-    func recreateOverlay(screen: NSScreen) {
-        self.screen = screen
-        
-        guard let window = self.window as? OverlayWindow else {
-            return
-        }
-        
-        window.recreateMetalOverlay(screen: screen)
         window.orderFrontRegardless()
         
         if !fullsize {

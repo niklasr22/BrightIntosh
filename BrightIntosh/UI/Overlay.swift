@@ -13,8 +13,6 @@ class Overlay: MTKView, MTKViewDelegate {
     
     private var commandQueue: MTLCommandQueue?
     
-    private var fragmentColor = vector_float4(1.0, 1.0, 1.0, 1.0)
-    
     init(frame: CGRect, multiplyCompositing: Bool = false) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
         
@@ -52,23 +50,8 @@ class Overlay: MTKView, MTKViewDelegate {
     }
     
     func screenUpdate(screen: NSScreen) {
-        let maxEdrValue = Double(screen.maximumExtendedDynamicRangeColorComponentValue)
-        let maxRenderedEdrValue = Double(screen.maximumReferenceExtendedDynamicRangeColorComponentValue)
         let hdrValue: Double = 4.0
-
-        print("Overlay HDR value \(hdrValue), maxEDR: \(maxEdrValue), maxReferenceEDR: \(maxRenderedEdrValue)")
         clearColor = MTLClearColorMake(hdrValue, hdrValue, hdrValue, 1.0)
-    }
-    
-    func setMaxFrameRate(screen: NSScreen) {
-        preferredFramesPerSecond = screen.maximumFramesPerSecond
-    }
-    
-    func setHDRBrightness(colorValue: Double, screen: NSScreen) {
-        let maxEdrValue = screen.maximumExtendedDynamicRangeColorComponentValue
-        let percentage = (colorValue - 1.0) / 0.6
-        let newColor = ((maxEdrValue - 1.0) * percentage) + 1.0
-        clearColor = MTLClearColorMake(newColor, newColor, newColor, 1.0)
     }
     
     func draw(in view: MTKView) {
