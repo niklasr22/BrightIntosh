@@ -52,10 +52,12 @@ class Overlay: MTKView, MTKViewDelegate {
     }
     
     func screenUpdate(screen: NSScreen) {
-        let maxEdrValue = screen.maximumExtendedDynamicRangeColorComponentValue
-        let maxRenderedEdrValue = screen.maximumReferenceExtendedDynamicRangeColorComponentValue
-        let factor = max(maxEdrValue / max(maxRenderedEdrValue, 1.0) - 1.0, 1.0)
-        clearColor = MTLClearColorMake(factor, factor, factor, 1.0)
+        let maxEdrValue = Double(screen.maximumExtendedDynamicRangeColorComponentValue)
+        let maxRenderedEdrValue = Double(screen.maximumReferenceExtendedDynamicRangeColorComponentValue)
+        let hdrValue: Double = 4.0
+
+        print("Overlay HDR value \(hdrValue), maxEDR: \(maxEdrValue), maxReferenceEDR: \(maxRenderedEdrValue)")
+        clearColor = MTLClearColorMake(hdrValue, hdrValue, hdrValue, 1.0)
     }
     
     func setMaxFrameRate(screen: NSScreen) {
