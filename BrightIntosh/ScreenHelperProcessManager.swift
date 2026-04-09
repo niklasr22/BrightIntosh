@@ -51,16 +51,6 @@ final class ScreenHelperProcessManager {
     /// Sync running helper apps to exactly the given XDR screens (launch new, terminate removed).
     func sync(xdrScreens: [NSScreen]) {
         self.xdrScreens = xdrScreens
-        let desired = Set(xdrScreens.compactMap { $0.displayId })
-        
-        for (id, app) in runningByDisplay where !desired.contains(id) {
-            app.terminate()
-            runningByDisplay.removeValue(forKey: id)
-        }
-        
-        for id in pendingLaunchDisplayIds where !desired.contains(id) {
-            abortLaunchDisplayIds.insert(id)
-        }
         
         guard let helperAppURL = helperApplicationURL() else {
             print("ScreenHelperProcessManager: embedded BrightIntoshScreenHelper.app not found in bundle")
