@@ -1,16 +1,14 @@
 //
 //  OverlayWindow.swift
-//  BrightIntosh
-//
-//  Created by Niklas Rousset on 13.07.23.
+//  BrightIntoshScreenHelper
 //
 
 import Cocoa
 import OSLog
 
-let overlayLogger = Logger(
-    subsystem: "Overlay Window",
-    category: "Core"
+private let overlayLogger = Logger(
+    subsystem: "BrightIntoshScreenHelper",
+    category: "Overlay"
 )
 
 class OverlayWindow: NSWindow {
@@ -21,7 +19,6 @@ class OverlayWindow: NSWindow {
     init(fullsize: Bool = false) {
         self.fullsize = fullsize
         let rect = NSRect(x: 0, y: 0, width: 1, height: 1)
-        
         
         if fullsize {
             super.init(contentRect: rect, styleMask: [.fullSizeContentView, .borderless], backing: .buffered, defer: false)
@@ -37,7 +34,6 @@ class OverlayWindow: NSWindow {
             level = .screenSaver
             canHide = false
             isMovableByWindowBackground = true
-            isReleasedWhenClosed = false
             alphaValue = 1
         }
         
@@ -55,6 +51,10 @@ class OverlayWindow: NSWindow {
     
     func screenUpdate(screen: NSScreen) {
         overlay?.screenUpdate(screen: screen)
+    }
+    
+    func nudgeExtendedDynamicRangeContent(screen: NSScreen) {
+        overlay?.nudgeExtendedDynamicRangeContent(screen: screen)
     }
     
     private func installMetalOverlay(screen: NSScreen) {
@@ -109,6 +109,13 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         }
     }
     
+    func nudgeExtendedDynamicRangeContent() {
+        guard let window = window as? OverlayWindow else {
+            return
+        }
+        window.nudgeExtendedDynamicRangeContent(screen: screen)
+    }
+    
     func reposition(screen: NSScreen) {
         let targetPosition = getIdealPosition(screen: screen)
         window?.setFrameOrigin(targetPosition)
@@ -116,7 +123,8 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     
     func getIdealPosition(screen: NSScreen) -> CGPoint {
         var position = screen.frame.origin
-        position.y += screen.frame.height - 1
+        position.y += screen.frame.height - 1 - 50
+        position.x += 20
         return position
     }
     
@@ -126,10 +134,7 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     
     func windowDidMove(_ notification: Notification) {
         if let window = window, let screen = window.screen {
-            overlayLogger.info("Window moved to (\(window.frame.origin.x), \(window.frame.origin.y), current screen: \(screen.localizedName), expected screen: \(self.screen.localizedName)")
-            if window.frame.origin != getIdealPosition(screen: self.screen) {
-                reposition(screen: self.screen)
-            }
+            overlayLogger.info("Window moved to (\(window.frame.origin.x, privacy: .public), \(window.frame.origin.y, privacy: .public), current screen: \(String(describing: screen.localizedName), privacy: .public), expected screen: \(String(describing: self.screen.localizedName), privacy: .public))")
         }
     }
 }

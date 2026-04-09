@@ -111,6 +111,12 @@ class BrightIntoshSettings {
         }
     }
     
+    public var helpersInfo: String = BrightIntoshSettings.getUserDefault(key: "helpers", defaultValue: "") {
+        didSet {
+            BrightIntoshSettings.defaults.setValue(helpersInfo, forKey: "helpers")
+        }
+    }
+    
     public var launchAtLogin: Bool = false {
         didSet {
         let service = SMAppService.mainApp

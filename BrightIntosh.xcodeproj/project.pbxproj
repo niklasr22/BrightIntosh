@@ -38,17 +38,17 @@
 		9C711B4E2BD9583F00231067 /* StyledSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C711B4D2BD9583F00231067 /* StyledSlider.swift */; };
 		9C711B4F2BD9583F00231067 /* StyledSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C711B4D2BD9583F00231067 /* StyledSlider.swift */; };
 		9C8803762A72625E00476017 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
-		9C8803772A72625E00476017 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D044EA2A60205E0022B970 /* OverlayWindow.swift */; };
-		9C88037A2A72625E00476017 /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
 		9C8FA26B2AB058310049C0D1 /* WelcomeWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */; };
 		9C8FA26C2AB058310049C0D1 /* WelcomeWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */; };
 		9C9C78032A62AEE800778CAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C9C78022A62AEE800778CAE /* Assets.xcassets */; };
 		9CA026512AC9647E0068CC74 /* BrightnessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026502AC9647E0068CC74 /* BrightnessManager.swift */; };
-		9CA026532AC968430068CC74 /* BrightnessTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026522AC968430068CC74 /* BrightnessTechnique.swift */; };
-		9CA026542AC968430068CC74 /* BrightnessTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026522AC968430068CC74 /* BrightnessTechnique.swift */; };
 		9CA026552AC96B260068CC74 /* BrightnessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026502AC9647E0068CC74 /* BrightnessManager.swift */; };
 		9CA8FECD2E0707CA00D8525A /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8FECC2E0707B800D8525A /* Authorizer.swift */; };
 		9CA8FECE2E0707CA00D8525A /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8FECC2E0707B800D8525A /* Authorizer.swift */; };
+		9CB1E0022F9000010007D249 /* ScreenHelperProcessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB1E0012F9000010007D249 /* ScreenHelperProcessManager.swift */; };
+		9CB1E0032F9000010007D24A /* ScreenHelperProcessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB1E0012F9000010007D249 /* ScreenHelperProcessManager.swift */; };
+		9CB1E0082F9000010007D24B /* BrightIntoshScreenHelper.app in Embed Screen Helper */ = {isa = PBXBuildFile; fileRef = 9CA988FD2F811A8A0007D249 /* BrightIntoshScreenHelper.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9CB1E00C2F9000010007D24C /* BrightIntoshScreenHelper.app in Embed Screen Helper */ = {isa = PBXBuildFile; fileRef = 9CA988FD2F811A8A0007D249 /* BrightIntoshScreenHelper.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9CCAC9372C3AF53B00B105D1 /* EntitlementHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */; };
 		9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
 		9CDE33C52B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
@@ -65,11 +65,23 @@
 		9CF9A5102F4C5D9F00DD4FD9 /* BrightIntosh.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CF9A50F2F4C5D9F00DD4FD9 /* BrightIntosh.icon */; };
 		9CF9A5112F4C5D9F00DD4FD9 /* BrightIntosh.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9CF9A50F2F4C5D9F00DD4FD9 /* BrightIntosh.icon */; };
 		C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
-		C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
-		C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D044EA2A60205E0022B970 /* OverlayWindow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		9CB1E0042F9000010007D24D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C1DF943D2A5EF20000FA285F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9CA988FC2F811A8A0007D249;
+			remoteInfo = BrightIntoshScreenHelper;
+		};
+		9CB1E0092F9000010007D24E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C1DF943D2A5EF20000FA285F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9CA988FC2F811A8A0007D249;
+			remoteInfo = BrightIntoshScreenHelper;
+		};
 		9CEA0E442F40857E00284E1A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C1DF943D2A5EF20000FA285F /* Project object */;
@@ -94,6 +106,28 @@
 			dstSubfolderSpec = 1;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CB1E0072F9000010007D24F /* Embed Screen Helper */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Helpers;
+			dstSubfolderSpec = 1;
+			files = (
+				9CB1E0082F9000010007D24B /* BrightIntoshScreenHelper.app in Embed Screen Helper */,
+			);
+			name = "Embed Screen Helper";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CB1E00B2F9000010007D250 /* Embed Screen Helper */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Helpers;
+			dstSubfolderSpec = 1;
+			files = (
+				9CB1E00C2F9000010007D24C /* BrightIntoshScreenHelper.app in Embed Screen Helper */,
+			);
+			name = "Embed Screen Helper";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		9CCFCB732EA2390100E2DB3E /* Embed Foundation Extensions */ = {
@@ -148,8 +182,9 @@
 		9C8FA26A2AB058310049C0D1 /* WelcomeWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeWindow.swift; sourceTree = "<group>"; };
 		9C9C78022A62AEE800778CAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9CA026502AC9647E0068CC74 /* BrightnessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessManager.swift; sourceTree = "<group>"; };
-		9CA026522AC968430068CC74 /* BrightnessTechnique.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessTechnique.swift; sourceTree = "<group>"; };
 		9CA8FECC2E0707B800D8525A /* Authorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorizer.swift; sourceTree = "<group>"; };
+		9CA988FD2F811A8A0007D249 /* BrightIntoshScreenHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntoshScreenHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CB1E0012F9000010007D249 /* ScreenHelperProcessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenHelperProcessManager.swift; sourceTree = "<group>"; };
 		9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntitlementHandler.swift; sourceTree = "<group>"; };
 		9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorePurchasesButton.swift; sourceTree = "<group>"; };
@@ -164,13 +199,25 @@
 		9CEDBABB2D870EBA00490820 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		9CF9A50F2F4C5D9F00DD4FD9 /* BrightIntosh.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = BrightIntosh.icon; sourceTree = "<group>"; };
 		C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrightIntosh.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1D044EA2A60205E0022B970 /* OverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindow.swift; sourceTree = "<group>"; };
-		C1DF94502A5EF20E00FA285F /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
 		C1DF94512A5EF20E00FA285F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1DF94572A5EF66200FA285F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9CA98AEB2F8134AB0007D249 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9CA988FC2F811A8A0007D249 /* BrightIntoshScreenHelper */;
+		};
+		9CA98AED2F8134AE0007D249 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SharedConstants.swift,
+			);
+			target = 9CA988FC2F811A8A0007D249 /* BrightIntoshScreenHelper */;
+		};
 		9CEA0E472F40857E00284E1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -188,7 +235,8 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		9C881F092F3F30BF0056FAEF /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (9CEA0E622F408B2800284E1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
+		9C881F092F3F30BF0056FAEF /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (9CEA0E622F408B2800284E1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 9CA98AED2F8134AE0007D249 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
+		9CA988FE2F811A8A0007D249 /* BrightIntoshScreenHelper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (9CA98AEB2F8134AB0007D249 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BrightIntoshScreenHelper; sourceTree = "<group>"; };
 		9CEA0E3A2F40857D00284E1A /* Widgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (9CEA0E472F40857E00284E1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Widgets; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -198,6 +246,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				9C4163772ABD8FA4005B34B6 /* KeyboardShortcuts in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CA988FA2F811A8A0007D249 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,7 +290,6 @@
 			children = (
 				9C534ACA2ACB2A050029E050 /* Alerts.swift */,
 				9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */,
-				C1DF94502A5EF20E00FA285F /* Overlay.swift */,
 				9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */,
 				9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */,
 				1E05D3942B90E50E006FE96A /* StatusBarMenu.swift */,
@@ -255,6 +309,7 @@
 				C1DF94572A5EF66200FA285F /* README.md */,
 				C1DF94472A5EF20000FA285F /* BrightIntosh */,
 				9CEA0E3A2F40857D00284E1A /* Widgets */,
+				9CA988FE2F811A8A0007D249 /* BrightIntoshScreenHelper */,
 				C1DF94462A5EF20000FA285F /* Products */,
 				9C4163752ABD8FA4005B34B6 /* Frameworks */,
 			);
@@ -266,6 +321,7 @@
 				C1B521482A5EFF5800E9B7AC /* BrightIntosh.app */,
 				9C8803822A72625E00476017 /* BrightIntosh.app */,
 				9CEA0E372F40857D00284E1A /* WidgetsExtension.appex */,
+				9CA988FD2F811A8A0007D249 /* BrightIntoshScreenHelper.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -283,12 +339,11 @@
 				9CEB41EF2A923723005D7A0D /* BrightIntosh_SE.entitlements */,
 				9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */,
 				9CA026502AC9647E0068CC74 /* BrightnessManager.swift */,
-				9CA026522AC968430068CC74 /* BrightnessTechnique.swift */,
 				9C4163782ABD8FBD005B34B6 /* Constants.swift */,
 				9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */,
 				9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */,
-				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
 				9C56104F2ABF55A90066D6C9 /* BrightIntoshSettings.swift */,
+				9CB1E0012F9000010007D249 /* ScreenHelperProcessManager.swift */,
 				9C1C8BE92C8B4FC000754474 /* Trial.swift */,
 				9C5965392C8CCE7E00BFC9A6 /* UI */,
 				9CDE33C42B4317D70085F786 /* Utils.swift */,
@@ -309,12 +364,14 @@
 				9C88037C2A72625E00476017 /* Frameworks */,
 				9CE3C37C2C8C89DF00E7FDBA /* Resources */,
 				9CA458BD2AD0A60000CBF8B9 /* CopyFiles */,
+				9CB1E00B2F9000010007D250 /* Embed Screen Helper */,
 				9CCFCB7B2EA23F4D00E2DB3E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				9CEA0E452F40857E00284E1A /* PBXTargetDependency */,
+				9CB1E00A2F9000010007D251 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9C881F092F3F30BF0056FAEF /* Shared */,
@@ -325,6 +382,28 @@
 			);
 			productName = BrightIntosh;
 			productReference = 9C8803822A72625E00476017 /* BrightIntosh.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9CA988FC2F811A8A0007D249 /* BrightIntoshScreenHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9CA989052F811A8B0007D249 /* Build configuration list for PBXNativeTarget "BrightIntoshScreenHelper" */;
+			buildPhases = (
+				9CA988F92F811A8A0007D249 /* Sources */,
+				9CA988FA2F811A8A0007D249 /* Frameworks */,
+				9CA988FB2F811A8A0007D249 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9CA988FE2F811A8A0007D249 /* BrightIntoshScreenHelper */,
+			);
+			name = BrightIntoshScreenHelper;
+			packageProductDependencies = (
+			);
+			productName = BrightIntoshScreenHelper;
+			productReference = 9CA988FD2F811A8A0007D249 /* BrightIntoshScreenHelper.app */;
 			productType = "com.apple.product-type.application";
 		};
 		9CEA0E362F40857D00284E1A /* WidgetsExtension */ = {
@@ -357,12 +436,14 @@
 				C1B521452A5EFF5800E9B7AC /* Frameworks */,
 				C1B521462A5EFF5800E9B7AC /* Resources */,
 				C1031D6D2A867E86001EE05B /* Copy Files */,
+				9CB1E0072F9000010007D24F /* Embed Screen Helper */,
 				9CCFCB732EA2390100E2DB3E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				9CEA0E4F2F4086B200284E1A /* PBXTargetDependency */,
+				9CB1E0052F9000010007D252 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9C881F092F3F30BF0056FAEF /* Shared */,
@@ -382,11 +463,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2620;
+				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					9C8803732A72625E00476017 = {
 						LastSwiftMigration = 1430;
+					};
+					9CA988FC2F811A8A0007D249 = {
+						CreatedOnToolsVersion = 26.4;
 					};
 					9CEA0E362F40857D00284E1A = {
 						CreatedOnToolsVersion = 26.2;
@@ -424,11 +508,19 @@
 				C1B521472A5EFF5800E9B7AC /* BrightIntosh */,
 				9C8803732A72625E00476017 /* BrightIntosh (Store Editon) */,
 				9CEA0E362F40857D00284E1A /* WidgetsExtension */,
+				9CA988FC2F811A8A0007D249 /* BrightIntoshScreenHelper */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		9CA988FB2F811A8A0007D249 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9CE3C37C2C8C89DF00E7FDBA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -477,17 +569,22 @@
 				9C5610512ABF55A90066D6C9 /* BrightIntoshSettings.swift in Sources */,
 				9C1C8BEB2C8B4FC000754474 /* Trial.swift in Sources */,
 				9CE3C3822C8C8D3B00E7FDBA /* Styles.swift in Sources */,
-				9C8803772A72625E00476017 /* OverlayWindow.swift in Sources */,
 				9C17DFAB2DCF748000185CDA /* Cli.swift in Sources */,
-				9C88037A2A72625E00476017 /* Overlay.swift in Sources */,
 				9CCAC9372C3AF53B00B105D1 /* EntitlementHandler.swift in Sources */,
 				9C534ACC2ACB2A050029E050 /* Alerts.swift in Sources */,
 				9CA8FECD2E0707CA00D8525A /* Authorizer.swift in Sources */,
-				9CA026542AC968430068CC74 /* BrightnessTechnique.swift in Sources */,
+				9CB1E0032F9000010007D24A /* ScreenHelperProcessManager.swift in Sources */,
 				9C41637A2ABD8FBD005B34B6 /* Constants.swift in Sources */,
 				9C534AC62ACB02C60029E050 /* BatteryHelpers.swift in Sources */,
 				9C1C8BEE2C8B817B00754474 /* BrightIntoshStore.swift in Sources */,
 				9C711B4F2BD9583F00231067 /* StyledSlider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CA988F92F811A8A0007D249 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -509,16 +606,14 @@
 				9C1C8BEA2C8B4FC000754474 /* Trial.swift in Sources */,
 				9CDE33C52B4317D70085F786 /* Utils.swift in Sources */,
 				9CA026512AC9647E0068CC74 /* BrightnessManager.swift in Sources */,
-				9CA026532AC968430068CC74 /* BrightnessTechnique.swift in Sources */,
 				C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */,
 				9C5610502ABF55A90066D6C9 /* BrightIntoshSettings.swift in Sources */,
 				9C1C8BED2C8B817B00754474 /* BrightIntoshStore.swift in Sources */,
 				9CE3C3812C8C8D3B00E7FDBA /* Styles.swift in Sources */,
-				C1D044EB2A60205E0022B970 /* OverlayWindow.swift in Sources */,
 				9C17DFAC2DCF748000185CDA /* Cli.swift in Sources */,
 				9C534ACB2ACB2A050029E050 /* Alerts.swift in Sources */,
-				C1B5215C2A5EFFDB00E9B7AC /* Overlay.swift in Sources */,
 				9CA8FECE2E0707CA00D8525A /* Authorizer.swift in Sources */,
+				9CB1E0022F9000010007D249 /* ScreenHelperProcessManager.swift in Sources */,
 				9C4163792ABD8FBD005B34B6 /* Constants.swift in Sources */,
 				9C534AC52ACB02C60029E050 /* BatteryHelpers.swift in Sources */,
 				9C1C8BE82C8B4A1C00754474 /* UserStatusModifier.swift in Sources */,
@@ -531,6 +626,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		9CB1E0052F9000010007D252 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9CA988FC2F811A8A0007D249 /* BrightIntoshScreenHelper */;
+			targetProxy = 9CB1E0042F9000010007D24D /* PBXContainerItemProxy */;
+		};
+		9CB1E00A2F9000010007D251 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9CA988FC2F811A8A0007D249 /* BrightIntoshScreenHelper */;
+			targetProxy = 9CB1E0092F9000010007D24E /* PBXContainerItemProxy */;
+		};
 		9CEA0E452F40857E00284E1A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9CEA0E362F40857D00284E1A /* WidgetsExtension */;
@@ -645,6 +750,85 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = STORE;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		9CA989062F811A8B0007D249 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BrightIntoshScreenHelper/BrightIntoshScreenHelper.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9K32WDUN2H;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BrightIntoshScreenHelper/Info.plist;
+				INFOPLIST_KEY_LSMultipleInstancesProhibited = NO;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.BrightIntoshScreenHelper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		9CA989072F811A8B0007D249 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BrightIntoshScreenHelper/BrightIntoshScreenHelper.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9K32WDUN2H;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BrightIntoshScreenHelper/Info.plist;
+				INFOPLIST_KEY_LSMultipleInstancesProhibited = NO;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.brightintosh.BrightIntoshScreenHelper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
@@ -957,6 +1141,15 @@
 			buildConfigurations = (
 				9C8803802A72625E00476017 /* Debug */,
 				9C8803812A72625E00476017 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9CA989052F811A8B0007D249 /* Build configuration list for PBXNativeTarget "BrightIntoshScreenHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CA989062F811A8B0007D249 /* Debug */,
+				9CA989072F811A8B0007D249 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

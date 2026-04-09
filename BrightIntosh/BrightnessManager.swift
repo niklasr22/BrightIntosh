@@ -18,23 +18,19 @@ extension NSScreen {
 @MainActor
 class BrightnessManager {
     
-    var brightnessTechnique: BrightnessTechnique?
+    private let screenHelperManager = ScreenHelperProcessManager()
     var screens: [NSScreen] = []
     var xdrScreens: [NSScreen] = []
     var enabled: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
     private var screenUpdateDebounceTask: Task<Void, Never>?
-    private var delayedScreenReenableTask: Task<Void, Never>?
     
     init() {
-        setBrightnessTechnique()
-        
         if BrightIntoshSettings.shared.brightintoshActive {
             activateSafely()
         }
         
-        // Observe displays
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleScreenParameters(notification:)),
@@ -42,27 +38,22 @@ class BrightnessManager {
             object: nil
         )
         
-        // Observe entitlement
         Authorizer.shared.$status.sink { newStatus in
             if newStatus == .unauthorized && BrightIntoshSettings.shared.brightintoshActive {
                 BrightIntoshSettings.shared.brightintoshActive = false
             }
         }.store(in: &cancellables)
         
-        // Add settings listeners
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
             if BrightIntoshSettings.shared.brightintoshActive {
-                self.cancelDelayedScreenReenable()
                 self.activateSafely()
             } else if self.enabled {
-                self.cancelDelayedScreenReenable()
-                self.brightnessTechnique?.disable()
+                self.screenHelperManager.terminateAll()
             }
         }
         
         BrightIntoshSettings.shared.addListener(setting: "brightness") {
             print("Set brightness to \(BrightIntoshSettings.shared.brightness)")
-            self.brightnessTechnique?.adjustBrightness()
         }
         
         BrightIntoshSettings.shared.addListener(setting: "brightIntoshOnlyOnBuiltIn") {
@@ -82,23 +73,16 @@ class BrightnessManager {
         }
     }
     
-    func setBrightnessTechnique() {
-        brightnessTechnique?.disable()
-        brightnessTechnique = GammaTechnique()
-        print("Activated Gamma Technique")
-    }
-    
     @MainActor @objc func handleScreenParameters(notification: Notification) {
+        print("Screen parameters changed")
         scheduleDebouncedScreenUpdate()
     }
     
     @MainActor func handlePotentialScreenUpdate() {
-        let previousXdrScreens = xdrScreens
         let newScreens = NSScreen.screens
         let newXdrDisplays = getXDRDisplays()
         var changedScreens = newScreens.count != screens.count || newXdrDisplays.count != xdrScreens.count
         let screenWasRemoved = newScreens.count < screens.count || newXdrDisplays.count < xdrScreens.count
-        let screenWasAdded = newScreens.count > screens.count || newXdrDisplays.count > xdrScreens.count
         if !changedScreens {
             for screen in screens {
                 let sameScreen = newScreens.filter({$0.displayId == screen.displayId }).first
@@ -120,39 +104,26 @@ class BrightnessManager {
         }
         
         if !newScreens.isEmpty {
-            if let brightnessTechnique = brightnessTechnique, BrightIntoshSettings.shared.brightintoshActive {
-                if changedScreens && screenWasRemoved {
-                    print("Screen removed, updating active displays")
-                    cancelDelayedScreenReenable()
-                    brightnessTechnique.screenUpdate(screens: newXdrDisplays)
-                } else if changedScreens && screenWasAdded && brightnessTechnique.isEnabled {
-                    print("Screen attached, delaying increased brightness re-enable")
-                    brightnessTechnique.screenUpdate(screens: previousXdrScreens)
-                    scheduleDelayedScreenReenable()
-                } else if changedScreens && brightnessTechnique.isEnabled {
-                    print("Changed screen setup")
-                    brightnessTechnique.screenUpdate(screens: newXdrDisplays)
-                } else if brightnessTechnique.isEnabled {
-                    brightnessTechnique.adjustBrightness()
-                }
+            if BrightIntoshSettings.shared.brightintoshActive {
+                screenHelperManager.sync(xdrScreens: newXdrDisplays)
             }
         } else {
             print("Disabling")
-            self.brightnessTechnique?.disable()
+            screenHelperManager.terminateAll()
         }
     }
     
     @MainActor
     private func enableExtraBrightness() {
-        // Put brightness value into device specific bounds, as earlier versions allowed storing higher brightness values.
         let safeBrightness = max(1.0, min(getDeviceMaxBrightness(), BrightIntoshSettings.shared.brightness))
         
         if safeBrightness != BrightIntoshSettings.shared.brightness {
             print("Fixing brightness")
             BrightIntoshSettings.shared.brightness = safeBrightness
         }
-        self.brightnessTechnique?.enable()
+        screenHelperManager.sync(xdrScreens: getXDRDisplays())
     }
+    
     @MainActor
     private func scheduleDebouncedScreenUpdate() {
         screenUpdateDebounceTask?.cancel()
@@ -165,30 +136,5 @@ class BrightnessManager {
             
             self.handlePotentialScreenUpdate()
         }
-    }
-    
-    @MainActor
-    private func scheduleDelayedScreenReenable() {
-        delayedScreenReenableTask?.cancel()
-        delayedScreenReenableTask = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(5))
-            
-            guard !Task.isCancelled,
-                  enabled,
-                  BrightIntoshSettings.shared.brightintoshActive,
-                  let brightnessTechnique = brightnessTechnique,
-                  brightnessTechnique.isEnabled else {
-                return
-            }
-            
-            print("Re-enabling increased brightness after screen attach delay")
-            brightnessTechnique.screenUpdate(screens: getXDRDisplays())
-        }
-    }
-    
-    @MainActor
-    private func cancelDelayedScreenReenable() {
-        delayedScreenReenableTask?.cancel()
-        delayedScreenReenableTask = nil
     }
 }

@@ -6,7 +6,6 @@
 //
 
 import KeyboardShortcuts
-import OSLog
 import StoreKit
 import SwiftUI
 

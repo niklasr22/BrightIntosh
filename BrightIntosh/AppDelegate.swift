@@ -113,6 +113,8 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
         if cliBase() {
             exit(0);
         }
+        print("Thermal info: \(ProcessInfo.processInfo.thermalState)")
+        print("Low power: \(ProcessInfo.processInfo.isLowPowerModeEnabled)")
         
         supportedDevice = isDeviceSupported()
         
