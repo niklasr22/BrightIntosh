@@ -29,13 +29,15 @@ final class ScreenHelperProcessManager {
     }
     
     private nonisolated func runningAppsChanged(_ workspace: NSWorkspace, _ change: NSKeyValueObservedChange<[NSRunningApplication]>) {
-        guard let new = change.newValue else { return }
-        
         Task { @MainActor in
-            runningByDisplay = runningByDisplay.filter({ k,v in
-                new.contains(where: {$0.processIdentifier == v.processIdentifier})
+            let updatedRunningByDisplay = runningByDisplay.filter({ k,v in
+                NSWorkspace.shared.runningApplications.contains(where: {$0.processIdentifier == v.processIdentifier})
             })
-            sync(xdrScreens: self.xdrScreens)
+            let prevHelperCount = runningByDisplay.count
+            runningByDisplay = updatedRunningByDisplay
+            if updatedRunningByDisplay.count != prevHelperCount {
+                print("ScreenHelperProcessManager: a helper was launched or terminated")
+            }
         }
     }
     
@@ -50,6 +52,7 @@ final class ScreenHelperProcessManager {
     
     /// Sync running helper apps to exactly the given XDR screens (launch new, terminate removed).
     func sync(xdrScreens: [NSScreen]) {
+        print("ScreenHelperProcessManager: running sync \(String(describing: pendingLaunchDisplayIds)) \(String(describing: runningByDisplay))")
         self.xdrScreens = xdrScreens
         
         guard let helperAppURL = helperApplicationURL() else {
@@ -59,9 +62,11 @@ final class ScreenHelperProcessManager {
         
         for screen in xdrScreens {
             guard let id = screen.displayId else {
+                print("ScreenHelperProcessManager: screen is missing display ID")
                 continue
             }
             if runningByDisplay[id] != nil || pendingLaunchDisplayIds.contains(id) {
+                print("ScreenHelperProcessManager: skipping display \(id) as it is already running/being launched")
                 continue
             }
             
