@@ -50,7 +50,7 @@ class Overlay: MTKView, MTKViewDelegate {
     }
     
     func screenUpdate(screen: NSScreen) {
-        let hdrValue: Double = 4.0
+        let hdrValue: Double = 16.0
         clearColor = MTLClearColorMake(hdrValue, hdrValue, hdrValue, 1.0)
     }
     
