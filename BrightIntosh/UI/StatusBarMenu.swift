@@ -164,13 +164,30 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         statusItem?.menu = menu
     }
     
-    /// Frosted banner on the display that entered cooldown (top of visible area); ignores clicks; auto-dismisses after 5s.
+    private func dismissHDRCooldownToast() {
+        hdrCooldownToastDismissWorkItem?.cancel()
+        hdrCooldownToastDismissWorkItem = nil
+        hdrCooldownToastPanel?.orderOut(nil)
+        hdrCooldownToastPanel = nil
+    }
+    
+    @objc private func hdrCooldownToastCloseClicked(_ sender: NSButton) {
+        if NSApp.currentEvent?.modifierFlags.contains(.option) == true {
+            BrightIntoshSettings.shared.showHDRRetryCooldownNotice = false
+        }
+        dismissHDRCooldownToast()
+    }
+    
+    @objc fileprivate func hdrCooldownToastDisableFromContextMenu(_ sender: NSMenuItem) {
+        BrightIntoshSettings.shared.showHDRRetryCooldownNotice = false
+        dismissHDRCooldownToast()
+    }
+    
+    /// Frosted banner on the display that entered cooldown. Click-through body; close control dismisses (Option-click or context menu to stop showing).
     private func presentHDRCooldownToast(cooldownSeconds: Int, displayID: CGDirectDisplayID?) {
         guard BrightIntoshSettings.shared.showHDRRetryCooldownNotice else { return }
         
-        hdrCooldownToastDismissWorkItem?.cancel()
-        hdrCooldownToastPanel?.orderOut(nil)
-        hdrCooldownToastPanel = nil
+        dismissHDRCooldownToast()
         
         let message = String(
             localized: "macOS is temporarily limiting the display's maximum brightness. Brightintosh will restore the boost in approx. \(cooldownSeconds) seconds once the system allows it."
@@ -181,7 +198,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         let verticalPadding: CGFloat = 12
         let iconSide: CGFloat = 16
         let iconTextGap: CGFloat = 8
-        let textWidth = panelWidth - horizontalPadding * 2 - iconSide - iconTextGap
+        let closeSide: CGFloat = 22
+        let closeLeadingGap: CGFloat = 6
+        let textWidth = panelWidth - horizontalPadding * 2 - iconSide - iconTextGap - closeLeadingGap - closeSide
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineBreakMode = .byWordWrapping
         let attributes: [NSAttributedString.Key: Any] = [.font: font, .paragraphStyle: paragraph]
@@ -205,7 +224,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         panel.hasShadow = true
         panel.level = .statusBar
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
-        panel.ignoresMouseEvents = true
+        panel.ignoresMouseEvents = false
         panel.isReleasedWhenClosed = false
         
         var effect: NSView!
@@ -247,12 +266,32 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         label.preferredMaxLayoutWidth = textWidth
         label.isEditable = false
         label.isSelectable = false
+        label.refusesFirstResponder = true
         label.translatesAutoresizingMaskIntoConstraints = false
         label.setContentHuggingPriority(.defaultHigh, for: .vertical)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         
+        let closeConfig = NSImage.SymbolConfiguration(pointSize: 11, weight: .medium)
+        let closeImage = NSImage(systemSymbolName: "xmark", accessibilityDescription: String(localized: "Dismiss notice"))?
+            .withSymbolConfiguration(closeConfig)
+        let closeButton = HDRToastCloseButton()
+        closeButton.menuTarget = self
+        closeButton.image = closeImage
+        closeButton.imagePosition = .imageOnly
+        closeButton.isBordered = false
+        closeButton.bezelStyle = .shadowlessSquare
+        closeButton.focusRingType = .none
+        closeButton.contentTintColor = .secondaryLabelColor
+        closeButton.target = self
+        closeButton.action = #selector(hdrCooldownToastCloseClicked(_:))
+        closeButton.toolTip = String(
+            localized: "Click to dismiss. Option-click to dismiss and stop showing these notices. Control-click for a menu."
+        )
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        
         effect.addSubview(iconView)
         effect.addSubview(label)
+        effect.addSubview(closeButton)
         panel.contentView = effect
         
         NSLayoutConstraint.activate([
@@ -262,8 +301,13 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             iconView.heightAnchor.constraint(equalToConstant: iconSide),
             
             label.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: iconTextGap),
-            label.trailingAnchor.constraint(equalTo: effect.trailingAnchor, constant: -horizontalPadding),
+            label.trailingAnchor.constraint(equalTo: closeButton.leadingAnchor, constant: -closeLeadingGap),
             label.centerYAnchor.constraint(equalTo: effect.centerYAnchor),
+            
+            closeButton.trailingAnchor.constraint(equalTo: effect.trailingAnchor, constant: -horizontalPadding + 2),
+            closeButton.centerYAnchor.constraint(equalTo: iconView.centerYAnchor),
+            closeButton.widthAnchor.constraint(equalToConstant: closeSide),
+            closeButton.heightAnchor.constraint(equalToConstant: closeSide),
         ])
         
         let margin: CGFloat = 12
@@ -309,8 +353,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         hdrCooldownToastPanel = panel
         
         let workItem = DispatchWorkItem { [weak self] in
-            self?.hdrCooldownToastPanel?.orderOut(nil)
-            self?.hdrCooldownToastPanel = nil
+            self?.dismissHDRCooldownToast()
         }
         hdrCooldownToastDismissWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: workItem)
@@ -506,5 +549,27 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     func menuDidClose(_ menu: NSMenu) {
         isOpen = false
         self.stopRemainingTimePoller()
+    }
+}
+
+// MARK: - HDR cooldown toast close button
+
+private final class HDRToastCloseButton: NSButton {
+    weak var menuTarget: StatusBarMenu?
+    
+    override func rightMouseDown(with event: NSEvent) {
+        guard let target = menuTarget else {
+            super.rightMouseDown(with: event)
+            return
+        }
+        let menu = NSMenu()
+        let item = NSMenuItem(
+            title: String(localized: "Don’t show this notice again"),
+            action: #selector(StatusBarMenu.hdrCooldownToastDisableFromContextMenu(_:)),
+            keyEquivalent: ""
+        )
+        item.target = target
+        menu.addItem(item)
+        NSMenu.popUpContextMenu(menu, with: event, for: self)
     }
 }
