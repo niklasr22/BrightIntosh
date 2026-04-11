@@ -47,6 +47,14 @@ class BrightIntoshSettings {
         }
     }
     
+    /// Banner on the affected display when macOS delays HDR / boosted brightness (retry cooldown).
+    public var showHDRRetryCooldownNotice: Bool = BrightIntoshSettings.getUserDefault(key: "showHDRRetryCooldownNotice", defaultValue: true) {
+        didSet {
+            BrightIntoshSettings.defaults.setValue(showHDRRetryCooldownNotice, forKey: "showHDRRetryCooldownNotice")
+            callListeners(setting: "showHDRRetryCooldownNotice")
+        }
+    }
+    
     public var hideMenuBarItem: Bool = BrightIntoshSettings.getUserDefault(key: "hideMenuBarItem", defaultValue: false) {
         didSet {
             BrightIntoshSettings.defaults.setValue(hideMenuBarItem, forKey: "hideMenuBarItem")
@@ -156,6 +164,7 @@ class BrightIntoshSettings {
     private func refreshState() {
         brightintoshActive = BrightIntoshSettings.getUserDefault(key: "active", defaultValue: true)
         brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.getUserDefault(key: "brightIntoshOnlyOnBuiltIn", defaultValue: false)
+        showHDRRetryCooldownNotice = BrightIntoshSettings.getUserDefault(key: "showHDRRetryCooldownNotice", defaultValue: true)
         hideMenuBarItem = BrightIntoshSettings.getUserDefault(key: "hideMenuBarItem", defaultValue: false)
         brightness = BrightIntoshSettings.getUserDefault(key: "brightness", defaultValue: getDeviceMaxBrightness())
         batteryAutomation = BrightIntoshSettings.getUserDefault(key: "batteryAutomation", defaultValue: false)

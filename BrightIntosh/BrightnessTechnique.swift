@@ -199,8 +199,15 @@ class GammaTechnique: BrightnessTechnique {
             
             if let start = notReadySince, now.timeIntervalSince(start) >= hdrEngageTimeout {
                 displaysPendingHDRRetry.insert(displayId)
+                NotificationCenter.default.post(
+                    name: .brightIntoshHDRCooldownDidBegin,
+                    object: nil,
+                    userInfo: [
+                        "cooldownSeconds": hdrRetryCooldownSeconds,
+                        "displayID": NSNumber(value: displayId),
+                    ]
+                )
                 closeOverlay(displayId)
-                print("HDR not ready for screen \(displayId)")
                 try? await Task.sleep(for: .seconds(hdrRetryCooldownSeconds))
                 displaysPendingHDRRetry.remove(displayId)
                 guard !Task.isCancelled, isEnabled else { return false }

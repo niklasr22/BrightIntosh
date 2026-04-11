@@ -159,3 +159,8 @@ func generateReport() async -> String {
     }
     return report
 }
+
+extension Notification.Name {
+    /// Posted when a display enters the HDR retry cooldown. `userInfo["cooldownSeconds"]` is `Int`; `userInfo["displayID"]` is `NSNumber` wrapping `CGDirectDisplayID`.
+    static let brightIntoshHDRCooldownDidBegin = Notification.Name("de.brightintosh.hdrCooldownDidBegin")
+}

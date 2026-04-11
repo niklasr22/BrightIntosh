@@ -20,6 +20,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     @objc private var toggleBrightIntosh: () -> ()
     
     private var statusItem: NSStatusItem?
+    private var hdrCooldownToastPanel: NSWindow?
+    private var hdrCooldownToastDismissWorkItem: DispatchWorkItem?
+    /// Observer token; `nonisolated(unsafe)` so `deinit` can remove it (token is safe to pass to `removeObserver`).
+    nonisolated(unsafe) private var hdrCooldownObserver: NSObjectProtocol?
     
     private let menu: NSMenu
     private var isOpen: Bool = false
@@ -137,11 +141,179 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         BrightIntoshSettings.shared.addListener(setting: "hideMenuBarItem") {
             self.updateStatusBarItemVisibility()
         }
+        
+        hdrCooldownObserver = NotificationCenter.default.addObserver(
+            forName: .brightIntoshHDRCooldownDidBegin,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            let seconds = notification.userInfo?["cooldownSeconds"] as? Int ?? 30
+            let displayID = (notification.userInfo?["displayID"] as? NSNumber).map { CGDirectDisplayID($0.uint32Value) }
+            self?.presentHDRCooldownToast(cooldownSeconds: seconds, displayID: displayID)
+        }
+    }
+    
+    deinit {
+        if let hdrCooldownObserver {
+            NotificationCenter.default.removeObserver(hdrCooldownObserver)
+        }
     }
     
     private func createStatusBarItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem?.menu = menu
+    }
+    
+    /// Frosted banner on the display that entered cooldown (top of visible area); ignores clicks; auto-dismisses after 5s.
+    private func presentHDRCooldownToast(cooldownSeconds: Int, displayID: CGDirectDisplayID?) {
+        guard BrightIntoshSettings.shared.showHDRRetryCooldownNotice else { return }
+        
+        hdrCooldownToastDismissWorkItem?.cancel()
+        hdrCooldownToastPanel?.orderOut(nil)
+        hdrCooldownToastPanel = nil
+        
+        let message = String(
+            localized: "macOS is temporarily limiting the display's maximum brightness. Brightintosh will restore the boost in approx. \(cooldownSeconds) seconds once the system allows it."
+        )
+        let font = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
+        let panelWidth: CGFloat = 280
+        let horizontalPadding: CGFloat = 14
+        let verticalPadding: CGFloat = 12
+        let iconSide: CGFloat = 16
+        let iconTextGap: CGFloat = 8
+        let textWidth = panelWidth - horizontalPadding * 2 - iconSide - iconTextGap
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.lineBreakMode = .byWordWrapping
+        let attributes: [NSAttributedString.Key: Any] = [.font: font, .paragraphStyle: paragraph]
+        let textRect = (message as NSString).boundingRect(
+            with: NSSize(width: textWidth, height: 10_000),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            attributes: attributes,
+            context: nil
+        )
+        let contentHeight = ceil(textRect.height) + verticalPadding * 2
+        let contentSize = NSSize(width: panelWidth, height: contentHeight)
+        
+        let panel = NSPanel(
+            contentRect: NSRect(origin: .zero, size: contentSize),
+            styleMask: [.hudWindow],
+            backing: .buffered,
+            defer: false
+        )
+        
+        panel.backgroundColor = .clear
+        panel.hasShadow = true
+        panel.level = .statusBar
+        panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
+        panel.ignoresMouseEvents = true
+        panel.isReleasedWhenClosed = false
+        
+        var effect: NSView!
+        
+        if #available(macOS 26.0, *) {
+            let glass = NSGlassEffectView()
+            glass.cornerRadius = 20.0
+            glass.frame = NSRect(origin: .zero, size: contentSize)
+            glass.autoresizingMask = [.width, .height]
+            effect = glass
+        } else {
+            panel.hasShadow = false
+            let fallback = NSVisualEffectView(frame: NSRect(origin: .zero, size: contentSize))
+            fallback.autoresizingMask = [.width, .height]
+            fallback.material = .popover
+            fallback.blendingMode = .behindWindow
+            fallback.state = .active
+            fallback.wantsLayer = true
+            fallback.layer?.cornerRadius = 16
+            if #available(macOS 11.0, *) {
+                fallback.layer?.cornerCurve = .continuous
+            }
+            effect = fallback
+        }
+        
+        let symbolConfig = NSImage.SymbolConfiguration(pointSize: iconSide - 2, weight: .medium)
+        let timerImage = NSImage(systemSymbolName: "timer", accessibilityDescription: String(localized: "Short wait"))?
+            .withSymbolConfiguration(symbolConfig)
+        let iconView = NSImageView()
+        iconView.image = timerImage
+        iconView.imageScaling = .scaleProportionallyDown
+        iconView.contentTintColor = .secondaryLabelColor
+        iconView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let label = NSTextField(wrappingLabelWithString: message)
+        label.font = font
+        label.textColor = .labelColor
+        label.alignment = .natural
+        label.preferredMaxLayoutWidth = textWidth
+        label.isEditable = false
+        label.isSelectable = false
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
+        
+        effect.addSubview(iconView)
+        effect.addSubview(label)
+        panel.contentView = effect
+        
+        NSLayoutConstraint.activate([
+            iconView.leadingAnchor.constraint(equalTo: effect.leadingAnchor, constant: horizontalPadding),
+            iconView.centerYAnchor.constraint(equalTo: effect.centerYAnchor),
+            iconView.widthAnchor.constraint(equalToConstant: iconSide),
+            iconView.heightAnchor.constraint(equalToConstant: iconSide),
+            
+            label.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: iconTextGap),
+            label.trailingAnchor.constraint(equalTo: effect.trailingAnchor, constant: -horizontalPadding),
+            label.centerYAnchor.constraint(equalTo: effect.centerYAnchor),
+        ])
+        
+        let margin: CGFloat = 12
+        let gapFromTop: CGFloat = 16
+        let targetScreen = displayID.flatMap { id in NSScreen.screens.first { $0.displayId == id } }
+        
+        if let screen = targetScreen {
+            let vf = screen.visibleFrame
+            var originX = vf.midX - contentSize.width / 2
+            let originY = vf.maxY - gapFromTop - contentSize.height
+            originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
+            panel.setFrame(
+                NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height),
+                display: false
+            )
+        } else if let statusItem, let button = statusItem.button, let anchorWindow = button.window,
+                  !BrightIntoshSettings.shared.hideMenuBarItem {
+            let buttonRectOnScreen = anchorWindow.convertToScreen(button.convert(button.bounds, to: nil))
+            var originX = buttonRectOnScreen.midX - contentSize.width / 2
+            let originY = buttonRectOnScreen.minY - 10 - contentSize.height
+            if let screen = anchorWindow.screen ?? NSScreen.main {
+                let vf = screen.visibleFrame
+                originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
+            }
+            panel.setFrame(
+                NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height),
+                display: false
+            )
+        } else if let screen = NSScreen.main {
+            let vf = screen.visibleFrame
+            var originX = vf.midX - contentSize.width / 2
+            let originY = vf.maxY - gapFromTop - contentSize.height
+            originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
+            panel.setFrame(
+                NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height),
+                display: false
+            )
+        } else {
+            return
+        }
+        panel.orderFrontRegardless()
+        
+        hdrCooldownToastPanel = panel
+        
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.hdrCooldownToastPanel?.orderOut(nil)
+            self?.hdrCooldownToastPanel = nil
+        }
+        hdrCooldownToastDismissWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: workItem)
     }
     
     private func createBrightnessSliderItem() -> (NSMenuItem, NSSlider, NSTextField) {
