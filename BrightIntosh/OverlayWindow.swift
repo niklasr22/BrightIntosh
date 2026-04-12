@@ -50,25 +50,31 @@ class OverlayWindow: NSWindow {
     }
     
     func addMetalOverlay(screen: NSScreen) {
-        overlay = Overlay(frame: frame, multiplyCompositing: self.fullsize)
-        overlay?.screenUpdate(screen: screen)
-        overlay?.autoresizingMask = [.width, .height]
-        contentView = overlay
+        installMetalOverlay(screen: screen)
     }
     
     func screenUpdate(screen: NSScreen) {
         overlay?.screenUpdate(screen: screen)
     }
+    
+    private func installMetalOverlay(screen: NSScreen) {
+        overlay = Overlay(frame: frame, multiplyCompositing: self.fullsize)
+        overlay?.screenUpdate(screen: screen)
+        overlay?.autoresizingMask = [.width, .height]
+        contentView = overlay
+    }
 }
 
 final class OverlayWindowController: NSWindowController, NSWindowDelegate {
+    
     let fullsize: Bool
-    public let screen: NSScreen
+    public private(set) var screen: NSScreen
     
     init(screen: NSScreen, fullsize: Bool = false) {
         self.screen = screen
         self.fullsize = fullsize
         let overlayWindow = OverlayWindow(fullsize: fullsize)
+        overlayWindow.title = "BrightIntosh Overlay \(String(describing: screen.displayId))"
         
         super.init(window: overlayWindow)
         overlayWindow.delegate = self
@@ -86,6 +92,21 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         
         window.orderFrontRegardless()
         window.addMetalOverlay(screen: screen)
+    }
+    
+    func updateScreen(screen: NSScreen) {
+        self.screen = screen
+        
+        guard let window = self.window as? OverlayWindow else {
+            return
+        }
+        
+        window.screenUpdate(screen: screen)
+        window.orderFrontRegardless()
+        
+        if !fullsize {
+            reposition(screen: screen)
+        }
     }
     
     func reposition(screen: NSScreen) {

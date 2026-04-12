@@ -139,6 +139,7 @@ struct BasicSettings: View {
     @State private var hideMenuBarItem = BrightIntoshSettings.shared.hideMenuBarItem
     @State private var launchOnLogin = BrightIntoshSettings.shared.launchAtLogin
     @State private var brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn
+    @State private var showHDRRetryCooldownNotice = BrightIntoshSettings.shared.showHDRRetryCooldownNotice
     @State private var batteryLevelThreshold = BrightIntoshSettings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = BrightIntoshSettings.shared.timerAutomationTimeout
 
@@ -172,6 +173,13 @@ struct BasicSettings: View {
                             "Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays.",
                             systemImage: "exclamationmark.triangle.fill"
                         ).foregroundColor(Color.yellow)
+                    }
+                    Toggle(
+                        "Show a notice when boosted brightness needs a short delay",
+                        isOn: $showHDRRetryCooldownNotice
+                    )
+                    .onChange(of: showHDRRetryCooldownNotice) { _, new in
+                        BrightIntoshSettings.shared.showHDRRetryCooldownNotice = new
                     }
                 }
                 Section(header: Text("Timer").bold()) {
@@ -408,6 +416,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
+        settingsWindow.title = "BrightIntosh Settings"
 
         let contentView = SettingsView().frame(width: 650, height: 590)
 
