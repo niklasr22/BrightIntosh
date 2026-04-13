@@ -24,6 +24,11 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var hdrCooldownToastDismissWorkItem: DispatchWorkItem?
     /// Observer token; `nonisolated(unsafe)` so `deinit` can remove it (token is safe to pass to `removeObserver`).
     nonisolated(unsafe) private var hdrCooldownObserver: NSObjectProtocol?
+    nonisolated(unsafe) private var hdrCooldownEndObserver: NSObjectProtocol?
+    
+    /// Displays currently in the HDR retry sleep (mirrors `GammaTechnique.displaysPendingHDRRetry` via notifications).
+    private var hdrCooldownMenuDisplayIds: Set<CGDirectDisplayID> = []
+    private var hdrCooldownMenuSeconds: Int = 30
     
     private let menu: NSMenu
     private var isOpen: Bool = false
@@ -127,6 +132,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         // Listen to settings
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
+            if !BrightIntoshSettings.shared.brightintoshActive {
+                self.hdrCooldownMenuDisplayIds.removeAll()
+            }
             self.updateMenu()
         }
         
@@ -149,7 +157,25 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         ) { [weak self] notification in
             let seconds = notification.userInfo?["cooldownSeconds"] as? Int ?? 30
             let displayID = (notification.userInfo?["displayID"] as? NSNumber).map { CGDirectDisplayID($0.uint32Value) }
-            self?.presentHDRCooldownToast(cooldownSeconds: seconds, displayID: displayID)
+            if let id = displayID {
+                self?.hdrCooldownMenuDisplayIds.insert(id)
+                self?.hdrCooldownMenuSeconds = seconds
+            }
+            self?.updateMenu()
+            if BrightIntoshSettings.shared.showHDRRetryCooldownNotice {
+                self?.presentHDRCooldownToast(cooldownSeconds: seconds, displayID: displayID)
+            }
+        }
+        
+        hdrCooldownEndObserver = NotificationCenter.default.addObserver(
+            forName: .brightIntoshHDRCooldownDidEnd,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            if let id = (notification.userInfo?["displayID"] as? NSNumber).map({ CGDirectDisplayID($0.uint32Value) }) {
+                self?.hdrCooldownMenuDisplayIds.remove(id)
+            }
+            self?.updateMenu()
         }
     }
     
@@ -157,6 +183,36 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         if let hdrCooldownObserver {
             NotificationCenter.default.removeObserver(hdrCooldownObserver)
         }
+        if let hdrCooldownEndObserver {
+            NotificationCenter.default.removeObserver(hdrCooldownEndObserver)
+        }
+    }
+    
+    private static let hdrCooldownMenuSeparatorTag = 9_001
+    private static let hdrCooldownMenuInfoTag = 9_002
+    
+    private func reconcileHDRCooldownMenuItems() {
+        for item in menu.items where item.tag == Self.hdrCooldownMenuSeparatorTag || item.tag == Self.hdrCooldownMenuInfoTag {
+            menu.removeItem(item)
+        }
+        guard !hdrCooldownMenuDisplayIds.isEmpty else { return }
+        guard let titleIdx = menu.items.firstIndex(where: { $0 === titleItem }) else { return }
+        
+        let separator = NSMenuItem.separator()
+        separator.tag = Self.hdrCooldownMenuSeparatorTag
+        let info = NSMenuItem(
+            title: String(format: String(localized: "Awaiting macOS EDR mode (~%llds)"), Int64(hdrCooldownMenuSeconds)),
+            action: nil,
+            keyEquivalent: ""
+        )
+        info.tag = Self.hdrCooldownMenuInfoTag
+        info.isEnabled = false
+        info.image = NSImage(systemSymbolName: "timer", accessibilityDescription: String(localized: "HDR retry wait"))
+        info.toolTip = String(
+            localized: "BrightIntosh pauses the extra brightness until macOS properly displays HDR content again."
+        )
+        menu.insertItem(separator, at: titleIdx + 1)
+        menu.insertItem(info, at: titleIdx + 2)
     }
     
     private func createStatusBarItem() {
@@ -183,11 +239,42 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         dismissHDRCooldownToast()
     }
     
-    /// Frosted banner on the display that entered cooldown. Click-through body; close control dismisses (Option-click or context menu to stop showing).
+    /// Resolves on-screen frame before creating a window so we never dismiss an existing toast unless the new one can be shown.
+    private func frameForHDRCooldownToast(contentSize: NSSize, displayID: CGDirectDisplayID?) -> NSRect? {
+        let margin: CGFloat = 12
+        let gapFromTop: CGFloat = 16
+        let targetScreen = displayID.flatMap { id in NSScreen.screens.first { $0.displayId == id } }
+        if let screen = targetScreen {
+            let vf = screen.visibleFrame
+            var originX = vf.midX - contentSize.width / 2
+            let originY = vf.maxY - gapFromTop - contentSize.height
+            originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
+            return NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height)
+        }
+        if let statusItem, let button = statusItem.button, let anchorWindow = button.window,
+           !BrightIntoshSettings.shared.hideMenuBarItem {
+            let buttonRectOnScreen = anchorWindow.convertToScreen(button.convert(button.bounds, to: nil))
+            var originX = buttonRectOnScreen.midX - contentSize.width / 2
+            let originY = buttonRectOnScreen.minY - 10 - contentSize.height
+            if let screen = anchorWindow.screen ?? NSScreen.main {
+                let vf = screen.visibleFrame
+                originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
+            }
+            return NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height)
+        }
+        if let screen = NSScreen.main {
+            let vf = screen.visibleFrame
+            var originX = vf.midX - contentSize.width / 2
+            let originY = vf.maxY - gapFromTop - contentSize.height
+            originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
+            return NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height)
+        }
+        return nil
+    }
+    
+    /// Frosted banner on the display that entered cooldown. Stays visible when clicking the desktop (does not hide on deactivate). Only the close button or auto-dismiss clears it.
     private func presentHDRCooldownToast(cooldownSeconds: Int, displayID: CGDirectDisplayID?) {
         guard BrightIntoshSettings.shared.showHDRRetryCooldownNotice else { return }
-        
-        dismissHDRCooldownToast()
         
         let message = String(
             localized: "macOS is temporarily limiting the display's maximum brightness. Brightintosh will restore the boost in approx. \(cooldownSeconds) seconds once the system allows it."
@@ -213,19 +300,31 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         let contentHeight = ceil(textRect.height) + verticalPadding * 2
         let contentSize = NSSize(width: panelWidth, height: contentHeight)
         
+        guard let toastFrame = frameForHDRCooldownToast(contentSize: contentSize, displayID: displayID) else {
+            print("[BrightIntosh] HDR cooldown toast: no placement (no NSScreen.main / no target); keeping any existing toast")
+            return
+        }
+        
+        dismissHDRCooldownToast()
+        
         let panel = NSPanel(
             contentRect: NSRect(origin: .zero, size: contentSize),
-            styleMask: [.hudWindow],
+            styleMask: [.hudWindow, .borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
         )
         
         panel.backgroundColor = .clear
         panel.hasShadow = true
-        panel.level = .statusBar
+        // Slightly above default status-bar level so the toast isn’t covered; still a floating non-activating panel.
+        panel.level = NSWindow.Level(rawValue: NSWindow.Level.statusBar.rawValue + 2)
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
         panel.ignoresMouseEvents = false
         panel.isReleasedWhenClosed = false
+        panel.hidesOnDeactivate = false
+        panel.isFloatingPanel = true
+        panel.becomesKeyOnlyIfNeeded = true
+        panel.isMovableByWindowBackground = false
         
         var effect: NSView!
         
@@ -310,44 +409,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             closeButton.heightAnchor.constraint(equalToConstant: closeSide),
         ])
         
-        let margin: CGFloat = 12
-        let gapFromTop: CGFloat = 16
-        let targetScreen = displayID.flatMap { id in NSScreen.screens.first { $0.displayId == id } }
-        
-        if let screen = targetScreen {
-            let vf = screen.visibleFrame
-            var originX = vf.midX - contentSize.width / 2
-            let originY = vf.maxY - gapFromTop - contentSize.height
-            originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
-            panel.setFrame(
-                NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height),
-                display: false
-            )
-        } else if let statusItem, let button = statusItem.button, let anchorWindow = button.window,
-                  !BrightIntoshSettings.shared.hideMenuBarItem {
-            let buttonRectOnScreen = anchorWindow.convertToScreen(button.convert(button.bounds, to: nil))
-            var originX = buttonRectOnScreen.midX - contentSize.width / 2
-            let originY = buttonRectOnScreen.minY - 10 - contentSize.height
-            if let screen = anchorWindow.screen ?? NSScreen.main {
-                let vf = screen.visibleFrame
-                originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
-            }
-            panel.setFrame(
-                NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height),
-                display: false
-            )
-        } else if let screen = NSScreen.main {
-            let vf = screen.visibleFrame
-            var originX = vf.midX - contentSize.width / 2
-            let originY = vf.maxY - gapFromTop - contentSize.height
-            originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
-            panel.setFrame(
-                NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height),
-                display: false
-            )
-        } else {
-            return
-        }
+        panel.setFrame(toastFrame, display: false)
         panel.orderFrontRegardless()
         
         hdrCooldownToastPanel = panel
@@ -434,9 +496,12 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             toggleTimerItem.badge = nil
         }
         
+        reconcileHDRCooldownMenuItems()
+        
         if BrightIntoshSettings.shared.brightintoshActive {
             if !menu.items.contains(toggleTimerItem) {
-                menu.insertItem(toggleTimerItem!, at: 2)
+                let afterToggle = (menu.items.firstIndex(where: { $0 === toggleIncreasedBrightnessItem }) ?? 0) + 1
+                menu.insertItem(toggleTimerItem!, at: afterToggle)
             }
         } else if menu.items.contains(toggleTimerItem) {
             menu.removeItem(toggleTimerItem!)

@@ -211,6 +211,11 @@ class GammaTechnique: BrightnessTechnique {
                 closeOverlay(displayId)
                 try? await Task.sleep(for: .seconds(hdrRetryCooldownSeconds))
                 displaysPendingHDRRetry.remove(displayId)
+                NotificationCenter.default.post(
+                    name: .brightIntoshHDRCooldownDidEnd,
+                    object: nil,
+                    userInfo: ["displayID": NSNumber(value: displayId)]
+                )
                 guard !Task.isCancelled, isEnabled else { return false }
                 if let s = screenForDisplay(displayId) { enableScreen(screen: s) }
                 notReadySince = nil
