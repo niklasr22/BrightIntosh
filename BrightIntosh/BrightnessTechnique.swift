@@ -131,6 +131,7 @@ class GammaTechnique: BrightnessTechnique {
             if displaysPendingHDRRetry.contains(displayId) { continue }
             if let c = overlayWindowControllers[displayId] {
                 c.updateScreen(screen: screen)
+                adjustBrightness()
             } else {
                 enableScreen(screen: screen)
             }
