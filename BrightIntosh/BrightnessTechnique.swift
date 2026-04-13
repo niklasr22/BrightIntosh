@@ -67,10 +67,13 @@ class GammaTechnique: BrightnessTechnique {
     private var hdrPollTasks: [CGDirectDisplayID: Task<Void, Never>] = [:]
     private var hdrReadyDisplayIds: Set<CGDirectDisplayID> = []
     private var displaysPendingHDRRetry: Set<CGDirectDisplayID> = []
+    /// Consecutive HDR engage timeouts per display; each cooldown length is `min(max, step * count)`, reset when HDR becomes ready.
+    private var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
     
     private let hdrReadyThreshold = 1.05
     private let hdrEngageTimeout: TimeInterval = 2.0
-    private let hdrRetryCooldownSeconds = 30
+    private let hdrRetryCooldownStepSeconds = 30
+    private let hdrRetryCooldownMaxSeconds = 120
     private let pollInterval: Duration = .milliseconds(250)
     
     private static func edrGammaFactor(userBrightness: Float, maxEdr: CGFloat) -> Float {
@@ -103,6 +106,7 @@ class GammaTechnique: BrightnessTechnique {
         hdrPollTasks.removeAll()
         hdrReadyDisplayIds.removeAll()
         displaysPendingHDRRetry.removeAll()
+        hdrConsecutiveTimeoutCount.removeAll()
         overlayWindowControllers.values.forEach { $0.window?.close() }
         overlayWindowControllers.removeAll()
         baselineGammaTables.removeAll()
@@ -145,6 +149,7 @@ class GammaTechnique: BrightnessTechnique {
         hdrPollTasks.removeValue(forKey: displayId)
         hdrReadyDisplayIds.remove(displayId)
         displaysPendingHDRRetry.remove(displayId)
+        hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
         baselineGammaTables.removeValue(forKey: displayId)
         overlayWindowControllers[displayId]?.window?.close()
         overlayWindowControllers.removeValue(forKey: displayId)
@@ -192,6 +197,7 @@ class GammaTechnique: BrightnessTechnique {
                 return false
             }
             if hdrReady(screen) {
+                hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
                 return true
             }
             
@@ -199,17 +205,23 @@ class GammaTechnique: BrightnessTechnique {
             if notReadySince == nil { notReadySince = now }
             
             if let start = notReadySince, now.timeIntervalSince(start) >= hdrEngageTimeout {
+                let nextCount = (hdrConsecutiveTimeoutCount[displayId] ?? 0) + 1
+                hdrConsecutiveTimeoutCount[displayId] = nextCount
+                let cooldownSeconds = min(
+                    hdrRetryCooldownMaxSeconds,
+                    hdrRetryCooldownStepSeconds * nextCount
+                )
                 displaysPendingHDRRetry.insert(displayId)
                 NotificationCenter.default.post(
                     name: .brightIntoshHDRCooldownDidBegin,
                     object: nil,
                     userInfo: [
-                        "cooldownSeconds": hdrRetryCooldownSeconds,
+                        "cooldownSeconds": cooldownSeconds,
                         "displayID": NSNumber(value: displayId),
                     ]
                 )
                 closeOverlay(displayId)
-                try? await Task.sleep(for: .seconds(hdrRetryCooldownSeconds))
+                try? await Task.sleep(for: .seconds(cooldownSeconds))
                 displaysPendingHDRRetry.remove(displayId)
                 NotificationCenter.default.post(
                     name: .brightIntoshHDRCooldownDidEnd,
