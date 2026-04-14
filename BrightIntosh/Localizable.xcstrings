@@ -546,61 +546,61 @@
         }
       }
     },
-    "Awaiting macOS EDR mode (~%llds)" : {
+    "Awaiting macOS EDR mode (%llds)" : {
       "comment" : "A menu item that displays a countdown timer for when macOS will automatically retry HDR. The argument is the number of seconds remaining.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Warten auf macOS EDR-Modus (~%llds)"
+            "value" : "Warten auf macOS EDR-Modus (%llds)"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Awaiting macOS EDR mode (~%llds)"
+            "value" : "Awaiting macOS EDR mode (%llds)"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esperando el modo EDR de macOS (~%llds)"
+            "value" : "Esperando el modo EDR de macOS (%llds)"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En attente du mode HDR de macOS (~%llds)"
+            "value" : "En attente du mode HDR de macOS (%llds)"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In attesa della modalità EDR di macOS (~%llds)"
+            "value" : "In attesa della modalità EDR di macOS (%llds)"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "macOS EDR モード待機中（約 %lld 秒）"
+            "value" : "macOS EDR モード待機中（%lld 秒）"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A aguardar o modo EDR do macOS (~%llds)"
+            "value" : "A aguardar o modo EDR do macOS (%llds)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "等待 macOS EDR 模式（~%lld秒）"
+            "value" : "等待 macOS EDR 模式（%lld秒）"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "等待 macOS EDR 模式（約 %lld 秒）"
+            "value" : "等待 macOS EDR 模式（%lld 秒）"
           }
         }
       }
@@ -4409,5 +4409,5 @@
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }

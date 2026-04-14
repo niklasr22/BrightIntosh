@@ -28,7 +28,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     /// Displays currently in the HDR retry sleep (mirrors `GammaTechnique.displaysPendingHDRRetry` via notifications).
     private var hdrCooldownMenuDisplayIds: Set<CGDirectDisplayID> = []
+    private var hdrCooldownMenuEndDates: [CGDirectDisplayID: Date] = [:]
     private var hdrCooldownMenuSeconds: Int = 30
+    private var hdrCooldownMenuRefreshTimer: Timer?
     
     private let menu: NSMenu
     private var isOpen: Bool = false
@@ -134,6 +136,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
             if !BrightIntoshSettings.shared.brightintoshActive {
                 self.hdrCooldownMenuDisplayIds.removeAll()
+                self.hdrCooldownMenuEndDates.removeAll()
+                self.stopHDRCooldownMenuRefreshTimer()
             }
             self.updateMenu()
         }
@@ -159,8 +163,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             let displayID = (notification.userInfo?["displayID"] as? NSNumber).map { CGDirectDisplayID($0.uint32Value) }
             if let id = displayID {
                 self?.hdrCooldownMenuDisplayIds.insert(id)
+                self?.hdrCooldownMenuEndDates[id] = Date().addingTimeInterval(TimeInterval(seconds))
                 self?.hdrCooldownMenuSeconds = seconds
             }
+            self?.startHDRCooldownMenuRefreshTimerIfNeeded()
             self?.updateMenu()
             if BrightIntoshSettings.shared.showHDRRetryCooldownNotice {
                 self?.presentHDRCooldownToast(cooldownSeconds: seconds, displayID: displayID)
@@ -174,7 +180,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         ) { [weak self] notification in
             if let id = (notification.userInfo?["displayID"] as? NSNumber).map({ CGDirectDisplayID($0.uint32Value) }) {
                 self?.hdrCooldownMenuDisplayIds.remove(id)
+                self?.hdrCooldownMenuEndDates.removeValue(forKey: id)
             }
+            self?.stopHDRCooldownMenuRefreshTimerIfNeeded()
             self?.updateMenu()
         }
     }
@@ -191,6 +199,42 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private static let hdrCooldownMenuSeparatorTag = 9_001
     private static let hdrCooldownMenuInfoTag = 9_002
     
+    private func currentHDRCooldownRemainingSeconds() -> Int {
+        guard !hdrCooldownMenuDisplayIds.isEmpty else { return 0 }
+        let now = Date()
+        let remaining = hdrCooldownMenuDisplayIds.compactMap { id -> Int? in
+            guard let endDate = hdrCooldownMenuEndDates[id] else { return nil }
+            return max(0, Int(ceil(endDate.timeIntervalSince(now))))
+        }.max()
+        return remaining ?? max(0, hdrCooldownMenuSeconds)
+    }
+    
+    private func startHDRCooldownMenuRefreshTimerIfNeeded() {
+        guard isOpen, !hdrCooldownMenuDisplayIds.isEmpty, hdrCooldownMenuRefreshTimer == nil else { return }
+        hdrCooldownMenuRefreshTimer = Timer(fire: .now, interval: 1.0, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                let now = Date()
+                self.hdrCooldownMenuEndDates = self.hdrCooldownMenuEndDates.filter { _, endDate in endDate > now }
+                self.hdrCooldownMenuDisplayIds = self.hdrCooldownMenuDisplayIds.filter { self.hdrCooldownMenuEndDates[$0] != nil }
+                self.reconcileHDRCooldownMenuItems()
+                self.stopHDRCooldownMenuRefreshTimerIfNeeded()
+            }
+        }
+        RunLoop.main.add(hdrCooldownMenuRefreshTimer!, forMode: .eventTracking)
+    }
+    
+    private func stopHDRCooldownMenuRefreshTimer() {
+        hdrCooldownMenuRefreshTimer?.invalidate()
+        hdrCooldownMenuRefreshTimer = nil
+    }
+    
+    private func stopHDRCooldownMenuRefreshTimerIfNeeded() {
+        if hdrCooldownMenuDisplayIds.isEmpty || !isOpen {
+            stopHDRCooldownMenuRefreshTimer()
+        }
+    }
+    
     private func reconcileHDRCooldownMenuItems() {
         for item in menu.items where item.tag == Self.hdrCooldownMenuSeparatorTag || item.tag == Self.hdrCooldownMenuInfoTag {
             menu.removeItem(item)
@@ -200,8 +244,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         let separator = NSMenuItem.separator()
         separator.tag = Self.hdrCooldownMenuSeparatorTag
+        let remainingSeconds = currentHDRCooldownRemainingSeconds()
         let info = NSMenuItem(
-            title: String(format: String(localized: "Awaiting macOS EDR mode (~%llds)"), Int64(hdrCooldownMenuSeconds)),
+            title: String(format: String(localized: "Awaiting macOS EDR mode (%llds)"), Int64(remainingSeconds)),
             action: nil,
             keyEquivalent: ""
         )
@@ -597,10 +642,11 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     func menuWillOpen(_ menu: NSMenu) {
+        isOpen = true
         startTimePollerIfApplicable()
+        startHDRCooldownMenuRefreshTimerIfNeeded()
         updateMenu()
         updateSliderContainerWidth()
-        isOpen = true
     }
     
     func startTimePollerIfApplicable() {
@@ -614,6 +660,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     func menuDidClose(_ menu: NSMenu) {
         isOpen = false
         self.stopRemainingTimePoller()
+        stopHDRCooldownMenuRefreshTimer()
     }
 }
 
