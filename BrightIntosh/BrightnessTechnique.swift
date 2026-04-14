@@ -71,10 +71,10 @@ class GammaTechnique: BrightnessTechnique {
     private var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
     
     private let hdrReadyThreshold = 1.05
-    private let hdrEngageTimeout: TimeInterval = 2.0
+    private let hdrEngageTimeout: TimeInterval = 2.1
     private let hdrRetryCooldownStepSeconds = 30
     private let hdrRetryCooldownMaxSeconds = 120
-    private let pollInterval: Duration = .milliseconds(250)
+    private let pollInterval: Duration = .milliseconds(500)
     
     private static func edrGammaFactor(userBrightness: Float, maxEdr: CGFloat) -> Float {
         1 + (userBrightness - 1) * Float(maxEdr) / 4.0
