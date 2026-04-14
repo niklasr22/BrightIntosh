@@ -101,6 +101,8 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
             return
         }
         
+        print("[WindowController] Updating screen (ID: \(screen.displayId))")
+        
         window.screenUpdate(screen: screen)
         window.orderFrontRegardless()
         

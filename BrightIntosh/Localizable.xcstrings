@@ -546,6 +546,65 @@
         }
       }
     },
+    "Awaiting macOS EDR mode (%llds)" : {
+      "comment" : "A menu item that displays a countdown timer for when macOS will automatically retry HDR. The argument is the number of seconds remaining.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warten auf macOS EDR-Modus (%llds)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Awaiting macOS EDR mode (%llds)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esperando el modo EDR de macOS (%llds)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En attente du mode HDR de macOS (%llds)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In attesa della modalità EDR di macOS (%llds)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS EDR モード待機中（%lld 秒）"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A aguardar o modo EDR do macOS (%llds)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待 macOS EDR 模式（%lld秒）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待 macOS EDR 模式（%lld 秒）"
+          }
+        }
+      }
+    },
     "BrightIntosh" : {
       "localizations" : {
         "en" : {
@@ -668,6 +727,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "BrightIntosh 專為 MacBook Pro 設計，確保其安全，不會繞過作業系統的保護機制。 BrightIntosh 是開源軟體，因此不提供任何擔保，使用風險自負。"
+          }
+        }
+      }
+    },
+    "BrightIntosh pauses the extra brightness until macOS properly displays HDR content again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh pausiert die zusätzliche Helligkeit, bis macOS HDR-Inhalte wieder korrekt anzeigt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh pauses the extra brightness until macOS properly displays HDR content again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh pausa el brillo extra hasta que macOS vuelva a mostrar correctamente contenido HDR."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh met en pause la luminosité supplémentaire jusqu'à ce que macOS affiche à nouveau correctement le contenu HDR."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh mette in pausa la luminosità extra finché macOS non visualizza nuovamente correttamente i contenuti HDR."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntoshは、macOSがHDRコンテンツを正しく表示し直すまで、追加の明るさを一時停止します。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BrightIntosh pausa o brilho extra até o macOS voltar a apresentar corretamente conteúdo HDR."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh 会暂停额外亮度，直到 macOS 正确显示 HDR 内容。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh 會暫停額外亮度，直到 macOS 再次正確顯示 HDR 內容。"
           }
         }
       }
@@ -2182,6 +2299,65 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "生成並複製報告"
+          }
+        }
+      }
+    },
+    "HDR retry wait" : {
+      "comment" : "Icon alt text",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HDR-Wiederholwartezeit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HDR retry wait"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar HDR esperándo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attente de nouvelle tentative HDR"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attendi ritento HDR"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HDRリトライ待ち"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aguardar nova tentativa HDR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HDR 重试等待"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HDR 重試等待"
           }
         }
       }
@@ -4233,5 +4409,5 @@
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }
