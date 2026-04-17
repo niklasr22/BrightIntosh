@@ -74,7 +74,10 @@ class GammaTechnique: BrightnessTechnique {
     private let hdrEngageTimeout: TimeInterval = 2.1
     private let hdrRetryCooldownStepSeconds = 30
     private let hdrRetryCooldownMaxSeconds = 120
-    private let pollInterval: Duration = .milliseconds(500)
+    private let defaultPollInterval: Duration = .milliseconds(500)
+    private let fastPollInterval: Duration = .milliseconds(16)
+    private let fastPollDuration: TimeInterval = 30
+    private var fastPollUntil: Date?
     
     private static func edrGammaFactor(userBrightness: Float, maxEdr: CGFloat) -> Float {
         1 + (userBrightness - 1) * Float(maxEdr) / 4.0
@@ -115,6 +118,7 @@ class GammaTechnique: BrightnessTechnique {
     
     override func adjustBrightness() {
         super.adjustBrightness()
+        fastPollUntil = Date().addingTimeInterval(fastPollDuration)
         if isEnabled { applyGammaForHDRReadyDisplays() }
     }
     
@@ -142,6 +146,7 @@ class GammaTechnique: BrightnessTechnique {
         }
         
         startPollTasksIfNeeded(screens: screens)
+        fastPollUntil = Date().addingTimeInterval(fastPollDuration)
     }
     
     private func tearDownDisplay(_ displayId: CGDirectDisplayID) {
@@ -234,7 +239,7 @@ class GammaTechnique: BrightnessTechnique {
                 continue
             }
             
-            try? await Task.sleep(for: pollInterval)
+            try? await Task.sleep(for: currentPollInterval())
         }
         return false
     }
@@ -253,10 +258,17 @@ class GammaTechnique: BrightnessTechnique {
                 lastFactor = factor
                 applyGammaForHDRReadyDisplays()
             }
-            try? await Task.sleep(for: pollInterval)
+            try? await Task.sleep(for: currentPollInterval())
         }
         hdrReadyDisplayIds.remove(displayId)
         applyGammaForHDRReadyDisplays()
+    }
+    
+    private func currentPollInterval() -> Duration {
+        if let fastPollUntil, Date() < fastPollUntil {
+            return fastPollInterval
+        }
+        return defaultPollInterval
     }
     
     private func applyGammaForHDRReadyDisplays() {
