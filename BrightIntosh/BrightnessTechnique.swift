@@ -112,6 +112,7 @@ class GammaTechnique: BrightnessTechnique {
         hdrConsecutiveTimeoutCount.removeAll()
         overlayWindowControllers.values.forEach { $0.window?.close() }
         overlayWindowControllers.removeAll()
+        baselineGammaTables.forEach { $1.setTableForScreen(displayId: $0, factor: 1.0)}
         baselineGammaTables.removeAll()
         CGDisplayRestoreColorSyncSettings()
     }
@@ -132,6 +133,7 @@ class GammaTechnique: BrightnessTechnique {
             tearDownDisplay(id)
         }
         
+        baselineGammaTables.forEach { $1.setTableForScreen(displayId: $0)}
         CGDisplayRestoreColorSyncSettings()
         
         for screen in screens {
@@ -155,6 +157,7 @@ class GammaTechnique: BrightnessTechnique {
         hdrReadyDisplayIds.remove(displayId)
         displaysPendingHDRRetry.remove(displayId)
         hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
+        baselineGammaTables[displayId]?.setTableForScreen(displayId: displayId)
         baselineGammaTables.removeValue(forKey: displayId)
         overlayWindowControllers[displayId]?.window?.close()
         overlayWindowControllers.removeValue(forKey: displayId)
