@@ -139,6 +139,7 @@ struct BasicSettings: View {
     @State private var hideMenuBarItem = BrightIntoshSettings.shared.hideMenuBarItem
     @State private var launchOnLogin = BrightIntoshSettings.shared.launchAtLogin
     @State private var brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn
+    @State private var disableWhenLidClosed = BrightIntoshSettings.shared.disableWhenLidClosed
     @State private var showHDRRetryCooldownNotice = BrightIntoshSettings.shared.showHDRRetryCooldownNotice
     @State private var batteryLevelThreshold = BrightIntoshSettings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = BrightIntoshSettings.shared.timerAutomationTimeout
@@ -200,6 +201,10 @@ struct BasicSettings: View {
                     Toggle("Launch on login", isOn: $launchOnLogin)
                         .onChange(of: launchOnLogin) { _, new in
                             BrightIntoshSettings.shared.launchAtLogin = new
+                        }
+                    Toggle("Disable when the MacBook lid is closed", isOn: $disableWhenLidClosed)
+                        .onChange(of: disableWhenLidClosed) { _, new in
+                            BrightIntoshSettings.shared.disableWhenLidClosed = new
                         }
                     Picker(selection: $batteryLevelThreshold, label: Text("Disable when battery level drops under")) {
                         Text("Never").tag(100)

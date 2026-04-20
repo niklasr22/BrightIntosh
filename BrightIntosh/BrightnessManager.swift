@@ -28,9 +28,15 @@ class BrightnessManager {
     
     init() {
         setBrightnessTechnique()
+        screens = NSScreen.screens
+        xdrScreens = getXDRDisplays()
         
         if BrightIntoshSettings.shared.brightintoshActive {
-            activateSafely()
+            if shouldDisableForClosedLid(currentScreens: screens) {
+                BrightIntoshSettings.shared.brightintoshActive = false
+            } else {
+                activateSafely()
+            }
         }
         
         // Observe displays
@@ -40,7 +46,7 @@ class BrightnessManager {
             name: NSApplication.didChangeScreenParametersNotification,
             object: nil
         )
-        
+
         // Observe entitlement
         Authorizer.shared.$status.sink { newStatus in
             if newStatus == .unauthorized && BrightIntoshSettings.shared.brightintoshActive {
@@ -65,9 +71,10 @@ class BrightnessManager {
         BrightIntoshSettings.shared.addListener(setting: "brightIntoshOnlyOnBuiltIn") {
             self.handlePotentialScreenUpdate()
         }
-        
-        screens = NSScreen.screens
-        xdrScreens = getXDRDisplays()
+
+        BrightIntoshSettings.shared.addListener(setting: "disableWhenLidClosed") {
+            self.handlePotentialScreenUpdate()
+        }
     }
     
     func activateSafely() {
@@ -109,6 +116,11 @@ class BrightnessManager {
             print("Screen setup changed")
             screens = newScreens
             xdrScreens = newXdrDisplays
+        }
+
+        if BrightIntoshSettings.shared.brightintoshActive && shouldDisableForClosedLid(currentScreens: newScreens) {
+            BrightIntoshSettings.shared.brightintoshActive = false
+            return
         }
         
         guard enabled else {
@@ -158,6 +170,18 @@ class BrightnessManager {
             
             self.handlePotentialScreenUpdate()
         }
+    }
+
+    @MainActor
+    private func shouldDisableForClosedLid(currentScreens: [NSScreen]) -> Bool {
+        guard BrightIntoshSettings.shared.disableWhenLidClosed else {
+            return false
+        }
+        if let clamshellClosed = isClamshellClosed() {
+            return clamshellClosed
+        }
+        // Fallback if clamshell state is unavailable.
+        return !currentScreens.isEmpty && !currentScreens.contains(where: { isBuiltInScreen(screen: $0) })
     }
     
 }
