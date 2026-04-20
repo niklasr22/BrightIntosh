@@ -10,6 +10,7 @@ Les appareils pris en charge sont :
 - MacBook Pro M3 de 2023 (Identifiants de modèle : Mac15,3, Mac15,6, Mac15,7, Mac15,8, Mac15,9, Mac15,10, Mac15,11)
 - MacBook Pro M2 14" / 16" de 2023 (Identifiants de modèle : Mac14,5, Mac14,6, Mac14,9, Mac14,10)
 - MacBook Pro M1 14" / 16" de 2021 (Identifiants de modèle : MacBookPro18,1, MacBookPro18,2, MacBookPro18,3, MacBookPro18,4)
+- Studio Display XDR (bêta)
 - Pro Display XDR
 
 De bons indicateurs sont les deux questions suivantes : L'écran de votre MacBook a-t-il une encoche, et est-ce qu'il est inscrit MacBook Pro au dos de votre appareil ?
