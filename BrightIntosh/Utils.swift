@@ -59,6 +59,31 @@ func isBuiltInScreen(screen: NSScreen) -> Bool {
     return CGDisplayIsBuiltin(displayId) != 0
 }
 
+func isClamshellClosed() -> Bool? {
+    let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPMrootDomain"))
+    guard service != 0 else {
+        return nil
+    }
+    defer {
+        IOObjectRelease(service)
+    }
+
+    let clamshellState = IORegistryEntryCreateCFProperty(
+        service,
+        "AppleClamshellState" as CFString,
+        kCFAllocatorDefault,
+        0
+    )?.takeRetainedValue()
+
+    if let value = clamshellState as? Bool {
+        return value
+    }
+    if let number = clamshellState as? NSNumber {
+        return number.boolValue
+    }
+    return nil
+}
+
 func getModelIdentifier() -> String? {
     let service = IOServiceGetMatchingService(
         kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
