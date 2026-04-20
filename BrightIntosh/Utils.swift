@@ -43,14 +43,35 @@ private func timeoutErrorMessage(_ context: String, seconds: Double) -> String {
 }
 
 
-@MainActor func getXDRDisplays() -> [NSScreen] {
-    var xdrScreens: [NSScreen] = []
-    for screen in NSScreen.screens {
-        if ((isBuiltInScreen(screen: screen) && isDeviceSupported()) || (externalXdrDisplays.contains(screen.localizedName) && !BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn)) {
-            xdrScreens.append(screen)
-        }
+func isExternalXDRDisplay(screen: NSScreen) -> Bool {
+    externalXdrDisplays.contains(screen.localizedName)
+}
+
+@MainActor func isScreenSupportedForBrightIntosh(
+    screen: NSScreen,
+    respectBuiltInPreference: Bool = true
+) -> Bool {
+    if isBuiltInScreen(screen: screen) && isDeviceSupported() {
+        return true
     }
-    return xdrScreens
+
+    if isExternalXDRDisplay(screen: screen) {
+        return !respectBuiltInPreference || !BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn
+    }
+
+    return false
+}
+
+@MainActor func hasAnySupportedDisplayConnected() -> Bool {
+    NSScreen.screens.contains { screen in
+        isScreenSupportedForBrightIntosh(screen: screen, respectBuiltInPreference: false)
+    }
+}
+
+@MainActor func getXDRDisplays() -> [NSScreen] {
+    NSScreen.screens.filter { screen in
+        isScreenSupportedForBrightIntosh(screen: screen)
+    }
 }
 
 func isBuiltInScreen(screen: NSScreen) -> Bool {

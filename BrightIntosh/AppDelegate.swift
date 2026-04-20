@@ -114,7 +114,7 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
             exit(0);
         }
         
-        supportedDevice = isDeviceSupported()
+        supportedDevice = hasAnySupportedDisplayConnected()
         
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             welcomeWindow()
