@@ -28,6 +28,16 @@ It comes with a handy menu bar item so you can toggle the increased brightness q
 
 Maximum brightness with BrightIntosh on the left half of the picture, default maximum brightness on the right half.
 
+## Compatible devices
+
+- MacBook Pro M5 from 2025 / 2026 (Model identifier: Mac17,2, Mac17,6, Mac17,7, Mac17,8, Mac17,9) 
+- MacBook Pro M4 from 2024 (Model Identifiers: Mac16,1, Mac16,5, Mac16,6, Mac16,7, Mac16,8)
+- MacBook Pro M3 from 2023 (Model Identifiers: Mac15,3, Mac15,6, Mac15,7, Mac15,8, Mac15,9, Mac15,10, Mac15,11)
+- MacBook Pro M2 14" / 16" from 2023 (Model Identifiers: Mac14,5, Mac14,6, Mac14,9, Mac14,10)
+- MacBook Pro M1 14" / 16" from 2021 (Model Identifiers: MacBookPro18,1, MacBookPro18,2, MacBookPro18,3, MacBookPro18,4)
+- Studio Display XDR (experimental)
+- Pro Display XDR
+
 ## Installation
 
 - [Mac App Store](https://apple.co/3r0Ghqm)
