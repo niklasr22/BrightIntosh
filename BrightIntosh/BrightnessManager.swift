@@ -47,6 +47,21 @@ class BrightnessManager {
             object: nil
         )
 
+
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self,
+            selector: #selector(handleScreensSleep(notification:)),
+            name: NSWorkspace.screensDidSleepNotification,
+            object: nil
+        )
+        
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self,
+            selector: #selector(handleWakeFromSleep(notification:)),
+            name: NSWorkspace.didWakeNotification,
+            object: nil
+        )
+
         // Observe entitlement
         Authorizer.shared.$status.sink { newStatus in
             if newStatus == .unauthorized && BrightIntoshSettings.shared.brightintoshActive {
@@ -94,6 +109,20 @@ class BrightnessManager {
     
     @MainActor @objc func handleScreenParameters(notification: Notification) {
         scheduleDebouncedScreenUpdate()
+    }
+    
+    @MainActor @objc func handleWakeFromSleep(notification: Notification) {
+        guard BrightIntoshSettings.shared.brightintoshActive && enabled else {
+            return
+        }
+        print("Restoring color sync settings after wake from sleep")
+        CGDisplayRestoreColorSyncSettings()
+        scheduleDebouncedScreenUpdate()
+    }
+    
+    @MainActor @objc func handleScreensSleep(notification: Notification) {
+        print("Restoring color sync settings as screens sleep")
+        CGDisplayRestoreColorSyncSettings()
     }
     
     @MainActor func handlePotentialScreenUpdate() {
