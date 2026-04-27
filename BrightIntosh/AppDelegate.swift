@@ -114,8 +114,8 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
             exit(0);
         }
         
-        supportedDevice = hasAnySupportedDisplayConnected()
-        
+        supportedDevice = isSetupSupported()
+
         if UserDefaults.standard.object(forKey: "agreementAccepted") == nil || !UserDefaults.standard.bool(forKey: "agreementAccepted") {
             welcomeWindow()
         }
@@ -126,7 +126,7 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
         
         brightnessManager = BrightnessManager()
         automationManager = AutomationManager()
-        statusBarMenu = StatusBarMenu(supportedDevice: supportedDevice, automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh)
+        statusBarMenu = StatusBarMenu(automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh)
         
         // Register global hotkeys
         addKeyListeners()

@@ -42,6 +42,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var trialExpiredItem: NSMenuItem!
     private var brightnessSlider: NSSlider!
     private var brightnessValueDisplay: NSTextField!
+    private var unsupportedDeviceItem: NSMenuItem!
     
     private var remainingTimePoller: Timer?
     
@@ -55,10 +56,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private let titleString = "BrightIntosh (v\(appVersion))"
 #endif
     
-    init(supportedDevice: Bool, automationManager: AutomationManager, settingsWindowController: SettingsWindowController, toggleBrightIntosh: @escaping () -> ()) {
+    init(automationManager: AutomationManager, settingsWindowController: SettingsWindowController, toggleBrightIntosh: @escaping () -> ()) {
         self.toggleBrightIntosh = toggleBrightIntosh
-        
-        self.supportedDevice = supportedDevice
+
         self.automationManager = automationManager
         self.settingsWindowController = settingsWindowController
         
@@ -115,11 +115,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         menu.addItem(helpItem)
         menu.addItem(aboutUsItem)
         menu.addItem(quitItem)
-        if !supportedDevice {
-            let unsupportedDeviceItem = NSMenuItem(title: String(localized: "This device is incompatible"), action: nil, keyEquivalent: "")
-            unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "This device is incompatible")
-            menu.addItem(unsupportedDeviceItem)
-        }
+        
+        unsupportedDeviceItem = NSMenuItem(title: String(localized: "This device is incompatible"), action: nil, keyEquivalent: "")
+        unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "This device is incompatible")
+        menu.addItem(unsupportedDeviceItem)
         
         trialExpiredItem = NSMenuItem(title: String(localized: "Your trial has expired"), action: nil, keyEquivalent: "")
         trialExpiredItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "Your trial has expired")
@@ -161,15 +160,17 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         ) { [weak self] notification in
             let seconds = notification.userInfo?["cooldownSeconds"] as? Int ?? 30
             let displayID = (notification.userInfo?["displayID"] as? NSNumber).map { CGDirectDisplayID($0.uint32Value) }
-            if let id = displayID {
-                self?.hdrCooldownMenuDisplayIds.insert(id)
-                self?.hdrCooldownMenuEndDates[id] = Date().addingTimeInterval(TimeInterval(seconds))
-                self?.hdrCooldownMenuSeconds = seconds
-            }
-            self?.startHDRCooldownMenuRefreshTimerIfNeeded()
-            self?.updateMenu()
-            if BrightIntoshSettings.shared.showHDRRetryCooldownNotice {
-                self?.presentHDRCooldownToast(cooldownSeconds: seconds, displayID: displayID)
+            Task { @MainActor in
+                if let id = displayID {
+                    self?.hdrCooldownMenuDisplayIds.insert(id)
+                    self?.hdrCooldownMenuEndDates[id] = Date().addingTimeInterval(TimeInterval(seconds))
+                    self?.hdrCooldownMenuSeconds = seconds
+                }
+                self?.startHDRCooldownMenuRefreshTimerIfNeeded()
+                self?.updateMenu()
+                if BrightIntoshSettings.shared.showHDRRetryCooldownNotice {
+                    self?.presentHDRCooldownToast(cooldownSeconds: seconds, displayID: displayID)
+                }
             }
         }
         
@@ -178,12 +179,15 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            if let id = (notification.userInfo?["displayID"] as? NSNumber).map({ CGDirectDisplayID($0.uint32Value) }) {
-                self?.hdrCooldownMenuDisplayIds.remove(id)
-                self?.hdrCooldownMenuEndDates.removeValue(forKey: id)
+            let displayId = notification.userInfo?["displayID"] as? NSNumber
+            Task { @MainActor in
+                if let id = displayId.map({ CGDirectDisplayID($0.uint32Value) }) {
+                    self?.hdrCooldownMenuDisplayIds.remove(id)
+                    self?.hdrCooldownMenuEndDates.removeValue(forKey: id)
+                }
+                self?.stopHDRCooldownMenuRefreshTimerIfNeeded()
+                self?.updateMenu()
             }
-            self?.stopHDRCooldownMenuRefreshTimerIfNeeded()
-            self?.updateMenu()
         }
     }
     
@@ -555,7 +559,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         brightnessSlider.floatValue = BrightIntoshSettings.shared.brightness
         brightnessValueDisplay.stringValue = "\(Int(round(brightnessSlider.getNormalizedSliderValue() * 100.0)))%"
         
-        self.trialExpiredItem.isHidden = Authorizer.shared.isAllowed()
+        trialExpiredItem.isHidden = Authorizer.shared.isAllowed()
+        
+        unsupportedDeviceItem.isHidden = isSetupSupported()
     }
     
     func updateStatusBarItemVisibility() {
