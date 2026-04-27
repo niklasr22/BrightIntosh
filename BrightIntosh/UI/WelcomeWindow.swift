@@ -14,103 +14,107 @@ struct IntroView: View {
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .center, spacing: 10.0) {
-                VStack(alignment: .leading, spacing: 10.0) {
-                    if !supportedDevice {
-                        VStack {
-                            Label(
-                                title: {
-                                    Text("Unfortunately your device is currently not supported by BrightIntosh.")
-                                },
-                                icon: {
-                                    Image(systemName: "exclamationmark.triangle")
-                                }
-                            )
-                        }
-                        .frame(maxWidth: .infinity)
-                        .translucentCard(backgroundColor: .yellow)
-                    }
-                    VStack(spacing: 10.0) {
-                        HStack(alignment: .center) {
-                            Spacer()
-                            Image(systemName: "1.circle")
-                                .resizable()
-                                .frame(width: 25.0, height: 25.0)
-                                .foregroundColor(.brightintoshBlue)
-                            Spacer()
-                            Spacer()
-                            Image(systemName: "2.circle")
-                                .resizable()
-                                .frame(width: 25.0, height: 25.0)
-                                .foregroundColor(.brightintoshBlue)
-                            Spacer()
-                            Spacer()
-                            Image(systemName: "3.circle")
-                                .resizable()
-                                .frame(width: 25.0, height: 25.0)
-                                .foregroundColor(.brightintoshBlue)
-                            Spacer()
-                            
-                        }
-                        HStack(alignment: .top) {
-                            Spacer()
-                            Text("Click the \(Image(systemName: "sun.max.circle")) icon in your menu bar")
-                                .multilineTextAlignment(.center)
-                                .font(.title3)
-                                .bold()
-                                .frame(maxWidth: .infinity, alignment: .top)
-                            Spacer()
-                            Text("Click *Activate*")
-                                .multilineTextAlignment(.center)
-                                .font(.title3)
-                                .bold()
-                                .frame(maxWidth: .infinity, alignment: .top)
-                            Spacer()
-                            Text("Enjoy the extra brightness")
-                                .multilineTextAlignment(.center)
-                                .font(.title3)
-                                .bold()
-                                .frame(maxWidth: .infinity, alignment: .top)
-                            Spacer()
-                        }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: 110.0)
-                    .translucentCard()
-                    if supportedDevice {
-                        Label(
-                            "BrightIntosh can shift your brightness range to higher values. The brightness slider in this app controls how much you shift this range. You can still use your brightness keys to control the brightness.",
-                            systemImage: "info.circle"
-                        )
-                        .frame(maxWidth: .infinity)
-                        .translucentCard()
-                        
-                        Label("You can also use the \(Image(systemName: "magnifyingglass")) Spotlight Search to open the settings window by searching \"BrightIntosh Settings\"",
-                              systemImage: "info.circle")
-                        .frame(maxWidth: .infinity)
-                        .translucentCard()
-                    }
-                    
+        VStack(alignment: .center, spacing: 0) {
+            ScrollView {
+                VStack(alignment: .center, spacing: 10.0) {
                     VStack(alignment: .leading, spacing: 10.0) {
-                        Text("Disclaimer")
-                            .bold()
-                            .font(.title3)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Text("BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk.")
-                            .lineLimit(nil)
+                        if !supportedDevice {
+                            VStack {
+                                Label(
+                                    title: {
+                                        Text("Unfortunately your device is currently not supported by BrightIntosh.")
+                                    },
+                                    icon: {
+                                        Image(systemName: "exclamationmark.triangle")
+                                    }
+                                )
+                            }
+                            .frame(maxWidth: .infinity)
+                            .translucentCard(backgroundColor: .yellow)
+                        }
+                        VStack(spacing: 10.0) {
+                            HStack(alignment: .center) {
+                                Spacer()
+                                Image(systemName: "1.circle")
+                                    .resizable()
+                                    .frame(width: 25.0, height: 25.0)
+                                    .foregroundColor(.brightintoshBlue)
+                                Spacer()
+                                Spacer()
+                                Image(systemName: "2.circle")
+                                    .resizable()
+                                    .frame(width: 25.0, height: 25.0)
+                                    .foregroundColor(.brightintoshBlue)
+                                Spacer()
+                                Spacer()
+                                Image(systemName: "3.circle")
+                                    .resizable()
+                                    .frame(width: 25.0, height: 25.0)
+                                    .foregroundColor(.brightintoshBlue)
+                                Spacer()
+                                
+                            }
+                            HStack(alignment: .top) {
+                                Spacer()
+                                Text("Click the \(Image(systemName: "sun.max.circle")) icon in your menu bar")
+                                    .multilineTextAlignment(.center)
+                                    .font(.title3)
+                                    .bold()
+                                    .frame(maxWidth: .infinity, alignment: .top)
+                                Spacer()
+                                Text("Click *Activate*")
+                                    .multilineTextAlignment(.center)
+                                    .font(.title3)
+                                    .bold()
+                                    .frame(maxWidth: .infinity, alignment: .top)
+                                Spacer()
+                                Text("Enjoy the extra brightness")
+                                    .multilineTextAlignment(.center)
+                                    .font(.title3)
+                                    .bold()
+                                    .frame(maxWidth: .infinity, alignment: .top)
+                                Spacer()
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: 110.0)
+                        .translucentCard()
+                        if supportedDevice {
+                            Label(
+                                "BrightIntosh can shift your brightness range to higher values. The brightness slider in this app controls how much you shift this range. You can still use your brightness keys to control the brightness.",
+                                systemImage: "info.circle"
+                            )
+                            .frame(maxWidth: .infinity)
+                            .translucentCard()
+                            
+                            Label("You can also use the \(Image(systemName: "magnifyingglass")) Spotlight Search to open the settings window by searching \"BrightIntosh Settings\"",
+                                  systemImage: "info.circle")
+                            .frame(maxWidth: .infinity)
+                            .translucentCard()
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 10.0) {
+                            Text("Disclaimer")
+                                .bold()
+                                .font(.title3)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Text("BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk.")
+                                .lineLimit(nil)
+                        }
+                        .foregroundStyle(.black)
+                        .translucentCard()
                     }
-                    .foregroundStyle(.black)
-                    .translucentCard()
-                }.padding(20.0)
-                
-                Spacer()
-                
-                Button(action: onAccept) {
-                    Text("Accept")
+                    .padding(20.0)
                 }
-                .buttonStyle(BrightIntoshButtonStyle())
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            Button(action: onAccept) {
+                Text("Accept")
+            }
+            .buttonStyle(BrightIntoshButtonStyle())
+            .padding(20.0)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
@@ -181,7 +185,6 @@ struct WelcomeView: View {
                     .foregroundColor(.brightintoshBlue)
                     .bold()
             }
-            Spacer()
             if !showStore {
                 IntroView(
                     supportedDevice: supportedDevice, 
@@ -197,6 +200,7 @@ struct WelcomeView: View {
 #endif
                     }
                 )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 if let trial = trial {
                     WelcomeStoreView(onContinue: closeWindow, trial: trial)
