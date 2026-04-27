@@ -62,8 +62,8 @@ func isExternalXDRDisplay(screen: NSScreen) -> Bool {
     return false
 }
 
-@MainActor func hasAnySupportedDisplayConnected() -> Bool {
-    NSScreen.screens.contains { screen in
+@MainActor func isSetupSupported() -> Bool {
+    isDeviceSupported() || NSScreen.screens.contains { screen in
         isScreenSupportedForBrightIntosh(screen: screen, respectBuiltInPreference: false)
     }
 }
