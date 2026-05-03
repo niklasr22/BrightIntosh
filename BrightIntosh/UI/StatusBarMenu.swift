@@ -84,8 +84,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         toggleIncreasedBrightnessItem.setShortcut(for: .toggleBrightIntosh)
         toggleIncreasedBrightnessItem.target = self
         
-        toggleTimerItem = NSMenuItem(title: "", action: #selector(toggleTimerAutomation), keyEquivalent: "")
-        toggleTimerItem.target = self
+        toggleTimerItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
+        toggleTimerItem.submenu = createTimerDurationSubmenu()
         
         let settingsItem = NSMenuItem(title: String(localized: "Settings"), action: #selector(openSettings), keyEquivalent: "")
         settingsItem.image = NSImage(systemSymbolName: "gear", accessibilityDescription: String(localized: "Settings"))
@@ -149,6 +149,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             self.updateMenu()
         }
         
+        BrightIntoshSettings.shared.addListener(setting: "timerAutomationTimeout") {
+            self.updateMenu()
+        }
+        
         BrightIntoshSettings.shared.addListener(setting: "hideMenuBarItem") {
             self.updateStatusBarItemVisibility()
         }
@@ -202,6 +206,63 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     private static let hdrCooldownMenuSeparatorTag = 9_001
     private static let hdrCooldownMenuInfoTag = 9_002
+    private static let timerDurationMinutes = Array(stride(from: 10, to: 51, by: 10)) + Array(stride(from: 60, to: 300, by: 30))
+    
+    private func createTimerDurationSubmenu() -> NSMenu {
+        let submenu = NSMenu()
+        
+        if BrightIntoshSettings.shared.timerAutomation {
+            submenu.addItem(createTimerDurationItem(for: 0))
+        }
+        
+        for minutes in Self.timerDurationMinutes {
+            submenu.addItem(createTimerDurationItem(for: minutes))
+        }
+        
+        return submenu
+    }
+    
+    private func createTimerDurationItem(for minutes: Int) -> NSMenuItem {
+        let item = NSMenuItem(
+            title: timerDurationTitle(for: minutes),
+            action: #selector(setTimerAutomationDuration(_:)),
+            keyEquivalent: ""
+        )
+        item.target = self
+        item.representedObject = minutes
+        return item
+    }
+    
+    private func timerDurationTitle(for minutes: Int) -> String {
+        if minutes == 0 {
+            return String(localized: "Never")
+        }
+        if minutes < 60 {
+            return String(format: String(localized: "%d min"), minutes)
+        }
+        return String(format: String(localized: "%.1f h"), Double(minutes) / 60.0)
+    }
+    
+    private func updateTimerDurationSubmenu() {
+        guard let submenu = toggleTimerItem.submenu else { return }
+        
+        let neverItemIndex = submenu.items.firstIndex { ($0.representedObject as? Int) == 0 }
+        if BrightIntoshSettings.shared.timerAutomation {
+            if neverItemIndex == nil {
+                submenu.insertItem(createTimerDurationItem(for: 0), at: 0)
+            }
+        } else if let neverItemIndex {
+            submenu.removeItem(at: neverItemIndex)
+        }
+        
+        let selectedMinutes = BrightIntoshSettings.shared.timerAutomation
+            ? BrightIntoshSettings.shared.timerAutomationTimeout
+            : nil
+        
+        submenu.items.forEach { item in
+            item.state = (item.representedObject as? Int) == selectedMinutes ? .on : .off
+        }
+    }
     
     private func currentHDRCooldownRemainingSeconds() -> Int {
         guard !hdrCooldownMenuDisplayIds.isEmpty else { return 0 }
@@ -540,7 +601,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         }
         
         toggleIncreasedBrightnessItem.title = BrightIntoshSettings.shared.brightintoshActive ? String(localized: "Deactivate") : String(localized: "Activate")
-        toggleTimerItem.title = BrightIntoshSettings.shared.timerAutomation ? String(localized: "Disable Timer") : String(localized: "Enable Timer")
+        toggleTimerItem.title = BrightIntoshSettings.shared.timerAutomation ? String(localized: "Disable after") : String(localized: "Enable Timer")
+        updateTimerDurationSubmenu()
         if #available(macOS 14, *), !BrightIntoshSettings.shared.timerAutomation {
             toggleTimerItem.badge = nil
         }
@@ -593,8 +655,16 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         settingsWindowController.showWindow(self)
     }
     
-    @objc func toggleTimerAutomation() {
-        BrightIntoshSettings.shared.timerAutomation.toggle()
+    @objc func setTimerAutomationDuration(_ sender: NSMenuItem) {
+        guard let minutes = sender.representedObject as? Int else { return }
+        
+        if minutes == 0 {
+            BrightIntoshSettings.shared.timerAutomation = false
+            BrightIntoshSettings.shared.timerAutomationTimeout = 0
+        } else {
+            BrightIntoshSettings.shared.timerAutomationTimeout = minutes
+            BrightIntoshSettings.shared.timerAutomation = true
+        }
     }
     
     @objc func openWebsite() {
@@ -628,11 +698,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
                 let remainingMinutes = Int(remainingTime.rounded(.down)) - (remainingHours * 60)
                 let remainingSeconds = Int((remainingTime - Double(Int(remainingTime))) * 60)
                 let timerString = remainingHours == 0 ? String(format: "%02d:%02d", remainingMinutes, remainingSeconds) : String(format: "%02d:%02d:%02d", remainingHours, remainingMinutes, remainingSeconds)
-                if #available(macOS 14, *) {
-                    self.toggleTimerItem!.badge = NSMenuItemBadge(string: timerString)
-                } else {
-                    self.toggleTimerItem!.title = String(localized: "Disable Timer") + timerString
-                }
+                self.toggleTimerItem!.badge = NSMenuItemBadge(string: timerString)
             }
         })
         

@@ -37,6 +37,15 @@ class BasicSettingsViewModel: ObservableObject {
         get { return timerAutomation }
     }
     
+    private var timerAutomationTimeoutValue = BrightIntoshSettings.shared.timerAutomationTimeout
+    var timerAutomationTimeout: Int {
+        set {
+            BrightIntoshSettings.shared.timerAutomation = newValue > 0
+            BrightIntoshSettings.shared.timerAutomationTimeout = newValue
+        }
+        get { return timerAutomationToggle ? timerAutomationTimeoutValue : 0 }
+    }
+    
     private var powerAdapterAutomation = BrightIntoshSettings.shared.powerAdapterAutomation
     var powerAdapterAutomationToggle: Bool {
         set { BrightIntoshSettings.shared.powerAdapterAutomation = newValue }
@@ -68,6 +77,12 @@ class BasicSettingsViewModel: ObservableObject {
         BrightIntoshSettings.shared.addListener(setting: "timerAutomation") {
             if self.timerAutomation != BrightIntoshSettings.shared.timerAutomation {
                 self.timerAutomation = BrightIntoshSettings.shared.timerAutomation
+                self.objectWillChange.send()
+            }
+        }
+        BrightIntoshSettings.shared.addListener(setting: "timerAutomationTimeout") {
+            if self.timerAutomationTimeoutValue != BrightIntoshSettings.shared.timerAutomationTimeout {
+                self.timerAutomationTimeoutValue = BrightIntoshSettings.shared.timerAutomationTimeout
                 self.objectWillChange.send()
             }
         }
@@ -184,7 +199,8 @@ struct BasicSettings: View {
                     }
                 }
                 Section(header: Text("Timer").bold()) {
-                    Picker(selection: $timerAutomationTimeout, label: Text("Disable after")) {
+                    Picker(selection: $viewModel.timerAutomationTimeout, label: Text("Disable after")) {
+                        Text("Never").tag(0)
                         ForEach(Array(stride(from: 10, to: 51, by: 10)), id: \.self) {
                             minutes in
                             Text("\(minutes) min").tag(minutes)
@@ -194,7 +210,7 @@ struct BasicSettings: View {
                         }
                     }
                     .onChange(of: timerAutomationTimeout) { _, new in
-                        BrightIntoshSettings.shared.timerAutomationTimeout = new
+                        viewModel.timerAutomationTimeout = new
                     }
                 }
                 Section(header: Text("Automations").bold()) {
