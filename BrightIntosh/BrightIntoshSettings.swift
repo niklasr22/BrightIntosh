@@ -105,18 +105,15 @@ class BrightIntoshSettings {
         }
     }
     
-    public var timerAutomation: Bool = BrightIntoshSettings.getUserDefault(key: "timerAutomation", defaultValue: false) {
-        didSet {
-            BrightIntoshSettings.defaults.setValue(timerAutomation, forKey: "timerAutomation")
-            callListeners(setting: "timerAutomation")
-        }
-    }
-    
-    public var timerAutomationTimeout: Int = BrightIntoshSettings.getUserDefault(key: "timerAutomationTimeout", defaultValue: 180) {
+    public var timerAutomationTimeout: Int = BrightIntoshSettings.getUserDefault(key: "timerAutomationTimeout", defaultValue: 0) {
         didSet {
             BrightIntoshSettings.defaults.setValue(timerAutomationTimeout, forKey: "timerAutomationTimeout")
             callListeners(setting: "timerAutomationTimeout")
         }
+    }
+    
+    public var timerAutomation: Bool {
+        get { timerAutomationTimeout > 0 }
     }
     
     public var showInDock: Bool = BrightIntoshSettings.getUserDefault(key: "showInDock", defaultValue: false) {
@@ -150,20 +147,22 @@ class BrightIntoshSettings {
     init() {
         // Load launch at login status
         launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
-        migrateUserDefaultsToAppGroups();
-        migrateBrightnessToPercentage();
+        migrateUserDefaultsToAppGroups()
+        migrateBrightnessToPercentage()
+        migrateTimerAutomation()
         
         activeObserver = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (defaults, change) in
             Task { @MainActor in
                 if let newValue = change.newValue, newValue != self.brightintoshActive {
-                    self.brightintoshActive = newValue;
+                    print("Defaults observer changes active to: \(newValue)")
+                    self.brightintoshActive = newValue
                 }
             }
         })
         cliBrightnessObserver = BrightIntoshSettings.defaults.observe(\.cliBrightness, options: [.new], changeHandler: { (defaults, change) in
             Task { @MainActor in
                 if let newValue = change.newValue, self.brightness != newValue {
-                    self.brightness = newValue;
+                    self.brightness = newValue
                 }
             }
         })
@@ -180,8 +179,7 @@ class BrightIntoshSettings {
         batteryAutomation = BrightIntoshSettings.getUserDefault(key: "batteryAutomation", defaultValue: false)
         batteryAutomationThreshold = BrightIntoshSettings.getUserDefault(key: "batteryAutomationThreshold", defaultValue: 50)
         powerAdapterAutomation = BrightIntoshSettings.getUserDefault(key: "powerAdapterAutomation", defaultValue: false)
-        timerAutomation = BrightIntoshSettings.getUserDefault(key: "timerAutomation", defaultValue: false)
-        timerAutomationTimeout = BrightIntoshSettings.getUserDefault(key: "timerAutomationTimeout", defaultValue: 180)
+        timerAutomationTimeout = BrightIntoshSettings.getUserDefault(key: "timerAutomationTimeout", defaultValue: 0)
     }
     
     public func addListener(setting: String, callback: @escaping () ->()) {
@@ -217,6 +215,14 @@ class BrightIntoshSettings {
     private func migrateBrightnessToPercentage() {
         if brightness > 1.0 {
             brightness = (brightness-1) / (getDeviceMaxBrightness()-1)
+        }
+    }
+    
+    /// Migrate a disabled timer automation to timeout = 0, as the toggle field was removed
+    private func migrateTimerAutomation() {
+        if !BrightIntoshSettings.getUserDefault(key: "timerAutomation", defaultValue: true) {
+            timerAutomationTimeout = 0
+            print("Migrated timer automation settings")
         }
     }
 }

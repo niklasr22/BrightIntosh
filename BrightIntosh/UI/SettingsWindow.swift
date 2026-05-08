@@ -30,21 +30,6 @@ class BasicSettingsViewModel: ObservableObject {
         set { BrightIntoshSettings.shared.batteryAutomation = newValue }
         get { return batteryAutomation }
     }
-
-    private var timerAutomation = BrightIntoshSettings.shared.timerAutomation
-    var timerAutomationToggle: Bool {
-        set { BrightIntoshSettings.shared.timerAutomation = newValue }
-        get { return timerAutomation }
-    }
-    
-    private var timerAutomationTimeoutValue = BrightIntoshSettings.shared.timerAutomationTimeout
-    var timerAutomationTimeout: Int {
-        set {
-            BrightIntoshSettings.shared.timerAutomation = newValue > 0
-            BrightIntoshSettings.shared.timerAutomationTimeout = newValue
-        }
-        get { return timerAutomationToggle ? timerAutomationTimeoutValue : 0 }
-    }
     
     private var powerAdapterAutomation = BrightIntoshSettings.shared.powerAdapterAutomation
     var powerAdapterAutomationToggle: Bool {
@@ -55,6 +40,7 @@ class BasicSettingsViewModel: ObservableObject {
     init() {
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
             if BrightIntoshSettings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
+                print("Settings view model is deactivating brightness because battery automation is active")
                 BrightIntoshSettings.shared.brightintoshActive = false
             }
             if self.brightIntoshActive != BrightIntoshSettings.shared.brightintoshActive {
@@ -71,18 +57,6 @@ class BasicSettingsViewModel: ObservableObject {
         BrightIntoshSettings.shared.addListener(setting: "batteryAutomation") {
             if self.batteryAutomation != BrightIntoshSettings.shared.batteryAutomation {
                 self.batteryAutomation = BrightIntoshSettings.shared.batteryAutomation
-                self.objectWillChange.send()
-            }
-        }
-        BrightIntoshSettings.shared.addListener(setting: "timerAutomation") {
-            if self.timerAutomation != BrightIntoshSettings.shared.timerAutomation {
-                self.timerAutomation = BrightIntoshSettings.shared.timerAutomation
-                self.objectWillChange.send()
-            }
-        }
-        BrightIntoshSettings.shared.addListener(setting: "timerAutomationTimeout") {
-            if self.timerAutomationTimeoutValue != BrightIntoshSettings.shared.timerAutomationTimeout {
-                self.timerAutomationTimeoutValue = BrightIntoshSettings.shared.timerAutomationTimeout
                 self.objectWillChange.send()
             }
         }
@@ -199,7 +173,7 @@ struct BasicSettings: View {
                     }
                 }
                 Section(header: Text("Timer").bold()) {
-                    Picker(selection: $viewModel.timerAutomationTimeout, label: Text("Disable after")) {
+                    Picker(selection: $timerAutomationTimeout, label: Text("Disable after")) {
                         Text("Never").tag(0)
                         ForEach(Array(stride(from: 10, to: 51, by: 10)), id: \.self) {
                             minutes in
@@ -208,9 +182,6 @@ struct BasicSettings: View {
                         ForEach(Array(stride(from: 1, to: 5, by: 0.5)), id: \.self) { hours in
                             Text(String(format: "%.1f h", hours)).tag(Int(hours * 60))
                         }
-                    }
-                    .onChange(of: timerAutomationTimeout) { _, new in
-                        viewModel.timerAutomationTimeout = new
                     }
                 }
                 Section(header: Text("Automations").bold()) {

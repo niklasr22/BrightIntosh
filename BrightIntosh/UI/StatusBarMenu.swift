@@ -133,7 +133,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         // Listen to settings
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
-            if !BrightIntoshSettings.shared.brightintoshActive {
+            if BrightIntoshSettings.shared.brightintoshActive {
+                self.startTimePollerIfApplicable()
+            } else {
                 self.hdrCooldownMenuDisplayIds.removeAll()
                 self.hdrCooldownMenuEndDates.removeAll()
                 self.stopHDRCooldownMenuRefreshTimer()
@@ -142,10 +144,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         }
         
         BrightIntoshSettings.shared.addListener(setting: "brightness") {
-            self.updateMenu()
-        }
-        
-        BrightIntoshSettings.shared.addListener(setting: "timerAutomation") {
             self.updateMenu()
         }
         
@@ -603,7 +601,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         toggleIncreasedBrightnessItem.title = BrightIntoshSettings.shared.brightintoshActive ? String(localized: "Deactivate") : String(localized: "Activate")
         toggleTimerItem.title = BrightIntoshSettings.shared.timerAutomation ? String(localized: "Disable after") : String(localized: "Enable Timer")
         updateTimerDurationSubmenu()
-        if #available(macOS 14, *), !BrightIntoshSettings.shared.timerAutomation {
+        if !BrightIntoshSettings.shared.timerAutomation {
             toggleTimerItem.badge = nil
         }
         
@@ -657,14 +655,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     @objc func setTimerAutomationDuration(_ sender: NSMenuItem) {
         guard let minutes = sender.representedObject as? Int else { return }
-        
-        if minutes == 0 {
-            BrightIntoshSettings.shared.timerAutomation = false
-            BrightIntoshSettings.shared.timerAutomationTimeout = 0
-        } else {
-            BrightIntoshSettings.shared.timerAutomationTimeout = minutes
-            BrightIntoshSettings.shared.timerAutomation = true
-        }
+        BrightIntoshSettings.shared.timerAutomationTimeout = minutes
     }
     
     @objc func openWebsite() {

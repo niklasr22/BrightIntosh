@@ -33,6 +33,7 @@ class BrightnessManager {
         
         if BrightIntoshSettings.shared.brightintoshActive {
             if shouldDisableForClosedLid(currentScreens: screens) {
+                print("Deactivating, as lid is closed.")
                 BrightIntoshSettings.shared.brightintoshActive = false
             } else {
                 activateSafely()
@@ -65,6 +66,7 @@ class BrightnessManager {
         // Observe entitlement
         Authorizer.shared.$status.sink { newStatus in
             if newStatus == .unauthorized && BrightIntoshSettings.shared.brightintoshActive {
+                print("Deactivating, as user is unauthorized.")
                 BrightIntoshSettings.shared.brightintoshActive = false
             }
         }.store(in: &cancellables)
@@ -97,6 +99,7 @@ class BrightnessManager {
             self.enabled = true
             self.enableExtraBrightness()
         } else {
+            print("Deactivating, as user is not authorized.")
             BrightIntoshSettings.shared.brightintoshActive = false
         }
     }
@@ -148,6 +151,7 @@ class BrightnessManager {
         }
 
         if BrightIntoshSettings.shared.brightintoshActive && shouldDisableForClosedLid(currentScreens: newScreens) {
+            print("Deactivating, as lid is closed")
             BrightIntoshSettings.shared.brightintoshActive = false
             return
         }

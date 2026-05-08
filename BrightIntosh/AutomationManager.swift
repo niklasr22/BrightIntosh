@@ -48,36 +48,31 @@ class AutomationManager {
             }
         }
         
-        if BrightIntoshSettings.shared.timerAutomation && BrightIntoshSettings.shared.brightintoshActive {
+        if self.shouldEnableTimer() {
             startTimerAutomation()
         }
         
-        BrightIntoshSettings.shared.addListener(setting: "timerAutomation") {
-            print("Toggled Timer automation. Active: \(BrightIntoshSettings.shared.timerAutomation)")
+        BrightIntoshSettings.shared.addListener(setting: "timerAutomationTimeout") {
+            print("Timer timeout was changed.")
             
-            if BrightIntoshSettings.shared.timerAutomation && BrightIntoshSettings.shared.brightintoshActive {
-                self.startTimerAutomation()
+            if self.shouldEnableTimer() {
+                self.restartTimerAutomation()
             } else {
                 self.stopTimerAutomation()
             }
         }
         
-        BrightIntoshSettings.shared.addListener(setting: "timerAutomationTimeout") {
-            print("Changed Timer Automation Timeout: \(BrightIntoshSettings.shared.timerAutomationTimeout)")
-            
-            if BrightIntoshSettings.shared.timerAutomation && BrightIntoshSettings.shared.brightintoshActive{
-                self.restartTimerAutomation()
-            }
-        }
-        
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
-            if BrightIntoshSettings.shared.brightintoshActive && BrightIntoshSettings.shared.timerAutomation {
+            if self.shouldEnableTimer() {
                 self.startTimerAutomation()
-                print("Toggled increased Brightness with timeout. Timer started.")
-            } else if !BrightIntoshSettings.shared.brightintoshActive {
+            } else {
                 self.stopTimerAutomation()
             }
         }
+    }
+    
+    func shouldEnableTimer() -> Bool {
+        BrightIntoshSettings.shared.timerAutomation && BrightIntoshSettings.shared.brightintoshActive
     }
     
     func startBatteryAutomation() {
@@ -116,10 +111,11 @@ class AutomationManager {
     }
     
     func startTimerAutomation() {
-        if timerAutomationTimer != nil || !BrightIntoshSettings.shared.brightintoshActive {
+        let timeout = BrightIntoshSettings.shared.timerAutomationTimeout
+        if timerAutomationTimer != nil || !BrightIntoshSettings.shared.brightintoshActive || timeout <= 0 {
             return
         }
-        let timeout = BrightIntoshSettings.shared.timerAutomationTimeout
+        print("Starting timer automation \(timeout) minutes")
         timerAutomationTimer = Timer(timeInterval: Double(timeout * 60), repeats: false, block: { t in
             Task { @MainActor in
                 self.timerAutomationCallback()
