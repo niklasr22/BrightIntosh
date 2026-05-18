@@ -78,11 +78,6 @@ class BrightnessManager {
             }
         }
         
-        BrightIntoshSettings.shared.addListener(setting: "brightness") {
-            print("Set brightness to \(BrightIntoshSettings.shared.brightness)")
-            self.brightnessTechnique?.adjustBrightness()
-        }
-        
         BrightIntoshSettings.shared.addListener(setting: "brightIntoshOnlyOnBuiltIn") {
             self.handlePotentialScreenUpdate()
         }
@@ -179,14 +174,9 @@ class BrightnessManager {
     
     @MainActor
     private func enableExtraBrightness() {
-        // Put brightness value into bounds (0-1), as earlier versions allowed storing higher brightness values.
-        let safeBrightness = max(0.0, min(1.0, BrightIntoshSettings.shared.brightness))
-        
-        if safeBrightness != BrightIntoshSettings.shared.brightness {
-            BrightIntoshSettings.shared.brightness = safeBrightness
-        }
         self.brightnessTechnique?.enable()
     }
+    
     @MainActor
     private func scheduleDebouncedScreenUpdate() {
         screenUpdateDebounceTask?.cancel()

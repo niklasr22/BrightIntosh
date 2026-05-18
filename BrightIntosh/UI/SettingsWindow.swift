@@ -223,10 +223,6 @@ struct BasicSettings: View {
                     KeyboardShortcuts.Recorder(
                         "Toggle increased brightness:", name: .toggleBrightIntosh)
                     KeyboardShortcuts.Recorder(
-                        "Increase brightness:", name: .increaseBrightness)
-                    KeyboardShortcuts.Recorder(
-                        "Decrease brightness:", name: .decreaseBrightness)
-                    KeyboardShortcuts.Recorder(
                         "Open settings:", name: .openSettings)
                 }
                 Section(header: Text("General").bold()) {

@@ -23,27 +23,9 @@ class BrightIntoshAppDelegate: NSObject {
     private var automationManager: AutomationManager?
     private var supportedDevice: Bool = false
     
-    @objc func increaseBrightness() {
-        Task { @MainActor in
-            BrightIntoshSettings.shared.brightness = min(1.0, BrightIntoshSettings.shared.brightness + 0.05)
-        }
-    }
-    
-    @objc func decreaseBrightness() {
-        Task { @MainActor in
-            BrightIntoshSettings.shared.brightness = max(0.0, BrightIntoshSettings.shared.brightness - 0.05)
-        }
-    }
-    
     func addKeyListeners() {
         KeyboardShortcuts.onKeyUp(for: .toggleBrightIntosh) {
             self.toggleBrightIntosh()
-        }
-        KeyboardShortcuts.onKeyUp(for: .increaseBrightness) {
-            self.increaseBrightness()
-        }
-        KeyboardShortcuts.onKeyUp(for: .decreaseBrightness) {
-            self.decreaseBrightness()
         }
         KeyboardShortcuts.onKeyUp(for: .openSettings, action: {
             self.showSettingsWindow()
