@@ -19,11 +19,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var statusItem: NSStatusItem?
     private var hdrCooldownToastPanel: NSWindow?
     private var hdrCooldownToastDismissWorkItem: DispatchWorkItem?
-    /// Observer token; `nonisolated(unsafe)` so `deinit` can remove it (token is safe to pass to `removeObserver`).
+    
     nonisolated(unsafe) private var hdrCooldownObserver: NSObjectProtocol?
     nonisolated(unsafe) private var hdrCooldownEndObserver: NSObjectProtocol?
     
-    /// Displays currently in the HDR retry sleep (mirrors `GammaTechnique.displaysPendingHDRRetry` via notifications).
     private var hdrCooldownMenuDisplayIds: Set<CGDirectDisplayID> = []
     private var hdrCooldownMenuEndDates: [CGDirectDisplayID: Date] = [:]
     private var hdrCooldownMenuSeconds: Int = 30
@@ -284,20 +283,27 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     private func reconcileHDRCooldownMenuItems() {
-        for item in menu.items where item.tag == Self.hdrCooldownMenuSeparatorTag || item.tag == Self.hdrCooldownMenuInfoTag {
-            menu.removeItem(item)
+        let remainingSeconds = currentHDRCooldownRemainingSeconds()
+        let infoTitle = String(format: String(localized: "Awaiting macOS EDR mode (%llds)"), Int64(remainingSeconds))
+        
+        guard !hdrCooldownMenuDisplayIds.isEmpty else {
+            for item in menu.items where item.tag == Self.hdrCooldownMenuSeparatorTag || item.tag == Self.hdrCooldownMenuInfoTag {
+                menu.removeItem(item)
+            }
+            return
         }
-        guard !hdrCooldownMenuDisplayIds.isEmpty else { return }
+        
+        if let info = menu.items.first(where: { $0.tag == Self.hdrCooldownMenuInfoTag }) {
+            info.title = infoTitle
+            return
+        }
+        
         guard let titleIdx = menu.items.firstIndex(where: { $0 === titleItem }) else { return }
         
         let separator = NSMenuItem.separator()
         separator.tag = Self.hdrCooldownMenuSeparatorTag
-        let remainingSeconds = currentHDRCooldownRemainingSeconds()
-        let info = NSMenuItem(
-            title: String(format: String(localized: "Awaiting macOS EDR mode (%llds)"), Int64(remainingSeconds)),
-            action: nil,
-            keyEquivalent: ""
-        )
+        
+        let info = NSMenuItem(title: infoTitle, action: nil, keyEquivalent: "")
         info.tag = Self.hdrCooldownMenuInfoTag
         info.isEnabled = false
         info.image = NSImage(systemSymbolName: "timer", accessibilityDescription: String(localized: "HDR retry wait"))
