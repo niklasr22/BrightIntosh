@@ -43,6 +43,7 @@ class GammaTable {
         let table = GammaTable()
         var sampleCount: UInt32 = 0
         let result = CGGetDisplayTransferByTable(displayId, tableSize, &table.redTable, &table.greenTable, &table.blueTable, &sampleCount)
+        print("Gamma Table Base Range: \(table.redTable.min() ?? 0) - \(table.redTable.max() ?? 0)")
         guard result == CGError.success else { return nil }
         return table
     }
@@ -51,6 +52,7 @@ class GammaTable {
         var newRedTable = redTable
         var newGreenTable = greenTable
         var newBlueTable = blueTable
+        
         for i in 0..<redTable.count {
             newRedTable[i] *= factor
             newGreenTable[i] *= factor
@@ -67,45 +69,53 @@ class GammaTechnique: BrightnessTechnique {
     private var hdrPollTasks: [CGDirectDisplayID: Task<Void, Never>] = [:]
     private var hdrReadyDisplayIds: Set<CGDirectDisplayID> = []
     private var displaysPendingHDRRetry: Set<CGDirectDisplayID> = []
+    private var hdrRetryCooldownEndDates: [CGDirectDisplayID: Date] = [:]
     /// Consecutive HDR engage timeouts per display; each cooldown length is `min(max, step * count)`, reset when HDR becomes ready.
     private var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
     
     private let hdrReadyThreshold = 1.05
     private let hdrEngageTimeout: TimeInterval = 2.1
-    private let hdrRetryCooldownStepSeconds = 20
+    private let hdrRetryCooldownStepSeconds = 30
     private let hdrRetryCooldownMaxSeconds = 120
     private let defaultPollInterval: Duration = .milliseconds(500)
     private let fastPollInterval: Duration = .milliseconds(16)
     private let fastPollDuration: TimeInterval = 30
     private var fastPollUntil: Date?
     
-    private static func edrGammaFactor(userBrightness: Float, maxScreenBrightness: Float, maxEdr: CGFloat) -> Float {
+    override init() {
+        super.init()
+        CGDisplayRestoreColorSyncSettings()
+    }
+    
+    private static func edrGammaFactor(screen: NSScreen) -> Float {
         let referenceEdr: Float = 4.0 // This value is some empirically determined value that macOS usually allows.
-        if userBrightness > 0.995 {
-            // When user brightess is 100%, use full EDR capability even when it's higher than referenceEdr
-            return 1 + (maxScreenBrightness - 1) * Float(maxEdr) / referenceEdr
-        }
-        return 1 + (maxScreenBrightness - 1) * min(Float(maxEdr) / referenceEdr, userBrightness)
+        let maxEdr = screen.maximumExtendedDynamicRangeColorComponentValue
+        let maxScreenBrightness = getScreenRefGamma(screen)
+        let val =  1 + (maxScreenBrightness - 1) * min(Float(maxEdr) / referenceEdr, 1.0)
+        return val
     }
     
     override func enable() {
+        let shouldAnnounceActiveCooldowns = !isEnabled
         isEnabled = true
-        screenUpdate(screens: getXDRDisplays())
+        updateScreens(screens: getXDRDisplays(), announceActiveCooldowns: shouldAnnounceActiveCooldowns)
     }
     
     override func enableScreen(screen: NSScreen) {
         guard let displayId = screen.displayId else { return }
+        guard !isInHDRRetryCooldown(displayId, notify: false) else {
+            closeOverlay(displayId)
+            return
+        }
         if let existing = overlayWindowControllers[displayId] {
             existing.updateScreen(screen: screen)
             return
         }
+        captureBaselineGammaTableIfNeeded(displayId: displayId)
         let controller = OverlayWindowController(screen: screen)
         overlayWindowControllers[displayId] = controller
         let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 1, height: 1)
         controller.open(rect: rect)
-        if baselineGammaTables[displayId] == nil, let table = GammaTable.createFromCurrentGammaTable(displayId: displayId) {
-            baselineGammaTables[displayId] = table
-        }
     }
     
     override func disable() {
@@ -113,8 +123,6 @@ class GammaTechnique: BrightnessTechnique {
         hdrPollTasks.values.forEach { $0.cancel() }
         hdrPollTasks.removeAll()
         hdrReadyDisplayIds.removeAll()
-        displaysPendingHDRRetry.removeAll()
-        hdrConsecutiveTimeoutCount.removeAll()
         overlayWindowControllers.values.forEach { $0.window?.close() }
         overlayWindowControllers.removeAll()
         baselineGammaTables.forEach { $1.setTableForScreen(displayId: $0, factor: 1.0)}
@@ -129,21 +137,26 @@ class GammaTechnique: BrightnessTechnique {
     }
     
     override func screenUpdate(screens: [NSScreen]) {
+        updateScreens(screens: screens, announceActiveCooldowns: false)
+    }
+    
+    private func updateScreens(screens: [NSScreen], announceActiveCooldowns: Bool) {
         let activeIds = Set(screens.compactMap { $0.displayId })
         let tracked = Set(overlayWindowControllers.keys)
             .union(Set(hdrPollTasks.keys))
             .union(hdrReadyDisplayIds)
             .union(displaysPendingHDRRetry)
+            .union(Set(hdrRetryCooldownEndDates.keys))
         for id in tracked where !activeIds.contains(id) {
             tearDownDisplay(id)
         }
         
         baselineGammaTables.forEach { $1.setTableForScreen(displayId: $0)}
-        CGDisplayRestoreColorSyncSettings()
+        refreshBaselineGammaTables(for: screens)
         
         for screen in screens {
             guard let displayId = screen.displayId else { continue }
-            if displaysPendingHDRRetry.contains(displayId) { continue }
+            if isInHDRRetryCooldown(displayId, notify: announceActiveCooldowns) { continue }
             if let c = overlayWindowControllers[displayId] {
                 c.updateScreen(screen: screen)
                 adjustBrightness()
@@ -161,6 +174,7 @@ class GammaTechnique: BrightnessTechnique {
         hdrPollTasks.removeValue(forKey: displayId)
         hdrReadyDisplayIds.remove(displayId)
         displaysPendingHDRRetry.remove(displayId)
+        hdrRetryCooldownEndDates.removeValue(forKey: displayId)
         hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
         baselineGammaTables[displayId]?.setTableForScreen(displayId: displayId)
         baselineGammaTables.removeValue(forKey: displayId)
@@ -205,12 +219,23 @@ class GammaTechnique: BrightnessTechnique {
         var notReadySince: Date?
         
         while !Task.isCancelled, isEnabled {
+            if let remainingCooldownSeconds = hdrRetryCooldownRemainingSeconds(for: displayId) {
+                closeOverlay(displayId)
+                try? await Task.sleep(for: .seconds(remainingCooldownSeconds))
+                guard !Task.isCancelled, isEnabled else { return false }
+                endHDRRetryCooldown(displayId, notify: true)
+                if let screen = screenForDisplay(displayId) { enableScreen(screen: screen) }
+                notReadySince = nil
+                continue
+            }
+            
             guard let screen = screenForDisplay(displayId) else {
                 hdrReadyDisplayIds.remove(displayId)
                 return false
             }
             if hdrReady(screen) {
                 hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
+                endHDRRetryCooldown(displayId, notify: false)
                 return true
             }
             
@@ -224,24 +249,11 @@ class GammaTechnique: BrightnessTechnique {
                     hdrRetryCooldownMaxSeconds,
                     hdrRetryCooldownStepSeconds * nextCount
                 )
-                displaysPendingHDRRetry.insert(displayId)
-                NotificationCenter.default.post(
-                    name: .brightIntoshHDRCooldownDidBegin,
-                    object: nil,
-                    userInfo: [
-                        "cooldownSeconds": cooldownSeconds,
-                        "displayID": NSNumber(value: displayId),
-                    ]
-                )
+                beginHDRRetryCooldown(displayId, cooldownSeconds: cooldownSeconds)
                 closeOverlay(displayId)
                 try? await Task.sleep(for: .seconds(cooldownSeconds))
-                displaysPendingHDRRetry.remove(displayId)
-                NotificationCenter.default.post(
-                    name: .brightIntoshHDRCooldownDidEnd,
-                    object: nil,
-                    userInfo: ["displayID": NSNumber(value: displayId)]
-                )
                 guard !Task.isCancelled, isEnabled else { return false }
+                endHDRRetryCooldown(displayId, notify: true)
                 if let s = screenForDisplay(displayId) { enableScreen(screen: s) }
                 notReadySince = nil
                 continue
@@ -259,9 +271,7 @@ class GammaTechnique: BrightnessTechnique {
             if !hdrReady(screen) { break }
             
             let factor = Self.edrGammaFactor(
-                userBrightness: BrightIntoshSettings.shared.brightness,
-                maxScreenBrightness: getScreenRefGamma(screen),
-                maxEdr: screen.maximumExtendedDynamicRangeColorComponentValue
+                screen: screen
             )
             if lastFactor.map({ abs($0 - factor) > 0.001 }) ?? true {
                 lastFactor = factor
@@ -270,6 +280,7 @@ class GammaTechnique: BrightnessTechnique {
             try? await Task.sleep(for: currentPollInterval())
         }
         hdrReadyDisplayIds.remove(displayId)
+        restoreGammaForDisplay(displayId)
         applyGammaForHDRReadyDisplays()
     }
     
@@ -285,12 +296,38 @@ class GammaTechnique: BrightnessTechnique {
             guard let screen = NSScreen.screens.first(where: { $0.displayId == displayId }),
                   let gammaTable = baselineGammaTables[displayId] else { continue }
             let factor = Self.edrGammaFactor(
-                userBrightness: BrightIntoshSettings.shared.brightness,
-                maxScreenBrightness: getScreenRefGamma(screen),
-                maxEdr: screen.maximumExtendedDynamicRangeColorComponentValue
+                screen: screen
             )
             gammaTable.setTableForScreen(displayId: displayId, factor: factor)
         }
+    }
+    
+    private func captureBaselineGammaTableIfNeeded(displayId: CGDirectDisplayID) {
+        guard baselineGammaTables[displayId] == nil else { return }
+        
+        CGDisplayRestoreColorSyncSettings()
+        if let table = GammaTable.createFromCurrentGammaTable(displayId: displayId) {
+            baselineGammaTables[displayId] = table
+        }
+        applyGammaForHDRReadyDisplays()
+    }
+    
+    private func refreshBaselineGammaTables(for screens: [NSScreen]) {
+        CGDisplayRestoreColorSyncSettings()
+        for screen in screens {
+            guard let displayId = screen.displayId,
+                  let table = GammaTable.createFromCurrentGammaTable(displayId: displayId) else { continue }
+            baselineGammaTables[displayId] = table
+        }
+    }
+    
+    private func restoreGammaForDisplay(_ displayId: CGDirectDisplayID) {
+        guard let gammaTable = baselineGammaTables[displayId] else {
+            CGDisplayRestoreColorSyncSettings()
+            applyGammaForHDRReadyDisplays()
+            return
+        }
+        gammaTable.setTableForScreen(displayId: displayId)
     }
     
     private func screenForDisplay(_ displayId: CGDirectDisplayID) -> NSScreen? {
@@ -300,6 +337,64 @@ class GammaTechnique: BrightnessTechnique {
     private func closeOverlay(_ displayId: CGDirectDisplayID) {
         overlayWindowControllers[displayId]?.window?.close()
         overlayWindowControllers.removeValue(forKey: displayId)
+    }
+    
+    private func beginHDRRetryCooldown(_ displayId: CGDirectDisplayID, cooldownSeconds: Int) {
+        displaysPendingHDRRetry.insert(displayId)
+        hdrRetryCooldownEndDates[displayId] = Date().addingTimeInterval(TimeInterval(cooldownSeconds))
+        NotificationCenter.default.post(
+            name: .brightIntoshHDRCooldownDidBegin,
+            object: nil,
+            userInfo: [
+                "cooldownSeconds": cooldownSeconds,
+                "displayID": NSNumber(value: displayId),
+            ]
+        )
+    }
+    
+    private func endHDRRetryCooldown(_ displayId: CGDirectDisplayID, notify: Bool) {
+        displaysPendingHDRRetry.remove(displayId)
+        hdrRetryCooldownEndDates.removeValue(forKey: displayId)
+        if notify {
+            NotificationCenter.default.post(
+                name: .brightIntoshHDRCooldownDidEnd,
+                object: nil,
+                userInfo: ["displayID": NSNumber(value: displayId)]
+            )
+        }
+    }
+    
+    private func isInHDRRetryCooldown(_ displayId: CGDirectDisplayID, notify: Bool) -> Bool {
+        guard let remainingSeconds = hdrRetryCooldownRemainingSeconds(for: displayId) else { return false }
+        
+        displaysPendingHDRRetry.insert(displayId)
+        if notify {
+            NotificationCenter.default.post(
+                name: .brightIntoshHDRCooldownDidBegin,
+                object: nil,
+                userInfo: [
+                    "cooldownSeconds": remainingSeconds,
+                    "displayID": NSNumber(value: displayId),
+                ]
+            )
+        }
+        return true
+    }
+    
+    private func hdrRetryCooldownRemainingSeconds(for displayId: CGDirectDisplayID) -> Int? {
+        guard let cooldownEndDate = hdrRetryCooldownEndDates[displayId] else {
+            displaysPendingHDRRetry.remove(displayId)
+            return nil
+        }
+        
+        let remainingSeconds = cooldownEndDate.timeIntervalSinceNow
+        guard remainingSeconds > 0 else {
+            endHDRRetryCooldown(displayId, notify: true)
+            return nil
+        }
+        
+        displaysPendingHDRRetry.insert(displayId)
+        return Int(ceil(remainingSeconds))
     }
     
     private func hdrReady(_ screen: NSScreen) -> Bool {
