@@ -20,11 +20,6 @@ class BasicSettingsViewModel: ObservableObject {
         set { BrightIntoshSettings.shared.brightintoshActive = newValue }
         get { return brightIntoshActive }
     }
-    private var brightness = BrightIntoshSettings.shared.brightness
-    var brightnessSlider: Float {
-        set { BrightIntoshSettings.shared.brightness = newValue }
-        get { return brightness }
-    }
     private var batteryAutomation = BrightIntoshSettings.shared.batteryAutomation
     var batteryAutomationToggle: Bool {
         set { BrightIntoshSettings.shared.batteryAutomation = newValue }
@@ -59,12 +54,6 @@ class BasicSettingsViewModel: ObservableObject {
             }
             if self.brightIntoshActive != BrightIntoshSettings.shared.brightintoshActive {
                 self.brightIntoshActive = BrightIntoshSettings.shared.brightintoshActive
-                self.objectWillChange.send()
-            }
-        }
-        BrightIntoshSettings.shared.addListener(setting: "brightness") {
-            if self.brightness != BrightIntoshSettings.shared.brightness {
-                self.brightness = BrightIntoshSettings.shared.brightness
                 self.objectWillChange.send()
             }
         }
@@ -169,13 +158,6 @@ struct BasicSettings: View {
             Form() {
                 Section(header: Text("Brightness").bold()) {
                     Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
-                    Slider(value: $viewModel.brightnessSlider, in: 0.0...1.0) {
-                        Text("Brightness")
-                    }
-                    Label(
-                        "You can still use your brightness keys to control the brightness. This slider controls how much the brightness range is shifted up.",
-                        systemImage: "info.circle"
-                    ).foregroundColor(Color.blue)
                     if isDeviceSupported() {
                         Toggle(
                             "Don't apply increased brightness to external XDR displays",
