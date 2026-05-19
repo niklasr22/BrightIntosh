@@ -32,6 +32,7 @@ class BrightnessTechnique {
 
 class GammaTable {
     static let tableSize: UInt32 = 256
+    private static let boostedBaselineThreshold: CGGammaValue = 1.2
     
     var redTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
     var greenTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
@@ -43,9 +44,24 @@ class GammaTable {
         let table = GammaTable()
         var sampleCount: UInt32 = 0
         let result = CGGetDisplayTransferByTable(displayId, tableSize, &table.redTable, &table.greenTable, &table.blueTable, &sampleCount)
-        print("Gamma Table Base Range: \(table.redTable.min() ?? 0) - \(table.redTable.max() ?? 0)")
         guard result == CGError.success else { return nil }
         return table
+    }
+    
+    static func createCleanBaseline(displayId: CGDirectDisplayID) -> GammaTable? {
+        guard let currentTable = createFromCurrentGammaTable(displayId: displayId) else { return nil }
+        guard currentTable.appearsBoosted else { return currentTable }
+        
+        print("Detected boosted gamma baseline with max value \(currentTable.maximumValue); restoring ColorSync settings")
+        CGDisplayRestoreColorSyncSettings()
+        
+        guard let restoredTable = createFromCurrentGammaTable(displayId: displayId) else {
+            return currentTable.normalizedByMaximum()
+        }
+        guard restoredTable.appearsBoosted else { return restoredTable }
+        
+        print("Restored gamma baseline still looks boosted with max value \(restoredTable.maximumValue); normalizing captured table")
+        return restoredTable.normalizedByMaximum()
     }
     
     func setTableForScreen(displayId: CGDirectDisplayID, factor: Float = 1.0) {
@@ -60,6 +76,25 @@ class GammaTable {
         }
         CGSetDisplayTransferByTable(displayId, GammaTable.tableSize, &newRedTable, &newGreenTable, &newBlueTable)
     }
+    
+    private var maximumValue: CGGammaValue {
+        max(redTable.max() ?? 0, greenTable.max() ?? 0, blueTable.max() ?? 0)
+    }
+    
+    private var appearsBoosted: Bool {
+        maximumValue > Self.boostedBaselineThreshold
+    }
+    
+    private func normalizedByMaximum() -> GammaTable? {
+        let maxValue = maximumValue
+        guard maxValue > 0 else { return nil }
+        
+        let table = GammaTable()
+        table.redTable = redTable.map { $0 / maxValue }
+        table.greenTable = greenTable.map { $0 / maxValue }
+        table.blueTable = blueTable.map { $0 / maxValue }
+        return table
+    }
 }
 
 class GammaTechnique: BrightnessTechnique {
@@ -72,6 +107,7 @@ class GammaTechnique: BrightnessTechnique {
     private var hdrRetryCooldownEndDates: [CGDirectDisplayID: Date] = [:]
     /// Consecutive HDR engage timeouts per display; each cooldown length is `min(max, step * count)`, reset when HDR becomes ready.
     private var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
+    private var lastLoggedGammaFactors: [CGDirectDisplayID: Float] = [:]
     
     private let hdrReadyThreshold = 1.05
     private let hdrEngageTimeout: TimeInterval = 2.1
@@ -123,6 +159,7 @@ class GammaTechnique: BrightnessTechnique {
         hdrPollTasks.values.forEach { $0.cancel() }
         hdrPollTasks.removeAll()
         hdrReadyDisplayIds.removeAll()
+        lastLoggedGammaFactors.removeAll()
         overlayWindowControllers.values.forEach { $0.window?.close() }
         overlayWindowControllers.removeAll()
         baselineGammaTables.forEach { $1.setTableForScreen(displayId: $0, factor: 1.0)}
@@ -176,6 +213,7 @@ class GammaTechnique: BrightnessTechnique {
         displaysPendingHDRRetry.remove(displayId)
         hdrRetryCooldownEndDates.removeValue(forKey: displayId)
         hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
+        lastLoggedGammaFactors.removeValue(forKey: displayId)
         baselineGammaTables[displayId]?.setTableForScreen(displayId: displayId)
         baselineGammaTables.removeValue(forKey: displayId)
         overlayWindowControllers[displayId]?.window?.close()
@@ -298,15 +336,22 @@ class GammaTechnique: BrightnessTechnique {
             let factor = Self.edrGammaFactor(
                 screen: screen
             )
+            logGammaFactorIfNeeded(factor, displayId: displayId)
             gammaTable.setTableForScreen(displayId: displayId, factor: factor)
         }
+    }
+    
+    private func logGammaFactorIfNeeded(_ factor: Float, displayId: CGDirectDisplayID) {
+        guard lastLoggedGammaFactors[displayId] != factor else { return }
+        lastLoggedGammaFactors[displayId] = factor
+        print("Gamma factor for display \(displayId): \(factor)")
     }
     
     private func captureBaselineGammaTableIfNeeded(displayId: CGDirectDisplayID) {
         guard baselineGammaTables[displayId] == nil else { return }
         
         CGDisplayRestoreColorSyncSettings()
-        if let table = GammaTable.createFromCurrentGammaTable(displayId: displayId) {
+        if let table = GammaTable.createCleanBaseline(displayId: displayId) {
             baselineGammaTables[displayId] = table
         }
         applyGammaForHDRReadyDisplays()
@@ -316,7 +361,7 @@ class GammaTechnique: BrightnessTechnique {
         CGDisplayRestoreColorSyncSettings()
         for screen in screens {
             guard let displayId = screen.displayId,
-                  let table = GammaTable.createFromCurrentGammaTable(displayId: displayId) else { continue }
+                  let table = GammaTable.createCleanBaseline(displayId: displayId) else { continue }
             baselineGammaTables[displayId] = table
         }
     }
