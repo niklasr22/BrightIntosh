@@ -100,9 +100,7 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         guard let window = self.window as? OverlayWindow else {
             return
         }
-        
-        print("[WindowController] Updating screen (ID: \(screen.displayId))")
-        
+                
         window.screenUpdate(screen: screen)
         window.orderFrontRegardless()
         
