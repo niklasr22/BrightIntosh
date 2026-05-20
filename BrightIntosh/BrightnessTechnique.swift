@@ -122,6 +122,7 @@ class GammaTechnique: BrightnessTechnique {
     private let gammaFadeDuration: TimeInterval = 0.35
     private let gammaFadeFrameInterval: Duration = .milliseconds(16)
     private let gammaFactorEpsilon: Float = 0.001
+    private let pendingHDRGammaFactor: Float = 1.12
     private var fastPollUntil: Date?
     
     override init() {
@@ -268,6 +269,7 @@ class GammaTechnique: BrightnessTechnique {
         while !Task.isCancelled, isEnabled {
             if let remainingCooldownSeconds = hdrRetryCooldownRemainingSeconds(for: displayId) {
                 closeOverlay(displayId)
+                applyPendingHDRGamma(displayId: displayId)
                 try? await Task.sleep(for: .seconds(remainingCooldownSeconds))
                 guard !Task.isCancelled, isEnabled else { return false }
                 endHDRRetryCooldown(displayId, notify: true)
@@ -298,6 +300,7 @@ class GammaTechnique: BrightnessTechnique {
                 )
                 beginHDRRetryCooldown(displayId, cooldownSeconds: cooldownSeconds)
                 closeOverlay(displayId)
+                applyPendingHDRGamma(displayId: displayId)
                 try? await Task.sleep(for: .seconds(cooldownSeconds))
                 guard !Task.isCancelled, isEnabled else { return false }
                 endHDRRetryCooldown(displayId, notify: true)
@@ -348,6 +351,12 @@ class GammaTechnique: BrightnessTechnique {
             logGammaFactorIfNeeded(factor, displayId: displayId)
             fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: factor)
         }
+    }
+    
+    private func applyPendingHDRGamma(displayId: CGDirectDisplayID) {
+        guard let gammaTable = baselineGammaTables[displayId] else { return }
+        logGammaFactorIfNeeded(pendingHDRGammaFactor, displayId: displayId)
+        fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: pendingHDRGammaFactor)
     }
     
     private func fadeGammaFactor(
@@ -502,6 +511,7 @@ class GammaTechnique: BrightnessTechnique {
         guard let remainingSeconds = hdrRetryCooldownRemainingSeconds(for: displayId) else { return false }
         
         displaysPendingHDRRetry.insert(displayId)
+        applyPendingHDRGamma(displayId: displayId)
         if notify {
             NotificationCenter.default.post(
                 name: .brightIntoshHDRCooldownDidBegin,
