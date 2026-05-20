@@ -108,6 +108,9 @@ class GammaTechnique: BrightnessTechnique {
     /// Consecutive HDR engage timeouts per display; each cooldown length is `min(max, step * count)`, reset when HDR becomes ready.
     private var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
     private var lastLoggedGammaFactors: [CGDirectDisplayID: Float] = [:]
+    private var appliedGammaFactors: [CGDirectDisplayID: Float] = [:]
+    private var targetGammaFactors: [CGDirectDisplayID: Float] = [:]
+    private var gammaFadeTasks: [CGDirectDisplayID: Task<Void, Never>] = [:]
     
     private let hdrReadyThreshold = 1.05
     private let hdrEngageTimeout: TimeInterval = 2.1
@@ -116,6 +119,9 @@ class GammaTechnique: BrightnessTechnique {
     private let defaultPollInterval: Duration = .milliseconds(500)
     private let fastPollInterval: Duration = .milliseconds(16)
     private let fastPollDuration: TimeInterval = 30
+    private let gammaFadeDuration: TimeInterval = 0.35
+    private let gammaFadeFrameInterval: Duration = .milliseconds(16)
+    private let gammaFactorEpsilon: Float = 0.001
     private var fastPollUntil: Date?
     
     override init() {
@@ -160,6 +166,7 @@ class GammaTechnique: BrightnessTechnique {
         hdrPollTasks.removeAll()
         hdrReadyDisplayIds.removeAll()
         lastLoggedGammaFactors.removeAll()
+        resetGammaFadeState()
         overlayWindowControllers.values.forEach { $0.window?.close() }
         overlayWindowControllers.removeAll()
         baselineGammaTables.forEach { $1.setTableForScreen(displayId: $0, factor: 1.0)}
@@ -188,6 +195,7 @@ class GammaTechnique: BrightnessTechnique {
             tearDownDisplay(id)
         }
         
+        baselineGammaTables.keys.forEach { resetGammaFadeState(for: $0) }
         baselineGammaTables.forEach { $1.setTableForScreen(displayId: $0)}
         refreshBaselineGammaTables(for: screens)
         
@@ -214,6 +222,7 @@ class GammaTechnique: BrightnessTechnique {
         hdrRetryCooldownEndDates.removeValue(forKey: displayId)
         hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
         lastLoggedGammaFactors.removeValue(forKey: displayId)
+        resetGammaFadeState(for: displayId)
         baselineGammaTables[displayId]?.setTableForScreen(displayId: displayId)
         baselineGammaTables.removeValue(forKey: displayId)
         overlayWindowControllers[displayId]?.window?.close()
@@ -337,8 +346,83 @@ class GammaTechnique: BrightnessTechnique {
                 screen: screen
             )
             logGammaFactorIfNeeded(factor, displayId: displayId)
-            gammaTable.setTableForScreen(displayId: displayId, factor: factor)
+            fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: factor)
         }
+    }
+    
+    private func fadeGammaFactor(
+        displayId: CGDirectDisplayID,
+        gammaTable: GammaTable,
+        targetFactor: Float,
+        removeStateWhenComplete: Bool = false
+    ) {
+        let previousTarget = targetGammaFactors[displayId]
+        let targetChanged = previousTarget.map { abs($0 - targetFactor) > gammaFactorEpsilon } ?? true
+        if !targetChanged, gammaFadeTasks[displayId] != nil {
+            return
+        }
+        
+        let startFactor = appliedGammaFactors[displayId] ?? 1.0
+        targetGammaFactors[displayId] = targetFactor
+        gammaFadeTasks[displayId]?.cancel()
+        
+        if abs(startFactor - targetFactor) <= gammaFactorEpsilon {
+            gammaTable.setTableForScreen(displayId: displayId, factor: targetFactor)
+            finishGammaFade(displayId: displayId, factor: targetFactor, removeState: removeStateWhenComplete)
+            return
+        }
+        
+        gammaFadeTasks[displayId] = Task { @MainActor in
+            let startDate = Date()
+            
+            while !Task.isCancelled {
+                let progress = min(1.0, Date().timeIntervalSince(startDate) / self.gammaFadeDuration)
+                let easedProgress = progress * progress * (3.0 - 2.0 * progress)
+                let nextFactor = startFactor + ((targetFactor - startFactor) * Float(easedProgress))
+                
+                gammaTable.setTableForScreen(displayId: displayId, factor: nextFactor)
+                self.appliedGammaFactors[displayId] = nextFactor
+                
+                if progress >= 1.0 {
+                    break
+                }
+                
+                try? await Task.sleep(for: self.gammaFadeFrameInterval)
+            }
+            
+            guard !Task.isCancelled else {
+                return
+            }
+            
+            gammaTable.setTableForScreen(displayId: displayId, factor: targetFactor)
+            self.finishGammaFade(displayId: displayId, factor: targetFactor, removeState: removeStateWhenComplete)
+        }
+    }
+    
+    private func finishGammaFade(displayId: CGDirectDisplayID, factor: Float, removeState: Bool) {
+        gammaFadeTasks.removeValue(forKey: displayId)
+        
+        if removeState {
+            appliedGammaFactors.removeValue(forKey: displayId)
+            targetGammaFactors.removeValue(forKey: displayId)
+        } else {
+            appliedGammaFactors[displayId] = factor
+            targetGammaFactors[displayId] = factor
+        }
+    }
+    
+    private func resetGammaFadeState(for displayId: CGDirectDisplayID) {
+        gammaFadeTasks[displayId]?.cancel()
+        gammaFadeTasks.removeValue(forKey: displayId)
+        appliedGammaFactors.removeValue(forKey: displayId)
+        targetGammaFactors.removeValue(forKey: displayId)
+    }
+    
+    private func resetGammaFadeState() {
+        gammaFadeTasks.values.forEach { $0.cancel() }
+        gammaFadeTasks.removeAll()
+        appliedGammaFactors.removeAll()
+        targetGammaFactors.removeAll()
     }
     
     private func logGammaFactorIfNeeded(_ factor: Float, displayId: CGDirectDisplayID) {
@@ -372,7 +456,12 @@ class GammaTechnique: BrightnessTechnique {
             applyGammaForHDRReadyDisplays()
             return
         }
-        gammaTable.setTableForScreen(displayId: displayId)
+        fadeGammaFactor(
+            displayId: displayId,
+            gammaTable: gammaTable,
+            targetFactor: 1.0,
+            removeStateWhenComplete: true
+        )
     }
     
     private func screenForDisplay(_ displayId: CGDirectDisplayID) -> NSScreen? {
