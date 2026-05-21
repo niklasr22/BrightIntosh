@@ -32,7 +32,7 @@ class BrightnessTechnique {
 
 class GammaTable {
     static let tableSize: UInt32 = 256
-    private static let boostedBaselineThreshold: CGGammaValue = 1.2
+    private static let boostedBaselineThreshold: CGGammaValue = 1.1
     
     var redTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
     var greenTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
@@ -50,6 +50,7 @@ class GammaTable {
     
     static func createCleanBaseline(displayId: CGDirectDisplayID) -> GammaTable? {
         guard let currentTable = createFromCurrentGammaTable(displayId: displayId) else { return nil }
+        print("New baseline created (max value \(currentTable.maximumValue))")
         guard currentTable.appearsBoosted else { return currentTable }
         
         print("Detected boosted gamma baseline with max value \(currentTable.maximumValue); restoring ColorSync settings")
