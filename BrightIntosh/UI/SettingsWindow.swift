@@ -7,7 +7,6 @@
 
 import KeyboardShortcuts
 import OSLog
-import StoreKit
 import SwiftUI
 
 @MainActor
@@ -84,6 +83,29 @@ class BasicSettingsViewModel: ObservableObject {
     }
 }
 
+struct BrightnessSliderRemovalHint: View {
+    @Binding var isVisible: Bool
+
+    var body: some View {
+        if isVisible {
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundStyle(.blue)
+                Text("The BrightIntosh brightness slider was removed. Use your Mac's normal brightness keys to adjust brightness, and simply toggle increased brightness on or off when you need the boost.")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Button("Dismiss") {
+                    BrightIntoshSettings.shared.dismissedBrightnessSliderRemovalHint = true
+                    isVisible = false
+                }
+                .buttonStyle(.borderless)
+            }
+            .padding(10)
+            .background(Color.blue.opacity(0.12))
+            .clipShape(.rect(cornerRadius: 8))
+        }
+    }
+}
+
 struct CliInstallationSheet: View {
     @Binding var isPresented: Bool
     
@@ -152,11 +174,13 @@ struct BasicSettings: View {
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
     @State private var showCliPopup = false
+    @State private var showBrightnessSliderRemovalHint = false
 
     var body: some View {
         ScrollView {
             Form() {
                 Section(header: Text("Brightness").bold()) {
+                    BrightnessSliderRemovalHint(isVisible: $showBrightnessSliderRemovalHint)
                     Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
                     if isDeviceSupported() {
                         Toggle(
@@ -260,6 +284,16 @@ struct BasicSettings: View {
                         Text("Install BrightIntosh CLI")
                     }
                 }
+                #if DEBUG
+                    Section(header: Text("Dev").bold()) {
+                        Button("Reset brightness slider hint dismissal") {
+                            BrightIntoshSettings.shared.dismissedBrightnessSliderRemovalHint = false
+                            Task {
+                                await updateBrightnessSliderRemovalHintVisibility()
+                            }
+                        }
+                    }
+                #endif
             }
             .formStyle(.grouped)
             .frame(
@@ -273,6 +307,19 @@ struct BasicSettings: View {
         .sheet(isPresented: $showCliPopup) {
             CliInstallationSheet(isPresented: $showCliPopup)
         }
+        .task {
+            await updateBrightnessSliderRemovalHintVisibility()
+        }
+    }
+
+    @MainActor
+    private func updateBrightnessSliderRemovalHintVisibility() async {
+        guard !BrightIntoshSettings.shared.dismissedBrightnessSliderRemovalHint else {
+            showBrightnessSliderRemovalHint = false
+            return
+        }
+
+        showBrightnessSliderRemovalHint = await originalPurchaseVersionIsEarlierThan(brightnessSliderRemovalOriginalPurchaseVersionCutoff)
     }
 }
 
