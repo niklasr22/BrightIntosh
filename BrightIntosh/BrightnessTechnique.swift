@@ -107,6 +107,7 @@ class GammaTechnique: BrightnessTechnique {
     private var hdrRetryCooldownEndDates: [CGDirectDisplayID: Date] = [:]
     /// Consecutive HDR engage timeouts per display; each cooldown length is `min(max, step * count)`, reset when HDR becomes ready.
     private var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
+    private var lastObservedMaxEdrValues: [CGDirectDisplayID: CGFloat] = [:]
     private var lastLoggedGammaFactors: [CGDirectDisplayID: Float] = [:]
     private var appliedGammaFactors: [CGDirectDisplayID: Float] = [:]
     private var targetGammaFactors: [CGDirectDisplayID: Float] = [:]
@@ -122,6 +123,7 @@ class GammaTechnique: BrightnessTechnique {
     private let gammaFadeDuration: TimeInterval = 0.35
     private let gammaFadeFrameInterval: Duration = .milliseconds(16)
     private let gammaFactorEpsilon: Float = 0.001
+    private let maxEdrEpsilon: CGFloat = 0.0001
     private let pendingHDRGammaFactor: Float = 1.12
     private var fastPollUntil: Date?
     
@@ -130,9 +132,8 @@ class GammaTechnique: BrightnessTechnique {
         CGDisplayRestoreColorSyncSettings()
     }
     
-    private static func edrGammaFactor(screen: NSScreen) -> Float {
-        let referenceEdr: Float = 4.0 // This value is some empirically determined value that macOS usually allows.
-        let maxEdr = screen.maximumExtendedDynamicRangeColorComponentValue
+    private static func edrGammaFactor(screen: NSScreen, maxEdr: CGFloat) -> Float {
+        let referenceEdr: Float = 4.0 // reference EDR gamma value for which we determined a good gamma value
         let maxScreenBrightness = getScreenRefGamma(screen)
         let val =  1 + (maxScreenBrightness - 1) * min(Float(maxEdr) / referenceEdr, 1.0)
         return val
@@ -166,6 +167,7 @@ class GammaTechnique: BrightnessTechnique {
         hdrPollTasks.values.forEach { $0.cancel() }
         hdrPollTasks.removeAll()
         hdrReadyDisplayIds.removeAll()
+        lastObservedMaxEdrValues.removeAll()
         lastLoggedGammaFactors.removeAll()
         resetGammaFadeState()
         overlayWindowControllers.values.forEach { $0.window?.close() }
@@ -222,6 +224,7 @@ class GammaTechnique: BrightnessTechnique {
         displaysPendingHDRRetry.remove(displayId)
         hdrRetryCooldownEndDates.removeValue(forKey: displayId)
         hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
+        lastObservedMaxEdrValues.removeValue(forKey: displayId)
         lastLoggedGammaFactors.removeValue(forKey: displayId)
         resetGammaFadeState(for: displayId)
         baselineGammaTables[displayId]?.setTableForScreen(displayId: displayId)
@@ -315,16 +318,14 @@ class GammaTechnique: BrightnessTechnique {
     }
     
     private func monitorHDR(displayId: CGDirectDisplayID) async {
-        var lastFactor: Float?
+        var lastMaxEdr: CGFloat?
         while !Task.isCancelled, isEnabled {
             guard let screen = screenForDisplay(displayId) else { break }
             if !hdrReady(screen) { break }
             
-            let factor = Self.edrGammaFactor(
-                screen: screen
-            )
-            if lastFactor.map({ abs($0 - factor) > 0.001 }) ?? true {
-                lastFactor = factor
+            let maxEdr = screen.maximumExtendedDynamicRangeColorComponentValue
+            if lastMaxEdr.map({ abs($0 - maxEdr) > maxEdrEpsilon }) ?? true {
+                lastMaxEdr = maxEdr
                 applyGammaForHDRReadyDisplays()
             }
             try? await Task.sleep(for: currentPollInterval())
@@ -345,8 +346,17 @@ class GammaTechnique: BrightnessTechnique {
         for displayId in hdrReadyDisplayIds {
             guard let screen = NSScreen.screens.first(where: { $0.displayId == displayId }),
                   let gammaTable = baselineGammaTables[displayId] else { continue }
+            let maxEdr = screen.maximumExtendedDynamicRangeColorComponentValue
+            if let lastMaxEdr = lastObservedMaxEdrValues[displayId],
+               abs(lastMaxEdr - maxEdr) <= maxEdrEpsilon,
+               targetGammaFactors[displayId] != nil {
+                continue
+            }
+            
+            lastObservedMaxEdrValues[displayId] = maxEdr
             let factor = Self.edrGammaFactor(
-                screen: screen
+                screen: screen,
+                maxEdr: maxEdr
             )
             logGammaFactorIfNeeded(factor, displayId: displayId)
             fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: factor)
