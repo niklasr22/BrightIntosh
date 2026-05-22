@@ -137,8 +137,12 @@ struct CliInstallationSheet: View {
                 .background(Color.black)
                 .foregroundStyle(.white)
                 .clipShape(.rect(cornerRadius: 15.0))
-            Button("Close") {
-                isPresented = false
+            HStack {
+                Spacer()
+                Button("Done") {
+                    isPresented = false
+                }
+                .keyboardShortcut(.defaultAction)
             }
         }
         .frame(maxWidth: .infinity, maxHeight:    .infinity)
@@ -158,6 +162,52 @@ struct CliInstallationSheet: View {
     }
 }
 
+struct AdvancedSettingsSheet: View {
+    @Binding var isPresented: Bool
+    @Binding var useAlternateBrightnessBackend: Bool
+    @Binding var waitForHDRBeforeIncreasingBrightness: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Advanced")
+                .font(.title2)
+                .bold()
+            
+            VStack(alignment: .leading, spacing: 12) {
+                Toggle(
+                    "Use alternate brightness backend",
+                    isOn: $useAlternateBrightnessBackend
+                )
+                .onChange(of: useAlternateBrightnessBackend) { _, new in
+                    BrightIntoshSettings.shared.useAlternateBrightnessBackend = new
+                }
+                
+                Toggle(
+                    "Wait for HDR before increasing brightness",
+                    isOn: $waitForHDRBeforeIncreasingBrightness
+                )
+                .onChange(of: waitForHDRBeforeIncreasingBrightness) { _, new in
+                    BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness = new
+                }
+                
+                Text("These options can help with display-specific brightness issues.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            HStack {
+                Spacer()
+                Button("Done") {
+                    isPresented = false
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding()
+        .frame(width: 420)
+    }
+}
+
 struct BasicSettings: View {
     @ObservedObject var viewModel = BasicSettingsViewModel()
     
@@ -167,6 +217,8 @@ struct BasicSettings: View {
     @State private var brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn
     @State private var disableWhenLidClosed = BrightIntoshSettings.shared.disableWhenLidClosed
     @State private var showHDRRetryCooldownNotice = BrightIntoshSettings.shared.showHDRRetryCooldownNotice
+    @State private var useAlternateBrightnessBackend = BrightIntoshSettings.shared.useAlternateBrightnessBackend
+    @State private var waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness
     @State private var batteryLevelThreshold = BrightIntoshSettings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = BrightIntoshSettings.shared.timerAutomationTimeout
 
@@ -175,10 +227,11 @@ struct BasicSettings: View {
     
     @State private var showCliPopup = false
     @State private var showBrightnessSliderRemovalHint = false
+    @State private var showAdvancedSettingsSheet = false
 
     var body: some View {
         ScrollView {
-            Form() {
+            Form {
                 Section(header: Text("Brightness").bold()) {
                     BrightnessSliderRemovalHint(isVisible: $showBrightnessSliderRemovalHint)
                     Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
@@ -249,61 +302,77 @@ struct BasicSettings: View {
                     KeyboardShortcuts.Recorder(
                         "Open settings:", name: .openSettings)
                 }
-                Section(header: Text("General").bold()) {
-                    Toggle(
-                        "Hide menu bar item",
-                        isOn: $hideMenuBarItem)
-                    .onChange(of: hideMenuBarItem) { _, new in
-                        BrightIntoshSettings.shared.hideMenuBarItem = new
-                    }
-                    if hideMenuBarItem {
-                        Label(
-                            "To open the settings window without the menu bar item, search for \"BrightIntosh Settings\" in the the macOS \(Image(systemName: "magnifyingglass")) Spotlight search.",
-                            systemImage: "exclamationmark.triangle.fill"
-                        ).foregroundColor(Color.yellow)
-                    }
-                    Toggle(
-                        "Show in dock",
-                        isOn: $showInDock)
-                    .onChange(of: showInDock) { _, new in
-                        BrightIntoshSettings.shared.showInDock = new
-                    }
-                    Button(action: {
-                        Task {
-                            let report = await generateReport()
-                            let pasteboard = NSPasteboard.general
-                            pasteboard.declareTypes([.string], owner: nil)
-                            pasteboard.setString(report, forType: .string)
+                Section(
+                    header: Text("General").bold(),
+                    footer: HStack {
+                        Spacer()
+                        Button("Advanced...") {
+                            showAdvancedSettingsSheet = true
                         }
-                    }) {
-                        Text("Generate and copy report")
-                    }
-                    Button(action: {
-                        showCliPopup = true
-                    }) {
-                        Text("Install BrightIntosh CLI")
+                        .sheet(isPresented: $showAdvancedSettingsSheet) {
+                            AdvancedSettingsSheet(
+                                isPresented: $showAdvancedSettingsSheet,
+                                useAlternateBrightnessBackend: $useAlternateBrightnessBackend,
+                                waitForHDRBeforeIncreasingBrightness: $waitForHDRBeforeIncreasingBrightness
+                            )
+                        }
+                    },
+                    content: {
+                        Toggle(
+                            "Hide menu bar item",
+                            isOn: $hideMenuBarItem)
+                        .onChange(of: hideMenuBarItem) { _, new in
+                            BrightIntoshSettings.shared.hideMenuBarItem = new
+                        }
+                        if hideMenuBarItem {
+                            Label(
+                                "To open the settings window without the menu bar item, search for \"BrightIntosh Settings\" in the the macOS \(Image(systemName: "magnifyingglass")) Spotlight search.",
+                                systemImage: "exclamationmark.triangle.fill"
+                            ).foregroundColor(Color.yellow)
+                        }
+                        Toggle(
+                            "Show in dock",
+                            isOn: $showInDock)
+                        .onChange(of: showInDock) { _, new in
+                            BrightIntoshSettings.shared.showInDock = new
+                        }
+                        Button(action: {
+                            Task {
+                                let report = await generateReport()
+                                let pasteboard = NSPasteboard.general
+                                pasteboard.declareTypes([.string], owner: nil)
+                                pasteboard.setString(report, forType: .string)
+                            }
+                        }) {
+                            Text("Generate and copy report")
+                        }
+                        Button(action: {
+                            showCliPopup = true
+                        }) {
+                            Text("Install BrightIntosh CLI")
+                        }
+                    })
+#if DEBUG
+                Section(header: Text("Dev").bold()) {
+                    Button("Reset brightness slider hint dismissal") {
+                        BrightIntoshSettings.shared.dismissedBrightnessSliderRemovalHint = false
+                        Task {
+                            await updateBrightnessSliderRemovalHintVisibility()
+                        }
                     }
                 }
-                #if DEBUG
-                    Section(header: Text("Dev").bold()) {
-                        Button("Reset brightness slider hint dismissal") {
-                            BrightIntoshSettings.shared.dismissedBrightnessSliderRemovalHint = false
-                            Task {
-                                await updateBrightnessSliderRemovalHintVisibility()
-                            }
-                        }
-                    }
-                #endif
+                .background(.clear)
+#endif
             }
-            .formStyle(.grouped)
-            .frame(
-                minWidth: 0,
-                maxWidth: .infinity,
-                minHeight: 0,
-                maxHeight: .infinity,
-                alignment: .topLeading
-            )
         }
+        .formStyle(.grouped)
+        .frame(
+            minWidth: 0,
+            maxWidth: .infinity,
+            minHeight: 0,
+            maxHeight: .infinity,
+            alignment: .topLeading
+        )
         .sheet(isPresented: $showCliPopup) {
             CliInstallationSheet(isPresented: $showCliPopup)
         }

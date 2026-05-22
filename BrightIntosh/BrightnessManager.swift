@@ -85,6 +85,14 @@ class BrightnessManager {
         BrightIntoshSettings.shared.addListener(setting: "disableWhenLidClosed") {
             self.handlePotentialScreenUpdate()
         }
+        
+        BrightIntoshSettings.shared.addListener(setting: "useAlternateBrightnessBackend") {
+            self.setBrightnessTechnique()
+        }
+        
+        BrightIntoshSettings.shared.addListener(setting: "waitForHDRBeforeIncreasingBrightness") {
+            self.refreshActiveBrightnessTechnique()
+        }
     }
     
     func activateSafely() {
@@ -98,8 +106,17 @@ class BrightnessManager {
     
     func setBrightnessTechnique() {
         brightnessTechnique?.disable()
-        brightnessTechnique = GammaTechnique()
-        print("Activated Gamma Technique")
+        let shouldUseAlternateBackend = BrightIntoshSettings.shared.useAlternateBrightnessBackend
+        if shouldUseAlternateBackend {
+            brightnessTechnique = MultiplyingOverlayTechnique()
+        } else {
+            brightnessTechnique = GammaTechnique()
+        }
+        print("Activated \(shouldUseAlternateBackend ? "alternate" : "standard") brightness backend")
+        
+        if enabled && BrightIntoshSettings.shared.brightintoshActive {
+            enableExtraBrightness()
+        }
     }
     
     @MainActor @objc func handleScreenParameters(notification: Notification) {
@@ -175,6 +192,16 @@ class BrightnessManager {
     @MainActor
     private func enableExtraBrightness() {
         self.brightnessTechnique?.enable()
+    }
+    
+    @MainActor
+    private func refreshActiveBrightnessTechnique() {
+        guard enabled, BrightIntoshSettings.shared.brightintoshActive else {
+            return
+        }
+        
+        xdrScreens = getXDRDisplays()
+        brightnessTechnique?.screenUpdate(screens: xdrScreens)
     }
     
     @MainActor

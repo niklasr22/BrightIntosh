@@ -58,6 +58,20 @@ class BrightIntoshSettings {
         }
     }
     
+    public var useAlternateBrightnessBackend: Bool = BrightIntoshSettings.getUserDefault(key: "useAlternateBrightnessBackend", defaultValue: false) {
+        didSet {
+            BrightIntoshSettings.defaults.setValue(useAlternateBrightnessBackend, forKey: "useAlternateBrightnessBackend")
+            callListeners(setting: "useAlternateBrightnessBackend")
+        }
+    }
+    
+    public var waitForHDRBeforeIncreasingBrightness: Bool = BrightIntoshSettings.getUserDefault(key: "waitForHDRBeforeIncreasingBrightness", defaultValue: false) {
+        didSet {
+            BrightIntoshSettings.defaults.setValue(waitForHDRBeforeIncreasingBrightness, forKey: "waitForHDRBeforeIncreasingBrightness")
+            callListeners(setting: "waitForHDRBeforeIncreasingBrightness")
+        }
+    }
+    
     public var dismissedBrightnessSliderRemovalHint: Bool = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false) {
         didSet {
             BrightIntoshSettings.defaults.setValue(dismissedBrightnessSliderRemovalHint, forKey: "dismissedBrightnessSliderRemovalHint")
@@ -155,6 +169,8 @@ class BrightIntoshSettings {
         brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.getUserDefault(key: "brightIntoshOnlyOnBuiltIn", defaultValue: false)
         disableWhenLidClosed = BrightIntoshSettings.getUserDefault(key: "disableWhenLidClosed", defaultValue: false)
         showHDRRetryCooldownNotice = BrightIntoshSettings.getUserDefault(key: "showHDRRetryCooldownNotice", defaultValue: true)
+        useAlternateBrightnessBackend = BrightIntoshSettings.getUserDefault(key: "useAlternateBrightnessBackend", defaultValue: false)
+        waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.getUserDefault(key: "waitForHDRBeforeIncreasingBrightness", defaultValue: false)
         dismissedBrightnessSliderRemovalHint = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false)
         hideMenuBarItem = BrightIntoshSettings.getUserDefault(key: "hideMenuBarItem", defaultValue: false)
         batteryAutomation = BrightIntoshSettings.getUserDefault(key: "batteryAutomation", defaultValue: false)

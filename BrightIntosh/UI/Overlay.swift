@@ -12,8 +12,10 @@ class Overlay: MTKView, MTKViewDelegate {
     private let colorSpace = CGColorSpace(name: CGColorSpace.extendedLinearSRGB)
     
     private var commandQueue: MTLCommandQueue?
+    private var didRenderFirstFrame = false
+    var onFirstFrameRendered: (() -> Void)?
     
-    init(frame: CGRect, multiplyCompositing: Bool = false) {
+    init(frame: CGRect, multiplyCompositing: Bool = false, clearColorValue: Double = 1.6) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
         
         guard let device else {
@@ -32,12 +34,13 @@ class Overlay: MTKView, MTKViewDelegate {
         delegate = self
         colorPixelFormat = .rgba16Float
         colorspace = colorSpace
-        clearColor = MTLClearColorMake(1.0, 1.0, 1.0, 1.0)
+        setClearColorValue(clearColorValue)
         preferredFramesPerSecond = 5
         
         if let layer = self.layer as? CAMetalLayer {
             layer.wantsExtendedDynamicRangeContent = true
             layer.isOpaque = false
+            layer.backgroundColor = CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
             layer.pixelFormat = .rgba16Float
             if multiplyCompositing {
                 layer.compositingFilter = "multiply"
@@ -50,21 +53,34 @@ class Overlay: MTKView, MTKViewDelegate {
     }
     
     func screenUpdate(screen: NSScreen) {
-        let hdrValue: Double = 16.0
-        clearColor = MTLClearColorMake(hdrValue, hdrValue, hdrValue, 1.0)
+        draw()
+    }
+    
+    func setClearColorValue(_ value: Double) {
+        clearColor = MTLClearColorMake(value, value, value, 1.0)
+        draw()
     }
     
     func draw(in view: MTKView) {
         guard let commandQueue = commandQueue,
               let renderPassDescriptor = view.currentRenderPassDescriptor,
               let commandBuffer = commandQueue.makeCommandBuffer(),
-              let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+              let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor),
+              let drawable = view.currentDrawable else {
             return
         }
         
         renderEncoder.endEncoding()
         
-        commandBuffer.present(view.currentDrawable!)
+        commandBuffer.present(drawable)
+        commandBuffer.addCompletedHandler { [weak self] _ in
+            DispatchQueue.main.async {
+                guard let self, !self.didRenderFirstFrame else { return }
+                self.didRenderFirstFrame = true
+                self.onFirstFrameRendered?()
+                self.onFirstFrameRendered = nil
+            }
+        }
         commandBuffer.commit()
     }
     
