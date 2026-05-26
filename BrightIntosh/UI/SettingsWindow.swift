@@ -217,6 +217,7 @@ struct BasicSettings: View {
     @State private var brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn
     @State private var disableWhenLidClosed = BrightIntoshSettings.shared.disableWhenLidClosed
     @State private var showHDRRetryCooldownNotice = BrightIntoshSettings.shared.showHDRRetryCooldownNotice
+    @State private var showIncompatibleAppsNotice = BrightIntoshSettings.shared.showIncompatibleAppsNotice
     @State private var useAlternateBrightnessBackend = BrightIntoshSettings.shared.useAlternateBrightnessBackend
     @State private var waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness
     @State private var batteryLevelThreshold = BrightIntoshSettings.shared.batteryAutomationThreshold
@@ -255,6 +256,13 @@ struct BasicSettings: View {
                     )
                     .onChange(of: showHDRRetryCooldownNotice) { _, new in
                         BrightIntoshSettings.shared.showHDRRetryCooldownNotice = new
+                    }
+                    Toggle(
+                        "Show a notice when another brightness app may interfere",
+                        isOn: $showIncompatibleAppsNotice
+                    )
+                    .onChange(of: showIncompatibleAppsNotice) { _, new in
+                        BrightIntoshSettings.shared.showIncompatibleAppsNotice = new
                     }
                 }
                 Section(header: Text("Timer").bold()) {

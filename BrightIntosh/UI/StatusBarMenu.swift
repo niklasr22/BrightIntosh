@@ -188,6 +188,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     private static let hdrCooldownMenuSeparatorTag = 9_001
     private static let hdrCooldownMenuInfoTag = 9_002
+    private static let incompatibleAppsMenuSeparatorTag = 9_003
+    private static let incompatibleAppsMenuInfoTag = 9_004
     private static let timerDurationMinutes = Array(stride(from: 10, to: 51, by: 10)) + Array(stride(from: 60, to: 300, by: 30))
     
     private func createTimerDurationSubmenu() -> NSMenu {
@@ -310,6 +312,43 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         info.toolTip = String(
             localized: "BrightIntosh pauses the extra brightness until macOS properly displays HDR content again."
         )
+        menu.insertItem(separator, at: titleIdx + 1)
+        menu.insertItem(info, at: titleIdx + 2)
+    }
+    
+    private func incompatibleAppsTitle(_ apps: [IncompatibleRunningApp]) -> String {
+        apps.map(\.displayName).joined(separator: ", ")
+    }
+    
+    private func reconcileIncompatibleAppsMenuItems() {
+        let incompatibleApps = runningIncompatibleApps()
+        
+        guard !incompatibleApps.isEmpty else {
+            for item in menu.items where item.tag == Self.incompatibleAppsMenuSeparatorTag || item.tag == Self.incompatibleAppsMenuInfoTag {
+                menu.removeItem(item)
+            }
+            return
+        }
+        
+        let appList = incompatibleAppsTitle(incompatibleApps)
+        let infoTitle = String(localized: "Potential conflict: \(appList)")
+        
+        if let info = menu.items.first(where: { $0.tag == Self.incompatibleAppsMenuInfoTag }) {
+            info.title = infoTitle
+            info.toolTip = String(localized: "\(appList) may also control display brightness or color and interfere with BrightIntosh.")
+            return
+        }
+        
+        guard let titleIdx = menu.items.firstIndex(where: { $0 === titleItem }) else { return }
+        
+        let separator = NSMenuItem.separator()
+        separator.tag = Self.incompatibleAppsMenuSeparatorTag
+        
+        let info = NSMenuItem(title: infoTitle, action: nil, keyEquivalent: "")
+        info.tag = Self.incompatibleAppsMenuInfoTag
+        info.isEnabled = false
+        info.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "Potential conflict"))
+        info.toolTip = String(localized: "\(appList) may also control display brightness or color and interfere with BrightIntosh.")
         menu.insertItem(separator, at: titleIdx + 1)
         menu.insertItem(info, at: titleIdx + 2)
     }
@@ -472,8 +511,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         let closeConfig = NSImage.SymbolConfiguration(pointSize: 11, weight: .medium)
         let closeImage = NSImage(systemSymbolName: "xmark", accessibilityDescription: String(localized: "Dismiss notice"))?
             .withSymbolConfiguration(closeConfig)
-        let closeButton = HDRToastCloseButton()
+        let closeButton = ToastCloseButton()
         closeButton.menuTarget = self
+        closeButton.disableMenuTitle = String(localized: "Don’t show this notice again")
+        closeButton.disableMenuAction = #selector(hdrCooldownToastDisableFromContextMenu(_:))
         closeButton.image = closeImage
         closeButton.imagePosition = .imageOnly
         closeButton.isBordered = false
@@ -536,6 +577,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         }
         
         reconcileHDRCooldownMenuItems()
+        reconcileIncompatibleAppsMenuItems()
         
         if BrightIntoshSettings.shared.brightintoshActive {
             if !menu.items.contains(toggleTimerItem) {
@@ -656,20 +698,22 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
 }
 
-// MARK: - HDR cooldown toast close button
+// MARK: - Toast close button
 
-private final class HDRToastCloseButton: NSButton {
+private final class ToastCloseButton: NSButton {
     weak var menuTarget: StatusBarMenu?
+    var disableMenuTitle: String?
+    var disableMenuAction: Selector?
     
     override func rightMouseDown(with event: NSEvent) {
-        guard let target = menuTarget else {
+        guard let target = menuTarget, let disableMenuTitle, let disableMenuAction else {
             super.rightMouseDown(with: event)
             return
         }
         let menu = NSMenu()
         let item = NSMenuItem(
-            title: String(localized: "Don’t show this notice again"),
-            action: #selector(StatusBarMenu.hdrCooldownToastDisableFromContextMenu(_:)),
+            title: disableMenuTitle,
+            action: disableMenuAction,
             keyEquivalent: ""
         )
         item.target = target

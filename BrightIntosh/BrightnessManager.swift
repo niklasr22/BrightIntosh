@@ -95,6 +95,11 @@ class BrightnessManager {
         }
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        NSWorkspace.shared.notificationCenter.removeObserver(self)
+    }
+    
     func activateSafely() {
         if Authorizer.shared.isAllowed() {
             self.enabled = true
@@ -163,7 +168,6 @@ class BrightnessManager {
             BrightIntoshSettings.shared.brightintoshActive = false
             return
         }
-        
         guard enabled else {
             return
         }
