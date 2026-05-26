@@ -46,6 +46,31 @@ private let incompatibleAppSignatures: [IncompatibleAppSignature] = [
         bundleIdentifiers: ["com.getvivid.vivid", "com.getvivid.Vivid"],
         normalizedNames: ["vivid"]
     ),
+    IncompatibleAppSignature(
+        displayName: "DisplayBuddy",
+        bundleIdentifiers: [],
+        normalizedNames: ["displaybuddy"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "Gamma Control",
+        bundleIdentifiers: [],
+        normalizedNames: ["gammacontrol"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "QuickShade",
+        bundleIdentifiers: [],
+        normalizedNames: ["quickshade"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "Shady",
+        bundleIdentifiers: [],
+        normalizedNames: ["shady"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "Iris",
+        bundleIdentifiers: ["com.iristech.Iris", "com.iristech.IrisMini"],
+        normalizedNames: ["iris", "irismini"]
+    ),
 ]
 
 private func normalizedApplicationName(_ name: String) -> String {
