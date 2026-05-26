@@ -127,20 +127,18 @@ func isDeviceSupported() -> Bool {
     return false
 }
 
-func getDeviceMaxBrightness() -> Float {
-    if let device = getModelIdentifier(),
-        sdr600nitsDevices.contains(device)
-    {
-        return 1.535
-    }
-    return 1.59
-}
-
-func getScreenRefGamma(_ screen: NSScreen) -> Float {
+// Reference bonus gamma for a max EDR value
+func getScreenRefGamma(_ screen: NSScreen) -> (Float, Float) {
     if let displayId = screen.displayId, CGDisplayIsBuiltin(displayId) != 0 {
-        return getDeviceMaxBrightness()
+        if let device = getModelIdentifier(),
+            sdr600nitsDevices.contains(device)
+        {
+            return (2.66, 0.50)
+        }
+        return (3.2, 0.59)
     }
-    return 1.6
+    // Studio/Pro Display XDR
+    return (2.66, 0.6)
 }
 
 func getStoreKitErrorMessage(_ error: StoreKitError) -> String {

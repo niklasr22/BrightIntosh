@@ -10,9 +10,6 @@ import KeyboardShortcuts
 
 @MainActor
 class StatusBarMenu : NSObject, NSMenuDelegate {
-    // Store reference to slider container for resizing
-    private var sliderContainerViewRef: NSView?
-    
     private var supportedDevice: Bool = false
     private var automationManager: AutomationManager
     private var settingsWindowController: SettingsWindowController
@@ -22,11 +19,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var statusItem: NSStatusItem?
     private var hdrCooldownToastPanel: NSWindow?
     private var hdrCooldownToastDismissWorkItem: DispatchWorkItem?
-    /// Observer token; `nonisolated(unsafe)` so `deinit` can remove it (token is safe to pass to `removeObserver`).
+    
     nonisolated(unsafe) private var hdrCooldownObserver: NSObjectProtocol?
     nonisolated(unsafe) private var hdrCooldownEndObserver: NSObjectProtocol?
     
-    /// Displays currently in the HDR retry sleep (mirrors `GammaTechnique.displaysPendingHDRRetry` via notifications).
     private var hdrCooldownMenuDisplayIds: Set<CGDirectDisplayID> = []
     private var hdrCooldownMenuEndDates: [CGDirectDisplayID: Date] = [:]
     private var hdrCooldownMenuSeconds: Int = 30
@@ -40,8 +36,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var toggleTimerItem: NSMenuItem!
     private var toggleIncreasedBrightnessItem: NSMenuItem!
     private var trialExpiredItem: NSMenuItem!
-    private var brightnessSlider: NSSlider!
-    private var brightnessValueDisplay: NSTextField!
     private var unsupportedDeviceItem: NSMenuItem!
     
     private var remainingTimePoller: Timer?
@@ -75,11 +69,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         titleItem.image = NSImage(named: "LogoLG")
         titleItem.image?.size = CGSize(width: 28, height: 28)
         
-        let brightnessSliderElements = createBrightnessSliderItem()
-        let brightnessSliderItem = brightnessSliderElements.0
-        brightnessSlider = brightnessSliderElements.1
-        brightnessValueDisplay = brightnessSliderElements.2
-        
         toggleIncreasedBrightnessItem = NSMenuItem(title: "", action: #selector(callToggleBrightIntosh), keyEquivalent: "")
         toggleIncreasedBrightnessItem.setShortcut(for: .toggleBrightIntosh)
         toggleIncreasedBrightnessItem.target = self
@@ -108,9 +97,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             menu.addItem(toggleTimerItem!)
         }
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: String(localized: "Brightness:"), action: nil, keyEquivalent: ""))
-        menu.addItem(brightnessSliderItem)
-        menu.addItem(NSMenuItem.separator())
         menu.addItem(settingsItem)
         menu.addItem(helpItem)
         menu.addItem(aboutUsItem)
@@ -138,10 +124,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
                 self.hdrCooldownMenuEndDates.removeAll()
                 self.stopHDRCooldownMenuRefreshTimer()
             }
-            self.updateMenu()
-        }
-        
-        BrightIntoshSettings.shared.addListener(setting: "brightness") {
             self.updateMenu()
         }
         
@@ -301,20 +283,27 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     private func reconcileHDRCooldownMenuItems() {
-        for item in menu.items where item.tag == Self.hdrCooldownMenuSeparatorTag || item.tag == Self.hdrCooldownMenuInfoTag {
-            menu.removeItem(item)
+        let remainingSeconds = currentHDRCooldownRemainingSeconds()
+        let infoTitle = String(format: String(localized: "Awaiting macOS EDR mode (%llds)"), Int64(remainingSeconds))
+        
+        guard !hdrCooldownMenuDisplayIds.isEmpty else {
+            for item in menu.items where item.tag == Self.hdrCooldownMenuSeparatorTag || item.tag == Self.hdrCooldownMenuInfoTag {
+                menu.removeItem(item)
+            }
+            return
         }
-        guard !hdrCooldownMenuDisplayIds.isEmpty else { return }
+        
+        if let info = menu.items.first(where: { $0.tag == Self.hdrCooldownMenuInfoTag }) {
+            info.title = infoTitle
+            return
+        }
+        
         guard let titleIdx = menu.items.firstIndex(where: { $0 === titleItem }) else { return }
         
         let separator = NSMenuItem.separator()
         separator.tag = Self.hdrCooldownMenuSeparatorTag
-        let remainingSeconds = currentHDRCooldownRemainingSeconds()
-        let info = NSMenuItem(
-            title: String(format: String(localized: "Awaiting macOS EDR mode (%llds)"), Int64(remainingSeconds)),
-            action: nil,
-            keyEquivalent: ""
-        )
+        
+        let info = NSMenuItem(title: infoTitle, action: nil, keyEquivalent: "")
         info.tag = Self.hdrCooldownMenuInfoTag
         info.isEnabled = false
         info.image = NSImage(systemSymbolName: "timer", accessibilityDescription: String(localized: "HDR retry wait"))
@@ -531,67 +520,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: workItem)
     }
     
-    private func createBrightnessSliderItem() -> (NSMenuItem, NSSlider, NSTextField) {
-        let brightnessSliderItem = NSMenuItem()
-
-        let minWidth = menu.minimumWidth
-        let containerHeight: CGFloat = 30.0
-        let sliderContainerView = NSView(frame: NSRect(x: 0, y: 0, width: minWidth, height: containerHeight))
-        self.sliderContainerViewRef = sliderContainerView
-
-        let brightnessSlider = if #available(macOS 26.0, *) {
-            NSSlider(value: Double(BrightIntoshSettings.shared.brightness), minValue: 0.0, maxValue: 1.0, target: self, action: #selector(brightnessSliderMoved))
-        } else {
-            StyledSlider(value: Double(BrightIntoshSettings.shared.brightness), minValue: 0.0, maxValue: 1.0, target: self, action: #selector(brightnessSliderMoved))
-        }
-        brightnessSlider.target = self
-        sliderContainerView.addSubview(brightnessSlider)
-
-        let brightnessValueDisplay = NSTextField(string: "100%")
-        brightnessValueDisplay.alignment = .right
-        brightnessValueDisplay.isEditable = false
-        brightnessValueDisplay.isBordered = false
-        brightnessValueDisplay.isSelectable = false
-        brightnessValueDisplay.drawsBackground = false
-        sliderContainerView.addSubview(brightnessValueDisplay)
-
-        layoutSliderAndValueDisplay(in: sliderContainerView)
-        brightnessSliderItem.view = sliderContainerView
-        return (brightnessSliderItem, brightnessSlider, brightnessValueDisplay)
-    }
-
-    private func updateSliderContainerWidth() {
-        guard let sliderContainerView = self.sliderContainerViewRef else { return }
-        let menuWidth = max(menu.size.width, menu.minimumWidth)
-        var frame = sliderContainerView.frame
-        frame.size.width = menuWidth
-        sliderContainerView.frame = frame
-
-        layoutSliderAndValueDisplay(in: sliderContainerView)
-    }
-
-    private func layoutSliderAndValueDisplay(in container: NSView) {
-        let horizontalOffset = 15.0
-        var valueX = 0.0
-        if let brightnessValueDisplay = container.subviews.first(where: { $0 is NSTextField }) as? NSTextField {
-            let valueFont = brightnessValueDisplay.font ?? NSFont.systemFont(ofSize: NSFont.systemFontSize)
-            let maxValueString = "100%" as NSString
-            let valueAttributes: [NSAttributedString.Key: Any] = [.font: valueFont]
-            let valueSize = maxValueString.size(withAttributes: valueAttributes)
-            let valueWidth = ceil(valueSize.width) + 5.0
-            let valueHeight = ceil(valueSize.height)
-            valueX = container.frame.width - horizontalOffset - valueWidth
-            let valueY = (container.frame.height - valueHeight) / 2.0
-            brightnessValueDisplay.frame = NSRect(x: valueX, y: valueY, width: valueWidth, height: valueHeight)
-        }
-        let sliderWidth = valueX - horizontalOffset * 2.0
-        let sliderHeight = 30.0
-        let sliderY = (container.frame.height - sliderHeight) / 2
-        if let brightnessSlider = container.subviews.first(where: { $0 is NSSlider }) as? NSSlider {
-            brightnessSlider.frame = NSRect(x: horizontalOffset, y: sliderY, width: sliderWidth, height: sliderHeight)
-        }
-    }
-    
     func updateMenu() {
         guard let statusItem else { return }
         
@@ -618,9 +546,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             menu.removeItem(toggleTimerItem!)
         }
         
-        brightnessSlider.floatValue = BrightIntoshSettings.shared.brightness
-        brightnessValueDisplay.stringValue = "\(Int(round(brightnessSlider.getNormalizedSliderValue() * 100.0)))%"
-        
         trialExpiredItem.isHidden = Authorizer.shared.isAllowed()
         
         unsupportedDeviceItem.isHidden = isSetupSupported()
@@ -644,10 +569,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     @objc func exitBrightIntosh() {
         exit(0)
-    }
-    
-    @objc func brightnessSliderMoved(slider: NSSlider) {
-        BrightIntoshSettings.shared.brightness = slider.floatValue
     }
     
     @objc func openSettings() {
@@ -718,7 +639,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         startTimePollerIfApplicable()
         startHDRCooldownMenuRefreshTimerIfNeeded()
         updateMenu()
-        updateSliderContainerWidth()
     }
     
     func startTimePollerIfApplicable() {

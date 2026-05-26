@@ -106,15 +106,10 @@ class EntitlementHandler: ObservableObject {
             try await AppTransaction.shared
         }
         if case .verified(let appTransaction) = shared {
-            // Hard-code the major version number in which the app's business model changed.
-            let newBusinessModelMajorVersion = "3"
-
-            let versionComponents = appTransaction.originalAppVersion.split(separator: ".")
-            let originalMajorVersion = versionComponents[0]
             print("Original Application Version: \(appTransaction.originalAppVersion)")
             print("Original Purchase Date: \(appTransaction.originalPurchaseDate)")
 
-            if originalMajorVersion < newBusinessModelMajorVersion {
+            if appTransaction.originalAppVersion.isAppVersion(earlierThan: legacyPurchaseEntitlementOriginalPurchaseVersionCutoff) {
                 return true
             }
         } else if case .unverified(_, let verificationError) = shared {

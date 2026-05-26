@@ -14,30 +14,14 @@ import Foundation
     BrightIntoshSettings.shared.brightintoshActive = active
 }
 
-@MainActor func setBrightnessOffsetCli() {
-    if CommandLine.argc <= 3 {
-        print("Usage: brightintosh set <0-100>")
-        return
-    }
-    guard let brightnessValue = Int(CommandLine.arguments[3]), brightnessValue <= 100, brightnessValue >= 0 else {
-        print("Usage: brightintosh set <0-100>")
-        return
-    }
-    BrightIntoshSettings.shared.cliBrightness = max(0.0, min(1.0, Float(brightnessValue) / 100.0))
-}
-
 @MainActor func statusCli() {
     let status = BrightIntoshSettings.shared.brightintoshActive
-    let brightness = BrightIntoshSettings.shared.brightness
-    let brightnessPercentage = Int(round(brightness * 100.0))
     print("Status: \(status ? "Enabled" : "Disabled")")
-    print("Brightness: \(brightnessPercentage)")
 }
 
 enum CliCommand: String, CaseIterable {
     case enable = "enable"
     case disable = "disable"
-    case set = "set"
     case status = "status"
     case toggle = "toggle"
     case help = "help"
@@ -55,7 +39,6 @@ Note: This CLI is additional and does require the main app to be running.
 Commands:
   enable       Enable BrightIntosh
   disable      Disable BrightIntosh
-  set <value>  Set maximum additional brightness (0-100)
   status       Show current status and brightness
   toggle       Toggle BrightIntosh on/off
   help         Show this help message
@@ -89,8 +72,6 @@ func helpCli() {
             setActiveStateCli(active: true)
         case .disable:
             setActiveStateCli(active: false)
-        case .set:
-            setBrightnessOffsetCli()
         case .status:
             statusCli()
         case .help:

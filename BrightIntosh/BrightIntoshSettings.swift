@@ -12,10 +12,6 @@ extension UserDefaults {
     @objc dynamic var active: Bool {
         return bool(forKey: "active")
     }
-    
-    @objc dynamic var cliBrightness: Float {
-        return float(forKey: "cliBrightness")
-    }
 }
 
 @MainActor
@@ -62,27 +58,33 @@ class BrightIntoshSettings {
         }
     }
     
+    public var useAlternateBrightnessBackend: Bool = BrightIntoshSettings.getUserDefault(key: "useAlternateBrightnessBackend", defaultValue: false) {
+        didSet {
+            BrightIntoshSettings.defaults.setValue(useAlternateBrightnessBackend, forKey: "useAlternateBrightnessBackend")
+            callListeners(setting: "useAlternateBrightnessBackend")
+        }
+    }
+    
+    public var waitForHDRBeforeIncreasingBrightness: Bool = BrightIntoshSettings.getUserDefault(key: "waitForHDRBeforeIncreasingBrightness", defaultValue: false) {
+        didSet {
+            BrightIntoshSettings.defaults.setValue(waitForHDRBeforeIncreasingBrightness, forKey: "waitForHDRBeforeIncreasingBrightness")
+            callListeners(setting: "waitForHDRBeforeIncreasingBrightness")
+        }
+    }
+    
+    public var dismissedBrightnessSliderRemovalHint: Bool = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false) {
+        didSet {
+            BrightIntoshSettings.defaults.setValue(dismissedBrightnessSliderRemovalHint, forKey: "dismissedBrightnessSliderRemovalHint")
+            callListeners(setting: "dismissedBrightnessSliderRemovalHint")
+        }
+    }
+    
     public var hideMenuBarItem: Bool = BrightIntoshSettings.getUserDefault(key: "hideMenuBarItem", defaultValue: false) {
         didSet {
             BrightIntoshSettings.defaults.setValue(hideMenuBarItem, forKey: "hideMenuBarItem")
             callListeners(setting: "hideMenuBarItem")
         }
     }
-
-    public var brightness: Float = BrightIntoshSettings.getUserDefault(key: "brightness", defaultValue: 1.0) {
-        didSet {
-            BrightIntoshSettings.defaults.setValue(brightness, forKey: "brightness")
-            callListeners(setting: "brightness")
-        }
-    }
-    
-    public var cliBrightness: Float = BrightIntoshSettings.getUserDefault(key: "cliBrightness", defaultValue: 1.0) {
-        didSet {
-            BrightIntoshSettings.defaults.setValue(cliBrightness, forKey: "cliBrightness")
-            callListeners(setting: "cliBrightness")
-        }
-    }
-    
     
     public var batteryAutomation: Bool = BrightIntoshSettings.getUserDefault(key: "batteryAutomation", defaultValue: false) {
         didSet {
@@ -151,19 +153,11 @@ class BrightIntoshSettings {
         // Load launch at login status
         launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
         migrateUserDefaultsToAppGroups();
-        migrateBrightnessToPercentage();
         
         activeObserver = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (defaults, change) in
             Task { @MainActor in
                 if let newValue = change.newValue, newValue != self.brightintoshActive {
                     self.brightintoshActive = newValue;
-                }
-            }
-        })
-        cliBrightnessObserver = BrightIntoshSettings.defaults.observe(\.cliBrightness, options: [.new], changeHandler: { (defaults, change) in
-            Task { @MainActor in
-                if let newValue = change.newValue, self.brightness != newValue {
-                    self.brightness = newValue;
                 }
             }
         })
@@ -175,8 +169,10 @@ class BrightIntoshSettings {
         brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.getUserDefault(key: "brightIntoshOnlyOnBuiltIn", defaultValue: false)
         disableWhenLidClosed = BrightIntoshSettings.getUserDefault(key: "disableWhenLidClosed", defaultValue: false)
         showHDRRetryCooldownNotice = BrightIntoshSettings.getUserDefault(key: "showHDRRetryCooldownNotice", defaultValue: true)
+        useAlternateBrightnessBackend = BrightIntoshSettings.getUserDefault(key: "useAlternateBrightnessBackend", defaultValue: false)
+        waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.getUserDefault(key: "waitForHDRBeforeIncreasingBrightness", defaultValue: false)
+        dismissedBrightnessSliderRemovalHint = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false)
         hideMenuBarItem = BrightIntoshSettings.getUserDefault(key: "hideMenuBarItem", defaultValue: false)
-        brightness = BrightIntoshSettings.getUserDefault(key: "brightness", defaultValue: getDeviceMaxBrightness())
         batteryAutomation = BrightIntoshSettings.getUserDefault(key: "batteryAutomation", defaultValue: false)
         batteryAutomationThreshold = BrightIntoshSettings.getUserDefault(key: "batteryAutomationThreshold", defaultValue: 50)
         powerAdapterAutomation = BrightIntoshSettings.getUserDefault(key: "powerAdapterAutomation", defaultValue: false)
@@ -210,13 +206,6 @@ class BrightIntoshSettings {
             BrightIntoshSettings.defaults.set(true, forKey: didMigrateToAppGroups)
             refreshState();
             print("Successfully migrated defaults")
-        }
-    }
-
-    /// Migrate brightness to percentage (0-100), as the previous value was a float between 1.0 and getDeviceMaxBrightness().
-    private func migrateBrightnessToPercentage() {
-        if brightness > 1.0 {
-            brightness = (brightness-1) / (getDeviceMaxBrightness()-1)
         }
     }
 }

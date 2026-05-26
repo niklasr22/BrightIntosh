@@ -78,17 +78,20 @@ class BrightnessManager {
             }
         }
         
-        BrightIntoshSettings.shared.addListener(setting: "brightness") {
-            print("Set brightness to \(BrightIntoshSettings.shared.brightness)")
-            self.brightnessTechnique?.adjustBrightness()
-        }
-        
         BrightIntoshSettings.shared.addListener(setting: "brightIntoshOnlyOnBuiltIn") {
             self.handlePotentialScreenUpdate()
         }
 
         BrightIntoshSettings.shared.addListener(setting: "disableWhenLidClosed") {
             self.handlePotentialScreenUpdate()
+        }
+        
+        BrightIntoshSettings.shared.addListener(setting: "useAlternateBrightnessBackend") {
+            self.setBrightnessTechnique()
+        }
+        
+        BrightIntoshSettings.shared.addListener(setting: "waitForHDRBeforeIncreasingBrightness") {
+            self.refreshActiveBrightnessTechnique()
         }
     }
     
@@ -103,8 +106,17 @@ class BrightnessManager {
     
     func setBrightnessTechnique() {
         brightnessTechnique?.disable()
-        brightnessTechnique = GammaTechnique()
-        print("Activated Gamma Technique")
+        let shouldUseAlternateBackend = BrightIntoshSettings.shared.useAlternateBrightnessBackend
+        if shouldUseAlternateBackend {
+            brightnessTechnique = MultiplyingOverlayTechnique()
+        } else {
+            brightnessTechnique = GammaTechnique()
+        }
+        print("Activated \(shouldUseAlternateBackend ? "alternate" : "standard") brightness backend")
+        
+        if enabled && BrightIntoshSettings.shared.brightintoshActive {
+            enableExtraBrightness()
+        }
     }
     
     @MainActor @objc func handleScreenParameters(notification: Notification) {
@@ -179,14 +191,19 @@ class BrightnessManager {
     
     @MainActor
     private func enableExtraBrightness() {
-        // Put brightness value into bounds (0-1), as earlier versions allowed storing higher brightness values.
-        let safeBrightness = max(0.0, min(1.0, BrightIntoshSettings.shared.brightness))
-        
-        if safeBrightness != BrightIntoshSettings.shared.brightness {
-            BrightIntoshSettings.shared.brightness = safeBrightness
-        }
         self.brightnessTechnique?.enable()
     }
+    
+    @MainActor
+    private func refreshActiveBrightnessTechnique() {
+        guard enabled, BrightIntoshSettings.shared.brightintoshActive else {
+            return
+        }
+        
+        xdrScreens = getXDRDisplays()
+        brightnessTechnique?.screenUpdate(screens: xdrScreens)
+    }
+    
     @MainActor
     private func scheduleDebouncedScreenUpdate() {
         screenUpdateDebounceTask?.cancel()
