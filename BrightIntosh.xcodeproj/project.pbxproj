@@ -35,8 +35,6 @@
 		9C5610512ABF55A90066D6C9 /* BrightIntoshSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C56104F2ABF55A90066D6C9 /* BrightIntoshSettings.swift */; };
 		9C59653A2C8CCE9500BFC9A6 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
 		9C5965402C8DBB2F00BFC9A6 /* EntitlementHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */; };
-		9CABC0022F60000000ABCDEF /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0012F60000000ABCDEF /* AppVersion.swift */; };
-		9CABC0032F60000000ABCDEF /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0012F60000000ABCDEF /* AppVersion.swift */; };
 		9C8803762A72625E00476017 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94512A5EF20E00FA285F /* AppDelegate.swift */; };
 		9C8803772A72625E00476017 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D044EA2A60205E0022B970 /* OverlayWindow.swift */; };
 		9C88037A2A72625E00476017 /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DF94502A5EF20E00FA285F /* Overlay.swift */; };
@@ -49,6 +47,12 @@
 		9CA026552AC96B260068CC74 /* BrightnessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA026502AC9647E0068CC74 /* BrightnessManager.swift */; };
 		9CA8FECD2E0707CA00D8525A /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8FECC2E0707B800D8525A /* Authorizer.swift */; };
 		9CA8FECE2E0707CA00D8525A /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA8FECC2E0707B800D8525A /* Authorizer.swift */; };
+		9CABC0022F60000000ABCDEF /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0012F60000000ABCDEF /* AppVersion.swift */; };
+		9CABC0032F60000000ABCDEF /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0012F60000000ABCDEF /* AppVersion.swift */; };
+		9CABC0042F60000000ABCDEF /* IncompatibleAppsNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0062F60000000ABCDEF /* IncompatibleAppsNoticePresenter.swift */; };
+		9CABC0052F60000000ABCDEF /* IncompatibleAppsNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0062F60000000ABCDEF /* IncompatibleAppsNoticePresenter.swift */; };
+		9CABC0072F60000000ABCDEF /* IncompatibleAppsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0092F60000000ABCDEF /* IncompatibleAppsMonitor.swift */; };
+		9CABC0082F60000000ABCDEF /* IncompatibleAppsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0092F60000000ABCDEF /* IncompatibleAppsMonitor.swift */; };
 		9CCAC9372C3AF53B00B105D1 /* EntitlementHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */; };
 		9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
 		9CDE33C52B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
@@ -150,6 +154,8 @@
 		9CA026522AC968430068CC74 /* BrightnessTechnique.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessTechnique.swift; sourceTree = "<group>"; };
 		9CA8FECC2E0707B800D8525A /* Authorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorizer.swift; sourceTree = "<group>"; };
 		9CABC0012F60000000ABCDEF /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
+		9CABC0062F60000000ABCDEF /* IncompatibleAppsNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncompatibleAppsNoticePresenter.swift; sourceTree = "<group>"; };
+		9CABC0092F60000000ABCDEF /* IncompatibleAppsMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncompatibleAppsMonitor.swift; sourceTree = "<group>"; };
 		9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntitlementHandler.swift; sourceTree = "<group>"; };
 		9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorePurchasesButton.swift; sourceTree = "<group>"; };
@@ -235,6 +241,7 @@
 			children = (
 				9C534ACA2ACB2A050029E050 /* Alerts.swift */,
 				9C1C8BEC2C8B817B00754474 /* BrightIntoshStore.swift */,
+				9CABC0062F60000000ABCDEF /* IncompatibleAppsNoticePresenter.swift */,
 				C1DF94502A5EF20E00FA285F /* Overlay.swift */,
 				9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */,
 				9C41636F2AB7198B005B34B6 /* SettingsWindow.swift */,
@@ -287,6 +294,7 @@
 				9C4163782ABD8FBD005B34B6 /* Constants.swift */,
 				9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */,
 				9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */,
+				9CABC0092F60000000ABCDEF /* IncompatibleAppsMonitor.swift */,
 				C1D044EA2A60205E0022B970 /* OverlayWindow.swift */,
 				9C56104F2ABF55A90066D6C9 /* BrightIntoshSettings.swift */,
 				9C1C8BE92C8B4FC000754474 /* Trial.swift */,
@@ -471,6 +479,8 @@
 				9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */,
 				9C534AC92ACB06210029E050 /* AutomationManager.swift in Sources */,
 				9CDE33C62B4317D70085F786 /* Utils.swift in Sources */,
+				9CABC0052F60000000ABCDEF /* IncompatibleAppsNoticePresenter.swift in Sources */,
+				9CABC0082F60000000ABCDEF /* IncompatibleAppsMonitor.swift in Sources */,
 				9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */,
 				9C8FA26C2AB058310049C0D1 /* WelcomeWindow.swift in Sources */,
 				9C8803762A72625E00476017 /* AppDelegate.swift in Sources */,
@@ -508,6 +518,8 @@
 				9C534AC82ACB06210029E050 /* AutomationManager.swift in Sources */,
 				9C1C8BEA2C8B4FC000754474 /* Trial.swift in Sources */,
 				9CDE33C52B4317D70085F786 /* Utils.swift in Sources */,
+				9CABC0042F60000000ABCDEF /* IncompatibleAppsNoticePresenter.swift in Sources */,
+				9CABC0072F60000000ABCDEF /* IncompatibleAppsMonitor.swift in Sources */,
 				9CA026512AC9647E0068CC74 /* BrightnessManager.swift in Sources */,
 				9CA026532AC968430068CC74 /* BrightnessTechnique.swift in Sources */,
 				C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */,
