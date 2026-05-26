@@ -58,6 +58,14 @@ class BrightIntoshSettings {
         }
     }
     
+    /// Banner when another running app may interfere with BrightIntosh display control.
+    public var showIncompatibleAppsNotice: Bool = BrightIntoshSettings.getUserDefault(key: "showIncompatibleAppsInterferenceNotice", defaultValue: true) {
+        didSet {
+            BrightIntoshSettings.defaults.setValue(showIncompatibleAppsNotice, forKey: "showIncompatibleAppsInterferenceNotice")
+            callListeners(setting: "showIncompatibleAppsNotice")
+        }
+    }
+    
     public var useAlternateBrightnessBackend: Bool = BrightIntoshSettings.getUserDefault(key: "useAlternateBrightnessBackend", defaultValue: false) {
         didSet {
             BrightIntoshSettings.defaults.setValue(useAlternateBrightnessBackend, forKey: "useAlternateBrightnessBackend")
@@ -169,6 +177,7 @@ class BrightIntoshSettings {
         brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.getUserDefault(key: "brightIntoshOnlyOnBuiltIn", defaultValue: false)
         disableWhenLidClosed = BrightIntoshSettings.getUserDefault(key: "disableWhenLidClosed", defaultValue: false)
         showHDRRetryCooldownNotice = BrightIntoshSettings.getUserDefault(key: "showHDRRetryCooldownNotice", defaultValue: true)
+        showIncompatibleAppsNotice = BrightIntoshSettings.getUserDefault(key: "showIncompatibleAppsInterferenceNotice", defaultValue: true)
         useAlternateBrightnessBackend = BrightIntoshSettings.getUserDefault(key: "useAlternateBrightnessBackend", defaultValue: false)
         waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.getUserDefault(key: "waitForHDRBeforeIncreasingBrightness", defaultValue: false)
         dismissedBrightnessSliderRemovalHint = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false)

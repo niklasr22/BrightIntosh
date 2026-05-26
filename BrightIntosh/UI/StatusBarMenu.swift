@@ -17,8 +17,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     @objc private var toggleBrightIntosh: () -> ()
     
     private var statusItem: NSStatusItem?
-    private var hdrCooldownToastPanel: NSWindow?
-    private var hdrCooldownToastDismissWorkItem: DispatchWorkItem?
     
     nonisolated(unsafe) private var hdrCooldownObserver: NSObjectProtocol?
     nonisolated(unsafe) private var hdrCooldownEndObserver: NSObjectProtocol?
@@ -154,9 +152,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
                 }
                 self?.startHDRCooldownMenuRefreshTimerIfNeeded()
                 self?.updateMenu()
-                if BrightIntoshSettings.shared.showHDRRetryCooldownNotice {
-                    self?.presentHDRCooldownToast(cooldownSeconds: seconds, displayID: displayID)
-                }
             }
         }
         
@@ -188,6 +183,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     private static let hdrCooldownMenuSeparatorTag = 9_001
     private static let hdrCooldownMenuInfoTag = 9_002
+    private static let incompatibleAppsMenuSeparatorTag = 9_003
+    private static let incompatibleAppsMenuInfoTag = 9_004
     private static let timerDurationMinutes = Array(stride(from: 10, to: 51, by: 10)) + Array(stride(from: 60, to: 300, by: 30))
     
     private func createTimerDurationSubmenu() -> NSMenu {
@@ -314,210 +311,46 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         menu.insertItem(info, at: titleIdx + 2)
     }
     
-    private func createStatusBarItem() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        statusItem?.menu = menu
+    private func incompatibleAppsTitle(_ apps: [IncompatibleRunningApp]) -> String {
+        apps.map(\.displayName).joined(separator: ", ")
     }
     
-    private func dismissHDRCooldownToast() {
-        hdrCooldownToastDismissWorkItem?.cancel()
-        hdrCooldownToastDismissWorkItem = nil
-        hdrCooldownToastPanel?.orderOut(nil)
-        hdrCooldownToastPanel = nil
-    }
-    
-    @objc private func hdrCooldownToastCloseClicked(_ sender: NSButton) {
-        if NSApp.currentEvent?.modifierFlags.contains(.option) == true {
-            BrightIntoshSettings.shared.showHDRRetryCooldownNotice = false
-        }
-        dismissHDRCooldownToast()
-    }
-    
-    @objc fileprivate func hdrCooldownToastDisableFromContextMenu(_ sender: NSMenuItem) {
-        BrightIntoshSettings.shared.showHDRRetryCooldownNotice = false
-        dismissHDRCooldownToast()
-    }
-    
-    /// Resolves on-screen frame before creating a window so we never dismiss an existing toast unless the new one can be shown.
-    private func frameForHDRCooldownToast(contentSize: NSSize, displayID: CGDirectDisplayID?) -> NSRect? {
-        let margin: CGFloat = 12
-        let gapFromTop: CGFloat = 16
-        let targetScreen = displayID.flatMap { id in NSScreen.screens.first { $0.displayId == id } }
-        if let screen = targetScreen {
-            let vf = screen.visibleFrame
-            var originX = vf.midX - contentSize.width / 2
-            let originY = vf.maxY - gapFromTop - contentSize.height
-            originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
-            return NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height)
-        }
-        if let statusItem, let button = statusItem.button, let anchorWindow = button.window,
-           !BrightIntoshSettings.shared.hideMenuBarItem {
-            let buttonRectOnScreen = anchorWindow.convertToScreen(button.convert(button.bounds, to: nil))
-            var originX = buttonRectOnScreen.midX - contentSize.width / 2
-            let originY = buttonRectOnScreen.minY - 10 - contentSize.height
-            if let screen = anchorWindow.screen ?? NSScreen.main {
-                let vf = screen.visibleFrame
-                originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
+    private func reconcileIncompatibleAppsMenuItems() {
+        let incompatibleApps = runningIncompatibleApps()
+        
+        guard !incompatibleApps.isEmpty else {
+            for item in menu.items where item.tag == Self.incompatibleAppsMenuSeparatorTag || item.tag == Self.incompatibleAppsMenuInfoTag {
+                menu.removeItem(item)
             }
-            return NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height)
-        }
-        if let screen = NSScreen.main {
-            let vf = screen.visibleFrame
-            var originX = vf.midX - contentSize.width / 2
-            let originY = vf.maxY - gapFromTop - contentSize.height
-            originX = min(max(originX, vf.minX + margin), vf.maxX - contentSize.width - margin)
-            return NSRect(x: originX, y: originY, width: contentSize.width, height: contentSize.height)
-        }
-        return nil
-    }
-    
-    /// Frosted banner on the display that entered cooldown. Stays visible when clicking the desktop (does not hide on deactivate). Only the close button or auto-dismiss clears it.
-    private func presentHDRCooldownToast(cooldownSeconds: Int, displayID: CGDirectDisplayID?) {
-        guard BrightIntoshSettings.shared.showHDRRetryCooldownNotice else { return }
-        
-        let message = String(
-            localized: "macOS is temporarily limiting the display's maximum brightness. Brightintosh will restore the boost in approx. \(cooldownSeconds) seconds once the system allows it."
-        )
-        let font = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
-        let panelWidth: CGFloat = 280
-        let horizontalPadding: CGFloat = 14
-        let verticalPadding: CGFloat = 12
-        let iconSide: CGFloat = 16
-        let iconTextGap: CGFloat = 8
-        let closeSide: CGFloat = 22
-        let closeLeadingGap: CGFloat = 6
-        let textWidth = panelWidth - horizontalPadding * 2 - iconSide - iconTextGap - closeLeadingGap - closeSide
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.lineBreakMode = .byWordWrapping
-        let attributes: [NSAttributedString.Key: Any] = [.font: font, .paragraphStyle: paragraph]
-        let textRect = (message as NSString).boundingRect(
-            with: NSSize(width: textWidth, height: 10_000),
-            options: [.usesLineFragmentOrigin, .usesFontLeading],
-            attributes: attributes,
-            context: nil
-        )
-        let contentHeight = ceil(textRect.height) + verticalPadding * 2
-        let contentSize = NSSize(width: panelWidth, height: contentHeight)
-        
-        guard let toastFrame = frameForHDRCooldownToast(contentSize: contentSize, displayID: displayID) else {
-            print("HDR cooldown toast: no placement (no NSScreen.main / no target); keeping any existing toast")
             return
         }
         
-        dismissHDRCooldownToast()
+        let appList = incompatibleAppsTitle(incompatibleApps)
+        let infoTitle = String(localized: "Potential conflict: \(appList)")
         
-        let panel = NSPanel(
-            contentRect: NSRect(origin: .zero, size: contentSize),
-            styleMask: [.hudWindow, .borderless, .nonactivatingPanel],
-            backing: .buffered,
-            defer: false
-        )
-        
-        panel.backgroundColor = .clear
-        panel.hasShadow = true
-        // Slightly above default status-bar level so the toast isn’t covered; still a floating non-activating panel.
-        panel.level = NSWindow.Level(rawValue: NSWindow.Level.statusBar.rawValue + 2)
-        panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
-        panel.ignoresMouseEvents = false
-        panel.isReleasedWhenClosed = false
-        panel.hidesOnDeactivate = false
-        panel.isFloatingPanel = true
-        panel.becomesKeyOnlyIfNeeded = true
-        panel.isMovableByWindowBackground = false
-        
-        var effect: NSView!
-        
-        if #available(macOS 26.0, *) {
-            let glass = NSGlassEffectView()
-            glass.cornerRadius = 20.0
-            glass.frame = NSRect(origin: .zero, size: contentSize)
-            glass.autoresizingMask = [.width, .height]
-            effect = glass
-        } else {
-            panel.hasShadow = false
-            let fallback = NSVisualEffectView(frame: NSRect(origin: .zero, size: contentSize))
-            fallback.autoresizingMask = [.width, .height]
-            fallback.material = .popover
-            fallback.blendingMode = .behindWindow
-            fallback.state = .active
-            fallback.wantsLayer = true
-            fallback.layer?.cornerRadius = 16
-            if #available(macOS 11.0, *) {
-                fallback.layer?.cornerCurve = .continuous
-            }
-            effect = fallback
+        if let info = menu.items.first(where: { $0.tag == Self.incompatibleAppsMenuInfoTag }) {
+            info.title = infoTitle
+            info.toolTip = String(localized: "\(appList) may also control display brightness or color and interfere with BrightIntosh.")
+            return
         }
         
-        let symbolConfig = NSImage.SymbolConfiguration(pointSize: iconSide - 2, weight: .medium)
-        let timerImage = NSImage(systemSymbolName: "timer", accessibilityDescription: String(localized: "Short wait"))?
-            .withSymbolConfiguration(symbolConfig)
-        let iconView = NSImageView()
-        iconView.image = timerImage
-        iconView.imageScaling = .scaleProportionallyDown
-        iconView.contentTintColor = .secondaryLabelColor
-        iconView.translatesAutoresizingMaskIntoConstraints = false
+        guard let titleIdx = menu.items.firstIndex(where: { $0 === titleItem }) else { return }
         
-        let label = NSTextField(wrappingLabelWithString: message)
-        label.font = font
-        label.textColor = .labelColor
-        label.alignment = .natural
-        label.preferredMaxLayoutWidth = textWidth
-        label.isEditable = false
-        label.isSelectable = false
-        label.refusesFirstResponder = true
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        label.setContentCompressionResistancePriority(.required, for: .vertical)
+        let separator = NSMenuItem.separator()
+        separator.tag = Self.incompatibleAppsMenuSeparatorTag
         
-        let closeConfig = NSImage.SymbolConfiguration(pointSize: 11, weight: .medium)
-        let closeImage = NSImage(systemSymbolName: "xmark", accessibilityDescription: String(localized: "Dismiss notice"))?
-            .withSymbolConfiguration(closeConfig)
-        let closeButton = HDRToastCloseButton()
-        closeButton.menuTarget = self
-        closeButton.image = closeImage
-        closeButton.imagePosition = .imageOnly
-        closeButton.isBordered = false
-        closeButton.bezelStyle = .shadowlessSquare
-        closeButton.focusRingType = .none
-        closeButton.contentTintColor = .secondaryLabelColor
-        closeButton.target = self
-        closeButton.action = #selector(hdrCooldownToastCloseClicked(_:))
-        closeButton.toolTip = String(
-            localized: "Click to dismiss. Option-click to dismiss and stop showing these notices. Control-click for a menu."
-        )
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        effect.addSubview(iconView)
-        effect.addSubview(label)
-        effect.addSubview(closeButton)
-        panel.contentView = effect
-        
-        NSLayoutConstraint.activate([
-            iconView.leadingAnchor.constraint(equalTo: effect.leadingAnchor, constant: horizontalPadding),
-            iconView.centerYAnchor.constraint(equalTo: effect.centerYAnchor),
-            iconView.widthAnchor.constraint(equalToConstant: iconSide),
-            iconView.heightAnchor.constraint(equalToConstant: iconSide),
-            
-            label.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: iconTextGap),
-            label.trailingAnchor.constraint(equalTo: closeButton.leadingAnchor, constant: -closeLeadingGap),
-            label.centerYAnchor.constraint(equalTo: effect.centerYAnchor),
-            
-            closeButton.trailingAnchor.constraint(equalTo: effect.trailingAnchor, constant: -horizontalPadding + 2),
-            closeButton.centerYAnchor.constraint(equalTo: iconView.centerYAnchor),
-            closeButton.widthAnchor.constraint(equalToConstant: closeSide),
-            closeButton.heightAnchor.constraint(equalToConstant: closeSide),
-        ])
-        
-        panel.setFrame(toastFrame, display: false)
-        panel.orderFrontRegardless()
-        
-        hdrCooldownToastPanel = panel
-        
-        let workItem = DispatchWorkItem { [weak self] in
-            self?.dismissHDRCooldownToast()
-        }
-        hdrCooldownToastDismissWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: workItem)
+        let info = NSMenuItem(title: infoTitle, action: nil, keyEquivalent: "")
+        info.tag = Self.incompatibleAppsMenuInfoTag
+        info.isEnabled = false
+        info.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "Potential conflict"))
+        info.toolTip = String(localized: "\(appList) may also control display brightness or color and interfere with BrightIntosh.")
+        menu.insertItem(separator, at: titleIdx + 1)
+        menu.insertItem(info, at: titleIdx + 2)
+    }
+    
+    private func createStatusBarItem() {
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        statusItem?.menu = menu
     }
     
     func updateMenu() {
@@ -536,6 +369,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         }
         
         reconcileHDRCooldownMenuItems()
+        reconcileIncompatibleAppsMenuItems()
         
         if BrightIntoshSettings.shared.brightintoshActive {
             if !menu.items.contains(toggleTimerItem) {
@@ -653,27 +487,5 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         isOpen = false
         self.stopRemainingTimePoller()
         stopHDRCooldownMenuRefreshTimer()
-    }
-}
-
-// MARK: - HDR cooldown toast close button
-
-private final class HDRToastCloseButton: NSButton {
-    weak var menuTarget: StatusBarMenu?
-    
-    override func rightMouseDown(with event: NSEvent) {
-        guard let target = menuTarget else {
-            super.rightMouseDown(with: event)
-            return
-        }
-        let menu = NSMenu()
-        let item = NSMenuItem(
-            title: String(localized: "Don’t show this notice again"),
-            action: #selector(StatusBarMenu.hdrCooldownToastDisableFromContextMenu(_:)),
-            keyEquivalent: ""
-        )
-        item.target = target
-        menu.addItem(item)
-        NSMenu.popUpContextMenu(menu, with: event, for: self)
     }
 }

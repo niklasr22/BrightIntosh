@@ -21,6 +21,8 @@ class BrightIntoshAppDelegate: NSObject {
     private var statusBarMenu: StatusBarMenu?
     private var brightnessManager: BrightnessManager?
     private var automationManager: AutomationManager?
+    private var incompatibleAppsMonitor: IncompatibleAppsMonitor?
+    private var hdrCooldownNoticeMonitor: HDRCooldownNoticeMonitor?
     private var supportedDevice: Bool = false
     
     func addKeyListeners() {
@@ -108,6 +110,8 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
         
         brightnessManager = BrightnessManager()
         automationManager = AutomationManager()
+        incompatibleAppsMonitor = IncompatibleAppsMonitor()
+        hdrCooldownNoticeMonitor = HDRCooldownNoticeMonitor()
         statusBarMenu = StatusBarMenu(automationManager: automationManager!, settingsWindowController: settingsWindowController, toggleBrightIntosh: toggleBrightIntosh)
         
         // Register global hotkeys

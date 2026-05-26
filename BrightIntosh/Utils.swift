@@ -9,6 +9,137 @@ import IOKit
 import StoreKit
 import Cocoa
 
+struct IncompatibleRunningApp: Equatable {
+    let displayName: String
+    let bundleIdentifier: String?
+}
+
+private struct IncompatibleAppSignature {
+    let displayName: String
+    let bundleIdentifiers: Set<String>
+    let normalizedNames: Set<String>
+}
+
+private let incompatibleAppSignatures: [IncompatibleAppSignature] = [
+    IncompatibleAppSignature(
+        displayName: "f.lux",
+        bundleIdentifiers: ["org.herf.Flux"],
+        normalizedNames: ["flux", "fluxapp"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "MonitorControl",
+        bundleIdentifiers: ["me.guillaumeb.MonitorControl"],
+        normalizedNames: ["monitorcontrol"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "BetterDisplay",
+        bundleIdentifiers: ["com.github.wulkano.BetterDisplay"],
+        normalizedNames: ["betterdisplay", "betterdummy"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "Lunar",
+        bundleIdentifiers: ["fyi.lunar.Lunar"],
+        normalizedNames: ["lunar"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "Vivid",
+        bundleIdentifiers: ["com.getvivid.vivid", "com.getvivid.Vivid"],
+        normalizedNames: ["vivid"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "DisplayBuddy",
+        bundleIdentifiers: [],
+        normalizedNames: ["displaybuddy"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "Gamma Control",
+        bundleIdentifiers: [],
+        normalizedNames: ["gammacontrol"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "QuickShade",
+        bundleIdentifiers: [],
+        normalizedNames: ["quickshade"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "Shady",
+        bundleIdentifiers: [],
+        normalizedNames: ["shady"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "Iris",
+        bundleIdentifiers: ["com.iristech.Iris", "com.iristech.IrisMini"],
+        normalizedNames: ["iris", "irismini"]
+    ),
+]
+
+private func normalizedApplicationName(_ name: String) -> String {
+    name
+        .lowercased()
+        .unicodeScalars
+        .filter { CharacterSet.alphanumerics.contains($0) }
+        .map(String.init)
+        .joined()
+}
+
+private func normalizedApplicationCandidates(for app: NSRunningApplication) -> Set<String> {
+    var candidates = Set<String>()
+    
+    if let localizedName = app.localizedName {
+        candidates.insert(normalizedApplicationName(localizedName))
+    }
+    if let bundleIdentifier = app.bundleIdentifier {
+        candidates.insert(normalizedApplicationName(bundleIdentifier))
+    }
+    if let bundleName = app.bundleURL?.deletingPathExtension().lastPathComponent {
+        candidates.insert(normalizedApplicationName(bundleName))
+    }
+    if let executableName = app.executableURL?.deletingPathExtension().lastPathComponent {
+        candidates.insert(normalizedApplicationName(executableName))
+    }
+    
+    return candidates
+}
+
+@MainActor func runningIncompatibleApps() -> [IncompatibleRunningApp] {
+    let currentBundleIdentifier = Bundle.main.bundleIdentifier
+    var foundApps: [IncompatibleRunningApp] = []
+    
+    for app in NSWorkspace.shared.runningApplications {
+        guard app.bundleIdentifier != currentBundleIdentifier else { continue }
+        
+        let bundleIdentifier = app.bundleIdentifier
+        let normalizedBundleIdentifier = bundleIdentifier?.lowercased()
+        let normalizedCandidates = normalizedApplicationCandidates(for: app)
+        
+        guard let signature = incompatibleAppSignatures.first(where: { signature in
+            if let normalizedBundleIdentifier,
+               signature.bundleIdentifiers.contains(where: { $0.lowercased() == normalizedBundleIdentifier }) {
+                return true
+            }
+            if !signature.normalizedNames.isDisjoint(with: normalizedCandidates) {
+                return true
+            }
+            if normalizedCandidates.contains(where: { candidate in
+                signature.normalizedNames.contains(where: { candidate.contains($0) })
+            }) {
+                return true
+            }
+            return false
+        }) else {
+            continue
+        }
+        
+        if !foundApps.contains(where: { $0.displayName == signature.displayName }) {
+            foundApps.append(IncompatibleRunningApp(
+                displayName: signature.displayName,
+                bundleIdentifier: bundleIdentifier
+            ))
+        }
+    }
+    
+    return foundApps.sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
+}
 
 enum TimeoutError: Error {
     case timeout
@@ -202,6 +333,22 @@ func generateReport() async -> String {
         report += "Error: \(timeoutErrorMessage("Trial data lookup", seconds: timeoutSeconds))\n"
     } catch {
         report += "Error: Trial Data could not be fetched \(error.localizedDescription)\n"
+    }
+    
+    let incompatibleApps = await MainActor.run {
+        runningIncompatibleApps()
+    }
+    if incompatibleApps.isEmpty {
+        report += "Incompatible running apps: None\n"
+    } else {
+        report += "Incompatible running apps:\n"
+        for app in incompatibleApps {
+            if let bundleIdentifier = app.bundleIdentifier {
+                report += " - \(app.displayName) (\(bundleIdentifier))\n"
+            } else {
+                report += " - \(app.displayName)\n"
+            }
+        }
     }
     
     report += "Screens:\n"
