@@ -164,12 +164,11 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
     }
     
-    fileprivate func resetHDRState() {
+    /// Stops HDR polling while preserving retry cooldown deadlines across disable/enable toggles.
+    fileprivate func resetActiveHDRState() {
         hdrPollTasks.values.forEach { $0.cancel() }
         hdrPollTasks.removeAll()
         hdrReadyDisplayIds.removeAll()
-        hdrCooldownEndDates.removeAll()
-        hdrConsecutiveTimeoutCount.removeAll()
     }
     
     fileprivate func handleActiveHDRCooldown(_ displayId: CGDirectDisplayID, notify: Bool) -> Bool {
@@ -382,7 +381,7 @@ class MultiplyingOverlayTechnique: HDRLifecycleBrightnessTechnique {
     
     override func disable() {
         isEnabled = false
-        resetHDRState()
+        resetActiveHDRState()
         overlayWindowControllers.values.forEach { $0.window?.close() }
         overlayWindowControllers.removeAll()
     }
@@ -514,7 +513,7 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     
     override func disable() {
         isEnabled = false
-        resetHDRState()
+        resetActiveHDRState()
         resetGammaApplicationState()
         overlayWindowControllers.values.forEach { $0.window?.close() }
         overlayWindowControllers.removeAll()
