@@ -162,6 +162,86 @@ struct CliInstallationSheet: View {
     }
 }
 
+struct SupportReportSheet: View {
+    @Binding var isPresented: Bool
+    @State private var includeRunningApplications = true
+    @State private var report = ""
+    @State private var isGenerating = false
+    @State private var didCopy = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Support report")
+                .font(.title2)
+                .bold()
+            
+            Text("Review the report before sharing it. It includes device, display, and BrightIntosh diagnostics.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            
+            Toggle("Include running applications", isOn: $includeRunningApplications)
+                .onChange(of: includeRunningApplications) { _, _ in
+                    Task { await regenerateReport() }
+                }
+            
+            Group {
+                if isGenerating {
+                    ProgressView("Generating report…")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        Text(report)
+                            .font(.system(.caption, design: .monospaced))
+                            .textSelection(.enabled)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(10)
+                    .background(Color.black.opacity(0.85))
+                    .foregroundStyle(.white)
+                    .clipShape(.rect(cornerRadius: 12))
+                }
+            }
+            .frame(minHeight: 280, maxHeight: .infinity)
+            
+            HStack {
+                if didCopy {
+                    Text("Copied to clipboard")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Button("Copy to clipboard") {
+                    copyReport()
+                }
+                .disabled(report.isEmpty || isGenerating)
+                Button("Done") {
+                    isPresented = false
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding()
+        .frame(width: 520, height: 480)
+        .task {
+            await regenerateReport()
+        }
+    }
+    
+    private func regenerateReport() async {
+        isGenerating = true
+        didCopy = false
+        report = await generateReport(includeRunningApplications: includeRunningApplications)
+        isGenerating = false
+    }
+    
+    private func copyReport() {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(report, forType: .string)
+        didCopy = true
+    }
+}
+
 struct AdvancedSettingsSheet: View {
     @Binding var isPresented: Bool
     @Binding var useAlternateBrightnessBackend: Bool
@@ -227,6 +307,7 @@ struct BasicSettings: View {
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     
     @State private var showCliPopup = false
+    @State private var showSupportReportSheet = false
     @State private var showBrightnessSliderRemovalHint = false
     @State private var showAdvancedSettingsSheet = false
 
@@ -345,14 +426,9 @@ struct BasicSettings: View {
                             BrightIntoshSettings.shared.showInDock = new
                         }
                         Button(action: {
-                            Task {
-                                let report = await generateReport()
-                                let pasteboard = NSPasteboard.general
-                                pasteboard.declareTypes([.string], owner: nil)
-                                pasteboard.setString(report, forType: .string)
-                            }
+                            showSupportReportSheet = true
                         }) {
-                            Text("Generate and copy report")
+                            Text("Generate report…")
                         }
                         Button(action: {
                             showCliPopup = true
@@ -383,6 +459,9 @@ struct BasicSettings: View {
         )
         .sheet(isPresented: $showCliPopup) {
             CliInstallationSheet(isPresented: $showCliPopup)
+        }
+        .sheet(isPresented: $showSupportReportSheet) {
+            SupportReportSheet(isPresented: $showSupportReportSheet)
         }
         .task {
             await updateBrightnessSliderRemovalHintVisibility()

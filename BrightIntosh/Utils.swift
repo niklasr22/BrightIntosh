@@ -392,7 +392,7 @@ private func appendRunningApplicationsDiagnostics(to report: inout String, maxEn
     report += " - Total listed: \(limited.count) of \(apps.count)\n"
 }
 
-func generateReport() async -> String {
+func generateReport(includeRunningApplications: Bool = true) async -> String {
     let timeoutSeconds = 3.0
     var report = "BrightIntosh Report:\n"
     report += "OS-Version: \(ProcessInfo.processInfo.operatingSystemVersionString)\n"
@@ -468,8 +468,10 @@ func generateReport() async -> String {
         appendDisplayDiagnostics(to: &report)
         report += "\n"
         SupportReportContext.brightnessManager?.appendSupportDiagnostics(to: &report)
-        report += "\n"
-        appendRunningApplicationsDiagnostics(to: &report)
+        if includeRunningApplications {
+            report += "\n"
+            appendRunningApplicationsDiagnostics(to: &report)
+        }
     }
     return report
 }
