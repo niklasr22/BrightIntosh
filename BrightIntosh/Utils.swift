@@ -48,23 +48,18 @@ private let incompatibleAppSignatures: [IncompatibleAppSignature] = [
     ),
     IncompatibleAppSignature(
         displayName: "DisplayBuddy",
-        bundleIdentifiers: [],
+        bundleIdentifiers: ["com.sids.DisplayBuddy", "com.sids.displaybuddy-setapp"],
         normalizedNames: ["displaybuddy"]
     ),
     IncompatibleAppSignature(
         displayName: "Gamma Control",
-        bundleIdentifiers: [],
+        bundleIdentifiers: ["ca.michelf.gamma-control"],
         normalizedNames: ["gammacontrol"]
     ),
     IncompatibleAppSignature(
         displayName: "QuickShade",
-        bundleIdentifiers: [],
+        bundleIdentifiers: ["jp.questbeat.Shade"],
         normalizedNames: ["quickshade"]
-    ),
-    IncompatibleAppSignature(
-        displayName: "Shady",
-        bundleIdentifiers: [],
-        normalizedNames: ["shady"]
     ),
     IncompatibleAppSignature(
         displayName: "Iris",
