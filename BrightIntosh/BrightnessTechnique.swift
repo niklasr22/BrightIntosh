@@ -106,7 +106,9 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
     fileprivate var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
     
     fileprivate let hdrReadyThreshold = 1.05
-    fileprivate let hdrEngageTimeout: TimeInterval = 2.1
+    fileprivate let hdrEngageTimeoutBase: TimeInterval = 2.1
+    fileprivate let hdrEngageTimeoutStep: TimeInterval = 1.5
+    fileprivate let hdrEngageTimeoutMax: TimeInterval = 6.0
     fileprivate let hdrRetryCooldownStepSeconds = 30
     fileprivate let hdrRetryCooldownMaxSeconds = 120
     fileprivate let defaultPollInterval: Duration = .milliseconds(500)
@@ -169,6 +171,15 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         hdrPollTasks.values.forEach { $0.cancel() }
         hdrPollTasks.removeAll()
         hdrReadyDisplayIds.removeAll()
+    }
+    
+    /// Time to wait for EDR before starting a cooldown; increases with prior failures on this display.
+    fileprivate func hdrEngageTimeout(for displayId: CGDirectDisplayID) -> TimeInterval {
+        let priorFailures = hdrConsecutiveTimeoutCount[displayId] ?? 0
+        return min(
+            hdrEngageTimeoutMax,
+            hdrEngageTimeoutBase + TimeInterval(priorFailures) * hdrEngageTimeoutStep
+        )
     }
     
     fileprivate func handleActiveHDRCooldown(_ displayId: CGDirectDisplayID, notify: Bool) -> Bool {
@@ -234,7 +245,7 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
             let now = Date()
             if notReadySince == nil { notReadySince = now }
             
-            if let start = notReadySince, now.timeIntervalSince(start) >= hdrEngageTimeout {
+            if let start = notReadySince, now.timeIntervalSince(start) >= hdrEngageTimeout(for: displayId) {
                 let cooldownSeconds = beginHDRRetryCooldown(displayId)
                 guard await waitOutHDRCooldown(displayId: displayId, seconds: cooldownSeconds) else {
                     return false
