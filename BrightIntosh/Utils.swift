@@ -28,7 +28,7 @@ private let incompatibleAppSignatures: [IncompatibleAppSignature] = [
     ),
     IncompatibleAppSignature(
         displayName: "MonitorControl",
-        bundleIdentifiers: ["me.guillaumeb.MonitorControl", "app.monitorcontrol.MonitorControl"],
+        bundleIdentifiers: ["me.guillaumeb.MonitorControl", "app.monitorcontrol.MonitorControl", "app.monitorcontrol.MonitorControlLite"],
         normalizedNames: ["monitorcontrol"]
     ),
     IncompatibleAppSignature(
