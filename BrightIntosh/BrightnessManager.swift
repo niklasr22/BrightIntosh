@@ -223,6 +223,21 @@ class BrightnessManager {
     }
 
     @MainActor
+    func appendSupportDiagnostics(to report: inout String) {
+        report += "Brightness manager:\n"
+        report += " - Manager enabled: \(enabled)\n"
+        report += " - Increased brightness setting: \(BrightIntoshSettings.shared.brightintoshActive)\n"
+        if let technique = brightnessTechnique {
+            report += " - Active technique: \(String(describing: type(of: technique)))\n"
+            if let hdrTechnique = technique as? HDRLifecycleBrightnessTechnique {
+                hdrTechnique.appendHDRSupportDiagnostics(to: &report)
+            }
+        } else {
+            report += " - Active technique: none\n"
+        }
+    }
+    
+    @MainActor
     private func shouldDisableForClosedLid(currentScreens: [NSScreen]) -> Bool {
         guard BrightIntoshSettings.shared.disableWhenLidClosed else {
             return false

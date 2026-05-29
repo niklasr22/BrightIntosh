@@ -277,6 +277,121 @@ private func getAppTransaction() async throws -> VerificationResult<AppTransacti
     return try await AppTransaction.shared
 }
 
+@MainActor
+enum SupportReportContext {
+    static weak var brightnessManager: BrightnessManager?
+}
+
+private let hdrReadyReportThreshold = 1.05
+
+private struct RunningApplicationSnapshot: Comparable {
+    let displayName: String
+    let bundleIdentifier: String?
+    let activationPolicy: NSApplication.ActivationPolicy
+    
+    var sortKey: String {
+        displayName.lowercased()
+    }
+    
+    static func < (lhs: RunningApplicationSnapshot, rhs: RunningApplicationSnapshot) -> Bool {
+        lhs.sortKey < rhs.sortKey
+    }
+}
+
+@MainActor
+private func runningApplicationSnapshots() -> [RunningApplicationSnapshot] {
+    let currentBundleIdentifier = Bundle.main.bundleIdentifier
+    return NSWorkspace.shared.runningApplications.compactMap { app in
+        guard app.bundleIdentifier != currentBundleIdentifier else { return nil }
+        let name = app.localizedName?.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let name, !name.isEmpty else { return nil }
+        return RunningApplicationSnapshot(
+            displayName: name,
+            bundleIdentifier: app.bundleIdentifier,
+            activationPolicy: app.activationPolicy
+        )
+    }
+    .sorted()
+}
+
+@MainActor
+private func activationPolicyLabel(_ policy: NSApplication.ActivationPolicy) -> String {
+    switch policy {
+    case .regular: "regular"
+    case .accessory: "accessory"
+    case .prohibited: "prohibited"
+    @unknown default: "unknown"
+    }
+}
+
+@MainActor
+private func appendSettingsDiagnostics(to report: inout String) {
+    let settings = BrightIntoshSettings.shared
+    report += "Device / setup:\n"
+    report += " - Device in supported list: \(isDeviceSupported())\n"
+    report += " - Setup supported (device or external XDR): \(isSetupSupported())\n"
+    if let clamshell = isClamshellClosed() {
+        report += " - Clamshell closed: \(clamshell)\n"
+    } else {
+        report += " - Clamshell closed: unknown\n"
+    }
+    if #available(macOS 12.0, *) {
+        report += " - Low Power Mode: \(ProcessInfo.processInfo.isLowPowerModeEnabled)\n"
+    }
+    
+    report += "Settings:\n"
+    report += " - Increased brightness active: \(settings.brightintoshActive)\n"
+    report += " - Wait for HDR before increasing brightness: \(settings.waitForHDRBeforeIncreasingBrightness)\n"
+    report += " - Use alternate brightness backend: \(settings.useAlternateBrightnessBackend)\n"
+    report += " - Built-in XDR displays only: \(settings.brightIntoshOnlyOnBuiltIn)\n"
+    report += " - Disable when lid closed: \(settings.disableWhenLidClosed)\n"
+    report += " - Show HDR retry cooldown notice: \(settings.showHDRRetryCooldownNotice)\n"
+    report += " - Show incompatible apps notice: \(settings.showIncompatibleAppsNotice)\n"
+}
+
+@MainActor
+private func appendDisplayDiagnostics(to report: inout String) {
+    let xdrTargets = getXDRDisplays()
+    report += "Displays:\n"
+    if NSScreen.screens.isEmpty {
+        report += " - No screens reported by NSScreen\n"
+        return
+    }
+    
+    for screen in NSScreen.screens {
+        let displayId = screen.displayId.map(String.init) ?? "N/A"
+        let maxEdr = screen.maximumExtendedDynamicRangeColorComponentValue
+        let hdrReady = Double(maxEdr) > hdrReadyReportThreshold
+        let builtIn = isBuiltInScreen(screen: screen)
+        let externalXdr = isExternalXDRDisplay(screen: screen)
+        let brightIntoshTarget = xdrTargets.contains { $0.displayId == screen.displayId }
+        report += " - \(screen.localizedName) (id \(displayId)): \(Int(screen.frame.width))x\(Int(screen.frame.height))px\n"
+        report += "   · max EDR: \(String(format: "%.4f", maxEdr)) (HDR ready if > \(hdrReadyReportThreshold): \(hdrReady))\n"
+        report += "   · built-in: \(builtIn), external XDR name match: \(externalXdr), BrightIntosh target: \(brightIntoshTarget)\n"
+    }
+}
+
+@MainActor
+private func appendRunningApplicationsDiagnostics(to report: inout String, maxEntries: Int = 200) {
+    let apps = runningApplicationSnapshots()
+    
+    report += "Running applications (GUI and background agents, not every system process):\n"
+    if apps.isEmpty {
+        report += " - None\n"
+        return
+    }
+    
+    let limited = apps.prefix(maxEntries)
+    for app in limited {
+        let bundle = app.bundleIdentifier ?? "no bundle id"
+        report += " - \(app.displayName) (\(bundle), \(activationPolicyLabel(app.activationPolicy)))\n"
+    }
+    if apps.count > maxEntries {
+        report += " - … truncated (\(apps.count - maxEntries) more not listed)\n"
+    }
+    report += " - Total listed: \(limited.count) of \(apps.count)\n"
+}
+
 func generateReport() async -> String {
     let timeoutSeconds = 3.0
     var report = "BrightIntosh Report:\n"
@@ -334,9 +449,9 @@ func generateReport() async -> String {
         runningIncompatibleApps()
     }
     if incompatibleApps.isEmpty {
-        report += "Incompatible running apps: None\n"
+        report += "Known incompatible running apps: None\n"
     } else {
-        report += "Incompatible running apps:\n"
+        report += "Known incompatible running apps:\n"
         for app in incompatibleApps {
             if let bundleIdentifier = app.bundleIdentifier {
                 report += " - \(app.displayName) (\(bundleIdentifier))\n"
@@ -346,9 +461,15 @@ func generateReport() async -> String {
         }
     }
     
-    report += "Screens:\n"
-    for screen in NSScreen.screens {
-        report += " - \(screen.localizedName): \(screen.frame.width)x\(screen.frame.height)px\n"
+    await MainActor.run {
+        report += "\n"
+        appendSettingsDiagnostics(to: &report)
+        report += "\n"
+        appendDisplayDiagnostics(to: &report)
+        report += "\n"
+        SupportReportContext.brightnessManager?.appendSupportDiagnostics(to: &report)
+        report += "\n"
+        appendRunningApplicationsDiagnostics(to: &report)
     }
     return report
 }

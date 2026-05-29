@@ -109,6 +109,7 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
         }
         
         brightnessManager = BrightnessManager()
+        SupportReportContext.brightnessManager = brightnessManager
         automationManager = AutomationManager()
         incompatibleAppsMonitor = IncompatibleAppsMonitor()
         hdrCooldownNoticeMonitor = HDRCooldownNoticeMonitor()

@@ -338,6 +338,32 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         Double(screen.maximumExtendedDynamicRangeColorComponentValue) > hdrReadyThreshold
     }
     
+    @MainActor
+    func appendHDRSupportDiagnostics(to report: inout String) {
+        report += "HDR lifecycle (internal):\n"
+        report += " - Technique enabled: \(isEnabled)\n"
+        report += " - Premature brightness before HDR: \(shouldApplyPendingHDRBrightness)\n"
+        report += " - HDR ready displays: \(hdrReadyDisplayIds.sorted())\n"
+        report += " - Active HDR poll tasks: \(hdrPollTasks.keys.sorted())\n"
+        
+        if hdrCooldownEndDates.isEmpty {
+            report += " - HDR retry cooldowns: none\n"
+        } else {
+            report += " - HDR retry cooldowns:\n"
+            for displayId in hdrCooldownEndDates.keys.sorted() {
+                let remaining = Int(ceil(hdrCooldownEndDates[displayId]!.timeIntervalSinceNow))
+                let failures = hdrConsecutiveTimeoutCount[displayId] ?? 0
+                report += "   · display \(displayId): \(max(0, remaining))s remaining, consecutive timeouts: \(failures)\n"
+            }
+        }
+        
+        if hdrConsecutiveTimeoutCount.isEmpty {
+            report += " - Consecutive HDR timeout counts: none\n"
+        } else {
+            report += " - Consecutive HDR timeout counts: \(hdrConsecutiveTimeoutCount)\n"
+        }
+    }
+    
     func closeBoostWindow(_ displayId: CGDirectDisplayID) {}
     func applyPendingHDRBrightness(displayId: CGDirectDisplayID) {}
     func hdrReadyDisplaysDidChange() {}
