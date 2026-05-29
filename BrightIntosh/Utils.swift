@@ -28,12 +28,12 @@ private let incompatibleAppSignatures: [IncompatibleAppSignature] = [
     ),
     IncompatibleAppSignature(
         displayName: "MonitorControl",
-        bundleIdentifiers: ["me.guillaumeb.MonitorControl"],
+        bundleIdentifiers: ["me.guillaumeb.MonitorControl", "app.monitorcontrol.MonitorControl"],
         normalizedNames: ["monitorcontrol"]
     ),
     IncompatibleAppSignature(
         displayName: "BetterDisplay",
-        bundleIdentifiers: ["com.github.wulkano.BetterDisplay"],
+        bundleIdentifiers: ["com.github.wulkano.BetterDisplay", "pro.betterdisplay.BetterDisplay"],
         normalizedNames: ["betterdisplay", "betterdummy"]
     ),
     IncompatibleAppSignature(
