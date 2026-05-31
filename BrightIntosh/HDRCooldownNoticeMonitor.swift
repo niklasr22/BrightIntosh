@@ -21,6 +21,7 @@ final class HDRCooldownNoticeMonitor {
             let seconds = notification.userInfo?["cooldownSeconds"] as? Int ?? 30
             let displayID = (notification.userInfo?["displayID"] as? NSNumber).map { CGDirectDisplayID($0.uint32Value) }
             Task { @MainActor in
+                guard !BrightIntoshSettings.shared.ignoreMissingHDRForBrightnessFallback else { return }
                 self?.noticePresenter.present(cooldownSeconds: seconds, displayID: displayID, statusItem: nil)
             }
         }

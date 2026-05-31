@@ -342,6 +342,7 @@ private func appendSettingsDiagnostics(to report: inout String) {
     report += "Settings:\n"
     report += " - Increased brightness active: \(settings.brightintoshActive)\n"
     report += " - Wait for HDR before increasing brightness: \(settings.waitForHDRBeforeIncreasingBrightness)\n"
+    report += " - Ignore missing HDR fallback: \(settings.ignoreMissingHDRForBrightnessFallback)\n"
     report += " - Use alternate brightness backend: \(settings.useAlternateBrightnessBackend)\n"
     report += " - Built-in XDR displays only: \(settings.brightIntoshOnlyOnBuiltIn)\n"
     report += " - Disable when lid closed: \(settings.disableWhenLidClosed)\n"

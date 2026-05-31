@@ -137,6 +137,15 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             self.updateStatusBarItemVisibility()
         }
         
+        BrightIntoshSettings.shared.addListener(setting: "ignoreMissingHDRForBrightnessFallback") {
+            if BrightIntoshSettings.shared.ignoreMissingHDRForBrightnessFallback {
+                self.hdrCooldownMenuDisplayIds.removeAll()
+                self.hdrCooldownMenuEndDates.removeAll()
+                self.stopHDRCooldownMenuRefreshTimer()
+            }
+            self.updateMenu()
+        }
+        
         hdrCooldownObserver = NotificationCenter.default.addObserver(
             forName: .brightIntoshHDRCooldownDidBegin,
             object: nil,
@@ -145,6 +154,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
             let seconds = notification.userInfo?["cooldownSeconds"] as? Int ?? 30
             let displayID = (notification.userInfo?["displayID"] as? NSNumber).map { CGDirectDisplayID($0.uint32Value) }
             Task { @MainActor in
+                guard !BrightIntoshSettings.shared.ignoreMissingHDRForBrightnessFallback else { return }
                 if let id = displayID {
                     self?.hdrCooldownMenuDisplayIds.insert(id)
                     self?.hdrCooldownMenuEndDates[id] = Date().addingTimeInterval(TimeInterval(seconds))
@@ -283,7 +293,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         let remainingSeconds = currentHDRCooldownRemainingSeconds()
         let infoTitle = String(format: String(localized: "Awaiting macOS EDR mode (%llds)"), Int64(remainingSeconds))
         
-        guard !hdrCooldownMenuDisplayIds.isEmpty else {
+        guard !hdrCooldownMenuDisplayIds.isEmpty, !BrightIntoshSettings.shared.ignoreMissingHDRForBrightnessFallback else {
             for item in menu.items where item.tag == Self.hdrCooldownMenuSeparatorTag || item.tag == Self.hdrCooldownMenuInfoTag {
                 menu.removeItem(item)
             }
