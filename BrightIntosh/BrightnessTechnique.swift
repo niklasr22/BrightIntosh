@@ -783,4 +783,58 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     override func hdrDidStopBeingReady(displayId: CGDirectDisplayID) {
         restoreGammaForDisplay(displayId)
     }
+    
+    override func appendHDRSupportDiagnostics(to report: inout String) {
+        super.appendHDRSupportDiagnostics(to: &report)
+        
+        report += "Gamma application:\n"
+        let trackedDisplayIds = trackedHDRDisplayIds(
+            additionalDisplayIds: Set(overlayWindowControllers.keys).union(baselineGammaTables.keys)
+        )
+        guard !trackedDisplayIds.isEmpty else {
+            report += " - Displays: none\n"
+            return
+        }
+        
+        for displayId in trackedDisplayIds.sorted() {
+            let state = gammaApplicationStates[displayId]
+            let appliedFactor = state?.appliedFactor ?? 1.0
+            let targetFactor = state?.targetFactor
+            let targetDescription = targetFactor.map { String(format: "%.4f", $0) } ?? "none"
+            let lastObservedMaxEdr = state?.lastObservedMaxEdr
+            let currentMaxEdr = screenForDisplay(displayId)?.maximumExtendedDynamicRangeColorComponentValue
+            let phase = gammaApplicationPhase(displayId: displayId, targetFactor: targetFactor)
+            
+            report += " - display \(displayId): applied factor \(String(format: "%.4f", appliedFactor)), target factor \(targetDescription), phase: \(phase)"
+            report += ", baseline captured: \(baselineGammaTables[displayId] != nil)"
+            report += ", overlay open: \(overlayWindowControllers[displayId] != nil)"
+            report += ", fade active: \(state?.fadeTask != nil)"
+            if let currentMaxEdr {
+                report += ", current max EDR: \(String(format: "%.4f", currentMaxEdr))"
+            }
+            if let lastObservedMaxEdr {
+                report += ", last observed max EDR: \(String(format: "%.4f", lastObservedMaxEdr))"
+            }
+            report += "\n"
+        }
+    }
+    
+    private func gammaApplicationPhase(displayId: CGDirectDisplayID, targetFactor: Float?) -> String {
+        guard let targetFactor else {
+            return "idle/reset"
+        }
+        if abs(targetFactor - pendingHDRBrightnessFactor) <= gammaFactorEpsilon {
+            return "pending HDR"
+        }
+        if shouldIgnoreMissingHDR {
+            return "missing HDR fallback"
+        }
+        if hdrReadyDisplayIds.contains(displayId) {
+            return "HDR ready"
+        }
+        if hdrCooldownEndDates[displayId] != nil {
+            return "HDR cooldown"
+        }
+        return "active"
+    }
 }
