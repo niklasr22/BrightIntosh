@@ -119,18 +119,9 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         !BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness
     }
     
-    fileprivate var shouldIgnoreMissingHDR: Bool {
-        BrightIntoshSettings.shared.ignoreMissingHDRForBrightnessFallback
-    }
-    
     static func brightnessFactor(screen: NSScreen, maxEdr: CGFloat) -> Float {
         let (referenceEdr, referenceBonusGamma) = getScreenRefGamma(screen)
         return 1 + referenceBonusGamma * min(Float(maxEdr) / referenceEdr, 1.0)
-    }
-    
-    static func brightnessFactorIgnoringMissingHDR(screen: NSScreen) -> Float {
-        let (_, referenceBonusGamma) = getScreenRefGamma(screen)
-        return 1 + referenceBonusGamma
     }
     
     override func adjustBrightness() {
@@ -180,11 +171,6 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
     }
     
     fileprivate func handleActiveHDRCooldown(_ displayId: CGDirectDisplayID, notify: Bool) -> Bool {
-        if shouldIgnoreMissingHDR {
-            endHDRRetryCooldown(displayId, notify: true)
-            return false
-        }
-        
         guard let remainingSeconds = hdrCooldownRemainingSeconds(for: displayId) else { return false }
         
         if shouldApplyPendingHDRBrightness {
@@ -226,11 +212,6 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         var notReadySince: Date?
         
         while !Task.isCancelled, isEnabled {
-            if shouldIgnoreMissingHDR {
-                endHDRRetryCooldown(displayId, notify: true)
-                return true
-            }
-            
             if let remainingCooldownSeconds = hdrCooldownRemainingSeconds(for: displayId) {
                 guard await waitOutHDRCooldown(displayId: displayId, seconds: remainingCooldownSeconds) else {
                     return false
@@ -350,10 +331,7 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
     }
     
     private func hdrReady(_ screen: NSScreen) -> Bool {
-        if shouldIgnoreMissingHDR {
-            return true
-        }
-        return Double(screen.maximumExtendedDynamicRangeColorComponentValue) > hdrReadyThreshold
+        Double(screen.maximumExtendedDynamicRangeColorComponentValue) > hdrReadyThreshold
     }
     
     @MainActor
@@ -361,7 +339,6 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         report += "HDR lifecycle (internal):\n"
         report += " - Technique enabled: \(isEnabled)\n"
         report += " - Premature brightness before HDR: \(shouldApplyPendingHDRBrightness)\n"
-        report += " - Ignore missing HDR fallback: \(shouldIgnoreMissingHDR)\n"
         report += " - HDR engage attempt timeout: \(String(format: "%.1f", hdrEngageTimeout))s\n"
         report += " - HDR retry cooldown duration: \(hdrRetryCooldownSeconds)s\n"
         report += " - HDR ready displays: \(hdrReadyDisplayIds.sorted())\n"
@@ -501,9 +478,6 @@ class MultiplyingOverlayTechnique: HDRLifecycleBrightnessTechnique {
     
     private func overlayBrightnessFactor(screen: NSScreen) -> Float {
         if let displayId = screen.displayId, hdrReadyDisplayIds.contains(displayId) {
-            if shouldIgnoreMissingHDR {
-                return Self.brightnessFactorIgnoringMissingHDR(screen: screen)
-            }
             return Self.brightnessFactor(
                 screen: screen,
                 maxEdr: screen.maximumExtendedDynamicRangeColorComponentValue
@@ -624,12 +598,10 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
             }
             
             state.lastObservedMaxEdr = maxEdr
-            let factor = shouldIgnoreMissingHDR
-                ? Self.brightnessFactorIgnoringMissingHDR(screen: screen)
-                : Self.brightnessFactor(
-                    screen: screen,
-                    maxEdr: maxEdr
-                )
+            let factor = Self.brightnessFactor(
+                screen: screen,
+                maxEdr: maxEdr
+            )
             logGammaFactorIfNeeded(factor, displayId: displayId, maxEdr: maxEdr)
             fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: factor)
         }

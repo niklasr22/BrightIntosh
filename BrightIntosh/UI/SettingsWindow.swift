@@ -246,7 +246,6 @@ struct AdvancedSettingsSheet: View {
     @Binding var isPresented: Bool
     @Binding var useAlternateBrightnessBackend: Bool
     @Binding var waitForHDRBeforeIncreasingBrightness: Bool
-    @Binding var ignoreMissingHDRForBrightnessFallback: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -270,24 +269,6 @@ struct AdvancedSettingsSheet: View {
                 .onChange(of: waitForHDRBeforeIncreasingBrightness) { _, new in
                     BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness = new
                 }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Toggle(
-                        "Use brightness fallback without HDR",
-                        isOn: $ignoreMissingHDRForBrightnessFallback
-                    )
-                    .onChange(of: ignoreMissingHDRForBrightnessFallback) { _, new in
-                        BrightIntoshSettings.shared.ignoreMissingHDRForBrightnessFallback = new
-                    }
-                    
-                    Label(
-                        "Compatibility option for displays where macOS does not report HDR/EDR mode reliably. Brightness may increase sooner, but colors can be less accurate.",
-                        systemImage: "exclamationmark.triangle.fill"
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                }
-                .padding(.top, 4)
                 
                 Text("These options can help with display-specific brightness issues.")
                     .font(.caption)
@@ -319,7 +300,6 @@ struct BasicSettings: View {
     @State private var showIncompatibleAppsNotice = BrightIntoshSettings.shared.showIncompatibleAppsNotice
     @State private var useAlternateBrightnessBackend = BrightIntoshSettings.shared.useAlternateBrightnessBackend
     @State private var waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness
-    @State private var ignoreMissingHDRForBrightnessFallback = BrightIntoshSettings.shared.ignoreMissingHDRForBrightnessFallback
     @State private var batteryLevelThreshold = BrightIntoshSettings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = BrightIntoshSettings.shared.timerAutomationTimeout
 
@@ -422,8 +402,7 @@ struct BasicSettings: View {
                             AdvancedSettingsSheet(
                                 isPresented: $showAdvancedSettingsSheet,
                                 useAlternateBrightnessBackend: $useAlternateBrightnessBackend,
-                                waitForHDRBeforeIncreasingBrightness: $waitForHDRBeforeIncreasingBrightness,
-                                ignoreMissingHDRForBrightnessFallback: $ignoreMissingHDRForBrightnessFallback
+                                waitForHDRBeforeIncreasingBrightness: $waitForHDRBeforeIncreasingBrightness
                             )
                         }
                     },
