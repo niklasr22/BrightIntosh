@@ -798,9 +798,6 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
         if abs(targetFactor - pendingHDRBrightnessFactor) <= gammaFactorEpsilon {
             return "pending HDR"
         }
-        if shouldIgnoreMissingHDR {
-            return "missing HDR fallback"
-        }
         if hdrReadyDisplayIds.contains(displayId) {
             return "HDR ready"
         }
