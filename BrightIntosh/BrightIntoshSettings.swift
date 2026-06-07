@@ -80,13 +80,6 @@ class BrightIntoshSettings {
         }
     }
     
-    public var ignoreMissingHDRForBrightnessFallback: Bool = BrightIntoshSettings.getUserDefault(key: "ignoreMissingHDRForBrightnessFallback", defaultValue: false) {
-        didSet {
-            BrightIntoshSettings.defaults.setValue(ignoreMissingHDRForBrightnessFallback, forKey: "ignoreMissingHDRForBrightnessFallback")
-            callListeners(setting: "ignoreMissingHDRForBrightnessFallback")
-        }
-    }
-    
     public var dismissedBrightnessSliderRemovalHint: Bool = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false) {
         didSet {
             BrightIntoshSettings.defaults.setValue(dismissedBrightnessSliderRemovalHint, forKey: "dismissedBrightnessSliderRemovalHint")
@@ -187,7 +180,6 @@ class BrightIntoshSettings {
         showIncompatibleAppsNotice = BrightIntoshSettings.getUserDefault(key: "showIncompatibleAppsInterferenceNotice", defaultValue: true)
         useAlternateBrightnessBackend = BrightIntoshSettings.getUserDefault(key: "useAlternateBrightnessBackend", defaultValue: false)
         waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.getUserDefault(key: "waitForHDRBeforeIncreasingBrightness", defaultValue: false)
-        ignoreMissingHDRForBrightnessFallback = BrightIntoshSettings.getUserDefault(key: "ignoreMissingHDRForBrightnessFallback", defaultValue: false)
         dismissedBrightnessSliderRemovalHint = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false)
         hideMenuBarItem = BrightIntoshSettings.getUserDefault(key: "hideMenuBarItem", defaultValue: false)
         batteryAutomation = BrightIntoshSettings.getUserDefault(key: "batteryAutomation", defaultValue: false)

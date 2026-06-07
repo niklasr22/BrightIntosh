@@ -102,15 +102,12 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
     fileprivate var hdrPollTasks: [CGDirectDisplayID: Task<Void, Never>] = [:]
     fileprivate var hdrReadyDisplayIds: Set<CGDirectDisplayID> = []
     fileprivate var hdrCooldownEndDates: [CGDirectDisplayID: Date] = [:]
-    /// Consecutive HDR engage timeouts per display; each cooldown length is `min(max, step * count)`, reset when HDR becomes ready.
+    /// Consecutive HDR engage timeouts per display; reset when HDR becomes ready.
     fileprivate var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
     
     fileprivate let hdrReadyThreshold = 1.05
-    fileprivate let hdrEngageTimeoutBase: TimeInterval = 2.1
-    fileprivate let hdrEngageTimeoutStep: TimeInterval = 1.5
-    fileprivate let hdrEngageTimeoutMax: TimeInterval = 6.0
-    fileprivate let hdrRetryCooldownStepSeconds = 30
-    fileprivate let hdrRetryCooldownMaxSeconds = 120
+    fileprivate let hdrEngageTimeout: TimeInterval = 25
+    fileprivate let hdrRetryCooldownSeconds = 30
     fileprivate let defaultPollInterval: Duration = .milliseconds(500)
     fileprivate let fastPollInterval: Duration = .milliseconds(16)
     fileprivate let fastPollDuration: TimeInterval = 30
@@ -122,18 +119,9 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         !BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness
     }
     
-    fileprivate var shouldIgnoreMissingHDR: Bool {
-        BrightIntoshSettings.shared.ignoreMissingHDRForBrightnessFallback
-    }
-    
     static func brightnessFactor(screen: NSScreen, maxEdr: CGFloat) -> Float {
         let (referenceEdr, referenceBonusGamma) = getScreenRefGamma(screen)
         return 1 + referenceBonusGamma * min(Float(maxEdr) / referenceEdr, 1.0)
-    }
-    
-    static func brightnessFactorIgnoringMissingHDR(screen: NSScreen) -> Float {
-        let (_, referenceBonusGamma) = getScreenRefGamma(screen)
-        return 1 + referenceBonusGamma
     }
     
     override func adjustBrightness() {
@@ -182,21 +170,7 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         hdrReadyDisplayIds.removeAll()
     }
     
-    /// Time to wait for EDR before starting a cooldown; increases with prior failures on this display.
-    fileprivate func hdrEngageTimeout(for displayId: CGDirectDisplayID) -> TimeInterval {
-        let priorFailures = hdrConsecutiveTimeoutCount[displayId] ?? 0
-        return min(
-            hdrEngageTimeoutMax,
-            hdrEngageTimeoutBase + TimeInterval(priorFailures) * hdrEngageTimeoutStep
-        )
-    }
-    
     fileprivate func handleActiveHDRCooldown(_ displayId: CGDirectDisplayID, notify: Bool) -> Bool {
-        if shouldIgnoreMissingHDR {
-            endHDRRetryCooldown(displayId, notify: true)
-            return false
-        }
-        
         guard let remainingSeconds = hdrCooldownRemainingSeconds(for: displayId) else { return false }
         
         if shouldApplyPendingHDRBrightness {
@@ -238,11 +212,6 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         var notReadySince: Date?
         
         while !Task.isCancelled, isEnabled {
-            if shouldIgnoreMissingHDR {
-                endHDRRetryCooldown(displayId, notify: true)
-                return true
-            }
-            
             if let remainingCooldownSeconds = hdrCooldownRemainingSeconds(for: displayId) {
                 guard await waitOutHDRCooldown(displayId: displayId, seconds: remainingCooldownSeconds) else {
                     return false
@@ -264,7 +233,7 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
             let now = Date()
             if notReadySince == nil { notReadySince = now }
             
-            if let start = notReadySince, now.timeIntervalSince(start) >= hdrEngageTimeout(for: displayId) {
+            if let start = notReadySince, now.timeIntervalSince(start) >= hdrEngageTimeout {
                 let cooldownSeconds = beginHDRRetryCooldown(displayId)
                 guard await waitOutHDRCooldown(displayId: displayId, seconds: cooldownSeconds) else {
                     return false
@@ -325,10 +294,7 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         let nextCount = (hdrConsecutiveTimeoutCount[displayId] ?? 0) + 1
         hdrConsecutiveTimeoutCount[displayId] = nextCount
         
-        let cooldownSeconds = min(
-            hdrRetryCooldownMaxSeconds,
-            hdrRetryCooldownStepSeconds * nextCount
-        )
+        let cooldownSeconds = hdrRetryCooldownSeconds
         hdrCooldownEndDates[displayId] = Date().addingTimeInterval(TimeInterval(cooldownSeconds))
         NotificationCenter.default.post(
             name: .brightIntoshHDRCooldownDidBegin,
@@ -365,10 +331,7 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
     }
     
     private func hdrReady(_ screen: NSScreen) -> Bool {
-        if shouldIgnoreMissingHDR {
-            return true
-        }
-        return Double(screen.maximumExtendedDynamicRangeColorComponentValue) > hdrReadyThreshold
+        Double(screen.maximumExtendedDynamicRangeColorComponentValue) > hdrReadyThreshold
     }
     
     @MainActor
@@ -376,7 +339,8 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         report += "HDR lifecycle (internal):\n"
         report += " - Technique enabled: \(isEnabled)\n"
         report += " - Premature brightness before HDR: \(shouldApplyPendingHDRBrightness)\n"
-        report += " - Ignore missing HDR fallback: \(shouldIgnoreMissingHDR)\n"
+        report += " - HDR engage attempt timeout: \(String(format: "%.1f", hdrEngageTimeout))s\n"
+        report += " - HDR retry cooldown duration: \(hdrRetryCooldownSeconds)s\n"
         report += " - HDR ready displays: \(hdrReadyDisplayIds.sorted())\n"
         report += " - Active HDR poll tasks: \(hdrPollTasks.keys.sorted())\n"
         
@@ -514,9 +478,6 @@ class MultiplyingOverlayTechnique: HDRLifecycleBrightnessTechnique {
     
     private func overlayBrightnessFactor(screen: NSScreen) -> Float {
         if let displayId = screen.displayId, hdrReadyDisplayIds.contains(displayId) {
-            if shouldIgnoreMissingHDR {
-                return Self.brightnessFactorIgnoringMissingHDR(screen: screen)
-            }
             return Self.brightnessFactor(
                 screen: screen,
                 maxEdr: screen.maximumExtendedDynamicRangeColorComponentValue
@@ -637,12 +598,10 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
             }
             
             state.lastObservedMaxEdr = maxEdr
-            let factor = shouldIgnoreMissingHDR
-                ? Self.brightnessFactorIgnoringMissingHDR(screen: screen)
-                : Self.brightnessFactor(
-                    screen: screen,
-                    maxEdr: maxEdr
-                )
+            let factor = Self.brightnessFactor(
+                screen: screen,
+                maxEdr: maxEdr
+            )
             logGammaFactorIfNeeded(factor, displayId: displayId, maxEdr: maxEdr)
             fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: factor)
         }
@@ -795,5 +754,56 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     
     override func hdrDidStopBeingReady(displayId: CGDirectDisplayID) {
         restoreGammaForDisplay(displayId)
+    }
+    
+    override func appendHDRSupportDiagnostics(to report: inout String) {
+        super.appendHDRSupportDiagnostics(to: &report)
+        
+        report += "Gamma application:\n"
+        let trackedDisplayIds = trackedHDRDisplayIds(
+            additionalDisplayIds: Set(overlayWindowControllers.keys).union(baselineGammaTables.keys)
+        )
+        guard !trackedDisplayIds.isEmpty else {
+            report += " - Displays: none\n"
+            return
+        }
+        
+        for displayId in trackedDisplayIds.sorted() {
+            let state = gammaApplicationStates[displayId]
+            let appliedFactor = state?.appliedFactor ?? 1.0
+            let targetFactor = state?.targetFactor
+            let targetDescription = targetFactor.map { String(format: "%.4f", $0) } ?? "none"
+            let lastObservedMaxEdr = state?.lastObservedMaxEdr
+            let currentMaxEdr = screenForDisplay(displayId)?.maximumExtendedDynamicRangeColorComponentValue
+            let phase = gammaApplicationPhase(displayId: displayId, targetFactor: targetFactor)
+            
+            report += " - display \(displayId): applied factor \(String(format: "%.4f", appliedFactor)), target factor \(targetDescription), phase: \(phase)"
+            report += ", baseline captured: \(baselineGammaTables[displayId] != nil)"
+            report += ", overlay open: \(overlayWindowControllers[displayId] != nil)"
+            report += ", fade active: \(state?.fadeTask != nil)"
+            if let currentMaxEdr {
+                report += ", current max EDR: \(String(format: "%.4f", currentMaxEdr))"
+            }
+            if let lastObservedMaxEdr {
+                report += ", last observed max EDR: \(String(format: "%.4f", lastObservedMaxEdr))"
+            }
+            report += "\n"
+        }
+    }
+    
+    private func gammaApplicationPhase(displayId: CGDirectDisplayID, targetFactor: Float?) -> String {
+        guard let targetFactor else {
+            return "idle/reset"
+        }
+        if abs(targetFactor - pendingHDRBrightnessFactor) <= gammaFactorEpsilon {
+            return "pending HDR"
+        }
+        if hdrReadyDisplayIds.contains(displayId) {
+            return "HDR ready"
+        }
+        if hdrCooldownEndDates[displayId] != nil {
+            return "HDR cooldown"
+        }
+        return "active"
     }
 }

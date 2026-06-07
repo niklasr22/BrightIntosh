@@ -93,10 +93,6 @@ class BrightnessManager {
         BrightIntoshSettings.shared.addListener(setting: "waitForHDRBeforeIncreasingBrightness") {
             self.refreshActiveBrightnessTechnique()
         }
-        
-        BrightIntoshSettings.shared.addListener(setting: "ignoreMissingHDRForBrightnessFallback") {
-            self.refreshActiveBrightnessTechnique()
-        }
     }
     
     deinit {

@@ -342,7 +342,6 @@ private func appendSettingsDiagnostics(to report: inout String) {
     report += "Settings:\n"
     report += " - Increased brightness active: \(settings.brightintoshActive)\n"
     report += " - Wait for HDR before increasing brightness: \(settings.waitForHDRBeforeIncreasingBrightness)\n"
-    report += " - Ignore missing HDR fallback: \(settings.ignoreMissingHDRForBrightnessFallback)\n"
     report += " - Use alternate brightness backend: \(settings.useAlternateBrightnessBackend)\n"
     report += " - Built-in XDR displays only: \(settings.brightIntoshOnlyOnBuiltIn)\n"
     report += " - Disable when lid closed: \(settings.disableWhenLidClosed)\n"
@@ -478,7 +477,7 @@ func generateReport(includeRunningApplications: Bool = true) async -> String {
 }
 
 extension Notification.Name {
-    /// Posted when a display enters the HDR retry cooldown. `userInfo["cooldownSeconds"]` is `Int` (starts at 30, increases by 30 per consecutive timeout, capped at 120); `userInfo["displayID"]` is `NSNumber` wrapping `CGDirectDisplayID`.
+    /// Posted when a display enters the HDR retry cooldown. `userInfo["cooldownSeconds"]` is `Int`; `userInfo["displayID"]` is `NSNumber` wrapping `CGDirectDisplayID`.
     static let brightIntoshHDRCooldownDidBegin = Notification.Name("de.brightintosh.hdrCooldownDidBegin")
     /// Posted when that display finishes the sleep and leaves the cooldown wait (before reopening the overlay).
     static let brightIntoshHDRCooldownDidEnd = Notification.Name("de.brightintosh.hdrCooldownDidEnd")
