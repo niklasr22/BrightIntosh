@@ -70,12 +70,21 @@ class GammaTable {
         var newGreenTable = greenTable
         var newBlueTable = blueTable
         
-        for i in 0..<redTable.count {
+        for i in 0..<newRedTable.count {
             newRedTable[i] *= factor
             newGreenTable[i] *= factor
             newBlueTable[i] *= factor
         }
         CGSetDisplayTransferByTable(displayId, GammaTable.tableSize, &newRedTable, &newGreenTable, &newBlueTable)
+    }
+    
+    func reapplyIfLastValuesDrifted(displayId: CGDirectDisplayID, factor: Float, tolerance: CGGammaValue) -> Bool {
+        guard !currentLastValuesMatch(displayId: displayId, factor: factor, tolerance: tolerance) else {
+            return false
+        }
+        
+        setTableForScreen(displayId: displayId, factor: factor)
+        return true
     }
     
     private var maximumValue: CGGammaValue {
@@ -95,6 +104,20 @@ class GammaTable {
         table.greenTable = greenTable.map { $0 / maxValue }
         table.blueTable = blueTable.map { $0 / maxValue }
         return table
+    }
+    
+    private func currentLastValuesMatch(displayId: CGDirectDisplayID, factor: Float, tolerance: CGGammaValue) -> Bool {
+        guard let currentTable = Self.createFromCurrentGammaTable(displayId: displayId) else { return true }
+        guard let redValue = redTable.last,
+              let greenValue = greenTable.last,
+              let blueValue = blueTable.last,
+              let currentRedValue = currentTable.redTable.last,
+              let currentGreenValue = currentTable.greenTable.last,
+              let currentBlueValue = currentTable.blueTable.last else { return true }
+        
+        return abs(currentRedValue - (redValue * factor)) <= tolerance &&
+            abs(currentGreenValue - (greenValue * factor)) <= tolerance &&
+            abs(currentBlueValue - (blueValue * factor)) <= tolerance
     }
 }
 
@@ -502,10 +525,13 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
     private var baselineGammaTables: [CGDirectDisplayID: GammaTable] = [:]
     private var gammaApplicationStates: [CGDirectDisplayID: GammaApplicationState] = [:]
+    private var gammaIntegrityPollTask: Task<Void, Never>?
     
     private let gammaFadeDuration: TimeInterval = 0.35
     private let gammaFadeFrameInterval: Duration = .milliseconds(16)
     private let gammaFactorEpsilon: Float = 0.001
+    private let gammaIntegrityPollInterval: Duration = .seconds(2)
+    private let gammaTableTolerance: CGGammaValue = 0.003
     
     override init() {
         super.init()
@@ -515,6 +541,7 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     override func enable() {
         let shouldAnnounceActiveCooldowns = !isEnabled
         isEnabled = true
+        startGammaIntegrityPollIfNeeded()
         updateScreens(screens: getXDRDisplays(), announceActiveCooldowns: shouldAnnounceActiveCooldowns)
     }
     
@@ -538,6 +565,7 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     override func disable() {
         isEnabled = false
         resetActiveHDRState()
+        stopGammaIntegrityPoll()
         resetGammaApplicationState()
         overlayWindowControllers.values.forEach { $0.window?.close() }
         overlayWindowControllers.removeAll()
@@ -551,6 +579,7 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     }
     
     private func updateScreens(screens: [NSScreen], announceActiveCooldowns: Bool) {
+        startGammaIntegrityPollIfNeeded()
         let activeIds = Set(screens.compactMap { $0.displayId })
         let tracked = trackedHDRDisplayIds(additionalDisplayIds: Set(overlayWindowControllers.keys))
         for id in tracked where !activeIds.contains(id) {
@@ -693,6 +722,41 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     private func resetGammaApplicationState() {
         gammaApplicationStates.values.forEach { $0.fadeTask?.cancel() }
         gammaApplicationStates.removeAll()
+    }
+    
+    private func startGammaIntegrityPollIfNeeded() {
+        guard gammaIntegrityPollTask == nil else { return }
+        gammaIntegrityPollTask = Task { @MainActor in
+            defer { self.gammaIntegrityPollTask = nil }
+            
+            while !Task.isCancelled, self.isEnabled {
+                self.reapplyDriftedGammaTables()
+                try? await Task.sleep(for: self.gammaIntegrityPollInterval)
+            }
+        }
+    }
+    
+    private func stopGammaIntegrityPoll() {
+        gammaIntegrityPollTask?.cancel()
+        gammaIntegrityPollTask = nil
+    }
+    
+    private func reapplyDriftedGammaTables() {
+        for (displayId, gammaTable) in baselineGammaTables {
+            guard screenForDisplay(displayId) != nil else { continue }
+            guard let state = gammaApplicationStates[displayId],
+                  state.fadeTask == nil,
+                  let targetFactor = state.targetFactor else { continue }
+            
+            guard abs(state.appliedFactor - targetFactor) <= gammaFactorEpsilon else { continue }
+            guard gammaTable.reapplyIfLastValuesDrifted(
+                displayId: displayId,
+                factor: state.appliedFactor,
+                tolerance: gammaTableTolerance
+            ) else { continue }
+            
+            print("Gamma table drift detected for display \(displayId); reapplied factor \(state.appliedFactor)")
+        }
     }
     
     private func logGammaFactorIfNeeded(_ factor: Float, displayId: CGDirectDisplayID, maxEdr: Double) {
