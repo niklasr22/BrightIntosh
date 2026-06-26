@@ -525,6 +525,7 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
     private var baselineGammaTables: [CGDirectDisplayID: GammaTable] = [:]
     private var gammaApplicationStates: [CGDirectDisplayID: GammaApplicationState] = [:]
+    private var consecutiveGammaDriftReapplyCounts: [CGDirectDisplayID: Int] = [:]
     private var gammaIntegrityPollTask: Task<Void, Never>?
     
     private let gammaFadeDuration: TimeInterval = 0.35
@@ -532,6 +533,7 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     private let gammaFactorEpsilon: Float = 0.001
     private let gammaIntegrityPollInterval: Duration = .seconds(2)
     private let gammaTableTolerance: CGGammaValue = 0.003
+    private let maxConsecutiveGammaDriftReapplications = 3
     
     override init() {
         super.init()
@@ -567,6 +569,7 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
         resetActiveHDRState()
         stopGammaIntegrityPoll()
         resetGammaApplicationState()
+        consecutiveGammaDriftReapplyCounts.removeAll()
         overlayWindowControllers.values.forEach { $0.window?.close() }
         overlayWindowControllers.removeAll()
         baselineGammaTables.forEach { $1.setTableForScreen(displayId: $0, factor: 1.0)}
@@ -587,6 +590,7 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
         }
         
         baselineGammaTables.keys.forEach { resetGammaApplicationState(for: $0) }
+        consecutiveGammaDriftReapplyCounts.removeAll()
         baselineGammaTables.forEach { $1.setTableForScreen(displayId: $0)}
         refreshBaselineGammaTables(for: screens)
         
@@ -608,6 +612,7 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     private func tearDownDisplay(_ displayId: CGDirectDisplayID) {
         tearDownHDRState(displayId: displayId)
         resetGammaApplicationState(for: displayId)
+        consecutiveGammaDriftReapplyCounts.removeValue(forKey: displayId)
         baselineGammaTables[displayId]?.setTableForScreen(displayId: displayId)
         baselineGammaTables.removeValue(forKey: displayId)
         overlayWindowControllers[displayId]?.window?.close()
@@ -743,19 +748,54 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     
     private func reapplyDriftedGammaTables() {
         for (displayId, gammaTable) in baselineGammaTables {
-            guard screenForDisplay(displayId) != nil else { continue }
+            guard screenForDisplay(displayId) != nil else {
+                consecutiveGammaDriftReapplyCounts.removeValue(forKey: displayId)
+                continue
+            }
             guard let state = gammaApplicationStates[displayId],
                   state.fadeTask == nil,
-                  let targetFactor = state.targetFactor else { continue }
+                  let targetFactor = state.targetFactor else {
+                consecutiveGammaDriftReapplyCounts.removeValue(forKey: displayId)
+                continue
+            }
             
-            guard abs(state.appliedFactor - targetFactor) <= gammaFactorEpsilon else { continue }
+            guard abs(state.appliedFactor - targetFactor) <= gammaFactorEpsilon else {
+                consecutiveGammaDriftReapplyCounts.removeValue(forKey: displayId)
+                continue
+            }
             guard gammaTable.reapplyIfLastValuesDrifted(
                 displayId: displayId,
                 factor: state.appliedFactor,
                 tolerance: gammaTableTolerance
-            ) else { continue }
+            ) else {
+                consecutiveGammaDriftReapplyCounts.removeValue(forKey: displayId)
+                continue
+            }
             
-            print("Gamma table drift detected for display \(displayId); reapplied factor \(state.appliedFactor)")
+            let reapplyCount = (consecutiveGammaDriftReapplyCounts[displayId] ?? 0) + 1
+            consecutiveGammaDriftReapplyCounts[displayId] = reapplyCount
+            print("Gamma table drift detected for display \(displayId); reapplied factor \(state.appliedFactor) (\(reapplyCount)/\(maxConsecutiveGammaDriftReapplications))")
+            
+            if reapplyCount >= maxConsecutiveGammaDriftReapplications {
+                handlePersistentGammaConflict(displayId: displayId)
+                return
+            }
+        }
+    }
+    
+    private func handlePersistentGammaConflict(displayId: CGDirectDisplayID) {
+        print("Persistent gamma conflict detected for display \(displayId); disabling increased brightness")
+        consecutiveGammaDriftReapplyCounts.removeAll()
+        
+        if BrightIntoshSettings.shared.brightintoshActive {
+            BrightIntoshSettings.shared.brightintoshActive = false
+        } else {
+            disable()
+        }
+        
+        Task { @MainActor in
+            NSApp.activate(ignoringOtherApps: true)
+            createGammaConflictAlert().runModal()
         }
     }
     

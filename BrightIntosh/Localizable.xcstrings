@@ -746,6 +746,64 @@
         }
       }
     },
+    "Another app or system process repeatedly changed the display gamma values BrightIntosh applied. BrightIntosh stopped increased brightness to avoid flickering." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine andere App oder ein Systemprozess hat wiederholt die von BrightIntosh angewendeten Gammawerte des Displays verändert. BrightIntosh hat die erhöhte Helligkeit gestoppt, um Flackern zu vermeiden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Another app or system process repeatedly changed the display gamma values BrightIntosh applied. BrightIntosh stopped increased brightness to avoid flickering."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otra app o proceso del sistema cambió repetidamente los valores gamma de la pantalla aplicados por BrightIntosh. BrightIntosh detuvo el aumento del brillo para evitar parpadeos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une autre app ou un processus système a modifié à plusieurs reprises les valeurs gamma de l’écran appliquées par BrightIntosh. BrightIntosh a arrêté l’augmentation de la luminosité afin d’éviter le scintillement."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un’altra app o un processo di sistema ha modificato ripetutamente i valori gamma dello schermo applicati da BrightIntosh. BrightIntosh ha interrotto l’aumento della luminosità per evitare sfarfallii."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "別のアプリまたはシステムプロセスが、BrightIntosh が適用したディスプレイのガンマ値を繰り返し変更しました。ちらつきを防ぐため、BrightIntosh は明るさの増加を停止しました。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outra app ou processo do sistema alterou repetidamente os valores de gama do ecrã aplicados pelo BrightIntosh. O BrightIntosh interrompeu o aumento do brilho para evitar cintilação."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "另一个 App 或系统进程反复更改了 BrightIntosh 应用的显示器伽马值。BrightIntosh 已停止提升亮度以避免闪烁。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "另一個 App 或系統程序反覆更改 BrightIntosh 套用的顯示器 Gamma 值。BrightIntosh 已停止提升亮度以避免閃爍。"
+          }
+        }
+      }
+    },
     "Automations" : {
       "localizations" : {
         "de" : {
@@ -2622,65 +2680,6 @@
         }
       }
     },
-    "Generate and copy report" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bericht erstellen und kopieren"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Generate and copy report"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Generar y copiar el informe"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Générer et copier le rapport"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Genera e copia il report"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "レポートをコピーする"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gerar e copiar o relatório"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "生成并复制报告"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "生成並複製報告"
-          }
-        }
-      }
-    },
     "Generate report…" : {
       "localizations" : {
         "de" : {
@@ -3106,6 +3105,64 @@
         }
       }
     },
+    "Increased brightness was disabled" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erhöhte Helligkeit wurde deaktiviert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increased brightness was disabled"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se desactivó el aumento del brillo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’augmentation de la luminosité a été désactivée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luminosità aumentata disattivata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明るさの増加が無効になりました"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O aumento do brilho foi desativado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已停用提升亮度"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已停用提升亮度"
+          }
+        }
+      }
+    },
     "Install BrightIntosh CLI" : {
       "localizations" : {
         "de" : {
@@ -3393,6 +3450,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從不"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceptar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确定"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定"
           }
         }
       }

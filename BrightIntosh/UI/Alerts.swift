@@ -15,3 +15,12 @@ import Cocoa
     alert.addButton(withTitle: "Cancel")
     return alert
 }
+
+@MainActor func createGammaConflictAlert() -> NSAlert {
+    let alert = NSAlert()
+    alert.alertStyle = .warning
+    alert.messageText = String(localized: "Increased brightness was disabled")
+    alert.informativeText = String(localized: "Another app or system process repeatedly changed the display gamma values BrightIntosh applied. BrightIntosh stopped increased brightness to avoid flickering.")
+    alert.addButton(withTitle: String(localized: "OK"))
+    return alert
+}
