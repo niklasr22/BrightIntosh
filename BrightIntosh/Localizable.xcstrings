@@ -1177,10 +1177,58 @@
     },
     "BrightIntosh will quit now. Open it again to switch to Compatibility Mode." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh wird jetzt beendet. Öffne es erneut, um in den Kompatibilitätsmodus zu wechseln."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "BrightIntosh will quit now. Open it again to switch to Compatibility Mode."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh se cerrará ahora. Ábrelo de nuevo para cambiar al Modo de compatibilidad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh va maintenant se fermer. Ouvrez-le à nouveau pour passer au mode Compatibilité."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh si chiuderà ora. Aprilo di nuovo per passare alla Modalità compatibilità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh は終了します。互換モードに切り替えるには、もう一度開いてください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BrightIntosh vai encerrar agora. Abra-o novamente para mudar para o Modo de Compatibilidade."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh 现在将退出。再次打开它即可切换到兼容模式。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh 現在會結束。再次開啟即可切換到相容模式。"
           }
         }
       }
@@ -1537,30 +1585,174 @@
     },
     "Compatibility Mode" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kompatibilitätsmodus"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compatibility Mode"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de compatibilidad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode Compatibilité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modalità compatibilità"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "互換モード"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de Compatibilidade"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "兼容模式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相容模式"
           }
         }
       }
     },
     "Compatibility Mode enabled" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kompatibilitätsmodus aktiviert"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compatibility Mode enabled"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de compatibilidad activado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode Compatibilité activé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modalità compatibilità attivata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "互換モードが有効になりました"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de Compatibilidade ativado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "兼容模式已启用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相容模式已啟用"
           }
         }
       }
     },
     "Compatibility Mode uses a simpler brightness method and may work better on this Mac. It can be less color-accurate." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Kompatibilitätsmodus verwendet eine einfachere Helligkeitsmethode und funktioniert auf diesem Mac möglicherweise besser. Die Farbdarstellung kann weniger genau sein."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compatibility Mode uses a simpler brightness method and may work better on this Mac. It can be less color-accurate."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El Modo de compatibilidad usa un método de brillo más sencillo y puede funcionar mejor en este Mac. Puede ser menos preciso con los colores."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le mode Compatibilité utilise une méthode de luminosité plus simple et peut mieux fonctionner sur ce Mac. Il peut être moins fidèle au niveau des couleurs."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La Modalità compatibilità usa un metodo di luminosità più semplice e potrebbe funzionare meglio su questo Mac. Può essere meno accurata nei colori."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "互換モードはよりシンプルな明るさ調整方式を使い、この Mac でうまく動作する可能性があります。色の正確さは低くなる場合があります。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Modo de Compatibilidade usa um método de brilho mais simples e pode funcionar melhor neste Mac. Pode ser menos preciso nas cores."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "兼容模式使用更简单的亮度方式，可能在这台 Mac 上效果更好。颜色准确性可能会降低。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相容模式使用較簡單的亮度方法，可能在這台 Mac 上運作得更好。色彩準確度可能較低。"
           }
         }
       }
@@ -1765,20 +1957,116 @@
     },
     "Diagnostics could not be sent" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnosedaten konnten nicht gesendet werden"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diagnostics could not be sent"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudieron enviar los diagnósticos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les diagnostics n’ont pas pu être envoyés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile inviare la diagnostica"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "診断情報を送信できませんでした"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível enviar os diagnósticos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法发送诊断信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法傳送診斷資訊"
           }
         }
       }
     },
     "Diagnostics sent" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnosedaten gesendet"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diagnostics sent"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnósticos enviados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics envoyés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostica inviata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "診断情報を送信しました"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnósticos enviados"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "诊断信息已发送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "診斷資訊已傳送"
           }
         }
       }
@@ -3741,10 +4029,58 @@
     },
     "Please share anonymous diagnostics so we can look into this brightness issue. The report only includes BrightIntosh data and your running processes, and we'll only use it to investigate this problem." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte teile anonyme Diagnosedaten, damit wir dieses Helligkeitsproblem untersuchen können. Der Bericht enthält nur BrightIntosh-Daten und deine laufenden Prozesse, und wir verwenden ihn nur zur Untersuchung dieses Problems."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Please share anonymous diagnostics so we can look into this brightness issue. The report only includes BrightIntosh data and your running processes, and we'll only use it to investigate this problem."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte diagnósticos anónimos para que podamos investigar este problema de brillo. El informe solo incluye datos de BrightIntosh y tus procesos en ejecución, y solo lo usaremos para investigar este problema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veuillez partager des diagnostics anonymes afin que nous puissions examiner ce problème de luminosité. Le rapport contient uniquement des données BrightIntosh et vos processus en cours d’exécution, et nous ne l’utiliserons que pour enquêter sur ce problème."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condividi diagnostica anonima per aiutarci a esaminare questo problema di luminosità. Il report include solo dati di BrightIntosh e i processi in esecuzione, e lo useremo solo per indagare su questo problema."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この明るさの問題を調査できるよう、匿名の診断情報を共有してください。レポートには BrightIntosh のデータと実行中のプロセスのみが含まれ、この問題の調査にのみ使用します。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partilhe diagnósticos anónimos para podermos investigar este problema de brilho. O relatório inclui apenas dados do BrightIntosh e os processos em execução, e só será usado para investigar este problema."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请分享匿名诊断信息，以便我们调查此亮度问题。报告仅包含 BrightIntosh 数据和正在运行的进程，我们只会将其用于调查此问题。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請分享匿名診斷資訊，讓我們調查這個亮度問題。報告只包含 BrightIntosh 資料和正在執行的程序，我們只會將其用於調查此問題。"
           }
         }
       }
@@ -4054,10 +4390,58 @@
     },
     "Restart BrightIntosh to switch brightness modes." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starte BrightIntosh neu, um den Helligkeitsmodus zu wechseln."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restart BrightIntosh to switch brightness modes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinicia BrightIntosh para cambiar de modo de brillo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redémarrez BrightIntosh pour changer de mode de luminosité."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riavvia BrightIntosh per cambiare modalità di luminosità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明るさモードを切り替えるには BrightIntosh を再起動してください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinicie o BrightIntosh para mudar de modo de brilho."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新启动 BrightIntosh 以切换亮度模式。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請重新啟動 BrightIntosh 以切換亮度模式。"
           }
         }
       }
@@ -4134,10 +4518,58 @@
     },
     "Send Anonymous Diagnostics" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anonyme Diagnosedaten senden"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Send Anonymous Diagnostics"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar diagnósticos anónimos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer des diagnostics anonymes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invia diagnostica anonima"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "匿名の診断情報を送信"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar diagnósticos anónimos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送匿名诊断信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送匿名診斷資訊"
           }
         }
       }
@@ -4517,10 +4949,58 @@
     },
     "Sorry, BrightIntosh could not reliably increase brightness on this Mac" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entschuldigung, BrightIntosh konnte die Helligkeit auf diesem Mac nicht zuverlässig erhöhen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sorry, BrightIntosh could not reliably increase brightness on this Mac"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo sentimos, BrightIntosh no pudo aumentar el brillo de forma fiable en este Mac"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désolé, BrightIntosh n’a pas pu augmenter la luminosité de façon fiable sur ce Mac"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spiacenti, BrightIntosh non è riuscito ad aumentare la luminosità in modo affidabile su questo Mac"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "申し訳ありません。BrightIntosh はこの Mac で明るさを安定して上げられませんでした"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lamentamos, o BrightIntosh não conseguiu aumentar o brilho de forma fiável neste Mac"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "抱歉，BrightIntosh 无法在这台 Mac 上可靠地提高亮度"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "抱歉，BrightIntosh 無法在這台 Mac 上可靠地提高亮度"
           }
         }
       }
@@ -4745,20 +5225,116 @@
     },
     "Thank you. The diagnostics report was sent to BrightIntosh support. You can now try Compatibility Mode, which uses a simpler brightness method and may work better on this Mac." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danke. Der Diagnosebericht wurde an den BrightIntosh-Support gesendet. Du kannst jetzt den Kompatibilitätsmodus ausprobieren, der eine einfachere Helligkeitsmethode verwendet und auf diesem Mac möglicherweise besser funktioniert."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Thank you. The diagnostics report was sent to BrightIntosh support. You can now try Compatibility Mode, which uses a simpler brightness method and may work better on this Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gracias. El informe de diagnóstico se envió al soporte de BrightIntosh. Ahora puedes probar el Modo de compatibilidad, que usa un método de brillo más sencillo y puede funcionar mejor en este Mac."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merci. Le rapport de diagnostic a été envoyé au support BrightIntosh. Vous pouvez maintenant essayer le mode Compatibilité, qui utilise une méthode de luminosité plus simple et peut mieux fonctionner sur ce Mac."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grazie. Il report diagnostico è stato inviato al supporto BrightIntosh. Ora puoi provare la Modalità compatibilità, che usa un metodo di luminosità più semplice e potrebbe funzionare meglio su questo Mac."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ありがとうございます。診断レポートが BrightIntosh サポートに送信されました。よりシンプルな明るさ調整方式を使い、この Mac でうまく動作する可能性がある互換モードを試せます。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrigado. O relatório de diagnóstico foi enviado para o suporte do BrightIntosh. Pode agora experimentar o Modo de Compatibilidade, que usa um método de brilho mais simples e pode funcionar melhor neste Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "谢谢。诊断报告已发送给 BrightIntosh 支持。现在你可以尝试兼容模式，它使用更简单的亮度方式，可能在这台 Mac 上效果更好。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "謝謝。診斷報告已傳送給 BrightIntosh 支援。你現在可以嘗試相容模式，它使用較簡單的亮度方法，可能在這台 Mac 上運作得更好。"
           }
         }
       }
     },
     "The alternate brightness backend only applies to Standard Mode." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das alternative Helligkeits-Backend gilt nur für den Standardmodus."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The alternate brightness backend only applies to Standard Mode."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El backend de brillo alternativo solo se aplica al Modo estándar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le backend de luminosité alternatif s’applique uniquement au mode Standard."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il backend di luminosità alternativo si applica solo alla Modalità standard."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代替の明るさバックエンドは標準モードでのみ使用されます。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O backend de brilho alternativo aplica-se apenas ao Modo Padrão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "备用亮度后端仅适用于标准模式。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "替代亮度後端僅適用於標準模式。"
           }
         }
       }
@@ -4824,10 +5400,58 @@
     },
     "The report was copied to your clipboard instead. Please include it in your support message so the brightness issue can be investigated." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Bericht wurde stattdessen in die Zwischenablage kopiert. Bitte füge ihn deiner Supportnachricht bei, damit das Helligkeitsproblem untersucht werden kann."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The report was copied to your clipboard instead. Please include it in your support message so the brightness issue can be investigated."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El informe se copió al portapapeles. Inclúyelo en tu mensaje de soporte para que podamos investigar el problema de brillo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le rapport a été copié dans le presse-papiers à la place. Veuillez l’inclure dans votre message au support afin que le problème de luminosité puisse être examiné."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il report è stato invece copiato negli appunti. Includilo nel messaggio al supporto per consentire l’indagine sul problema di luminosità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代わりにレポートをクリップボードにコピーしました。明るさの問題を調査できるよう、サポートへのメッセージに含めてください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O relatório foi copiado para a área de transferência. Inclua-o na sua mensagem de suporte para que o problema de brilho possa ser investigado."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "报告已复制到剪贴板。请将其包含在你的支持消息中，以便调查亮度问题。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "報告已改為複製到剪貼簿。請將它附在你的支援訊息中，以便調查亮度問題。"
           }
         }
       }
@@ -5185,20 +5809,116 @@
     },
     "Try Compatibility Mode" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kompatibilitätsmodus testen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Try Compatibility Mode"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probar modo de compatibilidad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essayer le mode Compatibilité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prova Modalità compatibilità"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "互換モードを試す"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Experimentar Modo de Compatibilidade"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尝试兼容模式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "嘗試相容模式"
           }
         }
       }
     },
     "Try Compatibility Mode?" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kompatibilitätsmodus testen?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Try Compatibility Mode?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Probar el modo de compatibilidad?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essayer le mode Compatibilité ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Provare la Modalità compatibilità?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "互換モードを試しますか？"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Experimentar o Modo de Compatibilidade?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要尝试兼容模式吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要嘗試相容模式嗎？"
           }
         }
       }
@@ -5438,10 +6158,58 @@
     },
     "Uses an older, simpler brightness method. It may work better on some Macs, but can be less color-accurate. Restart BrightIntosh to apply this change." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwendet eine ältere, einfachere Helligkeitsmethode. Sie funktioniert auf manchen Macs möglicherweise besser, kann aber weniger farbgenau sein. Starte BrightIntosh neu, um diese Änderung anzuwenden."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uses an older, simpler brightness method. It may work better on some Macs, but can be less color-accurate. Restart BrightIntosh to apply this change."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa un método de brillo más antiguo y sencillo. Puede funcionar mejor en algunos Mac, pero puede ser menos preciso con los colores. Reinicia BrightIntosh para aplicar este cambio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilise une méthode de luminosité plus ancienne et plus simple. Elle peut mieux fonctionner sur certains Mac, mais peut être moins fidèle au niveau des couleurs. Redémarrez BrightIntosh pour appliquer ce changement."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa un metodo di luminosità più vecchio e semplice. Potrebbe funzionare meglio su alcuni Mac, ma può essere meno accurato nei colori. Riavvia BrightIntosh per applicare la modifica."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "古い、よりシンプルな明るさ調整方式を使います。一部の Mac ではうまく動作する可能性がありますが、色の正確さは低くなる場合があります。この変更を適用するには BrightIntosh を再起動してください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa um método de brilho mais antigo e simples. Pode funcionar melhor em alguns Macs, mas pode ser menos preciso nas cores. Reinicie o BrightIntosh para aplicar esta alteração."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用较旧、更简单的亮度方式。它可能在某些 Mac 上效果更好，但颜色准确性可能会降低。重新启动 BrightIntosh 以应用此更改。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用較舊、較簡單的亮度方法。它可能在某些 Mac 上運作得更好，但色彩準確度可能較低。請重新啟動 BrightIntosh 以套用此變更。"
           }
         }
       }
