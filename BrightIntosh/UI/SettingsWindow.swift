@@ -270,7 +270,7 @@ struct AdvancedSettingsSheet: View {
                     BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness = new
                 }
                 
-                Text("These options can help with display-specific brightness issues.")
+                Text("These options can help when extra brightness does not behave as expected.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

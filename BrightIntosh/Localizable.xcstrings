@@ -746,60 +746,60 @@
         }
       }
     },
-    "Another app or system process repeatedly changed the display gamma values BrightIntosh applied. BrightIntosh stopped increased brightness to avoid flickering." : {
+    "Another app or system process repeatedly changed the display while BrightIntosh was active. BrightIntosh stopped increased brightness to avoid flickering." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eine andere App oder ein Systemprozess hat wiederholt die von BrightIntosh angewendeten Gammawerte des Displays verändert. BrightIntosh hat die erhöhte Helligkeit gestoppt, um Flackern zu vermeiden."
+            "value" : "Eine andere App oder ein Systemprozess hat wiederholt das Display verändert, während BrightIntosh aktiv war. BrightIntosh hat die erhöhte Helligkeit gestoppt, um Flackern zu vermeiden."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Another app or system process repeatedly changed the display gamma values BrightIntosh applied. BrightIntosh stopped increased brightness to avoid flickering."
+            "value" : "Another app or system process repeatedly changed the display while BrightIntosh was active. BrightIntosh stopped increased brightness to avoid flickering."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Otra app o proceso del sistema cambió repetidamente los valores gamma de la pantalla aplicados por BrightIntosh. BrightIntosh detuvo el aumento del brillo para evitar parpadeos."
+            "value" : "Otra app o proceso del sistema cambió repetidamente la pantalla mientras BrightIntosh estaba activo. BrightIntosh detuvo el aumento del brillo para evitar parpadeos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une autre app ou un processus système a modifié à plusieurs reprises les valeurs gamma de l’écran appliquées par BrightIntosh. BrightIntosh a arrêté l’augmentation de la luminosité afin d’éviter le scintillement."
+            "value" : "Une autre app ou un processus système a modifié à plusieurs reprises l’écran pendant que BrightIntosh était actif. BrightIntosh a arrêté l’augmentation de la luminosité afin d’éviter le scintillement."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un’altra app o un processo di sistema ha modificato ripetutamente i valori gamma dello schermo applicati da BrightIntosh. BrightIntosh ha interrotto l’aumento della luminosità per evitare sfarfallii."
+            "value" : "Un’altra app o un processo di sistema ha modificato ripetutamente lo schermo mentre BrightIntosh era attivo. BrightIntosh ha interrotto l’aumento della luminosità per evitare sfarfallii."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "別のアプリまたはシステムプロセスが、BrightIntosh が適用したディスプレイのガンマ値を繰り返し変更しました。ちらつきを防ぐため、BrightIntosh は明るさの増加を停止しました。"
+            "value" : "BrightIntosh が有効な間に、別のアプリまたはシステムプロセスがディスプレイを繰り返し変更しました。ちらつきを防ぐため、BrightIntosh は明るさの増加を停止しました。"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Outra app ou processo do sistema alterou repetidamente os valores de gama do ecrã aplicados pelo BrightIntosh. O BrightIntosh interrompeu o aumento do brilho para evitar cintilação."
+            "value" : "Outra app ou processo do sistema alterou repetidamente o ecrã enquanto o BrightIntosh estava ativo. O BrightIntosh interrompeu o aumento do brilho para evitar cintilação."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "另一个 App 或系统进程反复更改了 BrightIntosh 应用的显示器伽马值。BrightIntosh 已停止提升亮度以避免闪烁。"
+            "value" : "BrightIntosh 处于开启状态时，另一个 App 或系统进程反复更改了显示器。BrightIntosh 已停止提升亮度以避免闪烁。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "另一個 App 或系統程序反覆更改 BrightIntosh 套用的顯示器 Gamma 值。BrightIntosh 已停止提升亮度以避免閃爍。"
+            "value" : "BrightIntosh 啟用時，另一個 App 或系統程序反覆更改顯示器。BrightIntosh 已停止提升亮度以避免閃爍。"
           }
         }
       }
@@ -4596,61 +4596,61 @@
         }
       }
     },
-    "These options can help with display-specific brightness issues." : {
+    "These options can help when extra brightness does not behave as expected." : {
       "comment" : "A description of the advanced settings.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diese Optionen können bei bildschirm-spezifischen Helligkeitsproblemen helfen."
+            "value" : "Diese Optionen können helfen, wenn die zusätzliche Helligkeit nicht wie erwartet funktioniert."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "These options can help with display-specific brightness issues."
+            "value" : "These options can help when extra brightness does not behave as expected."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Estas opciones pueden ayudar con problemas de brillo específicos de la pantalla."
+            "value" : "Estas opciones pueden ayudar cuando el brillo adicional no funciona como se espera."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ces options peuvent aider à résoudre les problèmes de luminosité spécifiques à l'affichage."
+            "value" : "Ces options peuvent aider lorsque la luminosité supplémentaire ne fonctionne pas comme prévu."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Queste opzioni possono aiutare con problemi di luminosità specifici del display."
+            "value" : "Queste opzioni possono aiutare quando la luminosità aggiuntiva non funziona come previsto."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "これらのオプションは、特定のディスプレイの明るさの問題に役立ちます。"
+            "value" : "追加の明るさが期待どおりに動作しない場合、これらのオプションが役立ちます。"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Estas opções podem ajudar com problemas de brilho específicos do ecrã."
+            "value" : "Estas opções podem ajudar quando o brilho adicional não funciona como esperado."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这些选项有助于解决特定显示器的亮度问题。"
+            "value" : "当额外亮度未按预期工作时，这些选项可能会有所帮助。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這些選項可以協助解決特定顯示器的亮度問題。"
+            "value" : "當額外亮度未如預期運作時，這些選項可能會有所幫助。"
           }
         }
       }

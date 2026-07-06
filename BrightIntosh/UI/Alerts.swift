@@ -20,7 +20,7 @@ import Cocoa
     let alert = NSAlert()
     alert.alertStyle = .warning
     alert.messageText = String(localized: "Increased brightness was disabled")
-    alert.informativeText = String(localized: "Another app or system process repeatedly changed the display gamma values BrightIntosh applied. BrightIntosh stopped increased brightness to avoid flickering.")
+    alert.informativeText = String(localized: "Another app or system process repeatedly changed the display while BrightIntosh was active. BrightIntosh stopped increased brightness to avoid flickering.")
     alert.addButton(withTitle: String(localized: "OK"))
     return alert
 }
