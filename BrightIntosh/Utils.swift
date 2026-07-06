@@ -279,7 +279,8 @@ private func getAppTransaction() async throws -> VerificationResult<AppTransacti
 
 @MainActor
 enum SupportReportContext {
-    static weak var brightnessManager: BrightnessManager?
+    static weak var brightnessManager: (any BrightnessManaging)?
+    static var lastBrightnessFailureReason: String?
 }
 
 private let hdrReadyReportThreshold = 1.05
@@ -341,12 +342,18 @@ private func appendSettingsDiagnostics(to report: inout String) {
     
     report += "Settings:\n"
     report += " - Increased brightness active: \(settings.brightintoshActive)\n"
+    report += " - Compatibility Mode enabled: \(settings.useCompatibilityBrightnessMode)\n"
     report += " - Wait for HDR before increasing brightness: \(settings.waitForHDRBeforeIncreasingBrightness)\n"
-    report += " - Use alternate brightness backend: \(settings.useAlternateBrightnessBackend)\n"
+    if !settings.useCompatibilityBrightnessMode {
+        report += " - Brightness backend: \(settings.useAlternateBrightnessBackend ? "alternate" : "standard")\n"
+    }
     report += " - Built-in XDR displays only: \(settings.brightIntoshOnlyOnBuiltIn)\n"
     report += " - Disable when lid closed: \(settings.disableWhenLidClosed)\n"
     report += " - Show HDR retry cooldown notice: \(settings.showHDRRetryCooldownNotice)\n"
     report += " - Show incompatible apps notice: \(settings.showIncompatibleAppsNotice)\n"
+    if let lastBrightnessFailureReason = SupportReportContext.lastBrightnessFailureReason {
+        report += " - Last brightness failure reason: \(lastBrightnessFailureReason)\n"
+    }
 }
 
 @MainActor

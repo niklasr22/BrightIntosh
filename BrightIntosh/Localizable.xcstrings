@@ -989,6 +989,17 @@
         }
       }
     },
+    "BrightIntosh could not reliably increase brightness on this Mac" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh could not reliably increase brightness on this Mac"
+          }
+        }
+      }
+    },
     "BrightIntosh is designed to be safe for your MacBook Pro and does not bypass the operating system's protections. BrightIntosh is open source software and therefore comes with no warranties, so use it at your own risk." : {
       "localizations" : {
         "de" : {
@@ -1160,6 +1171,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "BrightIntosh 設定"
+          }
+        }
+      }
+    },
+    "BrightIntosh will quit now. Open it again to switch to Compatibility Mode." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh will quit now. Open it again to switch to Compatibility Mode."
           }
         }
       }
@@ -1514,6 +1535,36 @@
         }
       }
     },
+    "Compatibility Mode" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compatibility Mode"
+          }
+        }
+      }
+    },
+    "Compatibility Mode enabled" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compatibility Mode enabled"
+          }
+        }
+      }
+    },
+    "Compatibility Mode uses a simpler brightness method and may work better on this Mac. It can be less color-accurate." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compatibility Mode uses a simpler brightness method and may work better on this Mac. It can be less color-accurate."
+          }
+        }
+      }
+    },
     "Copied to clipboard" : {
       "comment" : "A message displayed when the report is copied to the clipboard.",
       "localizations" : {
@@ -1569,6 +1620,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已複製到剪貼簿"
+          }
+        }
+      }
+    },
+    "Copy Diagnostics" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy Diagnostics"
           }
         }
       }
@@ -1686,6 +1748,37 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消提升亮度"
+          }
+        }
+      }
+    },
+    "Diagnostics copied" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics copied"
+          }
+        }
+      }
+    },
+    "Diagnostics could not be sent" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics could not be sent"
+          }
+        }
+      }
+    },
+    "Diagnostics sent" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics sent"
           }
         }
       }
@@ -3395,6 +3488,39 @@
         }
       }
     },
+    "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send anonymous diagnostics so this can be investigated. The report includes technical BrightIntosh, device, display, and app diagnostics, but no name or email address." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send anonymous diagnostics so this can be investigated. The report includes technical BrightIntosh, device, display, and app diagnostics, but no name or email address."
+          }
+        }
+      }
+    },
+    "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send diagnostics so this can be investigated." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send diagnostics so this can be investigated."
+          }
+        }
+      }
+    },
+    "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send diagnostics so this can be investigated. You can also try Compatibility Mode, which uses a simpler brightness method." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send diagnostics so this can be investigated. You can also try Compatibility Mode, which uses a simpler brightness method."
+          }
+        }
+      }
+    },
     "Never" : {
       "comment" : "A label for a picker option that disables battery automation entirely.",
       "localizations" : {
@@ -3450,6 +3576,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從不"
+          }
+        }
+      }
+    },
+    "Not Now" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Now"
           }
         }
       }
@@ -3566,6 +3702,49 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟設定："
+          }
+        }
+      }
+    },
+    "Please include the copied diagnostics in your support message so the brightness issue can be investigated." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please include the copied diagnostics in your support message so the brightness issue can be investigated."
+          }
+        }
+      }
+    },
+    "Please send anonymous diagnostics so this brightness issue can be investigated." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please send anonymous diagnostics so this brightness issue can be investigated."
+          }
+        }
+      }
+    },
+    "Please send anonymous diagnostics so this brightness issue can be investigated. It includes BrightIntosh data and a list of running processes, and is only used for investigating this issue." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please send anonymous diagnostics so this brightness issue can be investigated. It includes BrightIntosh data and a list of running processes, and is only used for investigating this issue."
+          }
+        }
+      }
+    },
+    "Please share anonymous diagnostics so we can look into this brightness issue. The report only includes BrightIntosh data and your running processes, and we'll only use it to investigate this problem." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please share anonymous diagnostics so we can look into this brightness issue. The report only includes BrightIntosh data and your running processes, and we'll only use it to investigate this problem."
           }
         }
       }
@@ -3862,6 +4041,38 @@
         }
       }
     },
+    "Restart BrightIntosh to apply this change." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart BrightIntosh to apply this change."
+          }
+        }
+      }
+    },
+    "Restart BrightIntosh to switch brightness modes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart BrightIntosh to switch brightness modes."
+          }
+        }
+      }
+    },
+    "Restart BrightIntosh to switch to Compatibility Mode." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart BrightIntosh to switch to Compatibility Mode."
+          }
+        }
+      }
+    },
     "Review the report before sharing it. It includes device, display, and BrightIntosh diagnostics." : {
       "comment" : "A description of the contents of a support report.",
       "localizations" : {
@@ -3917,6 +4128,27 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在分享報告前請先審閱。報告包含裝置、顯示器及 BrightIntosh 的診斷資訊。"
+          }
+        }
+      }
+    },
+    "Send Anonymous Diagnostics" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Anonymous Diagnostics"
+          }
+        }
+      }
+    },
+    "Send Diagnostics" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Diagnostics"
           }
         }
       }
@@ -4272,6 +4504,27 @@
         }
       }
     },
+    "Sorry about that. Please send anonymous diagnostics so this brightness issue can be investigated." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorry about that. Please send anonymous diagnostics so this brightness issue can be investigated."
+          }
+        }
+      }
+    },
+    "Sorry, BrightIntosh could not reliably increase brightness on this Mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorry, BrightIntosh could not reliably increase brightness on this Mac"
+          }
+        }
+      }
+    },
     "Start your free %lld day trial" : {
       "localizations" : {
         "de" : {
@@ -4479,6 +4732,37 @@
         }
       }
     },
+    "Thank you. The diagnostics report was sent to BrightIntosh support." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank you. The diagnostics report was sent to BrightIntosh support."
+          }
+        }
+      }
+    },
+    "Thank you. The diagnostics report was sent to BrightIntosh support. You can now try Compatibility Mode, which uses a simpler brightness method and may work better on this Mac." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank you. The diagnostics report was sent to BrightIntosh support. You can now try Compatibility Mode, which uses a simpler brightness method and may work better on this Mac."
+          }
+        }
+      }
+    },
+    "The alternate brightness backend only applies to Standard Mode." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The alternate brightness backend only applies to Standard Mode."
+          }
+        }
+      }
+    },
     "The BrightIntosh brightness slider was removed. Use your Mac's normal brightness keys to adjust brightness, and simply toggle increased brightness on or off when you need the boost." : {
       "comment" : "A description of the brightness slider removal hint.",
       "localizations" : {
@@ -4534,6 +4818,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "BrightIntosh 的亮度滑桿已被移除。請使用您的 Mac 的普通亮度鍵來調整亮度，並在需要提升亮度時，只需切換增強亮度的開啟或關閉即可。"
+          }
+        }
+      }
+    },
+    "The report was copied to your clipboard instead. Please include it in your support message so the brightness issue can be investigated." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The report was copied to your clipboard instead. Please include it in your support message so the brightness issue can be investigated."
           }
         }
       }
@@ -4889,6 +5183,26 @@
         }
       }
     },
+    "Try Compatibility Mode" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Compatibility Mode"
+          }
+        }
+      }
+    },
+    "Try Compatibility Mode?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Compatibility Mode?"
+          }
+        }
+      }
+    },
     "Unfortunately your device is currently not supported by BrightIntosh." : {
       "localizations" : {
         "de" : {
@@ -5118,6 +5432,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用替代亮度後端"
+          }
+        }
+      }
+    },
+    "Uses an older, simpler brightness method. It may work better on some Macs, but can be less color-accurate. Restart BrightIntosh to apply this change." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uses an older, simpler brightness method. It may work better on some Macs, but can be less color-accurate. Restart BrightIntosh to apply this change."
           }
         }
       }

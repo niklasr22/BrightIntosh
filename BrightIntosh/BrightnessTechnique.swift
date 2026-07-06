@@ -131,6 +131,7 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
     fileprivate let hdrReadyThreshold = 1.05
     fileprivate let hdrEngageTimeout: TimeInterval = 25
     fileprivate let hdrRetryCooldownSeconds = 30
+    fileprivate let maxConsecutiveHDRTimeoutFailures = 3
     fileprivate let defaultPollInterval: Duration = .milliseconds(500)
     fileprivate let fastPollInterval: Duration = .milliseconds(16)
     fileprivate let fastPollDuration: TimeInterval = 30
@@ -327,7 +328,25 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
                 "displayID": NSNumber(value: displayId),
             ]
         )
+        
+        if nextCount >= maxConsecutiveHDRTimeoutFailures {
+            handlePersistentHDRFailure(displayId: displayId, timeoutCount: nextCount)
+        }
+        
         return cooldownSeconds
+    }
+    
+    private func handlePersistentHDRFailure(displayId: CGDirectDisplayID, timeoutCount: Int) {
+        let reason = "Display \(displayId) did not become HDR ready after \(timeoutCount) consecutive \(String(format: "%.1f", hdrEngageTimeout))s attempts."
+        print("Persistent HDR failure detected: \(reason)")
+        
+        if BrightIntoshSettings.shared.brightintoshActive {
+            BrightIntoshSettings.shared.brightintoshActive = false
+        }
+        
+        Task { @MainActor in
+            await presentBrightnessFailurePrompt(reason: reason)
+        }
     }
     
     private func endHDRRetryCooldown(_ displayId: CGDirectDisplayID, notify: Bool) {
@@ -784,7 +803,8 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
     }
     
     private func handlePersistentGammaConflict(displayId: CGDirectDisplayID) {
-        print("Persistent gamma conflict detected for display \(displayId); disabling increased brightness")
+        let reason = "Display \(displayId) gamma values were repeatedly changed after BrightIntosh applied them."
+        print("Persistent gamma conflict detected: \(reason); disabling increased brightness")
         consecutiveGammaDriftReapplyCounts.removeAll()
         
         if BrightIntoshSettings.shared.brightintoshActive {
@@ -794,8 +814,7 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
         }
         
         Task { @MainActor in
-            NSApp.activate(ignoringOtherApps: true)
-            createGammaConflictAlert().runModal()
+            await presentBrightnessFailurePrompt(reason: reason)
         }
     }
     
@@ -909,5 +928,108 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
             return "HDR cooldown"
         }
         return "active"
+    }
+}
+
+@MainActor
+final class CompatibilityGammaTechnique: BrightnessTechnique {
+    
+    private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
+    private var gammaTables: [CGDirectDisplayID: GammaTable] = [:]
+    
+    private var gammaFactor: Float {
+        if let device = getModelIdentifier(), sdr600nitsDevices.contains(device) {
+            return 1.535
+        }
+        return 1.59
+    }
+    
+    override func enable() {
+        getXDRDisplays().forEach {
+            enableScreen(screen: $0)
+        }
+        print("Enabling compatibility gamma technique")
+        isEnabled = true
+        adjustBrightness()
+    }
+    
+    override func enableScreen(screen: NSScreen) {
+        guard let displayId = screen.displayId else { return }
+        
+        if gammaTables[displayId] == nil {
+            gammaTables[displayId] = GammaTable.createFromCurrentGammaTable(displayId: displayId)
+        }
+        
+        if let existing = overlayWindowControllers[displayId] {
+            existing.updateScreen(screen: screen)
+            return
+        }
+        
+        let overlayWindowController = OverlayWindowController(screen: screen)
+        overlayWindowControllers[displayId] = overlayWindowController
+        let rect = NSRect(x: screen.frame.origin.x, y: screen.frame.origin.y, width: 1, height: 1)
+        overlayWindowController.open(rect: rect)
+    }
+    
+    override func disable() {
+        isEnabled = false
+        overlayWindowControllers.values.forEach { controller in
+            controller.window?.close()
+        }
+        overlayWindowControllers.removeAll()
+        gammaTables.removeAll()
+        resetGammaTable()
+    }
+    
+    override func adjustBrightness() {
+        super.adjustBrightness()
+        
+        guard isEnabled else {
+            return
+        }
+        
+        overlayWindowControllers.values.forEach { controller in
+            if let displayId = controller.screen.displayId,
+               let gammaTable = gammaTables[displayId] {
+                gammaTable.setTableForScreen(displayId: displayId, factor: gammaFactor)
+            }
+        }
+    }
+    
+    override func screenUpdate(screens: [NSScreen]) {
+        let activeDisplayIds = Set(screens.compactMap { $0.displayId })
+        let deactivatedDisplayIds = overlayWindowControllers.keys.filter { !activeDisplayIds.contains($0) }
+        
+        deactivatedDisplayIds.forEach { displayId in
+            overlayWindowControllers[displayId]?.window?.close()
+            gammaTables[displayId]?.setTableForScreen(displayId: displayId)
+            gammaTables.removeValue(forKey: displayId)
+            overlayWindowControllers.removeValue(forKey: displayId)
+        }
+        
+        screens.forEach { screen in
+            guard let displayId = screen.displayId else { return }
+            if overlayWindowControllers.keys.contains(displayId) {
+                overlayWindowControllers[displayId]?.reposition(screen: screen)
+            } else {
+                enableScreen(screen: screen)
+            }
+        }
+        
+        adjustBrightness()
+    }
+    
+    private func resetGammaTable() {
+        CGDisplayRestoreColorSyncSettings()
+        print("Reset gamma table for all displays")
+    }
+    
+    @MainActor
+    func appendSupportDiagnostics(to report: inout String) {
+        report += "Compatibility gamma technique:\n"
+        report += " - Technique enabled: \(isEnabled)\n"
+        report += " - Fixed gamma factor: \(String(format: "%.4f", gammaFactor))\n"
+        report += " - Overlay display IDs: \(overlayWindowControllers.keys.sorted())\n"
+        report += " - Captured gamma table display IDs: \(gammaTables.keys.sorted())\n"
     }
 }

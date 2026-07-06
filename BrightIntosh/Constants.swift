@@ -14,6 +14,7 @@ struct BrightIntoshUrls {
     static let twitter = URL(string: "https://x.com/BrightIntoshApp")!
     static let help = URL(string: "https://brightintosh.de#faq")!
     static let time = URL(string: "https://brightintosh.de/time.php")!
+    static let report = URL(string: "https://brightintosh.de/report.php")!
     static let legal = URL(string: "https://brightintosh.de/legal_notice.html")!
 }
 

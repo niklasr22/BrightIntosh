@@ -19,7 +19,7 @@ class BrightIntoshAppDelegate: NSObject {
     private lazy var settingsWindowController = SettingsWindowController()
     
     private var statusBarMenu: StatusBarMenu?
-    private var brightnessManager: BrightnessManager?
+    private var brightnessManager: (any BrightnessManaging)?
     private var automationManager: AutomationManager?
     private var incompatibleAppsMonitor: IncompatibleAppsMonitor?
     private var hdrCooldownNoticeMonitor: HDRCooldownNoticeMonitor?
@@ -108,7 +108,11 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
             BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn = false
         }
         
-        brightnessManager = BrightnessManager()
+        if BrightIntoshSettings.shared.useCompatibilityBrightnessMode {
+            brightnessManager = CompatibilityBrightnessManager()
+        } else {
+            brightnessManager = BrightnessManager()
+        }
         SupportReportContext.brightnessManager = brightnessManager
         automationManager = AutomationManager()
         incompatibleAppsMonitor = IncompatibleAppsMonitor()

@@ -16,7 +16,12 @@ extension NSScreen {
 }
 
 @MainActor
-class BrightnessManager {
+protocol BrightnessManaging: AnyObject {
+    func appendSupportDiagnostics(to report: inout String)
+}
+
+@MainActor
+class BrightnessManager: BrightnessManaging {
     
     var brightnessTechnique: BrightnessTechnique?
     var screens: [NSScreen] = []
@@ -59,6 +64,13 @@ class BrightnessManager {
             self,
             selector: #selector(handleWakeFromSleep(notification:)),
             name: NSWorkspace.didWakeNotification,
+            object: nil
+        )
+        
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self,
+            selector: #selector(handleWillSleep(notification:)),
+            name: NSWorkspace.willSleepNotification,
             object: nil
         )
 
@@ -132,14 +144,27 @@ class BrightnessManager {
         guard BrightIntoshSettings.shared.brightintoshActive && enabled else {
             return
         }
+        if shouldDisableForClosedLid(currentScreens: NSScreen.screens) {
+            BrightIntoshSettings.shared.brightintoshActive = false
+            return
+        }
         print("Restoring color sync settings after wake from sleep")
         CGDisplayRestoreColorSyncSettings()
+        enableExtraBrightness()
         scheduleDebouncedScreenUpdate()
     }
     
     @MainActor @objc func handleScreensSleep(notification: Notification) {
         print("Restoring color sync settings as screens sleep")
         CGDisplayRestoreColorSyncSettings()
+    }
+    
+    @MainActor @objc func handleWillSleep(notification: Notification) {
+        guard brightnessTechnique?.isEnabled == true else {
+            return
+        }
+        print("Disabling brightness technique before system sleep")
+        brightnessTechnique?.disable()
     }
     
     @MainActor func handlePotentialScreenUpdate() {
@@ -249,4 +274,190 @@ class BrightnessManager {
         return !currentScreens.isEmpty && !currentScreens.contains(where: { isBuiltInScreen(screen: $0) })
     }
     
+}
+
+
+/**
+ The compatibility brightness manager is similar to the one used in v5.0.1
+ */
+@MainActor
+final class CompatibilityBrightnessManager: BrightnessManaging {
+    
+    private var brightnessTechnique = CompatibilityGammaTechnique()
+    private var screens: [NSScreen] = []
+    private var xdrScreens: [NSScreen] = []
+    private var enabled: Bool = false
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        screens = NSScreen.screens
+        xdrScreens = getXDRDisplays()
+        
+        if BrightIntoshSettings.shared.brightintoshActive {
+            if shouldDisableForClosedLid(currentScreens: screens) {
+                BrightIntoshSettings.shared.brightintoshActive = false
+            } else {
+                activateSafely()
+            }
+        }
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleScreenParameters(notification:)),
+            name: NSApplication.didChangeScreenParametersNotification,
+            object: nil
+        )
+        
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self,
+            selector: #selector(screensWake(notification:)),
+            name: NSWorkspace.didWakeNotification,
+            object: nil
+        )
+        
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self,
+            selector: #selector(handleWillSleep(notification:)),
+            name: NSWorkspace.willSleepNotification,
+            object: nil
+        )
+        
+        Authorizer.shared.$status.sink { newStatus in
+            if newStatus == .unauthorized && BrightIntoshSettings.shared.brightintoshActive {
+                BrightIntoshSettings.shared.brightintoshActive = false
+            }
+        }.store(in: &cancellables)
+        
+        BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
+            if BrightIntoshSettings.shared.brightintoshActive {
+                self.activateSafely()
+            } else if self.enabled {
+                self.brightnessTechnique.disable()
+            }
+        }
+        
+        BrightIntoshSettings.shared.addListener(setting: "brightIntoshOnlyOnBuiltIn") {
+            self.handlePotentialScreenUpdate()
+        }
+        
+        BrightIntoshSettings.shared.addListener(setting: "disableWhenLidClosed") {
+            self.handlePotentialScreenUpdate()
+        }
+        
+        print("Activated compatibility brightness manager")
+    }
+    
+    deinit {
+        let brightnessTechnique = brightnessTechnique
+        NotificationCenter.default.removeObserver(self)
+        NSWorkspace.shared.notificationCenter.removeObserver(self)
+        Task { @MainActor in
+            brightnessTechnique.disable()
+        }
+    }
+    
+    private func activateSafely() {
+        if Authorizer.shared.isAllowed() {
+            enabled = true
+            enableExtraBrightness()
+        } else {
+            BrightIntoshSettings.shared.brightintoshActive = false
+        }
+    }
+    
+    @MainActor @objc private func handleScreenParameters(notification: Notification) {
+        handlePotentialScreenUpdate()
+    }
+    
+    @MainActor @objc private func screensWake(notification: Notification) {
+        print("Compatibility brightness wake up \(notification.name)")
+        guard BrightIntoshSettings.shared.brightintoshActive && enabled else {
+            return
+        }
+        if shouldDisableForClosedLid(currentScreens: NSScreen.screens) {
+            BrightIntoshSettings.shared.brightintoshActive = false
+            return
+        }
+        enableExtraBrightness()
+        handlePotentialScreenUpdate()
+    }
+    
+    @MainActor @objc private func handleWillSleep(notification: Notification) {
+        guard brightnessTechnique.isEnabled else {
+            return
+        }
+        print("Disabling compatibility brightness technique before system sleep")
+        brightnessTechnique.disable()
+    }
+    
+    @MainActor private func handlePotentialScreenUpdate() {
+        let newScreens = NSScreen.screens
+        let newXdrDisplays = getXDRDisplays()
+        var changedScreens = newScreens.count != screens.count || newXdrDisplays.count != xdrScreens.count
+        if !changedScreens {
+            for screen in screens {
+                let sameScreen = newScreens.filter({ $0.displayId == screen.displayId }).first
+                if sameScreen?.frame.origin != screen.frame.origin {
+                    changedScreens = true
+                    break
+                }
+            }
+        }
+        
+        if changedScreens {
+            print("Compatibility brightness screen setup changed")
+            screens = newScreens
+            xdrScreens = newXdrDisplays
+        }
+        
+        if BrightIntoshSettings.shared.brightintoshActive && shouldDisableForClosedLid(currentScreens: newScreens) {
+            BrightIntoshSettings.shared.brightintoshActive = false
+            return
+        }
+        
+        guard enabled else {
+            return
+        }
+        
+        if !newScreens.isEmpty {
+            if BrightIntoshSettings.shared.brightintoshActive {
+                if !brightnessTechnique.isEnabled {
+                    print("Enable compatibility brightness after screen setup change")
+                    enableExtraBrightness()
+                } else if changedScreens {
+                    brightnessTechnique.screenUpdate(screens: xdrScreens)
+                } else {
+                    brightnessTechnique.adjustBrightness()
+                }
+            }
+        } else {
+            print("Disabling compatibility brightness")
+            brightnessTechnique.disable()
+        }
+    }
+    
+    @MainActor
+    private func enableExtraBrightness() {
+        brightnessTechnique.enable()
+    }
+    
+    @MainActor
+    private func shouldDisableForClosedLid(currentScreens: [NSScreen]) -> Bool {
+        guard BrightIntoshSettings.shared.disableWhenLidClosed else {
+            return false
+        }
+        if let clamshellClosed = isClamshellClosed() {
+            return clamshellClosed
+        }
+        return !currentScreens.isEmpty && !currentScreens.contains(where: { isBuiltInScreen(screen: $0) })
+    }
+    
+    @MainActor
+    func appendSupportDiagnostics(to report: inout String) {
+        report += "Compatibility brightness manager:\n"
+        report += " - Manager enabled: \(enabled)\n"
+        report += " - Increased brightness setting: \(BrightIntoshSettings.shared.brightintoshActive)\n"
+        brightnessTechnique.appendSupportDiagnostics(to: &report)
+    }
 }
