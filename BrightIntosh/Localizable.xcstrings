@@ -746,64 +746,6 @@
         }
       }
     },
-    "Another app or system process repeatedly changed the display while BrightIntosh was active. BrightIntosh stopped increased brightness to avoid flickering." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eine andere App oder ein Systemprozess hat wiederholt das Display verändert, während BrightIntosh aktiv war. BrightIntosh hat die erhöhte Helligkeit gestoppt, um Flackern zu vermeiden."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Another app or system process repeatedly changed the display while BrightIntosh was active. BrightIntosh stopped increased brightness to avoid flickering."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Otra app o proceso del sistema cambió repetidamente la pantalla mientras BrightIntosh estaba activo. BrightIntosh detuvo el aumento del brillo para evitar parpadeos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une autre app ou un processus système a modifié à plusieurs reprises l’écran pendant que BrightIntosh était actif. BrightIntosh a arrêté l’augmentation de la luminosité afin d’éviter le scintillement."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un’altra app o un processo di sistema ha modificato ripetutamente lo schermo mentre BrightIntosh era attivo. BrightIntosh ha interrotto l’aumento della luminosità per evitare sfarfallii."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BrightIntosh が有効な間に、別のアプリまたはシステムプロセスがディスプレイを繰り返し変更しました。ちらつきを防ぐため、BrightIntosh は明るさの増加を停止しました。"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Outra app ou processo do sistema alterou repetidamente o ecrã enquanto o BrightIntosh estava ativo. O BrightIntosh interrompeu o aumento do brilho para evitar cintilação."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BrightIntosh 处于开启状态时，另一个 App 或系统进程反复更改了显示器。BrightIntosh 已停止提升亮度以避免闪烁。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BrightIntosh 啟用時，另一個 App 或系統程序反覆更改顯示器。BrightIntosh 已停止提升亮度以避免閃爍。"
-          }
-        }
-      }
-    },
     "Automations" : {
       "localizations" : {
         "de" : {
@@ -985,17 +927,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "BrightIntosh 可提高您的螢幕亮度範圍。亮度滑桿可調整此範圍的調整幅度。您也可以使用鍵盤的亮度鍵在此新範圍內微調亮度。"
-          }
-        }
-      }
-    },
-    "BrightIntosh could not reliably increase brightness on this Mac" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BrightIntosh could not reliably increase brightness on this Mac"
           }
         }
       }
@@ -1816,17 +1747,6 @@
         }
       }
     },
-    "Copy Diagnostics" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copy Diagnostics"
-          }
-        }
-      }
-    },
     "Copy to clipboard" : {
       "comment" : "A button that copies the report to the clipboard.",
       "localizations" : {
@@ -1940,17 +1860,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消提升亮度"
-          }
-        }
-      }
-    },
-    "Diagnostics copied" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diagnostics copied"
           }
         }
       }
@@ -3486,64 +3395,6 @@
         }
       }
     },
-    "Increased brightness was disabled" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erhöhte Helligkeit wurde deaktiviert"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Increased brightness was disabled"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se desactivó el aumento del brillo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L’augmentation de la luminosité a été désactivée"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luminosità aumentata disattivata"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "明るさの増加が無効になりました"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O aumento do brilho foi desativado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已停用提升亮度"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已停用提升亮度"
-          }
-        }
-      }
-    },
     "Install BrightIntosh CLI" : {
       "localizations" : {
         "de" : {
@@ -3776,39 +3627,6 @@
         }
       }
     },
-    "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send anonymous diagnostics so this can be investigated. The report includes technical BrightIntosh, device, display, and app diagnostics, but no name or email address." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send anonymous diagnostics so this can be investigated. The report includes technical BrightIntosh, device, display, and app diagnostics, but no name or email address."
-          }
-        }
-      }
-    },
-    "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send diagnostics so this can be investigated." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send diagnostics so this can be investigated."
-          }
-        }
-      }
-    },
-    "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send diagnostics so this can be investigated. You can also try Compatibility Mode, which uses a simpler brightness method." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "macOS, this display, or another app may be preventing the brightness adjustment from applying. Please send diagnostics so this can be investigated. You can also try Compatibility Mode, which uses a simpler brightness method."
-          }
-        }
-      }
-    },
     "Never" : {
       "comment" : "A label for a picker option that disables battery automation entirely.",
       "localizations" : {
@@ -3990,39 +3808,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟設定："
-          }
-        }
-      }
-    },
-    "Please include the copied diagnostics in your support message so the brightness issue can be investigated." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Please include the copied diagnostics in your support message so the brightness issue can be investigated."
-          }
-        }
-      }
-    },
-    "Please send anonymous diagnostics so this brightness issue can be investigated." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Please send anonymous diagnostics so this brightness issue can be investigated."
-          }
-        }
-      }
-    },
-    "Please send anonymous diagnostics so this brightness issue can be investigated. It includes BrightIntosh data and a list of running processes, and is only used for investigating this issue." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Please send anonymous diagnostics so this brightness issue can be investigated. It includes BrightIntosh data and a list of running processes, and is only used for investigating this issue."
           }
         }
       }
@@ -4377,17 +4162,6 @@
         }
       }
     },
-    "Restart BrightIntosh to apply this change." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restart BrightIntosh to apply this change."
-          }
-        }
-      }
-    },
     "Restart BrightIntosh to switch brightness modes." : {
       "localizations" : {
         "de" : {
@@ -4442,17 +4216,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請重新啟動 BrightIntosh 以切換亮度模式。"
-          }
-        }
-      }
-    },
-    "Restart BrightIntosh to switch to Compatibility Mode." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restart BrightIntosh to switch to Compatibility Mode."
           }
         }
       }
@@ -4570,17 +4333,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "傳送匿名診斷資訊"
-          }
-        }
-      }
-    },
-    "Send Diagnostics" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Send Diagnostics"
           }
         }
       }
@@ -4936,17 +4688,6 @@
         }
       }
     },
-    "Sorry about that. Please send anonymous diagnostics so this brightness issue can be investigated." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sorry about that. Please send anonymous diagnostics so this brightness issue can be investigated."
-          }
-        }
-      }
-    },
     "Sorry, BrightIntosh could not reliably increase brightness on this Mac" : {
       "localizations" : {
         "de" : {
@@ -5208,17 +4949,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "測試：忽略應用程式交易"
-          }
-        }
-      }
-    },
-    "Thank you. The diagnostics report was sent to BrightIntosh support." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thank you. The diagnostics report was sent to BrightIntosh support."
           }
         }
       }
