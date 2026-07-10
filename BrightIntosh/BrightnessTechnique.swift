@@ -26,6 +26,10 @@ class BrightnessTechnique {
     
     func adjustBrightness() {}
     
+    func adjustBrightnessValue() {
+        adjustBrightness()
+    }
+    
     func screenUpdate(screens: [NSScreen]) {}
     
 }
@@ -152,12 +156,27 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
     
     static func brightnessFactor(screen: NSScreen, maxEdr: CGFloat) -> Float {
         let (referenceEdr, referenceBonusGamma) = getScreenRefGamma(screen)
-        return 1 + referenceBonusGamma * min(Float(maxEdr) / referenceEdr, 1.0)
+        let edrRatio = Float(maxEdr) / referenceEdr
+        guard BrightIntoshSettings.shared.fineGrainedBrightnessControl else {
+            return 1 + referenceBonusGamma * min(edrRatio, 1.0)
+        }
+        
+        let userBrightness = BrightIntoshSettings.shared.brightness
+        if userBrightness > 0.995 {
+            return 1 + referenceBonusGamma * edrRatio
+        }
+        return 1 + referenceBonusGamma * min(edrRatio, userBrightness)
     }
     
     override func adjustBrightness() {
         super.adjustBrightness()
         fastPollUntil = Date().addingTimeInterval(fastPollDuration)
+        if isEnabled {
+            hdrReadyDisplaysDidChange()
+        }
+    }
+    
+    override func adjustBrightnessValue() {
         if isEnabled {
             hdrReadyDisplaysDidChange()
         }
@@ -958,7 +977,8 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
 
         let clamped = min(max(edrF, minValue), maxValue)
 
-        return 1 + maxScreenBrightness * (1 - (clamped - minValue) / (maxValue - minValue))
+        let fullFactor = 1 + maxScreenBrightness * (1 - (clamped - minValue) / (maxValue - minValue))
+        return 1 + (fullFactor - 1) * userBrightness
     }
     
     override func enable() {
@@ -1008,8 +1028,11 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
                let gammaTable = gammaTables[displayId] {
                 
                 let (refEdr, refGamma) = getScreenRefGamma(controller.screen)
+                let userBrightness = BrightIntoshSettings.shared.fineGrainedBrightnessControl
+                    ? BrightIntoshSettings.shared.brightness
+                    : 1.0
                 let factor = Self.edrGammaFactor(
-                 userBrightness: 1.0,
+                 userBrightness: userBrightness,
                  maxScreenBrightness: refGamma,
                  refEdr: refEdr,
                  edr: controller.screen.maximumExtendedDynamicRangeColorComponentValue

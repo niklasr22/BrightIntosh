@@ -343,6 +343,8 @@ private func appendSettingsDiagnostics(to report: inout String) {
     report += "Settings:\n"
     report += " - Increased brightness active: \(settings.brightintoshActive)\n"
     report += " - Compatibility Mode enabled: \(settings.useCompatibilityBrightnessMode)\n"
+    report += " - Fine grained brightness control: \(settings.fineGrainedBrightnessControl)\n"
+    report += " - Brightness slider value: \(String(format: "%.2f", settings.brightness))\n"
     report += " - Wait for HDR before increasing brightness: \(settings.waitForHDRBeforeIncreasingBrightness)\n"
     if !settings.useCompatibilityBrightnessMode {
         report += " - Brightness backend: \(settings.useAlternateBrightnessBackend ? "alternate" : "standard")\n"

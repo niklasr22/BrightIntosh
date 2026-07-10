@@ -106,6 +106,14 @@ class BrightnessManager: BrightnessManaging {
         BrightIntoshSettings.shared.addListener(setting: "waitForHDRBeforeIncreasingBrightness") {
             self.refreshActiveBrightnessTechnique()
         }
+        
+        BrightIntoshSettings.shared.addListener(setting: "fineGrainedBrightnessControl") {
+            self.refreshActiveBrightnessTechnique()
+        }
+        
+        BrightIntoshSettings.shared.addListener(setting: "brightness") {
+            self.adjustActiveBrightnessTechnique()
+        }
     }
     
     deinit {
@@ -232,6 +240,17 @@ class BrightnessManager: BrightnessManaging {
         
         xdrScreens = getXDRDisplays()
         brightnessTechnique?.screenUpdate(screens: xdrScreens)
+    }
+    
+    @MainActor
+    private func adjustActiveBrightnessTechnique() {
+        guard enabled, BrightIntoshSettings.shared.brightintoshActive else {
+            return
+        }
+        
+        if brightnessTechnique?.isEnabled == true {
+            brightnessTechnique?.adjustBrightnessValue()
+        }
     }
     
     @MainActor
@@ -376,6 +395,14 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
         
         BrightIntoshSettings.shared.addListener(setting: "disableWhenLidClosed") {
             self.handlePotentialScreenUpdate()
+        }
+        
+        BrightIntoshSettings.shared.addListener(setting: "fineGrainedBrightnessControl") {
+            self.refreshActiveBrightnessTechnique()
+        }
+        
+        BrightIntoshSettings.shared.addListener(setting: "brightness") {
+            self.adjustActiveBrightnessTechnique()
         }
         
         CGDisplayRegisterReconfigurationCallback(
@@ -537,6 +564,28 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
     private func enableExtraBrightness() {
         suppressAggressiveScreenParameterResetUntil = Date().addingTimeInterval(postEnableScreenParameterSuppression)
         brightnessTechnique.enable()
+    }
+    
+    @MainActor
+    private func refreshActiveBrightnessTechnique() {
+        guard enabled, BrightIntoshSettings.shared.brightintoshActive else {
+            return
+        }
+        
+        if brightnessTechnique.isEnabled {
+            brightnessTechnique.adjustBrightnessValue()
+        }
+    }
+    
+    @MainActor
+    private func adjustActiveBrightnessTechnique() {
+        guard enabled, BrightIntoshSettings.shared.brightintoshActive else {
+            return
+        }
+        
+        if brightnessTechnique.isEnabled {
+            brightnessTechnique.adjustBrightnessValue()
+        }
     }
     
     @MainActor

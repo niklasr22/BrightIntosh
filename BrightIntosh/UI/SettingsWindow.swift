@@ -19,6 +19,11 @@ class BasicSettingsViewModel: ObservableObject {
         set { BrightIntoshSettings.shared.brightintoshActive = newValue }
         get { return brightIntoshActive }
     }
+    private var brightness = BrightIntoshSettings.shared.brightness
+    var brightnessSlider: Float {
+        set { BrightIntoshSettings.shared.brightness = newValue }
+        get { return brightness }
+    }
     private var batteryAutomation = BrightIntoshSettings.shared.batteryAutomation
     var batteryAutomationToggle: Bool {
         set { BrightIntoshSettings.shared.batteryAutomation = newValue }
@@ -53,6 +58,12 @@ class BasicSettingsViewModel: ObservableObject {
             }
             if self.brightIntoshActive != BrightIntoshSettings.shared.brightintoshActive {
                 self.brightIntoshActive = BrightIntoshSettings.shared.brightintoshActive
+                self.objectWillChange.send()
+            }
+        }
+        BrightIntoshSettings.shared.addListener(setting: "brightness") {
+            if self.brightness != BrightIntoshSettings.shared.brightness {
+                self.brightness = BrightIntoshSettings.shared.brightness
                 self.objectWillChange.send()
             }
         }
@@ -329,6 +340,7 @@ struct BasicSettings: View {
     @State private var disableWhenLidClosed = BrightIntoshSettings.shared.disableWhenLidClosed
     @State private var showHDRRetryCooldownNotice = BrightIntoshSettings.shared.showHDRRetryCooldownNotice
     @State private var showIncompatibleAppsNotice = BrightIntoshSettings.shared.showIncompatibleAppsNotice
+    @State private var fineGrainedBrightnessControl = BrightIntoshSettings.shared.fineGrainedBrightnessControl
     @State private var useAlternateBrightnessBackend = BrightIntoshSettings.shared.useAlternateBrightnessBackend
     @State private var waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness
     @State private var useCompatibilityBrightnessMode = BrightIntoshSettings.shared.useCompatibilityBrightnessMode
@@ -349,6 +361,24 @@ struct BasicSettings: View {
                 Section(header: Text("Brightness").bold()) {
                     BrightnessSliderRemovalHint(isVisible: $showBrightnessSliderRemovalHint)
                     Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
+                    Toggle(
+                        "Fine grained brightness control",
+                        isOn: $fineGrainedBrightnessControl
+                    )
+                    .onChange(of: fineGrainedBrightnessControl) { _, new in
+                        BrightIntoshSettings.shared.fineGrainedBrightnessControl = new
+                        if new {
+                            showBrightnessSliderRemovalHint = false
+                        }
+                    }
+                    if fineGrainedBrightnessControl {
+                        Slider(value: $viewModel.brightnessSlider, in: 0.0...1.0) {
+                            Text("Brightness")
+                        }
+                        Text("Controls how far BrightIntosh shifts the brightness range up. You can still use your Mac's normal brightness keys.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                     if isDeviceSupported() {
                         Toggle(
                             "Don't apply increased brightness to external XDR displays",
@@ -509,6 +539,11 @@ struct BasicSettings: View {
 
     @MainActor
     private func updateBrightnessSliderRemovalHintVisibility() async {
+        guard !BrightIntoshSettings.shared.fineGrainedBrightnessControl else {
+            showBrightnessSliderRemovalHint = false
+            return
+        }
+        
         guard !BrightIntoshSettings.shared.dismissedBrightnessSliderRemovalHint else {
             showBrightnessSliderRemovalHint = false
             return
