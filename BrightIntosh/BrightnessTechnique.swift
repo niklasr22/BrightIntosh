@@ -30,13 +30,19 @@ class BrightnessTechnique {
     
 }
 
-class GammaTable {
+class GammaTable: CustomStringConvertible {
     static let tableSize: UInt32 = 256
     private static let boostedBaselineThreshold: CGGammaValue = 1.1
     
     var redTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
     var greenTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
     var blueTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
+    
+    var factor: Float = 0
+    
+    var description: String {
+        return "GammaTable(factor: \(factor), max: \(maximumValue))"
+    }
     
     private init() {}
     
@@ -66,6 +72,7 @@ class GammaTable {
     }
     
     func setTableForScreen(displayId: CGDirectDisplayID, factor: Float = 1.0) {
+        self.factor = factor
         var newRedTable = redTable
         var newGreenTable = greenTable
         var newBlueTable = blueTable
@@ -937,11 +944,21 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
     private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
     private var gammaTables: [CGDirectDisplayID: GammaTable] = [:]
     
-    private var gammaFactor: Float {
-        if let device = getModelIdentifier(), sdr600nitsDevices.contains(device) {
-            return 1.535
+    private static func edrGammaFactor(userBrightness: Float, maxScreenBrightness: Float, refEdr: Float, edr: CGFloat) -> Float {
+        /*return 1 + (maxScreenBrightness) * min(Float(maxEdr) / referenceEdr, userBrightness)*/
+        
+        let maxValue: Float = 16.0
+        let minValue = refEdr
+        
+        let edrF = Float(edr)
+
+        guard maxValue > minValue else {
+            return 1
         }
-        return 1.59
+
+        let clamped = min(max(edrF, minValue), maxValue)
+
+        return 1 + maxScreenBrightness * (1 - (clamped - minValue) / (maxValue - minValue))
     }
     
     override func enable() {
@@ -972,13 +989,11 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
     }
     
     override func disable() {
-        isEnabled = false
-        overlayWindowControllers.values.forEach { controller in
-            controller.window?.close()
-        }
-        overlayWindowControllers.removeAll()
-        gammaTables.removeAll()
-        resetGammaTable()
+        cleanup(reason: "disable")
+    }
+    
+    func prepareForDisplayTopologyChange() {
+        cleanup(reason: "display topology change")
     }
     
     override func adjustBrightness() {
@@ -991,7 +1006,16 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
         overlayWindowControllers.values.forEach { controller in
             if let displayId = controller.screen.displayId,
                let gammaTable = gammaTables[displayId] {
-                gammaTable.setTableForScreen(displayId: displayId, factor: gammaFactor)
+                
+                let (refEdr, refGamma) = getScreenRefGamma(controller.screen)
+                let factor = Self.edrGammaFactor(
+                 userBrightness: 1.0,
+                 maxScreenBrightness: refGamma,
+                 refEdr: refEdr,
+                 edr: controller.screen.maximumExtendedDynamicRangeColorComponentValue
+                )
+                
+                gammaTable.setTableForScreen(displayId: displayId, factor: factor)
             }
         }
     }
@@ -1024,12 +1048,38 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
         print("Reset gamma table for all displays")
     }
     
+    private func cleanup(reason: String) {
+        isEnabled = false
+        
+        CGDisplayRestoreColorSyncSettings()
+        restoreCapturedGammaTables(reason: reason)
+        
+        overlayWindowControllers.values.forEach { controller in
+            controller.window?.close()
+        }
+        overlayWindowControllers.removeAll()
+        gammaTables.removeAll()
+        
+        resetGammaTable()
+    }
+    
+    private func restoreCapturedGammaTables(reason: String) {
+        guard !gammaTables.isEmpty else {
+            return
+        }
+        
+        gammaTables.forEach { displayId, gammaTable in
+            print("Restoring compatibility gamma table for display \(displayId) before \(reason)")
+            gammaTable.setTableForScreen(displayId: displayId)
+        }
+    }
+    
     @MainActor
     func appendSupportDiagnostics(to report: inout String) {
         report += "Compatibility gamma technique:\n"
         report += " - Technique enabled: \(isEnabled)\n"
-        report += " - Fixed gamma factor: \(String(format: "%.4f", gammaFactor))\n"
+        //report += " - Fixed gamma factor: \(String(format: "%.4f", gammaFactor))\n"
         report += " - Overlay display IDs: \(overlayWindowControllers.keys.sorted())\n"
-        report += " - Captured gamma table display IDs: \(gammaTables.keys.sorted())\n"
+        report += " - Captured gamma table display IDs: \(gammaTables)\n"
     }
 }

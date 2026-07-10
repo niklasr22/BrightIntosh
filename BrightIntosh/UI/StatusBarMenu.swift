@@ -71,6 +71,16 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         toggleIncreasedBrightnessItem.setShortcut(for: .toggleBrightIntosh)
         toggleIncreasedBrightnessItem.target = self
         
+        let restoreDisplayColorsItem = NSMenuItem(title: String(localized: "Restore display colors"), action: #selector(restoreDisplayColors), keyEquivalent: "")
+        restoreDisplayColorsItem.image = NSImage(systemSymbolName: "arrow.counterclockwise", accessibilityDescription: String(localized: "Restore display colors"))
+        restoreDisplayColorsItem.target = self
+
+#if DEBUG
+        let printDisplayColorStateItem = NSMenuItem(title: "Print display color state", action: #selector(printDisplayColorState), keyEquivalent: "")
+        printDisplayColorStateItem.image = NSImage(systemSymbolName: "list.bullet.rectangle", accessibilityDescription: "Print display color state")
+        printDisplayColorStateItem.target = self
+#endif
+        
         toggleTimerItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
         toggleTimerItem.submenu = createTimerDurationSubmenu()
         
@@ -94,6 +104,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         if BrightIntoshSettings.shared.brightintoshActive {
             menu.addItem(toggleTimerItem!)
         }
+        menu.addItem(restoreDisplayColorsItem)
+#if DEBUG
+        menu.addItem(printDisplayColorStateItem)
+#endif
         menu.addItem(NSMenuItem.separator())
         menu.addItem(settingsItem)
         menu.addItem(helpItem)
@@ -400,6 +414,58 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     @objc func callToggleBrightIntosh() {
         toggleBrightIntosh()
     }
+    
+    @objc func restoreDisplayColors() {
+        CGDisplayRestoreColorSyncSettings()
+    }
+
+#if DEBUG
+    @objc func printDisplayColorState() {
+        print("=== BrightIntosh display color state ===")
+        print("Reason: manual status bar diagnostic")
+        print("BrightIntosh active setting: \(BrightIntoshSettings.shared.brightintoshActive)")
+        print("Compatibility Mode setting: \(BrightIntoshSettings.shared.useCompatibilityBrightnessMode)")
+        print("Alternate backend setting: \(BrightIntoshSettings.shared.useAlternateBrightnessBackend)")
+        print("Target XDR displays: \(getXDRDisplays().compactMap { $0.displayId }.sorted())")
+        
+        if NSScreen.screens.isEmpty {
+            print("Screens: none")
+        }
+        
+        for screen in NSScreen.screens {
+            guard let displayId = screen.displayId else {
+                print(" - \(screen.localizedName): missing display ID")
+                continue
+            }
+            
+            let currentGammaTable = GammaTable.createFromCurrentGammaTable(displayId: displayId)
+            let lastRed = currentGammaTable?.redTable.last ?? -1
+            let lastGreen = currentGammaTable?.greenTable.last ?? -1
+            let lastBlue = currentGammaTable?.blueTable.last ?? -1
+            let maxGamma = max(
+                currentGammaTable?.redTable.max() ?? -1,
+                currentGammaTable?.greenTable.max() ?? -1,
+                currentGammaTable?.blueTable.max() ?? -1
+            )
+            
+            print(" - \(screen.localizedName) (id \(displayId))")
+            print("   · built-in: \(isBuiltInScreen(screen: screen))")
+            print("   · frame: \(Int(screen.frame.width))x\(Int(screen.frame.height)) @ \(screen.frame.origin)")
+            print("   · max EDR: \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))")
+            print("   · gamma last RGB: \(String(format: "%.4f", lastRed)), \(String(format: "%.4f", lastGreen)), \(String(format: "%.4f", lastBlue))")
+            print("   · gamma max: \(String(format: "%.4f", maxGamma))")
+        }
+        
+        var managerDiagnostics = ""
+        SupportReportContext.brightnessManager?.appendSupportDiagnostics(to: &managerDiagnostics)
+        if managerDiagnostics.isEmpty {
+            print("Brightness manager diagnostics: none")
+        } else {
+            print(managerDiagnostics.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
+        print("=== End BrightIntosh display color state ===")
+    }
+#endif
     
     @objc func exitBrightIntosh() {
         exit(0)
