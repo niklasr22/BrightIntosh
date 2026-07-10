@@ -411,13 +411,18 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
     
     @MainActor @objc private func handleScreenParameters(notification: Notification) {
         guard Date() >= suppressAggressiveScreenParameterResetUntil else {
-            print("Ignoring compatibility screen parameter reset shortly after enabling brightness")
             handlePotentialScreenUpdate()
             return
         }
         
-        aggressivelyResetCompatibilityBrightness(reason: "screen parameters changed")
-        scheduleReenableAfterDisplayStabilization(reason: "screen parameters changed")
+        let newScreens = NSScreen.screens
+        let newXdrDisplays = getXDRDisplays()
+        if screenSetupChanged(newScreens: newScreens, newXdrDisplays: newXdrDisplays) {
+            aggressivelyResetCompatibilityBrightness(reason: "screen setup changed")
+            scheduleReenableAfterDisplayStabilization(reason: "screen setup changed")
+        } else {
+            handlePotentialScreenUpdate(newScreens: newScreens, newXdrDisplays: newXdrDisplays)
+        }
     }
     
     @MainActor @objc private func screensWake(notification: Notification) {
@@ -488,19 +493,11 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
         }
     }
     
-    @MainActor private func handlePotentialScreenUpdate() {
-        let newScreens = NSScreen.screens
-        let newXdrDisplays = getXDRDisplays()
-        var changedScreens = newScreens.count != screens.count || newXdrDisplays.count != xdrScreens.count
-        if !changedScreens {
-            for screen in screens {
-                let sameScreen = newScreens.filter({ $0.displayId == screen.displayId }).first
-                if sameScreen?.frame.origin != screen.frame.origin {
-                    changedScreens = true
-                    break
-                }
-            }
-        }
+    @MainActor private func handlePotentialScreenUpdate(
+        newScreens: [NSScreen] = NSScreen.screens,
+        newXdrDisplays: [NSScreen] = getXDRDisplays()
+    ) {
+        let changedScreens = screenSetupChanged(newScreens: newScreens, newXdrDisplays: newXdrDisplays)
         
         if changedScreens {
             print("Compatibility brightness screen setup changed")
@@ -521,7 +518,9 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
         if !newScreens.isEmpty {
             if BrightIntoshSettings.shared.brightintoshActive {
                 if !brightnessTechnique.isEnabled {
-                    scheduleReenableAfterDisplayStabilization(reason: "screen setup changed while technique disabled")
+                    if changedScreens {
+                        scheduleReenableAfterDisplayStabilization(reason: "screen setup changed while technique disabled")
+                    }
                 } else if changedScreens {
                     brightnessTechnique.screenUpdate(screens: xdrScreens)
                 } else {
@@ -546,6 +545,22 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
         CGDisplayRestoreColorSyncSettings()
         brightnessTechnique.prepareForDisplayTopologyChange()
         CGDisplayRestoreColorSyncSettings()
+    }
+    
+    @MainActor
+    private func screenSetupChanged(newScreens: [NSScreen], newXdrDisplays: [NSScreen]) -> Bool {
+        if newScreens.count != screens.count || newXdrDisplays.count != xdrScreens.count {
+            return true
+        }
+        
+        for screen in screens {
+            let sameScreen = newScreens.first { $0.displayId == screen.displayId }
+            if sameScreen?.frame.origin != screen.frame.origin {
+                return true
+            }
+        }
+        
+        return false
     }
     
     @MainActor
