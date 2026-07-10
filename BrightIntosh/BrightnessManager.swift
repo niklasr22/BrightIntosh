@@ -312,7 +312,7 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
     private var displayRemovalReenableTask: Task<Void, Never>?
     private let displayStabilizationDelay: Duration = .seconds(5)
     private let postEnableScreenParameterSuppression: TimeInterval = 2
-    private var suppressAggressiveScreenParameterResetUntil: Date = .distantPast
+    private var suppressDisplayParameterCleanupUntil: Date = .distantPast
     
     nonisolated private static let displayReconfigurationCallback: CGDisplayReconfigurationCallBack = { displayId, flags, userInfo in
         guard let userInfo else {
@@ -437,7 +437,7 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
     }
     
     @MainActor @objc private func handleScreenParameters(notification: Notification) {
-        guard Date() >= suppressAggressiveScreenParameterResetUntil else {
+        guard Date() >= suppressDisplayParameterCleanupUntil else {
             handlePotentialScreenUpdate()
             return
         }
@@ -445,7 +445,7 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
         let newScreens = NSScreen.screens
         let newXdrDisplays = getXDRDisplays()
         if screenSetupChanged(newScreens: newScreens, newXdrDisplays: newXdrDisplays) {
-            aggressivelyResetCompatibilityBrightness(reason: "screen setup changed")
+            resetCompatibilityDisplayState(reason: "screen setup changed")
             scheduleReenableAfterDisplayStabilization(reason: "screen setup changed")
         } else {
             handlePotentialScreenUpdate(newScreens: newScreens, newXdrDisplays: newXdrDisplays)
@@ -458,27 +458,27 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
             return
         }
         if shouldDisableForClosedLid(currentScreens: NSScreen.screens) {
-            aggressivelyResetCompatibilityBrightness(reason: "wake while lid is closed")
+            resetCompatibilityDisplayState(reason: "wake while lid is closed")
             BrightIntoshSettings.shared.brightintoshActive = false
             return
         }
         CGDisplayRestoreColorSyncSettings()
-        aggressivelyResetCompatibilityBrightness(reason: "wake before delayed re-enable")
+        resetCompatibilityDisplayState(reason: "wake before delayed re-enable")
         scheduleReenableAfterDisplayStabilization(reason: "wake")
     }
     
     @MainActor @objc private func handleScreensSleep(notification: Notification) {
-        aggressivelyResetCompatibilityBrightness(reason: "screens sleep")
+        resetCompatibilityDisplayState(reason: "screens sleep")
     }
     
     @MainActor @objc private func handleWillSleep(notification: Notification) {
-        aggressivelyResetCompatibilityBrightness(reason: "system will sleep")
+        resetCompatibilityDisplayState(reason: "system will sleep")
     }
     
     @MainActor private func handleDisplayReconfigurationWillBegin(displayId: CGDirectDisplayID, flags: CGDisplayChangeSummaryFlags) {
         displayRemovalReenableTask?.cancel()
         
-        aggressivelyResetCompatibilityBrightness(reason: "display \(displayId) reconfiguration begin flags=\(flags)")
+        resetCompatibilityDisplayState(reason: "display \(displayId) reconfiguration begin flags=\(flags)")
     }
     
     @MainActor private func handleDisplayReconfigurationDidEnd() {
@@ -508,7 +508,7 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
             }
             
             if self.shouldDisableForClosedLid(currentScreens: activeScreens) {
-                self.aggressivelyResetCompatibilityBrightness(reason: "display reconfiguration ended while lid is closed")
+                self.resetCompatibilityDisplayState(reason: "display reconfiguration ended while lid is closed")
                 BrightIntoshSettings.shared.brightintoshActive = false
                 return
             }
@@ -533,7 +533,7 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
         }
         
         if BrightIntoshSettings.shared.brightintoshActive && shouldDisableForClosedLid(currentScreens: newScreens) {
-            aggressivelyResetCompatibilityBrightness(reason: "screen update detected closed lid")
+            resetCompatibilityDisplayState(reason: "screen update detected closed lid")
             BrightIntoshSettings.shared.brightintoshActive = false
             return
         }
@@ -556,13 +556,13 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
             }
         } else {
             print("Disabling compatibility brightness")
-            aggressivelyResetCompatibilityBrightness(reason: "no screens")
+            resetCompatibilityDisplayState(reason: "no screens")
         }
     }
     
     @MainActor
     private func enableExtraBrightness() {
-        suppressAggressiveScreenParameterResetUntil = Date().addingTimeInterval(postEnableScreenParameterSuppression)
+        suppressDisplayParameterCleanupUntil = Date().addingTimeInterval(postEnableScreenParameterSuppression)
         brightnessTechnique.enable()
     }
     
@@ -589,8 +589,8 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
     }
     
     @MainActor
-    private func aggressivelyResetCompatibilityBrightness(reason: String) {
-        print("Aggressively resetting compatibility brightness: \(reason)")
+    private func resetCompatibilityDisplayState(reason: String) {
+        print("Resetting compatibility display state: \(reason)")
         CGDisplayRestoreColorSyncSettings()
         brightnessTechnique.prepareForDisplayTopologyChange()
         CGDisplayRestoreColorSyncSettings()
