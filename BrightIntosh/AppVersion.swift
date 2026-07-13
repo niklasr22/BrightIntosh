@@ -57,17 +57,3 @@ func originalPurchaseVersionIsEarlierThan(_ cutoffVersion: String) async -> Bool
 
     return false
 }
-
-@MainActor
-func configureFineGrainedBrightnessControlDefaultIfNeeded() async {
-    let migrationKey = "configuredFineGrainedBrightnessControlDefault"
-    guard !BrightIntoshSettings.defaults.bool(forKey: migrationKey) else {
-        return
-    }
-    
-    if await originalPurchaseVersionIsEarlierThan(brightnessSliderRemovalOriginalPurchaseVersionCutoff) {
-        BrightIntoshSettings.shared.fineGrainedBrightnessControl = true
-    }
-    
-    BrightIntoshSettings.defaults.set(true, forKey: migrationKey)
-}

@@ -159,7 +159,6 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
         });
         
         Task {
-            await configureFineGrainedBrightnessControlDefaultIfNeeded()
             addSettingsToIndex()
         }
         
