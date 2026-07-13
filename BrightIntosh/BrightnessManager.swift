@@ -446,6 +446,13 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
         let newXdrDisplays = getXDRDisplays()
         if screenSetupChanged(newScreens: newScreens, newXdrDisplays: newXdrDisplays) {
             resetCompatibilityDisplayState(reason: "screen setup changed")
+            if shouldDisableForClosedLid(currentScreens: newScreens, previousScreens: screens) {
+                print("Disabling brightness because the built-in display is no longer available")
+                screens = newScreens
+                xdrScreens = newXdrDisplays
+                BrightIntoshSettings.shared.brightintoshActive = false
+                return
+            }
             scheduleReenableAfterDisplayStabilization(reason: "screen setup changed")
         } else {
             handlePotentialScreenUpdate(newScreens: newScreens, newXdrDisplays: newXdrDisplays)
@@ -525,6 +532,7 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
         newXdrDisplays: [NSScreen] = getXDRDisplays()
     ) {
         let changedScreens = screenSetupChanged(newScreens: newScreens, newXdrDisplays: newXdrDisplays)
+        let previousScreens = screens
         
         if changedScreens {
             print("Compatibility brightness screen setup changed")
@@ -532,7 +540,7 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
             xdrScreens = newXdrDisplays
         }
         
-        if BrightIntoshSettings.shared.brightintoshActive && shouldDisableForClosedLid(currentScreens: newScreens) {
+        if BrightIntoshSettings.shared.brightintoshActive && shouldDisableForClosedLid(currentScreens: newScreens, previousScreens: previousScreens) {
             resetCompatibilityDisplayState(reason: "screen update detected closed lid")
             BrightIntoshSettings.shared.brightintoshActive = false
             return
@@ -613,9 +621,14 @@ final class CompatibilityBrightnessManager: BrightnessManaging {
     }
     
     @MainActor
-    private func shouldDisableForClosedLid(currentScreens: [NSScreen]) -> Bool {
+    private func shouldDisableForClosedLid(currentScreens: [NSScreen], previousScreens: [NSScreen]? = nil) -> Bool {
         guard BrightIntoshSettings.shared.disableWhenLidClosed else {
             return false
+        }
+        if let previousScreens,
+           previousScreens.contains(where: { isBuiltInScreen(screen: $0) }),
+           !currentScreens.contains(where: { isBuiltInScreen(screen: $0) }) {
+            return true
         }
         if let clamshellClosed = isClamshellClosed() {
             return clamshellClosed
