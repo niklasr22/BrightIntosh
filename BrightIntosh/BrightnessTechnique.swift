@@ -959,9 +959,19 @@ class GammaTechnique: HDRLifecycleBrightnessTechnique {
 
 @MainActor
 final class CompatibilityGammaTechnique: BrightnessTechnique {
+    private final class FadeState {
+        var appliedFactor: Float = 1.0
+        var targetFactor: Float?
+        var task: Task<Void, Never>?
+    }
     
     private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
     private var gammaTables: [CGDirectDisplayID: GammaTable] = [:]
+    private var fadeStates: [CGDirectDisplayID: FadeState] = [:]
+    
+    private let gammaFadeDuration: TimeInterval = 0.2
+    private let gammaFadeFrameInterval: Duration = .milliseconds(16)
+    private let gammaFactorEpsilon: Float = 0.001
     
     private static func edrGammaFactor(userBrightness: Float, maxScreenBrightness: Float, refEdr: Float, edr: CGFloat) -> Float {
         /*return 1 + (maxScreenBrightness) * min(Float(maxEdr) / referenceEdr, userBrightness)*/
@@ -1038,7 +1048,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
                  edr: controller.screen.maximumExtendedDynamicRangeColorComponentValue
                 )
                 
-                gammaTable.setTableForScreen(displayId: displayId, factor: factor)
+                fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: factor)
             }
         }
     }
@@ -1048,6 +1058,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
         let deactivatedDisplayIds = overlayWindowControllers.keys.filter { !activeDisplayIds.contains($0) }
         
         deactivatedDisplayIds.forEach { displayId in
+            cancelFade(displayId: displayId)
             overlayWindowControllers[displayId]?.window?.close()
             gammaTables[displayId]?.setTableForScreen(displayId: displayId)
             gammaTables.removeValue(forKey: displayId)
@@ -1073,6 +1084,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
     
     private func cleanup(reason: String) {
         isEnabled = false
+        cancelAllFades()
         
         CGDisplayRestoreColorSyncSettings()
         restoreCapturedGammaTables(reason: reason)
@@ -1084,6 +1096,73 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
         gammaTables.removeAll()
         
         resetGammaTable()
+    }
+    
+    private func fadeGammaFactor(displayId: CGDirectDisplayID, gammaTable: GammaTable, targetFactor: Float) {
+        let state = fadeState(for: displayId)
+        let targetChanged = state.targetFactor.map { abs($0 - targetFactor) > gammaFactorEpsilon } ?? true
+        if !targetChanged, state.task != nil {
+            return
+        }
+        
+        let startFactor = state.appliedFactor
+        state.targetFactor = targetFactor
+        state.task?.cancel()
+        
+        if abs(startFactor - targetFactor) <= gammaFactorEpsilon {
+            gammaTable.setTableForScreen(displayId: displayId, factor: targetFactor)
+            state.appliedFactor = targetFactor
+            state.task = nil
+            return
+        }
+        
+        state.task = Task { @MainActor in
+            let startDate = Date()
+            
+            while !Task.isCancelled {
+                let progress = min(1.0, Date().timeIntervalSince(startDate) / self.gammaFadeDuration)
+                let easedProgress = progress * progress * (3.0 - 2.0 * progress)
+                let nextFactor = startFactor + ((targetFactor - startFactor) * Float(easedProgress))
+                
+                gammaTable.setTableForScreen(displayId: displayId, factor: nextFactor)
+                state.appliedFactor = nextFactor
+                
+                if progress >= 1.0 {
+                    break
+                }
+                
+                try? await Task.sleep(for: self.gammaFadeFrameInterval)
+            }
+            
+            guard !Task.isCancelled else {
+                return
+            }
+            
+            gammaTable.setTableForScreen(displayId: displayId, factor: targetFactor)
+            state.appliedFactor = targetFactor
+            state.targetFactor = targetFactor
+            state.task = nil
+        }
+    }
+    
+    private func fadeState(for displayId: CGDirectDisplayID) -> FadeState {
+        if let state = fadeStates[displayId] {
+            return state
+        }
+        
+        let state = FadeState()
+        fadeStates[displayId] = state
+        return state
+    }
+    
+    private func cancelFade(displayId: CGDirectDisplayID) {
+        fadeStates[displayId]?.task?.cancel()
+        fadeStates.removeValue(forKey: displayId)
+    }
+    
+    private func cancelAllFades() {
+        fadeStates.values.forEach { $0.task?.cancel() }
+        fadeStates.removeAll()
     }
     
     private func restoreCapturedGammaTables(reason: String) {
@@ -1101,8 +1180,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
     func appendSupportDiagnostics(to report: inout String) {
         report += "Compatibility gamma technique:\n"
         report += " - Technique enabled: \(isEnabled)\n"
-        //report += " - Fixed gamma factor: \(String(format: "%.4f", gammaFactor))\n"
         report += " - Overlay display IDs: \(overlayWindowControllers.keys.sorted())\n"
-        report += " - Captured gamma table display IDs: \(gammaTables)\n"
+        report += " - Gamma tables: \(gammaTables)\n"
     }
 }
