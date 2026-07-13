@@ -450,6 +450,12 @@ struct BasicSettings: View {
                 Section(header: Text("Shortcuts").bold()) {
                     KeyboardShortcuts.Recorder(
                         "Toggle increased brightness:", name: .toggleBrightIntosh)
+                    if fineGrainedBrightnessControl {
+                        KeyboardShortcuts.Recorder(
+                            "Increase brightness:", name: .increaseBrightness)
+                        KeyboardShortcuts.Recorder(
+                            "Decrease brightness:", name: .decreaseBrightness)
+                    }
                     KeyboardShortcuts.Recorder(
                         "Open settings:", name: .openSettings)
                 }
@@ -587,7 +593,12 @@ struct VersionView: View {
 
     var body: some View {
         VStack {
-            Label(title + (isUnrestrictedUser ? "" : " - Free Trial"), image: "LogoBordered")
+            Label(
+                isUnrestrictedUser
+                    ? title
+                    : "\(title) - \(String(localized: "Free Trial"))",
+                image: "LogoBordered"
+            )
                 .imageScale(.small)
                 .onTapGesture {
                     clicks += 1
@@ -692,7 +703,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        settingsWindow.title = "BrightIntosh Settings"
+        settingsWindow.title = String(localized: "BrightIntosh Settings")
 
         let contentView = SettingsView().frame(width: 650, height: 590)
 
