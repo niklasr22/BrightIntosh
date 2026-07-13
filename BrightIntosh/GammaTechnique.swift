@@ -1,13 +1,111 @@
 //
-//  CompatibilityGammaTechnique.swift
+//  GammaTechnique.swift
 //  BrightIntosh
 //
 
 import Cocoa
 import CoreGraphics
 
+class GammaTable: CustomStringConvertible {
+    static let tableSize: UInt32 = 256
+    private static let boostedBaselineThreshold: CGGammaValue = 1.1
+    
+    var redTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
+    var greenTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
+    var blueTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
+    
+    var factor: Float = 0
+    
+    var description: String {
+        return "GammaTable(factor: \(factor), max: \(maximumValue))"
+    }
+    
+    private init() {}
+    
+    static func createFromCurrentGammaTable(displayId: CGDirectDisplayID) -> GammaTable? {
+        let table = GammaTable()
+        var sampleCount: UInt32 = 0
+        let result = CGGetDisplayTransferByTable(displayId, tableSize, &table.redTable, &table.greenTable, &table.blueTable, &sampleCount)
+        guard result == CGError.success else { return nil }
+        return table
+    }
+    
+    static func createCleanBaseline(displayId: CGDirectDisplayID) -> GammaTable? {
+        guard let currentTable = createFromCurrentGammaTable(displayId: displayId) else { return nil }
+        print("New baseline created (max value \(currentTable.maximumValue))")
+        guard currentTable.appearsBoosted else { return currentTable }
+        
+        print("Detected boosted gamma baseline with max value \(currentTable.maximumValue); restoring ColorSync settings")
+        CGDisplayRestoreColorSyncSettings()
+        
+        guard let restoredTable = createFromCurrentGammaTable(displayId: displayId) else {
+            return currentTable.normalizedByMaximum()
+        }
+        guard restoredTable.appearsBoosted else { return restoredTable }
+        
+        print("Restored gamma baseline still looks boosted with max value \(restoredTable.maximumValue); normalizing captured table")
+        return restoredTable.normalizedByMaximum()
+    }
+    
+    func setTableForScreen(displayId: CGDirectDisplayID, factor: Float = 1.0) {
+        self.factor = factor
+        var newRedTable = redTable
+        var newGreenTable = greenTable
+        var newBlueTable = blueTable
+        
+        for i in 0..<newRedTable.count {
+            newRedTable[i] *= factor
+            newGreenTable[i] *= factor
+            newBlueTable[i] *= factor
+        }
+        CGSetDisplayTransferByTable(displayId, GammaTable.tableSize, &newRedTable, &newGreenTable, &newBlueTable)
+    }
+    
+    func reapplyIfLastValuesDrifted(displayId: CGDirectDisplayID, factor: Float, tolerance: CGGammaValue) -> Bool {
+        guard !currentLastValuesMatch(displayId: displayId, factor: factor, tolerance: tolerance) else {
+            return false
+        }
+        
+        setTableForScreen(displayId: displayId, factor: factor)
+        return true
+    }
+    
+    private var maximumValue: CGGammaValue {
+        max(redTable.max() ?? 0, greenTable.max() ?? 0, blueTable.max() ?? 0)
+    }
+    
+    private var appearsBoosted: Bool {
+        maximumValue > Self.boostedBaselineThreshold
+    }
+    
+    private func normalizedByMaximum() -> GammaTable? {
+        let maxValue = maximumValue
+        guard maxValue > 0 else { return nil }
+        
+        let table = GammaTable()
+        table.redTable = redTable.map { $0 / maxValue }
+        table.greenTable = greenTable.map { $0 / maxValue }
+        table.blueTable = blueTable.map { $0 / maxValue }
+        return table
+    }
+    
+    private func currentLastValuesMatch(displayId: CGDirectDisplayID, factor: Float, tolerance: CGGammaValue) -> Bool {
+        guard let currentTable = Self.createFromCurrentGammaTable(displayId: displayId) else { return true }
+        guard let redValue = redTable.last,
+              let greenValue = greenTable.last,
+              let blueValue = blueTable.last,
+              let currentRedValue = currentTable.redTable.last,
+              let currentGreenValue = currentTable.greenTable.last,
+              let currentBlueValue = currentTable.blueTable.last else { return true }
+        
+        return abs(currentRedValue - (redValue * factor)) <= tolerance &&
+            abs(currentGreenValue - (greenValue * factor)) <= tolerance &&
+            abs(currentBlueValue - (blueValue * factor)) <= tolerance
+    }
+}
+
 @MainActor
-final class CompatibilityGammaTechnique: BrightnessTechnique {
+final class GammaTechnique: BrightnessTechnique {
     private final class FadeState {
         var appliedFactor: Float = 1.0
         var targetFactor: Float?
@@ -40,7 +138,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
         enable(screens: getXDRDisplays())
     }
 
-    func enable(screens: [NSScreen]) {
+    override func enable(screens: [NSScreen]) {
         guard !screens.isEmpty else {
             reset(reason: "no compatible displays")
             return
@@ -49,7 +147,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
         isEnabled = true
         screenUpdate(screens: screens)
         startIntegrityPollIfNeeded()
-        print("Enabled compatibility gamma technique")
+        print("Enabled gamma technique")
     }
 
     override func enableScreen(screen: NSScreen) {
@@ -155,7 +253,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
     }
 
     private func cleanup(reason: String) {
-        print("Resetting compatibility gamma state: \(reason)")
+        print("Resetting gamma state: \(reason)")
         isEnabled = false
         stopIntegrityPoll()
         cancelAllFades()
@@ -267,7 +365,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
 
     private func restoreCapturedGammaTables(reason: String) {
         for (displayId, gammaTable) in gammaTables {
-            print("Restoring compatibility gamma table for display \(displayId) before \(reason)")
+            print("Restoring gamma table for display \(displayId) before \(reason)")
             applyGammaTable(gammaTable, displayId: displayId)
         }
     }
@@ -340,7 +438,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
                 restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
                 recreateHDROverlay(screen: screen, displayId: displayId)
                 recoveredState = true
-                print("Compatibility HDR state was reset for display \(displayId); recreated HDR trigger")
+                print("HDR state was reset for display \(displayId); recreated HDR trigger")
             }
 
             if let state = fadeStates[displayId],
@@ -353,7 +451,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
                    factor: targetFactor
                ) {
                 recoveredState = true
-                print("Compatibility gamma table was reset for display \(displayId); reapplied factor \(targetFactor)")
+                print("Gamma table was reset for display \(displayId); reapplied factor \(targetFactor)")
             }
 
             guard recoveredState else {
@@ -363,7 +461,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
 
             let recoveryCount = (consecutiveRecoveryCounts[displayId] ?? 0) + 1
             consecutiveRecoveryCounts[displayId] = recoveryCount
-            print("Compatibility display state recovery \(recoveryCount)/\(maxConsecutiveRecoveryAttempts) for display \(displayId)")
+            print("Display state recovery \(recoveryCount)/\(maxConsecutiveRecoveryAttempts) for display \(displayId)")
 
             if recoveryCount >= maxConsecutiveRecoveryAttempts {
                 handlePersistentDisplayConflict(displayId: displayId)
@@ -410,7 +508,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
 
     private func handlePersistentDisplayConflict(displayId: CGDirectDisplayID) {
         let reason = "Display \(displayId) repeatedly reset the HDR or gamma state after BrightIntosh applied it."
-        print("Persistent compatibility display conflict detected: \(reason); disabling increased brightness")
+        print("Persistent display conflict detected: \(reason); disabling increased brightness")
         consecutiveRecoveryCounts.removeAll()
 
         if BrightIntoshSettings.shared.brightintoshActive {
@@ -425,7 +523,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
     }
 
     func appendSupportDiagnostics(to report: inout String) {
-        report += "Compatibility gamma technique:\n"
+        report += "Gamma technique:\n"
         report += " - Technique enabled: \(isEnabled)\n"
         report += " - Overlay display IDs: \(overlayWindowControllers.keys.sorted())\n"
         report += " - Gamma tables: \(gammaTables)\n"
@@ -435,3 +533,4 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
         report += " - Integrity poll active: \(integrityPollTask != nil)\n"
     }
 }
+

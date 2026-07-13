@@ -84,13 +84,6 @@ class BrightIntoshSettings {
         }
     }
     
-    public var useCompatibilityBrightnessMode: Bool = BrightIntoshSettings.getUserDefault(key: "useCompatibilityBrightnessMode", defaultValue: false) {
-        didSet {
-            BrightIntoshSettings.defaults.setValue(useCompatibilityBrightnessMode, forKey: "useCompatibilityBrightnessMode")
-            callListeners(setting: "useCompatibilityBrightnessMode")
-        }
-    }
-    
     public var dismissedBrightnessSliderRemovalHint: Bool = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false) {
         didSet {
             BrightIntoshSettings.defaults.setValue(dismissedBrightnessSliderRemovalHint, forKey: "dismissedBrightnessSliderRemovalHint")
@@ -219,7 +212,6 @@ class BrightIntoshSettings {
         showIncompatibleAppsNotice = BrightIntoshSettings.getUserDefault(key: "showIncompatibleAppsInterferenceNotice", defaultValue: true)
         useAlternateBrightnessBackend = BrightIntoshSettings.getUserDefault(key: "useAlternateBrightnessBackend", defaultValue: false)
         waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.getUserDefault(key: "waitForHDRBeforeIncreasingBrightness", defaultValue: false)
-        useCompatibilityBrightnessMode = BrightIntoshSettings.getUserDefault(key: "useCompatibilityBrightnessMode", defaultValue: false)
         dismissedBrightnessSliderRemovalHint = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false)
         fineGrainedBrightnessControl = BrightIntoshSettings.getUserDefault(key: "fineGrainedBrightnessControl", defaultValue: false)
         brightness = BrightIntoshSettings.getUserDefault(key: "brightness", defaultValue: 1.0)

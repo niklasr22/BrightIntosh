@@ -257,8 +257,6 @@ struct AdvancedSettingsSheet: View {
     @Binding var isPresented: Bool
     @Binding var useAlternateBrightnessBackend: Bool
     @Binding var waitForHDRBeforeIncreasingBrightness: Bool
-    @Binding var useCompatibilityBrightnessMode: Bool
-    @State private var didChangeCompatibilityBrightnessMode = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -268,48 +266,21 @@ struct AdvancedSettingsSheet: View {
             
             VStack(alignment: .leading, spacing: 12) {
                 Toggle(
-                    "Compatibility Mode",
-                    isOn: $useCompatibilityBrightnessMode
-                )
-                .onChange(of: useCompatibilityBrightnessMode) { _, new in
-                    BrightIntoshSettings.shared.useCompatibilityBrightnessMode = new
-                    didChangeCompatibilityBrightnessMode = true
-                }
-                
-                Text("Uses an older, simpler brightness method. It may work better on some Macs, but can be less color-accurate. Restart BrightIntosh to apply this change.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                
-                if didChangeCompatibilityBrightnessMode {
-                    Label(
-                        "Restart BrightIntosh to switch brightness modes.",
-                        systemImage: "arrow.clockwise.circle.fill"
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-                }
-                
-                Toggle(
                     "Use alternate brightness backend",
                     isOn: $useAlternateBrightnessBackend
                 )
                 .onChange(of: useAlternateBrightnessBackend) { _, new in
                     BrightIntoshSettings.shared.useAlternateBrightnessBackend = new
                 }
-                .disabled(useCompatibilityBrightnessMode)
                 
-                if useCompatibilityBrightnessMode {
-                    Text("The alternate brightness backend only applies to Standard Mode.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                
-                Toggle(
-                    "Wait for HDR before increasing brightness",
-                    isOn: $waitForHDRBeforeIncreasingBrightness
-                )
-                .onChange(of: waitForHDRBeforeIncreasingBrightness) { _, new in
-                    BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness = new
+                if useAlternateBrightnessBackend {
+                    Toggle(
+                        "Wait for HDR before increasing brightness",
+                        isOn: $waitForHDRBeforeIncreasingBrightness
+                    )
+                    .onChange(of: waitForHDRBeforeIncreasingBrightness) { _, new in
+                        BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness = new
+                    }
                 }
                 
                 Text("These options can help when extra brightness does not behave as expected.")
@@ -343,7 +314,6 @@ struct BasicSettings: View {
     @State private var fineGrainedBrightnessControl = BrightIntoshSettings.shared.fineGrainedBrightnessControl
     @State private var useAlternateBrightnessBackend = BrightIntoshSettings.shared.useAlternateBrightnessBackend
     @State private var waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness
-    @State private var useCompatibilityBrightnessMode = BrightIntoshSettings.shared.useCompatibilityBrightnessMode
     @State private var batteryLevelThreshold = BrightIntoshSettings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = BrightIntoshSettings.shared.timerAutomationTimeout
 
@@ -470,8 +440,7 @@ struct BasicSettings: View {
                             AdvancedSettingsSheet(
                                 isPresented: $showAdvancedSettingsSheet,
                                 useAlternateBrightnessBackend: $useAlternateBrightnessBackend,
-                                waitForHDRBeforeIncreasingBrightness: $waitForHDRBeforeIncreasingBrightness,
-                                useCompatibilityBrightnessMode: $useCompatibilityBrightnessMode
+                                waitForHDRBeforeIncreasingBrightness: $waitForHDRBeforeIncreasingBrightness
                             )
                         }
                     },

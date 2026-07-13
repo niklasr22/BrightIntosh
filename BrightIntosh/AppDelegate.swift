@@ -130,11 +130,7 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
             BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn = false
         }
         
-        if BrightIntoshSettings.shared.useCompatibilityBrightnessMode {
-            brightnessManager = CompatibilityBrightnessManager()
-        } else {
-            brightnessManager = BrightnessManager()
-        }
+        brightnessManager = BrightnessManager()
         SupportReportContext.brightnessManager = brightnessManager
         automationManager = AutomationManager()
         incompatibleAppsMonitor = IncompatibleAppsMonitor()

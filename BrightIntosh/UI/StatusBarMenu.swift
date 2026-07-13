@@ -513,7 +513,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         print("=== BrightIntosh display color state ===")
         print("Reason: manual status bar diagnostic")
         print("BrightIntosh active setting: \(BrightIntoshSettings.shared.brightintoshActive)")
-        print("Compatibility Mode setting: \(BrightIntoshSettings.shared.useCompatibilityBrightnessMode)")
         print("Alternate backend setting: \(BrightIntoshSettings.shared.useAlternateBrightnessBackend)")
         print("Target XDR displays: \(getXDRDisplays().compactMap { $0.displayId }.sorted())")
         

@@ -57,10 +57,8 @@
 		9CABC00B2F60000000ABCDEF /* HDRCooldownNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC00C2F60000000ABCDEF /* HDRCooldownNoticePresenter.swift */; };
 		9CABC00D2F60000000ABCDEF /* HDRCooldownNoticeMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC00F2F60000000ABCDEF /* HDRCooldownNoticeMonitor.swift */; };
 		9CABC00E2F60000000ABCDEF /* HDRCooldownNoticeMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC00F2F60000000ABCDEF /* HDRCooldownNoticeMonitor.swift */; };
-		9CABC0112F70000000ABCDEF /* CompatibilityBrightnessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0102F70000000ABCDEF /* CompatibilityBrightnessManager.swift */; };
-		9CABC0122F70000000ABCDEF /* CompatibilityBrightnessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0102F70000000ABCDEF /* CompatibilityBrightnessManager.swift */; };
-		9CABC0142F70000000ABCDEF /* CompatibilityGammaTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0132F70000000ABCDEF /* CompatibilityGammaTechnique.swift */; };
-		9CABC0152F70000000ABCDEF /* CompatibilityGammaTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0132F70000000ABCDEF /* CompatibilityGammaTechnique.swift */; };
+		9CABC0142F70000000ABCDEF /* GammaTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0132F70000000ABCDEF /* GammaTechnique.swift */; };
+		9CABC0152F70000000ABCDEF /* GammaTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CABC0132F70000000ABCDEF /* GammaTechnique.swift */; };
 		9CCAC9372C3AF53B00B105D1 /* EntitlementHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */; };
 		9CCAC9392C3AF55F00B105D1 /* RestorePurchasesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */; };
 		9CDE33C52B4317D70085F786 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDE33C42B4317D70085F786 /* Utils.swift */; };
@@ -166,8 +164,7 @@
 		9CABC0092F60000000ABCDEF /* IncompatibleAppsMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncompatibleAppsMonitor.swift; sourceTree = "<group>"; };
 		9CABC00C2F60000000ABCDEF /* HDRCooldownNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDRCooldownNoticePresenter.swift; sourceTree = "<group>"; };
 		9CABC00F2F60000000ABCDEF /* HDRCooldownNoticeMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDRCooldownNoticeMonitor.swift; sourceTree = "<group>"; };
-		9CABC0102F70000000ABCDEF /* CompatibilityBrightnessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompatibilityBrightnessManager.swift; sourceTree = "<group>"; };
-		9CABC0132F70000000ABCDEF /* CompatibilityGammaTechnique.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompatibilityGammaTechnique.swift; sourceTree = "<group>"; };
+		9CABC0132F70000000ABCDEF /* GammaTechnique.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GammaTechnique.swift; sourceTree = "<group>"; };
 		9CCAC9332C3A8F9E00B105D1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntitlementHandler.swift; sourceTree = "<group>"; };
 		9CCAC9382C3AF55E00B105D1 /* RestorePurchasesButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorePurchasesButton.swift; sourceTree = "<group>"; };
@@ -304,8 +301,7 @@
 				9CEB41EE2A9236D7005D7A0D /* BrightIntosh.entitlements */,
 				9CA026502AC9647E0068CC74 /* BrightnessManager.swift */,
 				9CA026522AC968430068CC74 /* BrightnessTechnique.swift */,
-				9CABC0102F70000000ABCDEF /* CompatibilityBrightnessManager.swift */,
-				9CABC0132F70000000ABCDEF /* CompatibilityGammaTechnique.swift */,
+				9CABC0132F70000000ABCDEF /* GammaTechnique.swift */,
 				9C4163782ABD8FBD005B34B6 /* Constants.swift */,
 				9CCAC9362C3AF53B00B105D1 /* EntitlementHandler.swift */,
 				9CABC00F2F60000000ABCDEF /* HDRCooldownNoticeMonitor.swift */,
@@ -492,8 +488,7 @@
 				1E05D3962B90E50E006FE96A /* StatusBarMenu.swift in Sources */,
 				9C1C8BE72C8B3EA300754474 /* UserStatusModifier.swift in Sources */,
 				9CA026552AC96B260068CC74 /* BrightnessManager.swift in Sources */,
-				9CABC0122F70000000ABCDEF /* CompatibilityBrightnessManager.swift in Sources */,
-				9CABC0152F70000000ABCDEF /* CompatibilityGammaTechnique.swift in Sources */,
+				9CABC0152F70000000ABCDEF /* GammaTechnique.swift in Sources */,
 				9C4163712AB7198B005B34B6 /* SettingsWindow.swift in Sources */,
 				9C534AC92ACB06210029E050 /* AutomationManager.swift in Sources */,
 				9CDE33C62B4317D70085F786 /* Utils.swift in Sources */,
@@ -543,8 +538,7 @@
 				9CABC0042F60000000ABCDEF /* IncompatibleAppsNoticePresenter.swift in Sources */,
 				9CABC0072F60000000ABCDEF /* IncompatibleAppsMonitor.swift in Sources */,
 				9CA026512AC9647E0068CC74 /* BrightnessManager.swift in Sources */,
-				9CABC0112F70000000ABCDEF /* CompatibilityBrightnessManager.swift in Sources */,
-				9CABC0142F70000000ABCDEF /* CompatibilityGammaTechnique.swift in Sources */,
+				9CABC0142F70000000ABCDEF /* GammaTechnique.swift in Sources */,
 				9CA026532AC968430068CC74 /* BrightnessTechnique.swift in Sources */,
 				C1B5215A2A5EFFDB00E9B7AC /* AppDelegate.swift in Sources */,
 				9C5610502ABF55A90066D6C9 /* BrightIntoshSettings.swift in Sources */,
