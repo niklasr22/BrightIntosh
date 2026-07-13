@@ -81,10 +81,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         brightnessSliderItem = brightnessSliderElements.0
         brightnessSlider = brightnessSliderElements.1
         brightnessValueDisplay = brightnessSliderElements.2
-        
-        let restoreDisplayColorsItem = NSMenuItem(title: String(localized: "Restore display colors"), action: #selector(restoreDisplayColors), keyEquivalent: "")
-        restoreDisplayColorsItem.image = NSImage(systemSymbolName: "arrow.counterclockwise", accessibilityDescription: String(localized: "Restore display colors"))
-        restoreDisplayColorsItem.target = self
 
 #if DEBUG
         let printDisplayColorStateItem = NSMenuItem(title: "Print display color state", action: #selector(printDisplayColorState), keyEquivalent: "")
@@ -115,7 +111,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         if BrightIntoshSettings.shared.brightintoshActive {
             menu.addItem(toggleTimerItem!)
         }
-        menu.addItem(restoreDisplayColorsItem)
 #if DEBUG
         menu.addItem(printDisplayColorStateItem)
 #endif
@@ -126,11 +121,11 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         menu.addItem(quitItem)
         
         unsupportedDeviceItem = NSMenuItem(title: String(localized: "This device is incompatible"), action: nil, keyEquivalent: "")
-        unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "This device is incompatible")
+        unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "This device is incompatible"))
         menu.addItem(unsupportedDeviceItem)
         
         trialExpiredItem = NSMenuItem(title: String(localized: "Your trial has expired"), action: nil, keyEquivalent: "")
-        trialExpiredItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "Your trial has expired")
+        trialExpiredItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "Your trial has expired"))
         trialExpiredItem.isHidden = true
         menu.addItem(trialExpiredItem)
         
@@ -504,10 +499,6 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     @objc func callToggleBrightIntosh() {
         toggleBrightIntosh()
-    }
-    
-    @objc func restoreDisplayColors() {
-        CGDisplayRestoreColorSyncSettings()
     }
     
     @objc func brightnessSliderMoved(slider: NSSlider) {
