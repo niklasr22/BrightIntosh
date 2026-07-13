@@ -42,6 +42,7 @@ func presentBrightnessFailurePrompt(reason: String) async {
     
     NSApp.activate(ignoringOtherApps: true)
     let response = alert.runModal()
+    let canOfferCompatibilityMode = !BrightIntoshSettings.shared.useCompatibilityBrightnessMode
     
     switch response {
     case .alertFirstButtonReturn:
@@ -49,15 +50,19 @@ func presentBrightnessFailurePrompt(reason: String) async {
         BrightIntoshSettings.defaults.set(appVersion, forKey: dismissalKey)
         do {
             try await sendDiagnosticsReport(report)
-            showDiagnosticsSentAlert()
+            showDiagnosticsSentAlert(offerCompatibilityMode: canOfferCompatibilityMode)
         } catch {
             copyDiagnosticsToClipboard(report)
             showDiagnosticsSendFailedAlert()
-            showCompatibilityModeOfferAlert()
+            if canOfferCompatibilityMode {
+                showCompatibilityModeOfferAlert()
+            }
         }
     case .alertSecondButtonReturn:
         BrightIntoshSettings.defaults.set(appVersion, forKey: dismissalKey)
-        showCompatibilityModeOfferAlert()
+        if canOfferCompatibilityMode {
+            showCompatibilityModeOfferAlert()
+        }
     default:
         BrightIntoshSettings.defaults.set(appVersion, forKey: dismissalKey)
     }
@@ -96,15 +101,20 @@ private func copyDiagnosticsToClipboard(_ report: String) {
 }
 
 @MainActor
-private func showDiagnosticsSentAlert() {
+private func showDiagnosticsSentAlert(offerCompatibilityMode: Bool) {
     let alert = NSAlert()
     alert.alertStyle = .informational
     alert.messageText = String(localized: "Diagnostics sent")
-    alert.informativeText = String(localized: "Thank you. The diagnostics report was sent to BrightIntosh support. You can now try Compatibility Mode, which uses a simpler brightness method and may work better on this Mac.")
-    alert.addButton(withTitle: String(localized: "Try Compatibility Mode"))
-    alert.addButton(withTitle: String(localized: "OK"))
-    
-    if alert.runModal() == .alertFirstButtonReturn {
+    if offerCompatibilityMode {
+        alert.informativeText = String(localized: "Thank you. The diagnostics report was sent to BrightIntosh support. You can now try Compatibility Mode, which uses a simpler brightness method and may work better on this Mac.")
+        alert.addButton(withTitle: String(localized: "Try Compatibility Mode"))
+        alert.addButton(withTitle: String(localized: "OK"))
+    } else {
+        alert.addButton(withTitle: String(localized: "OK"))
+    }
+
+    let response = alert.runModal()
+    if offerCompatibilityMode, response == .alertFirstButtonReturn {
         enableCompatibilityModeAndShowRestartAlert()
     }
 }

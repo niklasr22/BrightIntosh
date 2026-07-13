@@ -17,11 +17,18 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
     private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
     private var gammaTables: [CGDirectDisplayID: GammaTable] = [:]
     private var fadeStates: [CGDirectDisplayID: FadeState] = [:]
+    private var hdrReadyDisplayIds: Set<CGDirectDisplayID> = []
+    private var consecutiveRecoveryCounts: [CGDirectDisplayID: Int] = [:]
+    private var integrityPollTask: Task<Void, Never>?
 
     nonisolated private static let colorStateLock = NSLock()
     private let gammaFadeDuration: TimeInterval = 0.2
     private let gammaFadeFrameInterval: Duration = .milliseconds(16)
     private let gammaFactorEpsilon: Float = 0.001
+    private let integrityPollInterval: Duration = .seconds(2)
+    private let gammaTableTolerance: CGGammaValue = 0.003
+    private let hdrReadyThreshold: CGFloat = 1.05
+    private let maxConsecutiveRecoveryAttempts = 3
 
     nonisolated static func restoreSystemColorState() {
         colorStateLock.lock()
@@ -41,6 +48,7 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
 
         isEnabled = true
         screenUpdate(screens: screens)
+        startIntegrityPollIfNeeded()
         print("Enabled compatibility gamma technique")
     }
 
@@ -67,6 +75,10 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
             height: 1
         )
         overlayWindowController.open(rect: rect)
+
+        if screen.maximumExtendedDynamicRangeColorComponentValue > hdrReadyThreshold {
+            hdrReadyDisplayIds.insert(displayId)
+        }
     }
 
     override func disable() {
@@ -84,21 +96,12 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
             return
         }
 
-        for controller in overlayWindowControllers.values {
-            guard let displayId = controller.screen.displayId,
+        for displayId in overlayWindowControllers.keys {
+            guard let screen = screenForDisplay(displayId),
                   let gammaTable = gammaTables[displayId] else {
                 continue
             }
-
-            let (referenceEdr, maxScreenBrightness) = getScreenRefGamma(controller.screen)
-            let factor = Self.gammaFactor(
-                userBrightness: userBrightness,
-                maxScreenBrightness: maxScreenBrightness,
-                referenceEdr: referenceEdr,
-                currentEdr: controller.screen.maximumExtendedDynamicRangeColorComponentValue
-            )
-
-            fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: factor)
+            applyBrightness(screen: screen, displayId: displayId, gammaTable: gammaTable)
         }
     }
 
@@ -118,13 +121,14 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
             }
 
             if let controller = overlayWindowControllers[displayId] {
-                controller.reposition(screen: screen)
+                controller.updateScreen(screen: screen)
             } else {
                 enableScreen(screen: screen)
             }
         }
 
         adjustBrightness()
+        startIntegrityPollIfNeeded()
     }
 
     private var userBrightness: Float {
@@ -153,7 +157,10 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
     private func cleanup(reason: String) {
         print("Resetting compatibility gamma state: \(reason)")
         isEnabled = false
+        stopIntegrityPoll()
         cancelAllFades()
+        hdrReadyDisplayIds.removeAll()
+        consecutiveRecoveryCounts.removeAll()
 
         Self.restoreSystemColorState()
         restoreCapturedGammaTables(reason: reason)
@@ -169,6 +176,8 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
 
     private func removeDisplay(_ displayId: CGDirectDisplayID) {
         cancelFade(displayId: displayId)
+        hdrReadyDisplayIds.remove(displayId)
+        consecutiveRecoveryCounts.removeValue(forKey: displayId)
         overlayWindowControllers[displayId]?.window?.close()
         if let gammaTable = gammaTables[displayId] {
             applyGammaTable(gammaTable, displayId: displayId)
@@ -186,8 +195,10 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
         let targetChanged = state.targetFactor.map {
             abs($0 - targetFactor) > gammaFactorEpsilon
         } ?? true
-        if !targetChanged, state.task != nil {
-            return
+        if !targetChanged {
+            if state.task != nil || abs(state.appliedFactor - targetFactor) <= gammaFactorEpsilon {
+                return
+            }
         }
 
         let startFactor = state.appliedFactor
@@ -271,11 +282,156 @@ final class CompatibilityGammaTechnique: BrightnessTechnique {
         gammaTable.setTableForScreen(displayId: displayId, factor: factor)
     }
 
+    private func applyBrightness(
+        screen: NSScreen,
+        displayId: CGDirectDisplayID,
+        gammaTable: GammaTable
+    ) {
+        let (referenceEdr, maxScreenBrightness) = getScreenRefGamma(screen)
+        let factor = Self.gammaFactor(
+            userBrightness: userBrightness,
+            maxScreenBrightness: maxScreenBrightness,
+            referenceEdr: referenceEdr,
+            currentEdr: screen.maximumExtendedDynamicRangeColorComponentValue
+        )
+        fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: factor)
+    }
+
+    private func startIntegrityPollIfNeeded() {
+        guard isEnabled, integrityPollTask == nil else {
+            return
+        }
+
+        integrityPollTask = Task { @MainActor in
+            defer { self.integrityPollTask = nil }
+
+            while !Task.isCancelled, self.isEnabled {
+                try? await Task.sleep(for: self.integrityPollInterval)
+                guard !Task.isCancelled, self.isEnabled else {
+                    return
+                }
+                self.recoverChangedDisplayState()
+            }
+        }
+    }
+
+    private func stopIntegrityPoll() {
+        integrityPollTask?.cancel()
+        integrityPollTask = nil
+    }
+
+    private func recoverChangedDisplayState() {
+        for (displayId, gammaTable) in gammaTables {
+            guard let screen = screenForDisplay(displayId) else {
+                consecutiveRecoveryCounts.removeValue(forKey: displayId)
+                hdrReadyDisplayIds.remove(displayId)
+                continue
+            }
+
+            var recoveredState = false
+            let hdrReady = screen.maximumExtendedDynamicRangeColorComponentValue > hdrReadyThreshold
+            if hdrReady {
+                let becameReady = hdrReadyDisplayIds.insert(displayId).inserted
+                if becameReady {
+                    applyBrightness(screen: screen, displayId: displayId, gammaTable: gammaTable)
+                }
+            } else {
+                hdrReadyDisplayIds.remove(displayId)
+                restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+                recreateHDROverlay(screen: screen, displayId: displayId)
+                recoveredState = true
+                print("Compatibility HDR state was reset for display \(displayId); recreated HDR trigger")
+            }
+
+            if let state = fadeStates[displayId],
+               state.task == nil,
+               let targetFactor = state.targetFactor,
+               abs(state.appliedFactor - targetFactor) <= gammaFactorEpsilon,
+               reapplyGammaTableIfNeeded(
+                   gammaTable,
+                   displayId: displayId,
+                   factor: targetFactor
+               ) {
+                recoveredState = true
+                print("Compatibility gamma table was reset for display \(displayId); reapplied factor \(targetFactor)")
+            }
+
+            guard recoveredState else {
+                consecutiveRecoveryCounts.removeValue(forKey: displayId)
+                continue
+            }
+
+            let recoveryCount = (consecutiveRecoveryCounts[displayId] ?? 0) + 1
+            consecutiveRecoveryCounts[displayId] = recoveryCount
+            print("Compatibility display state recovery \(recoveryCount)/\(maxConsecutiveRecoveryAttempts) for display \(displayId)")
+
+            if recoveryCount >= maxConsecutiveRecoveryAttempts {
+                handlePersistentDisplayConflict(displayId: displayId)
+                return
+            }
+        }
+    }
+
+    private func restoreGammaUntilHDRReturns(
+        displayId: CGDirectDisplayID,
+        gammaTable: GammaTable
+    ) {
+        let state = fadeState(for: displayId)
+        state.task?.cancel()
+        state.task = nil
+        state.targetFactor = nil
+        state.appliedFactor = 1.0
+        applyGammaTable(gammaTable, displayId: displayId)
+    }
+
+    private func recreateHDROverlay(screen: NSScreen, displayId: CGDirectDisplayID) {
+        overlayWindowControllers[displayId]?.window?.close()
+        overlayWindowControllers.removeValue(forKey: displayId)
+        enableScreen(screen: screen)
+    }
+
+    private func reapplyGammaTableIfNeeded(
+        _ gammaTable: GammaTable,
+        displayId: CGDirectDisplayID,
+        factor: Float
+    ) -> Bool {
+        Self.colorStateLock.lock()
+        defer { Self.colorStateLock.unlock() }
+        return gammaTable.reapplyIfLastValuesDrifted(
+            displayId: displayId,
+            factor: factor,
+            tolerance: gammaTableTolerance
+        )
+    }
+
+    private func screenForDisplay(_ displayId: CGDirectDisplayID) -> NSScreen? {
+        NSScreen.screens.first { $0.displayId == displayId }
+    }
+
+    private func handlePersistentDisplayConflict(displayId: CGDirectDisplayID) {
+        let reason = "Display \(displayId) repeatedly reset the HDR or gamma state after BrightIntosh applied it."
+        print("Persistent compatibility display conflict detected: \(reason); disabling increased brightness")
+        consecutiveRecoveryCounts.removeAll()
+
+        if BrightIntoshSettings.shared.brightintoshActive {
+            BrightIntoshSettings.shared.brightintoshActive = false
+        } else {
+            disable()
+        }
+
+        Task { @MainActor in
+            await presentBrightnessFailurePrompt(reason: reason)
+        }
+    }
+
     func appendSupportDiagnostics(to report: inout String) {
         report += "Compatibility gamma technique:\n"
         report += " - Technique enabled: \(isEnabled)\n"
         report += " - Overlay display IDs: \(overlayWindowControllers.keys.sorted())\n"
         report += " - Gamma tables: \(gammaTables)\n"
         report += " - Fading display IDs: \(fadeStates.keys.sorted())\n"
+        report += " - HDR-ready display IDs: \(hdrReadyDisplayIds.sorted())\n"
+        report += " - Consecutive recovery counts: \(consecutiveRecoveryCounts)\n"
+        report += " - Integrity poll active: \(integrityPollTask != nil)\n"
     }
 }
