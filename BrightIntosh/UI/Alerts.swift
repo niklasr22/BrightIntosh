@@ -15,9 +15,12 @@ private enum DiagnosticsSendError: Error {
 
 @MainActor func createBatteryAutomationContradictionAlert() -> NSAlert {
     let alert = NSAlert()
-    alert.messageText = "Your battery level is below \(BrightIntoshSettings.shared.batteryAutomationThreshold)%. Do you want to activate increased brightness anyway?\n\nThis will disable the battery automation."
-    alert.addButton(withTitle: "Continue")
-    alert.addButton(withTitle: "Cancel")
+    alert.messageText = String(
+        format: String(localized: "Your battery level is below %d%%. Do you want to activate increased brightness anyway?\n\nThis will disable the battery automation."),
+        BrightIntoshSettings.shared.batteryAutomationThreshold
+    )
+    alert.addButton(withTitle: String(localized: "Continue"))
+    alert.addButton(withTitle: String(localized: "Cancel"))
     return alert
 }
 
