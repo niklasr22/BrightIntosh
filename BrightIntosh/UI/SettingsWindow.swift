@@ -254,9 +254,10 @@ struct SupportReportSheet: View {
 }
 
 struct AdvancedSettingsSheet: View {
-    @Binding var isPresented: Bool
-    @Binding var useAlternateBrightnessBackend: Bool
-    @Binding var waitForHDRBeforeIncreasingBrightness: Bool
+    @Environment(\.dismiss) private var dismiss
+    @State private var useAlternateBrightnessBackend = BrightIntoshSettings.shared.useAlternateBrightnessBackend
+    @State private var waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness
+    @State private var showHDRRetryCooldownNotice = BrightIntoshSettings.shared.showHDRRetryCooldownNotice
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -281,6 +282,14 @@ struct AdvancedSettingsSheet: View {
                     .onChange(of: waitForHDRBeforeIncreasingBrightness) { _, new in
                         BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness = new
                     }
+
+                    Toggle(
+                        "Show a notice when boosted brightness needs a short delay",
+                        isOn: $showHDRRetryCooldownNotice
+                    )
+                    .onChange(of: showHDRRetryCooldownNotice) { _, new in
+                        BrightIntoshSettings.shared.showHDRRetryCooldownNotice = new
+                    }
                 }
                 
                 Text("These options can help when extra brightness does not behave as expected.")
@@ -291,7 +300,7 @@ struct AdvancedSettingsSheet: View {
             HStack {
                 Spacer()
                 Button("Done") {
-                    isPresented = false
+                    dismiss()
                 }
                 .keyboardShortcut(.defaultAction)
             }
@@ -309,11 +318,8 @@ struct BasicSettings: View {
     @State private var launchOnLogin = BrightIntoshSettings.shared.launchAtLogin
     @State private var brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn
     @State private var disableWhenLidClosed = BrightIntoshSettings.shared.disableWhenLidClosed
-    @State private var showHDRRetryCooldownNotice = BrightIntoshSettings.shared.showHDRRetryCooldownNotice
     @State private var showIncompatibleAppsNotice = BrightIntoshSettings.shared.showIncompatibleAppsNotice
     @State private var fineGrainedBrightnessControl = BrightIntoshSettings.shared.fineGrainedBrightnessControl
-    @State private var useAlternateBrightnessBackend = BrightIntoshSettings.shared.useAlternateBrightnessBackend
-    @State private var waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness
     @State private var batteryLevelThreshold = BrightIntoshSettings.shared.batteryAutomationThreshold
     @State private var timerAutomationTimeout = BrightIntoshSettings.shared.timerAutomationTimeout
 
@@ -362,20 +368,6 @@ struct BasicSettings: View {
                             "Your device doesn't have a built-in XDR display. Increased brightness can only be enabled for external XDR displays.",
                             systemImage: "exclamationmark.triangle.fill"
                         ).foregroundColor(Color.yellow)
-                    }
-                    Toggle(
-                        "Show a notice when boosted brightness needs a short delay",
-                        isOn: $showHDRRetryCooldownNotice
-                    )
-                    .onChange(of: showHDRRetryCooldownNotice) { _, new in
-                        BrightIntoshSettings.shared.showHDRRetryCooldownNotice = new
-                    }
-                    Toggle(
-                        "Show a notice when another brightness app may interfere",
-                        isOn: $showIncompatibleAppsNotice
-                    )
-                    .onChange(of: showIncompatibleAppsNotice) { _, new in
-                        BrightIntoshSettings.shared.showIncompatibleAppsNotice = new
                     }
                 }
                 Section(header: Text("Timer").bold()) {
@@ -437,11 +429,7 @@ struct BasicSettings: View {
                             showAdvancedSettingsSheet = true
                         }
                         .sheet(isPresented: $showAdvancedSettingsSheet) {
-                            AdvancedSettingsSheet(
-                                isPresented: $showAdvancedSettingsSheet,
-                                useAlternateBrightnessBackend: $useAlternateBrightnessBackend,
-                                waitForHDRBeforeIncreasingBrightness: $waitForHDRBeforeIncreasingBrightness
-                            )
+                            AdvancedSettingsSheet()
                         }
                     },
                     content: {
@@ -462,6 +450,13 @@ struct BasicSettings: View {
                             isOn: $showInDock)
                         .onChange(of: showInDock) { _, new in
                             BrightIntoshSettings.shared.showInDock = new
+                        }
+                        Toggle(
+                            "Show a notice when another brightness app may interfere",
+                            isOn: $showIncompatibleAppsNotice
+                        )
+                        .onChange(of: showIncompatibleAppsNotice) { _, new in
+                            BrightIntoshSettings.shared.showIncompatibleAppsNotice = new
                         }
                         Button(action: {
                             showSupportReportSheet = true
