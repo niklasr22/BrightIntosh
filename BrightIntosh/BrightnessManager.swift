@@ -220,7 +220,7 @@ final class BrightnessManager: BrightnessManaging {
             suspendAndScheduleActivation(reason: "display setup changed")
         } else if brightnessTechnique.isEnabled {
             // Screen parameter notifications also cover native brightness changes.
-            brightnessTechnique.adjustBrightness()
+            brightnessTechnique.updateBrightness(reason: .displayParametersChanged)
         }
     }
 
@@ -356,7 +356,7 @@ final class BrightnessManager: BrightnessManaging {
               brightnessTechnique.isEnabled else {
             return
         }
-        brightnessTechnique.adjustBrightnessValue()
+        brightnessTechnique.updateBrightness(reason: .brightnessSettingChanged)
     }
 
     private static func makeBrightnessTechnique() -> BrightnessTechnique {
@@ -427,7 +427,7 @@ final class BrightnessManager: BrightnessManaging {
         report += " - Target displays: \(displays.targetDisplayIds.sorted())\n"
         if let gammaTechnique = brightnessTechnique as? GammaTechnique {
             gammaTechnique.appendSupportDiagnostics(to: &report)
-        } else if let hdrTechnique = brightnessTechnique as? HDRLifecycleBrightnessTechnique {
+        } else if let hdrTechnique = brightnessTechnique as? MultiplyingOverlayTechnique {
             hdrTechnique.appendHDRSupportDiagnostics(to: &report)
         }
     }

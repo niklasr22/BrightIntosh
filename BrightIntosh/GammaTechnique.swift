@@ -8,7 +8,6 @@ import CoreGraphics
 
 class GammaTable: CustomStringConvertible {
     static let tableSize: UInt32 = 256
-    private static let boostedBaselineThreshold: CGGammaValue = 1.1
     
     var redTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
     var greenTable: [CGGammaValue] = [CGGammaValue](repeating: 0, count: Int(tableSize))
@@ -28,23 +27,6 @@ class GammaTable: CustomStringConvertible {
         let result = CGGetDisplayTransferByTable(displayId, tableSize, &table.redTable, &table.greenTable, &table.blueTable, &sampleCount)
         guard result == CGError.success else { return nil }
         return table
-    }
-    
-    static func createCleanBaseline(displayId: CGDirectDisplayID) -> GammaTable? {
-        guard let currentTable = createFromCurrentGammaTable(displayId: displayId) else { return nil }
-        print("New baseline created (max value \(currentTable.maximumValue))")
-        guard currentTable.appearsBoosted else { return currentTable }
-        
-        print("Detected boosted gamma baseline with max value \(currentTable.maximumValue); restoring ColorSync settings")
-        CGDisplayRestoreColorSyncSettings()
-        
-        guard let restoredTable = createFromCurrentGammaTable(displayId: displayId) else {
-            return currentTable.normalizedByMaximum()
-        }
-        guard restoredTable.appearsBoosted else { return restoredTable }
-        
-        print("Restored gamma baseline still looks boosted with max value \(restoredTable.maximumValue); normalizing captured table")
-        return restoredTable.normalizedByMaximum()
     }
     
     func setTableForScreen(displayId: CGDirectDisplayID, factor: Float = 1.0) {
@@ -74,21 +56,6 @@ class GammaTable: CustomStringConvertible {
         max(redTable.max() ?? 0, greenTable.max() ?? 0, blueTable.max() ?? 0)
     }
     
-    private var appearsBoosted: Bool {
-        maximumValue > Self.boostedBaselineThreshold
-    }
-    
-    private func normalizedByMaximum() -> GammaTable? {
-        let maxValue = maximumValue
-        guard maxValue > 0 else { return nil }
-        
-        let table = GammaTable()
-        table.redTable = redTable.map { $0 / maxValue }
-        table.greenTable = greenTable.map { $0 / maxValue }
-        table.blueTable = blueTable.map { $0 / maxValue }
-        return table
-    }
-    
     private func currentLastValuesMatch(displayId: CGDirectDisplayID, factor: Float, tolerance: CGGammaValue) -> Bool {
         guard let currentTable = Self.createFromCurrentGammaTable(displayId: displayId) else { return true }
         guard let redValue = redTable.last,
@@ -106,6 +73,8 @@ class GammaTable: CustomStringConvertible {
 
 @MainActor
 final class GammaTechnique: BrightnessTechnique {
+    private(set) var isEnabled = false
+
     private final class FadeState {
         var appliedFactor: Float = 1.0
         var targetFactor: Float?
@@ -134,19 +103,18 @@ final class GammaTechnique: BrightnessTechnique {
         CGDisplayRestoreColorSyncSettings()
     }
 
-    override func enable(screens: [NSScreen]) {
+    func enable(screens: [NSScreen]) {
         guard !screens.isEmpty else {
-            reset(reason: "no compatible displays")
+            cleanup(reason: "no compatible displays")
             return
         }
 
         isEnabled = true
         screenUpdate(screens: screens)
-        startIntegrityPollIfNeeded()
         print("Enabled gamma technique")
     }
 
-    override func enableScreen(screen: NSScreen) {
+    private func enableScreen(screen: NSScreen) {
         guard let displayId = screen.displayId else {
             return
         }
@@ -175,17 +143,11 @@ final class GammaTechnique: BrightnessTechnique {
         }
     }
 
-    override func disable() {
-        reset(reason: "disabled")
+    func disable() {
+        cleanup(reason: "disabled")
     }
 
-    func reset(reason: String) {
-        cleanup(reason: reason)
-    }
-
-    override func adjustBrightness() {
-        super.adjustBrightness()
-
+    func updateBrightness(reason: BrightnessUpdateReason) {
         guard isEnabled else {
             return
         }
@@ -199,7 +161,7 @@ final class GammaTechnique: BrightnessTechnique {
         }
     }
 
-    override func screenUpdate(screens: [NSScreen]) {
+    func screenUpdate(screens: [NSScreen]) {
         let activeDisplayIds = Set(screens.compactMap(\.displayId))
         let removedDisplayIds = overlayWindowControllers.keys.filter {
             !activeDisplayIds.contains($0)
@@ -221,7 +183,7 @@ final class GammaTechnique: BrightnessTechnique {
             }
         }
 
-        adjustBrightness()
+        updateBrightness(reason: .displayParametersChanged)
         startIntegrityPollIfNeeded()
     }
 
@@ -251,8 +213,12 @@ final class GammaTechnique: BrightnessTechnique {
     private func cleanup(reason: String) {
         print("Resetting gamma state: \(reason)")
         isEnabled = false
-        stopIntegrityPoll()
-        cancelAllFades()
+        integrityPollTask?.cancel()
+        integrityPollTask = nil
+        for state in fadeStates.values {
+            state.task?.cancel()
+        }
+        fadeStates.removeAll()
         hdrReadyDisplayIds.removeAll()
         consecutiveRecoveryCounts.removeAll()
 
@@ -269,7 +235,8 @@ final class GammaTechnique: BrightnessTechnique {
     }
 
     private func removeDisplay(_ displayId: CGDirectDisplayID) {
-        cancelFade(displayId: displayId)
+        fadeStates[displayId]?.task?.cancel()
+        fadeStates.removeValue(forKey: displayId)
         hdrReadyDisplayIds.remove(displayId)
         consecutiveRecoveryCounts.removeValue(forKey: displayId)
         overlayWindowControllers[displayId]?.window?.close()
@@ -347,18 +314,6 @@ final class GammaTechnique: BrightnessTechnique {
         return state
     }
 
-    private func cancelFade(displayId: CGDirectDisplayID) {
-        fadeStates[displayId]?.task?.cancel()
-        fadeStates.removeValue(forKey: displayId)
-    }
-
-    private func cancelAllFades() {
-        for state in fadeStates.values {
-            state.task?.cancel()
-        }
-        fadeStates.removeAll()
-    }
-
     private func restoreCapturedGammaTables(reason: String) {
         for (displayId, gammaTable) in gammaTables {
             print("Restoring gamma table for display \(displayId) before \(reason)")
@@ -407,11 +362,6 @@ final class GammaTechnique: BrightnessTechnique {
                 self.recoverChangedDisplayState()
             }
         }
-    }
-
-    private func stopIntegrityPoll() {
-        integrityPollTask?.cancel()
-        integrityPollTask = nil
     }
 
     private func recoverChangedDisplayState() {
@@ -529,4 +479,3 @@ final class GammaTechnique: BrightnessTechnique {
         report += " - Integrity poll active: \(integrityPollTask != nil)\n"
     }
 }
-

@@ -8,51 +8,42 @@
 import Foundation
 import Cocoa
 
-@MainActor
-class BrightnessTechnique {
-    var isEnabled: Bool = false 
-
-    func enable(screens: [NSScreen]) {
-        fatalError("Subclasses need to implement the `enable()` method.")
-    }
-    
-    func enableScreen(screen: NSScreen) {
-        fatalError("Subclasses need to implement the `enableScreen()` method.")
-    }
-    
-    func disable() {
-        fatalError("Subclasses need to implement the `disable()` method.")
-    }
-    
-    func adjustBrightness() {}
-    
-    func adjustBrightnessValue() {
-        adjustBrightness()
-    }
-    
-    func screenUpdate(screens: [NSScreen]) {}
-    
+enum BrightnessUpdateReason {
+    case displayParametersChanged
+    case brightnessSettingChanged
 }
 
-class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
-    fileprivate var hdrPollTasks: [CGDirectDisplayID: Task<Void, Never>] = [:]
-    fileprivate var hdrReadyDisplayIds: Set<CGDirectDisplayID> = []
-    fileprivate var hdrCooldownEndDates: [CGDirectDisplayID: Date] = [:]
+@MainActor
+protocol BrightnessTechnique: AnyObject, Sendable {
+    var isEnabled: Bool { get }
+
+    func enable(screens: [NSScreen])
+    func disable()
+    func updateBrightness(reason: BrightnessUpdateReason)
+    func screenUpdate(screens: [NSScreen])
+}
+
+final class MultiplyingOverlayTechnique: BrightnessTechnique {
+    private(set) var isEnabled = false
+    private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
+    private var hdrPollTasks: [CGDirectDisplayID: Task<Void, Never>] = [:]
+    private var hdrReadyDisplayIds: Set<CGDirectDisplayID> = []
+    private var hdrCooldownEndDates: [CGDirectDisplayID: Date] = [:]
     /// Consecutive HDR engage timeouts per display; reset when HDR becomes ready.
-    fileprivate var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
-    
-    fileprivate let hdrReadyThreshold = 1.05
-    fileprivate let hdrEngageTimeout: TimeInterval = 25
-    fileprivate let hdrRetryCooldownSeconds = 30
-    fileprivate let maxConsecutiveHDRTimeoutFailures = 3
-    fileprivate let defaultPollInterval: Duration = .milliseconds(500)
-    fileprivate let fastPollInterval: Duration = .milliseconds(16)
-    fileprivate let fastPollDuration: TimeInterval = 30
-    fileprivate let maxEdrEpsilon: CGFloat = 0.0001
-    fileprivate let pendingHDRBrightnessFactor: Float = 1.12
-    fileprivate var fastPollUntil: Date?
-    
-    fileprivate var shouldApplyPendingHDRBrightness: Bool {
+    private var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
+
+    private let hdrReadyThreshold = 1.05
+    private let hdrEngageTimeout: TimeInterval = 25
+    private let hdrRetryCooldownSeconds = 30
+    private let maxConsecutiveHDRTimeoutFailures = 3
+    private let defaultPollInterval: Duration = .milliseconds(500)
+    private let fastPollInterval: Duration = .milliseconds(16)
+    private let fastPollDuration: TimeInterval = 30
+    private let maxEdrEpsilon: CGFloat = 0.0001
+    private let pendingHDRBrightnessFactor: Float = 1.12
+    private var fastPollUntil: Date?
+
+    private var shouldApplyPendingHDRBrightness: Bool {
         !BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness
     }
     
@@ -70,28 +61,22 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         return 1 + referenceBonusGamma * min(edrRatio, userBrightness)
     }
     
-    override func adjustBrightness() {
-        super.adjustBrightness()
-        fastPollUntil = Date().addingTimeInterval(fastPollDuration)
-        if isEnabled {
-            hdrReadyDisplaysDidChange()
+    func updateBrightness(reason: BrightnessUpdateReason) {
+        guard isEnabled else { return }
+        if reason == .displayParametersChanged {
+            fastPollUntil = Date().addingTimeInterval(fastPollDuration)
         }
+        updateOverlayBrightnessForReadyDisplays()
     }
     
-    override func adjustBrightnessValue() {
-        if isEnabled {
-            hdrReadyDisplaysDidChange()
-        }
-    }
-    
-    fileprivate func trackedHDRDisplayIds(additionalDisplayIds: Set<CGDirectDisplayID> = []) -> Set<CGDirectDisplayID> {
+    private func trackedHDRDisplayIds(additionalDisplayIds: Set<CGDirectDisplayID> = []) -> Set<CGDirectDisplayID> {
         additionalDisplayIds
             .union(Set(hdrPollTasks.keys))
             .union(hdrReadyDisplayIds)
             .union(Set(hdrCooldownEndDates.keys))
     }
     
-    fileprivate func startPollTasksIfNeeded(screens: [NSScreen]) {
+    private func startPollTasksIfNeeded(screens: [NSScreen]) {
         guard !screens.isEmpty else { return }
         let activeIds = Set(screens.compactMap { $0.displayId })
         for (id, task) in hdrPollTasks where !activeIds.contains(id) {
@@ -107,7 +92,7 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         }
     }
     
-    fileprivate func tearDownHDRState(displayId: CGDirectDisplayID) {
+    private func tearDownHDRState(displayId: CGDirectDisplayID) {
         hdrPollTasks[displayId]?.cancel()
         hdrPollTasks.removeValue(forKey: displayId)
         hdrReadyDisplayIds.remove(displayId)
@@ -116,13 +101,13 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
     }
     
     /// Stops HDR polling while preserving retry cooldown deadlines across disable/enable toggles.
-    fileprivate func resetActiveHDRState() {
+    private func resetActiveHDRState() {
         hdrPollTasks.values.forEach { $0.cancel() }
         hdrPollTasks.removeAll()
         hdrReadyDisplayIds.removeAll()
     }
     
-    fileprivate func handleActiveHDRCooldown(_ displayId: CGDirectDisplayID, notify: Bool) -> Bool {
+    private func handleActiveHDRCooldown(_ displayId: CGDirectDisplayID, notify: Bool) -> Bool {
         guard let remainingSeconds = hdrCooldownRemainingSeconds(for: displayId) else { return false }
         
         if shouldApplyPendingHDRBrightness {
@@ -153,7 +138,7 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
             guard ready, !Task.isCancelled, isEnabled, screenForDisplay(displayId) != nil else { return }
             
             hdrReadyDisplayIds.insert(displayId)
-            hdrReadyDisplaysDidChange()
+            updateOverlayBrightnessForReadyDisplays()
             
             await monitorHDR(displayId: displayId)
         }
@@ -222,13 +207,19 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
             let maxEdr = screen.maximumExtendedDynamicRangeColorComponentValue
             if lastMaxEdr.map({ abs($0 - maxEdr) > maxEdrEpsilon }) ?? true {
                 lastMaxEdr = maxEdr
-                hdrMaximumEDRDidChange(displayId: displayId, screen: screen, maxEdr: maxEdr)
+                setOverlayBrightness(displayId: displayId, screen: screen, maxEdr: maxEdr)
             }
             try? await Task.sleep(for: currentPollInterval())
         }
         hdrReadyDisplayIds.remove(displayId)
-        hdrDidStopBeingReady(displayId: displayId)
-        hdrReadyDisplaysDidChange()
+        if let screen = screenForDisplay(displayId) {
+            setOverlayBrightness(
+                displayId: displayId,
+                screen: screen,
+                maxEdr: screen.maximumExtendedDynamicRangeColorComponentValue
+            )
+        }
+        updateOverlayBrightnessForReadyDisplays()
     }
     
     private func currentPollInterval() -> Duration {
@@ -238,7 +229,7 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         return defaultPollInterval
     }
     
-    fileprivate func screenForDisplay(_ displayId: CGDirectDisplayID) -> NSScreen? {
+    private func screenForDisplay(_ displayId: CGDirectDisplayID) -> NSScreen? {
         NSScreen.screens.first { $0.displayId == displayId }
     }
     
@@ -332,23 +323,13 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
         }
     }
     
-    func closeBoostWindow(_ displayId: CGDirectDisplayID) {}
-    func applyPendingHDRBrightness(displayId: CGDirectDisplayID) {}
-    func hdrReadyDisplaysDidChange() {}
-    func hdrMaximumEDRDidChange(displayId: CGDirectDisplayID, screen: NSScreen, maxEdr: CGFloat) {}
-    func hdrDidStopBeingReady(displayId: CGDirectDisplayID) {}
-}
-
-class MultiplyingOverlayTechnique: HDRLifecycleBrightnessTechnique {
-    private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
-    
-    override func enable(screens: [NSScreen]) {
+    func enable(screens: [NSScreen]) {
         let shouldAnnounceActiveCooldowns = !isEnabled
         isEnabled = true
         updateScreens(screens: screens, announceActiveCooldowns: shouldAnnounceActiveCooldowns)
     }
     
-    override func enableScreen(screen: NSScreen) {
+    private func enableScreen(screen: NSScreen) {
         guard let displayId = screen.displayId else { return }
         guard !handleActiveHDRCooldown(displayId, notify: false) else {
             closeBoostWindow(displayId)
@@ -373,14 +354,14 @@ class MultiplyingOverlayTechnique: HDRLifecycleBrightnessTechnique {
         controller.open(rect: screen.frame)
     }
     
-    override func disable() {
+    func disable() {
         isEnabled = false
         resetActiveHDRState()
         overlayWindowControllers.values.forEach { $0.window?.close() }
         overlayWindowControllers.removeAll()
     }
     
-    override func screenUpdate(screens: [NSScreen]) {
+    func screenUpdate(screens: [NSScreen]) {
         updateScreens(screens: screens, announceActiveCooldowns: false)
     }
     
@@ -389,7 +370,8 @@ class MultiplyingOverlayTechnique: HDRLifecycleBrightnessTechnique {
         let trackedDisplayIds = trackedHDRDisplayIds(additionalDisplayIds: Set(overlayWindowControllers.keys))
         
         for displayId in trackedDisplayIds where !activeDisplayIds.contains(displayId) {
-            tearDownDisplay(displayId)
+            tearDownHDRState(displayId: displayId)
+            closeBoostWindow(displayId)
         }
         
         for screen in screens {
@@ -402,31 +384,13 @@ class MultiplyingOverlayTechnique: HDRLifecycleBrightnessTechnique {
         fastPollUntil = Date().addingTimeInterval(fastPollDuration)
     }
     
-    override func closeBoostWindow(_ displayId: CGDirectDisplayID) {
+    private func closeBoostWindow(_ displayId: CGDirectDisplayID) {
         overlayWindowControllers[displayId]?.window?.close()
         overlayWindowControllers.removeValue(forKey: displayId)
     }
     
-    override func applyPendingHDRBrightness(displayId: CGDirectDisplayID) {
+    private func applyPendingHDRBrightness(displayId: CGDirectDisplayID) {
         overlayWindowControllers[displayId]?.setOverlayClearColorValue(Double(pendingHDRBrightnessFactor))
-    }
-    
-    override func hdrReadyDisplaysDidChange() {
-        updateOverlayBrightnessForReadyDisplays()
-    }
-    
-    override func hdrMaximumEDRDidChange(displayId: CGDirectDisplayID, screen: NSScreen, maxEdr: CGFloat) {
-        setOverlayBrightness(displayId: displayId, screen: screen, maxEdr: maxEdr)
-    }
-    
-    override func hdrDidStopBeingReady(displayId: CGDirectDisplayID) {
-        guard let screen = screenForDisplay(displayId) else { return }
-        setOverlayBrightness(displayId: displayId, screen: screen, maxEdr: screen.maximumExtendedDynamicRangeColorComponentValue)
-    }
-    
-    private func tearDownDisplay(_ displayId: CGDirectDisplayID) {
-        tearDownHDRState(displayId: displayId)
-        closeBoostWindow(displayId)
     }
     
     private func updateOverlayBrightnessForReadyDisplays() {
