@@ -134,10 +134,6 @@ final class GammaTechnique: BrightnessTechnique {
         CGDisplayRestoreColorSyncSettings()
     }
 
-    override func enable() {
-        enable(screens: getXDRDisplays())
-    }
-
     override func enable(screens: [NSScreen]) {
         guard !screens.isEmpty else {
             reset(reason: "no compatible displays")

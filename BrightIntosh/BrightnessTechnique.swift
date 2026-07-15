@@ -10,15 +10,10 @@ import Cocoa
 
 @MainActor
 class BrightnessTechnique {
-    var isEnabled: Bool = false
-    
-    func enable() {
-        fatalError("Subclasses need to implement the `enable()` method.")
-    }
+    var isEnabled: Bool = false 
 
     func enable(screens: [NSScreen]) {
-        enable()
-        screenUpdate(screens: screens)
+        fatalError("Subclasses need to implement the `enable()` method.")
     }
     
     func enableScreen(screen: NSScreen) {
@@ -347,12 +342,6 @@ class HDRLifecycleBrightnessTechnique: BrightnessTechnique {
 class MultiplyingOverlayTechnique: HDRLifecycleBrightnessTechnique {
     private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
     
-    override func enable() {
-        let shouldAnnounceActiveCooldowns = !isEnabled
-        isEnabled = true
-        updateScreens(screens: getXDRDisplays(), announceActiveCooldowns: shouldAnnounceActiveCooldowns)
-    }
-
     override func enable(screens: [NSScreen]) {
         let shouldAnnounceActiveCooldowns = !isEnabled
         isEnabled = true
