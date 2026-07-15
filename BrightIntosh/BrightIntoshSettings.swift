@@ -187,10 +187,11 @@ class BrightIntoshSettings {
         launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
         migrateUserDefaultsToAppGroups();
         
-        activeObserver = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (defaults, change) in
+        activeObserver = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (_, _) in
             Task { @MainActor in
-                if let newValue = change.newValue, newValue != self.brightintoshActive {
-                    self.brightintoshActive = newValue;
+                let active = BrightIntoshSettings.defaults.bool(forKey: "active")
+                if active != self.brightintoshActive {
+                    self.brightintoshActive = active
                 }
             }
         })

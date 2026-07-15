@@ -86,6 +86,7 @@ final class GammaTechnique: BrightnessTechnique {
     private var fadeStates: [CGDirectDisplayID: FadeState] = [:]
     private var hdrReadyDisplayIds: Set<CGDirectDisplayID> = []
     private var consecutiveRecoveryCounts: [CGDirectDisplayID: Int] = [:]
+    private var gammaCaptureFailure: String?
     private var integrityPollTask: Task<Void, Never>?
 
     nonisolated private static let colorStateLock = NSLock()
@@ -120,7 +121,11 @@ final class GammaTechnique: BrightnessTechnique {
         }
 
         if gammaTables[displayId] == nil {
-            gammaTables[displayId] = GammaTable.createFromCurrentGammaTable(displayId: displayId)
+            guard let gammaTable = GammaTable.createFromCurrentGammaTable(displayId: displayId) else {
+                handleGammaCaptureFailure(displayId: displayId)
+                return
+            }
+            gammaTables[displayId] = gammaTable
         }
 
         if let existing = overlayWindowControllers[displayId] {
@@ -172,6 +177,7 @@ final class GammaTechnique: BrightnessTechnique {
         }
 
         for screen in screens {
+            guard isEnabled else { break }
             guard let displayId = screen.displayId else {
                 continue
             }
@@ -468,6 +474,22 @@ final class GammaTechnique: BrightnessTechnique {
         }
     }
 
+    private func handleGammaCaptureFailure(displayId: CGDirectDisplayID) {
+        let reason = "CGGetDisplayTransferByTable failed for display \(displayId)."
+        gammaCaptureFailure = reason
+        print("Gamma capture failure detected: \(reason); disabling increased brightness")
+
+        if BrightIntoshSettings.shared.brightintoshActive {
+            BrightIntoshSettings.shared.brightintoshActive = false
+        } else {
+            disable()
+        }
+
+        Task { @MainActor in
+            await presentBrightnessFailurePrompt(reason: reason)
+        }
+    }
+
     func appendSupportDiagnostics(to report: inout String) {
         report += "Gamma technique:\n"
         report += " - Technique enabled: \(isEnabled)\n"
@@ -476,6 +498,7 @@ final class GammaTechnique: BrightnessTechnique {
         report += " - Fading display IDs: \(fadeStates.keys.sorted())\n"
         report += " - HDR-ready display IDs: \(hdrReadyDisplayIds.sorted())\n"
         report += " - Consecutive recovery counts: \(consecutiveRecoveryCounts)\n"
+        report += " - Gamma capture failure: \(gammaCaptureFailure ?? "none")\n"
         report += " - Integrity poll active: \(integrityPollTask != nil)\n"
     }
 }
