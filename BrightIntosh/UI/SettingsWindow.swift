@@ -94,29 +94,6 @@ class BasicSettingsViewModel: ObservableObject {
     }
 }
 
-struct BrightnessSliderRemovalHint: View {
-    @Binding var isVisible: Bool
-
-    var body: some View {
-        if isVisible {
-            HStack(alignment: .top, spacing: 8) {
-                Image(systemName: "info.circle.fill")
-                    .foregroundStyle(.blue)
-                Text("The BrightIntosh brightness slider was removed. Use your Mac's normal brightness keys to adjust brightness, and simply toggle increased brightness on or off when you need the boost.")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Button("Dismiss") {
-                    BrightIntoshSettings.shared.dismissedBrightnessSliderRemovalHint = true
-                    isVisible = false
-                }
-                .buttonStyle(.borderless)
-            }
-            .padding(10)
-            .background(Color.blue.opacity(0.12))
-            .clipShape(.rect(cornerRadius: 8))
-        }
-    }
-}
-
 struct CliInstallationSheet: View {
     @Binding var isPresented: Bool
     
@@ -328,14 +305,12 @@ struct BasicSettings: View {
     
     @State private var showCliPopup = false
     @State private var showSupportReportSheet = false
-    @State private var showBrightnessSliderRemovalHint = false
     @State private var showAdvancedSettingsSheet = false
 
     var body: some View {
         ScrollView {
             Form {
                 Section(header: Text("Brightness").bold()) {
-                    BrightnessSliderRemovalHint(isVisible: $showBrightnessSliderRemovalHint)
                     Toggle("Increased brightness", isOn: $viewModel.brightIntoshActiveToggle)
                     Toggle(
                         "Fine grained brightness control",
@@ -343,9 +318,6 @@ struct BasicSettings: View {
                     )
                     .onChange(of: fineGrainedBrightnessControl) { _, new in
                         BrightIntoshSettings.shared.fineGrainedBrightnessControl = new
-                        if new {
-                            showBrightnessSliderRemovalHint = false
-                        }
                     }
                     if fineGrainedBrightnessControl {
                         Slider(value: $viewModel.brightnessSlider, in: 0.0...1.0) {
@@ -495,24 +467,6 @@ struct BasicSettings: View {
         .sheet(isPresented: $showSupportReportSheet) {
             SupportReportSheet(isPresented: $showSupportReportSheet)
         }
-        .task {
-            await updateBrightnessSliderRemovalHintVisibility()
-        }
-    }
-
-    @MainActor
-    private func updateBrightnessSliderRemovalHintVisibility() async {
-        guard !BrightIntoshSettings.shared.fineGrainedBrightnessControl else {
-            showBrightnessSliderRemovalHint = false
-            return
-        }
-        
-        guard !BrightIntoshSettings.shared.dismissedBrightnessSliderRemovalHint else {
-            showBrightnessSliderRemovalHint = false
-            return
-        }
-
-        showBrightnessSliderRemovalHint = await originalPurchaseVersionIsEarlierThan(brightnessSliderRemovalOriginalPurchaseVersionCutoff)
     }
 }
 

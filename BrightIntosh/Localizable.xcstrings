@@ -2416,65 +2416,6 @@
         }
       }
     },
-    "Dismiss" : {
-      "comment" : "A button that dismisses a hint about the removal of the BrightIntosh brightness slider.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schließen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dismiss"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Descartar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ignorer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chiudi"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "閉じる"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dispensar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关闭"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "關閉"
-          }
-        }
-      }
-    },
     "Dismiss notice" : {
       "localizations" : {
         "de" : {
@@ -5375,65 +5316,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "測試：忽略應用程式交易"
-          }
-        }
-      }
-    },
-    "The BrightIntosh brightness slider was removed. Use your Mac's normal brightness keys to adjust brightness, and simply toggle increased brightness on or off when you need the boost." : {
-      "comment" : "A description of the brightness slider removal hint.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der BrightIntosh-Helligkeitsregler wurde entfernt. Verwenden Sie die normalen Helligkeitstasten Ihres Macs, um die Helligkeit anzupassen, und schalten Sie die erhöhte Helligkeit einfach ein oder aus, wenn Sie den Boost benötigen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The BrightIntosh brightness slider was removed. Use your Mac's normal brightness keys to adjust brightness, and simply toggle increased brightness on or off when you need the boost."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El control deslizante de brillo de BrightIntosh fue eliminado. Usa las teclas normales de brillo de tu Mac para ajustar el brillo, y simplemente activa o desactiva el brillo aumentado cuando necesites el impulso."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le curseur de luminosité de BrightIntosh a été supprimé. Utilisez les touches de luminosité normales de votre Mac pour ajuster la luminosité, et activez simplement l'augmentation de la luminosité lorsque vous avez besoin d'un coup de pouce."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il cursore della luminosità di BrightIntosh è stato rimosso. Usa i tasti normali per la luminosità del Mac per regolare la luminosità e attiva o disattiva semplicemente la luminosità aumentata quando hai bisogno di un incremento."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BrightIntoshの明るさスライダーは削除されました。明るさの調整はMacの通常の明るさキーを使用し、明るさを上げたいときには増加した明るさの切り替えを行ってください。"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O controlo deslizante de brilho do BrightIntosh foi removido. Utilize as teclas normais de brilho do seu Mac para ajustar o brilho e simplesmente ative ou desative o aumento do brilho quando precisar do impulso."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已移除 BrightIntosh 亮度滑块。请使用您的 Mac 的常规亮度按键来调节亮度，并在需要提升亮度时简单地切换增强亮度开关。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BrightIntosh 的亮度滑桿已被移除。請使用您的 Mac 的普通亮度鍵來調整亮度，並在需要提升亮度時，只需切換增強亮度的開啟或關閉即可。"
           }
         }
       }
