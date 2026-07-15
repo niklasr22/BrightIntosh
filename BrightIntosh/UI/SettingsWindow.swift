@@ -471,14 +471,7 @@ struct BasicSettings: View {
                     })
 #if DEBUG
                 Section(header: Text("Dev").bold()) {
-                    Button("Reset brightness slider hint dismissal") {
-                        BrightIntoshSettings.shared.dismissedBrightnessSliderRemovalHint = false
-                        Task {
-                            await updateBrightnessSliderRemovalHintVisibility()
-                        }
-                    }
                     Button("Show brightness failure prompt") {
-                        BrightIntoshSettings.defaults.removeObject(forKey: "dismissedBrightnessFailurePromptForVersion")
                         Task {
                             await presentBrightnessFailurePrompt(reason: "Manually triggered from Debug settings.")
                         }

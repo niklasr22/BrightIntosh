@@ -26,11 +26,6 @@ private enum DiagnosticsSendError: Error {
 
 @MainActor
 func presentBrightnessFailurePrompt(reason: String) async {
-    let dismissalKey = "dismissedBrightnessFailurePromptForVersion"
-    guard BrightIntoshSettings.defaults.string(forKey: dismissalKey) != appVersion else {
-        return
-    }
-    
     SupportReportContext.lastBrightnessFailureReason = reason
     
     let alert = NSAlert()
@@ -42,22 +37,15 @@ func presentBrightnessFailurePrompt(reason: String) async {
     
     NSApp.activate(ignoringOtherApps: true)
     let response = alert.runModal()
-    
-    switch response {
-    case .alertFirstButtonReturn:
-        let report = await generateReport(includeRunningApplications: true)
-        BrightIntoshSettings.defaults.set(appVersion, forKey: dismissalKey)
-        do {
-            try await sendDiagnosticsReport(report)
-            showDiagnosticsSentAlert()
-        } catch {
-            copyDiagnosticsToClipboard(report)
-            showDiagnosticsSendFailedAlert()
-        }
-    case .alertSecondButtonReturn:
-        BrightIntoshSettings.defaults.set(appVersion, forKey: dismissalKey)
-    default:
-        BrightIntoshSettings.defaults.set(appVersion, forKey: dismissalKey)
+
+    guard response == .alertFirstButtonReturn else { return }
+    let report = await generateReport(includeRunningApplications: true)
+    do {
+        try await sendDiagnosticsReport(report)
+        showDiagnosticsSentAlert()
+    } catch {
+        copyDiagnosticsToClipboard(report)
+        showDiagnosticsSendFailedAlert()
     }
 }
 
