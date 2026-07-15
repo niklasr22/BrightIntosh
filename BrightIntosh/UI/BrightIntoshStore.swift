@@ -126,7 +126,7 @@ struct BrightIntoshStoreView: View {
                             }
                         Spacer()
                     }
-                    RestorePurchasesButton(label: "Restore In-App Purchase", action: {
+                    RestorePurchasesButton(label: String(localized: "Restore In-App Purchase"), action: {
                         do {
                             try await AppStore.sync()
                             _ = try await EntitlementHandler.shared.isUnrestrictedUser()
@@ -137,7 +137,7 @@ struct BrightIntoshStoreView: View {
                             transactionError = String(localized: LocalizedStringResource("Error while restoring: \(error.localizedDescription)"))
                         }
                     })
-                    RestorePurchasesButton(label: "Revalidate App Purchase", action: {
+                    RestorePurchasesButton(label: String(localized: "Revalidate App Purchase"), action: {
                         do {
                             _ = try await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
                             transactionError = nil

@@ -131,10 +131,58 @@
     "%.1f h" : {
       "comment" : "A timer duration in hours. The argument is a floating point number of hours.",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f Std."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%.1f h"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f h"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f h"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f h"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f時間"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f h"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f 小时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f 小時"
           }
         }
       }
@@ -259,10 +307,58 @@
     "%d min" : {
       "comment" : "A description of a timer duration in minutes.",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d Min."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%d min"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d min"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d min"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d min"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d分"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d min"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d 分钟"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d 分鐘"
           }
         }
       }
@@ -270,10 +366,58 @@
     "%lld %%" : {
       "comment" : "A picker option in the checkout view that lets the user select a percentage. The argument is the percentage.",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld %%"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld %%"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld %%"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld %%"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
           }
         }
       }
@@ -742,64 +886,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "購買時發生未知錯誤"
-          }
-        }
-      }
-    },
-    "Another app or system process repeatedly changed the display while BrightIntosh was active. BrightIntosh stopped increased brightness to avoid flickering." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eine andere App oder ein Systemprozess hat wiederholt das Display verändert, während BrightIntosh aktiv war. BrightIntosh hat die erhöhte Helligkeit gestoppt, um Flackern zu vermeiden."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Another app or system process repeatedly changed the display while BrightIntosh was active. BrightIntosh stopped increased brightness to avoid flickering."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Otra app o proceso del sistema cambió repetidamente la pantalla mientras BrightIntosh estaba activo. BrightIntosh detuvo el aumento del brillo para evitar parpadeos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une autre app ou un processus système a modifié à plusieurs reprises l’écran pendant que BrightIntosh était actif. BrightIntosh a arrêté l’augmentation de la luminosité afin d’éviter le scintillement."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un’altra app o un processo di sistema ha modificato ripetutamente lo schermo mentre BrightIntosh era attivo. BrightIntosh ha interrotto l’aumento della luminosità per evitare sfarfallii."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BrightIntosh が有効な間に、別のアプリまたはシステムプロセスがディスプレイを繰り返し変更しました。ちらつきを防ぐため、BrightIntosh は明るさの増加を停止しました。"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Outra app ou processo do sistema alterou repetidamente o ecrã enquanto o BrightIntosh estava ativo. O BrightIntosh interrompeu o aumento do brilho para evitar cintilação."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BrightIntosh 处于开启状态时，另一个 App 或系统进程反复更改了显示器。BrightIntosh 已停止提升亮度以避免闪烁。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BrightIntosh 啟用時，另一個 App 或系統程序反覆更改顯示器。BrightIntosh 已停止提升亮度以避免閃爍。"
           }
         }
       }
@@ -1281,6 +1367,64 @@
         }
       }
     },
+    "Cancel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbrechen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annulla"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャンセル"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        }
+      }
+    },
     "Click *Activate*" : {
       "localizations" : {
         "de" : {
@@ -1514,6 +1658,123 @@
         }
       }
     },
+    "Continue" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortfahren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continua"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "続ける"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繼續"
+          }
+        }
+      }
+    },
+    "Controls how far BrightIntosh shifts the brightness range up. You can still use your Mac's normal brightness keys." : {
+      "comment" : "Help text below the optional BrightIntosh brightness slider.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legt fest, wie stark BrightIntosh den Helligkeitsbereich nach oben verschiebt. Du kannst weiterhin die normalen Helligkeitstasten deines Macs verwenden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controls how far BrightIntosh shifts the brightness range up. You can still use your Mac's normal brightness keys."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controla cuánto desplaza BrightIntosh hacia arriba el rango de brillo. Puedes seguir usando las teclas de brillo normales de tu Mac."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contrôle dans quelle mesure BrightIntosh décale la plage de luminosité vers le haut. Vous pouvez toujours utiliser les touches de luminosité normales de votre Mac."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controlla quanto BrightIntosh sposta verso l’alto l’intervallo di luminosità. Puoi continuare a usare i normali tasti luminosità del Mac."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrightIntosh が明るさの範囲をどれだけ上にずらすかを調整します。Mac の通常の明るさキーも引き続き使用できます。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controla até que ponto o BrightIntosh desloca o intervalo de brilho para cima. Pode continuar a usar as teclas normais de brilho do Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控制 BrightIntosh 将亮度范围向上提升的程度。你仍然可以使用 Mac 的普通亮度键。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控制 BrightIntosh 將亮度範圍向上提升的程度。你仍然可以使用 Mac 的一般亮度鍵。"
+          }
+        }
+      }
+    },
     "Copied to clipboard" : {
       "comment" : "A message displayed when the report is copied to the clipboard.",
       "localizations" : {
@@ -1686,6 +1947,180 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消提升亮度"
+          }
+        }
+      }
+    },
+    "Decrease brightness:" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helligkeit verringern:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decrease brightness:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reducir brillo:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réduire la luminosité:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riduci la luminosità:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暗くする："
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diminuir brilho:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "降低亮度："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "降低亮度："
+          }
+        }
+      }
+    },
+    "Diagnostics could not be sent" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnosedaten konnten nicht gesendet werden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics could not be sent"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudieron enviar los diagnósticos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les diagnostics n’ont pas pu être envoyés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile inviare la diagnostica"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "診断情報を送信できませんでした"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível enviar os diagnósticos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法发送诊断信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法傳送診斷資訊"
+          }
+        }
+      }
+    },
+    "Diagnostics sent" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnosedaten gesendet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics sent"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnósticos enviados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics envoyés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostica inviata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "診断情報を送信しました"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnósticos enviados"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "诊断信息已发送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "診斷資訊已傳送"
           }
         }
       }
@@ -1977,65 +2412,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "免責聲明"
-          }
-        }
-      }
-    },
-    "Dismiss" : {
-      "comment" : "A button that dismisses a hint about the removal of the BrightIntosh brightness slider.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schließen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dismiss"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Descartar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ignorer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chiudi"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "閉じる"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dispensar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关闭"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "關閉"
           }
         }
       }
@@ -2622,6 +2998,123 @@
         }
       }
     },
+    "Fine grained brightness control" : {
+      "comment" : "A setting that shows a brightness slider for more precise BrightIntosh boost control.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feine Helligkeitssteuerung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fine grained brightness control"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control preciso del brillo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglage fin de la luminosité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controllo fine della luminosità"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明るさの微調整"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controlo fino do brilho"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "精细亮度控制"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "精細亮度控制"
+          }
+        }
+      }
+    },
+    "Free Trial" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kostenlose Testphase"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free Trial"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba gratuita"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essai gratuit"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prova gratuita"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料トライアル"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avaliação gratuita"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费试用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免費試用"
+          }
+        }
+      }
+    },
     "General" : {
       "localizations" : {
         "de" : {
@@ -3047,6 +3540,64 @@
         }
       }
     },
+    "Increase brightness:" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helligkeit erhöhen:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increase brightness:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumentar brillo:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Augmenter la luminosité:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incrementa la luminosità:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "さらに明るくする："
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumentar o brilho:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提升亮度："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提升亮度："
+          }
+        }
+      }
+    },
     "Increased brightness" : {
       "localizations" : {
         "de" : {
@@ -3101,64 +3652,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提升亮度"
-          }
-        }
-      }
-    },
-    "Increased brightness was disabled" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erhöhte Helligkeit wurde deaktiviert"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Increased brightness was disabled"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se desactivó el aumento del brillo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L’augmentation de la luminosité a été désactivée"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luminosità aumentata disattivata"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "明るさの増加が無効になりました"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O aumento do brilho foi desativado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已停用提升亮度"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已停用提升亮度"
           }
         }
       }
@@ -3454,6 +3947,64 @@
         }
       }
     },
+    "Not Now" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht jetzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Now"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora no"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas maintenant"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non ora"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今はしない"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agora não"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂不"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暫時不要"
+          }
+        }
+      }
+    },
     "OK" : {
       "localizations" : {
         "de" : {
@@ -3566,6 +4117,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟設定："
+          }
+        }
+      }
+    },
+    "Please share anonymous diagnostics so we can look into this brightness issue. The report only includes BrightIntosh data and your running processes, and we'll only use it to investigate this problem." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte teile anonyme Diagnosedaten, damit wir dieses Helligkeitsproblem untersuchen können. Der Bericht enthält nur BrightIntosh-Daten und deine laufenden Prozesse, und wir verwenden ihn nur zur Untersuchung dieses Problems."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please share anonymous diagnostics so we can look into this brightness issue. The report only includes BrightIntosh data and your running processes, and we'll only use it to investigate this problem."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte diagnósticos anónimos para que podamos investigar este problema de brillo. El informe solo incluye datos de BrightIntosh y tus procesos en ejecución, y solo lo usaremos para investigar este problema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veuillez partager des diagnostics anonymes afin que nous puissions examiner ce problème de luminosité. Le rapport contient uniquement des données BrightIntosh et vos processus en cours d’exécution, et nous ne l’utiliserons que pour enquêter sur ce problème."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condividi diagnostica anonima per aiutarci a esaminare questo problema di luminosità. Il report include solo dati di BrightIntosh e i processi in esecuzione, e lo useremo solo per indagare su questo problema."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この明るさの問題を調査できるよう、匿名の診断情報を共有してください。レポートには BrightIntosh のデータと実行中のプロセスのみが含まれ、この問題の調査にのみ使用します。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partilhe diagnósticos anónimos para podermos investigar este problema de brilho. O relatório inclui apenas dados do BrightIntosh e os processos em execução, e só será usado para investigar este problema."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请分享匿名诊断信息，以便我们调查此亮度问题。报告仅包含 BrightIntosh 数据和正在运行的进程，我们只会将其用于调查此问题。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請分享匿名診斷資訊，讓我們調查這個亮度問題。報告只包含 BrightIntosh 資料和正在執行的程序，我們只會將其用於調查此問題。"
           }
         }
       }
@@ -3862,6 +4471,122 @@
         }
       }
     },
+    "Restore In-App Purchase" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In-App-Kauf wiederherstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore In-App Purchase"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurar compra dentro de la app"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurer l’achat intégré"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripristina acquisto in-app"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ内購入を復元"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurar compra integrada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复 App 内购买项目"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回復 App 內購買項目"
+          }
+        }
+      }
+    },
+    "Revalidate App Purchase" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App-Kauf erneut überprüfen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revalidate App Purchase"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a validar la compra de la app"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revérifier l’achat de l’app"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifica nuovamente l’acquisto dell’app"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appの購入を再検証"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revalidar compra da app"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新验证 App 购买"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新驗證 App 購買"
+          }
+        }
+      }
+    },
     "Review the report before sharing it. It includes device, display, and BrightIntosh diagnostics." : {
       "comment" : "A description of the contents of a support report.",
       "localizations" : {
@@ -3917,6 +4642,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在分享報告前請先審閱。報告包含裝置、顯示器及 BrightIntosh 的診斷資訊。"
+          }
+        }
+      }
+    },
+    "Send Anonymous Diagnostics" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anonyme Diagnosedaten senden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Anonymous Diagnostics"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar diagnósticos anónimos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer des diagnostics anonymes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invia diagnostica anonima"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "匿名の診断情報を送信"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar diagnósticos anónimos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送匿名诊断信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送匿名診斷資訊"
           }
         }
       }
@@ -4272,6 +5055,64 @@
         }
       }
     },
+    "Sorry, BrightIntosh could not reliably increase brightness on this Mac" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entschuldigung, BrightIntosh konnte die Helligkeit auf diesem Mac nicht zuverlässig erhöhen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorry, BrightIntosh could not reliably increase brightness on this Mac"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo sentimos, BrightIntosh no pudo aumentar el brillo de forma fiable en este Mac"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désolé, BrightIntosh n’a pas pu augmenter la luminosité de façon fiable sur ce Mac"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spiacenti, BrightIntosh non è riuscito ad aumentare la luminosità in modo affidabile su questo Mac"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "申し訳ありません。BrightIntosh はこの Mac で明るさを安定して上げられませんでした"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lamentamos, o BrightIntosh não conseguiu aumentar o brilho de forma fiável neste Mac"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "抱歉，BrightIntosh 无法在这台 Mac 上可靠地提高亮度"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "抱歉，BrightIntosh 無法在這台 Mac 上可靠地提高亮度"
+          }
+        }
+      }
+    },
     "Start your free %lld day trial" : {
       "localizations" : {
         "de" : {
@@ -4479,61 +5320,60 @@
         }
       }
     },
-    "The BrightIntosh brightness slider was removed. Use your Mac's normal brightness keys to adjust brightness, and simply toggle increased brightness on or off when you need the boost." : {
-      "comment" : "A description of the brightness slider removal hint.",
+    "The report was copied to your clipboard instead. Please include it in your support message so the brightness issue can be investigated." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der BrightIntosh-Helligkeitsregler wurde entfernt. Verwenden Sie die normalen Helligkeitstasten Ihres Macs, um die Helligkeit anzupassen, und schalten Sie die erhöhte Helligkeit einfach ein oder aus, wenn Sie den Boost benötigen."
+            "value" : "Der Bericht wurde stattdessen in die Zwischenablage kopiert. Bitte füge ihn deiner Supportnachricht bei, damit das Helligkeitsproblem untersucht werden kann."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The BrightIntosh brightness slider was removed. Use your Mac's normal brightness keys to adjust brightness, and simply toggle increased brightness on or off when you need the boost."
+            "value" : "The report was copied to your clipboard instead. Please include it in your support message so the brightness issue can be investigated."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El control deslizante de brillo de BrightIntosh fue eliminado. Usa las teclas normales de brillo de tu Mac para ajustar el brillo, y simplemente activa o desactiva el brillo aumentado cuando necesites el impulso."
+            "value" : "El informe se copió al portapapeles. Inclúyelo en tu mensaje de soporte para que podamos investigar el problema de brillo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le curseur de luminosité de BrightIntosh a été supprimé. Utilisez les touches de luminosité normales de votre Mac pour ajuster la luminosité, et activez simplement l'augmentation de la luminosité lorsque vous avez besoin d'un coup de pouce."
+            "value" : "Le rapport a été copié dans le presse-papiers à la place. Veuillez l’inclure dans votre message au support afin que le problème de luminosité puisse être examiné."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il cursore della luminosità di BrightIntosh è stato rimosso. Usa i tasti normali per la luminosità del Mac per regolare la luminosità e attiva o disattiva semplicemente la luminosità aumentata quando hai bisogno di un incremento."
+            "value" : "Il report è stato invece copiato negli appunti. Includilo nel messaggio al supporto per consentire l’indagine sul problema di luminosità."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "BrightIntoshの明るさスライダーは削除されました。明るさの調整はMacの通常の明るさキーを使用し、明るさを上げたいときには増加した明るさの切り替えを行ってください。"
+            "value" : "代わりにレポートをクリップボードにコピーしました。明るさの問題を調査できるよう、サポートへのメッセージに含めてください。"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O controlo deslizante de brilho do BrightIntosh foi removido. Utilize as teclas normais de brilho do seu Mac para ajustar o brilho e simplesmente ative ou desative o aumento do brilho quando precisar do impulso."
+            "value" : "O relatório foi copiado para a área de transferência. Inclua-o na sua mensagem de suporte para que o problema de brilho possa ser investigado."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已移除 BrightIntosh 亮度滑块。请使用您的 Mac 的常规亮度按键来调节亮度，并在需要提升亮度时简单地切换增强亮度开关。"
+            "value" : "报告已复制到剪贴板。请将其包含在你的支持消息中，以便调查亮度问题。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "BrightIntosh 的亮度滑桿已被移除。請使用您的 Mac 的普通亮度鍵來調整亮度，並在需要提升亮度時，只需切換增強亮度的開啟或關閉即可。"
+            "value" : "報告已改為複製到剪貼簿。請將它附在你的支援訊息中，以便調查亮度問題。"
           }
         }
       }
@@ -5313,6 +6153,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "您已擁有 BrightIntosh 的完整功能使用權。\n盡享光明！"
+          }
+        }
+      }
+    },
+    "Your battery level is below %d%%. Do you want to activate increased brightness anyway?\n\nThis will disable the battery automation." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Batteriestand liegt unter %d%%. Möchtest du die erhöhte Helligkeit trotzdem aktivieren?\n\nDadurch wird die Batterieautomatisierung deaktiviert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your battery level is below %d%%. Do you want to activate increased brightness anyway?\n\nThis will disable the battery automation."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El nivel de batería está por debajo del %d%%. ¿Quieres activar el brillo aumentado de todos modos?\n\nEsto desactivará la automatización de batería."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le niveau de la batterie est inférieur à %d %%. Voulez-vous tout de même activer la luminosité augmentée ?\n\nCela désactivera l’automatisation de la batterie."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il livello della batteria è inferiore al %d%%. Vuoi comunque attivare la luminosità aumentata?\n\nIn questo modo verrà disattivata l’automazione della batteria."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バッテリー残量が%d%%を下回っています。それでも明るさの増加を有効にしますか？\n\nバッテリーの自動化は無効になります。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O nível da bateria está abaixo de %d%%. Pretende ativar o aumento do brilho mesmo assim?\n\nIsto irá desativar a automatização da bateria."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "电池电量低于 %d%%。仍要启用增强亮度吗？\n\n这将停用电池自动化。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "電池電量低於 %d%%。仍要啟用增強亮度嗎？\n\n這將停用電池自動化。"
           }
         }
       }

@@ -10,6 +10,7 @@ import KeyboardShortcuts
 
 @MainActor
 class StatusBarMenu : NSObject, NSMenuDelegate {
+    private var brightnessSliderContainerView: NSView?
     private var supportedDevice: Bool = false
     private var automationManager: AutomationManager
     private var settingsWindowController: SettingsWindowController
@@ -33,6 +34,11 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     private var titleItem: NSMenuItem!
     private var toggleTimerItem: NSMenuItem!
     private var toggleIncreasedBrightnessItem: NSMenuItem!
+    private var brightnessTitleItem: NSMenuItem!
+    private var brightnessSliderItem: NSMenuItem!
+    private var brightnessSlider: NSSlider!
+    private var brightnessValueDisplay: NSTextField!
+    private var isTrackingBrightnessSlider = false
     private var trialExpiredItem: NSMenuItem!
     private var unsupportedDeviceItem: NSMenuItem!
     
@@ -71,6 +77,17 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         toggleIncreasedBrightnessItem.setShortcut(for: .toggleBrightIntosh)
         toggleIncreasedBrightnessItem.target = self
         
+        brightnessTitleItem = NSMenuItem(title: "\(String(localized: "Brightness")):", action: nil, keyEquivalent: "")
+        let brightnessSliderElements = createBrightnessSliderItem()
+        brightnessSliderItem = brightnessSliderElements.0
+        brightnessSlider = brightnessSliderElements.1
+        brightnessValueDisplay = brightnessSliderElements.2
+
+#if DEBUG
+        let printDisplayColorStateItem = NSMenuItem(title: "Print display color state", action: #selector(printDisplayColorState), keyEquivalent: "")
+        printDisplayColorStateItem.target = self
+#endif
+        
         toggleTimerItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
         toggleTimerItem.submenu = createTimerDurationSubmenu()
         
@@ -94,6 +111,9 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         if BrightIntoshSettings.shared.brightintoshActive {
             menu.addItem(toggleTimerItem!)
         }
+#if DEBUG
+        menu.addItem(printDisplayColorStateItem)
+#endif
         menu.addItem(NSMenuItem.separator())
         menu.addItem(settingsItem)
         menu.addItem(helpItem)
@@ -101,11 +121,11 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         menu.addItem(quitItem)
         
         unsupportedDeviceItem = NSMenuItem(title: String(localized: "This device is incompatible"), action: nil, keyEquivalent: "")
-        unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "This device is incompatible")
+        unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "This device is incompatible"))
         menu.addItem(unsupportedDeviceItem)
         
         trialExpiredItem = NSMenuItem(title: String(localized: "Your trial has expired"), action: nil, keyEquivalent: "")
-        trialExpiredItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "Your trial has expired")
+        trialExpiredItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "Your trial has expired"))
         trialExpiredItem.isHidden = true
         menu.addItem(trialExpiredItem)
         
@@ -130,6 +150,16 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         }
         
         BrightIntoshSettings.shared.addListener(setting: "timerAutomationTimeout") {
+            self.updateMenu()
+        }
+        
+        BrightIntoshSettings.shared.addListener(setting: "brightness") {
+            if !self.isOpen && !self.isTrackingBrightnessSlider {
+                self.updateMenu()
+            }
+        }
+        
+        BrightIntoshSettings.shared.addListener(setting: "fineGrainedBrightnessControl") {
             self.updateMenu()
         }
         
@@ -348,6 +378,77 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         menu.insertItem(info, at: titleIdx + 2)
     }
     
+    private func createBrightnessSliderItem() -> (NSMenuItem, NSSlider, NSTextField) {
+        let item = NSMenuItem()
+        let containerHeight: CGFloat = 30
+        let container = NSView(
+            frame: NSRect(x: 0, y: 0, width: menu.minimumWidth, height: containerHeight)
+        )
+        brightnessSliderContainerView = container
+        
+        let slider = NSSlider(
+            value: Double(BrightIntoshSettings.shared.brightness),
+            minValue: 0,
+            maxValue: 1,
+            target: self,
+            action: #selector(brightnessSliderMoved)
+        )
+        container.addSubview(slider)
+        
+        let valueDisplay = NSTextField(string: "\(Int(round(BrightIntoshSettings.shared.brightness * 100.0)))%")
+        valueDisplay.alignment = .right
+        valueDisplay.isEditable = false
+        valueDisplay.isBordered = false
+        valueDisplay.isSelectable = false
+        valueDisplay.drawsBackground = false
+        container.addSubview(valueDisplay)
+        
+        layoutBrightnessSlider(in: container, slider: slider, valueDisplay: valueDisplay)
+        item.view = container
+        return (item, slider, valueDisplay)
+    }
+
+    private func updateBrightnessSliderContainerWidth() {
+        guard let container = brightnessSliderContainerView else {
+            return
+        }
+
+        var frame = container.frame
+        frame.size.width = max(menu.size.width, menu.minimumWidth)
+        container.frame = frame
+        layoutBrightnessSlider(
+            in: container,
+            slider: brightnessSlider,
+            valueDisplay: brightnessValueDisplay
+        )
+    }
+
+    private func layoutBrightnessSlider(
+        in container: NSView,
+        slider: NSSlider,
+        valueDisplay: NSTextField
+    ) {
+        let horizontalPadding: CGFloat = 15
+        let valueFont = valueDisplay.font ?? NSFont.systemFont(ofSize: NSFont.systemFontSize)
+        let valueSize = ("100%" as NSString).size(withAttributes: [.font: valueFont])
+        let valueWidth = ceil(valueSize.width) + 5
+        let valueHeight = ceil(valueSize.height)
+        let valueX = container.frame.width - horizontalPadding - valueWidth
+
+        valueDisplay.frame = NSRect(
+            x: valueX,
+            y: (container.frame.height - valueHeight) / 2,
+            width: valueWidth,
+            height: valueHeight
+        )
+        slider.frame = NSRect(
+            x: horizontalPadding,
+            y: 0,
+            width: max(0, valueX - horizontalPadding * 2),
+            height: container.frame.height
+        )
+    }
+    
     private func createStatusBarItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem?.menu = menu
@@ -370,6 +471,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         
         reconcileHDRCooldownMenuItems()
         reconcileIncompatibleAppsMenuItems()
+        reconcileBrightnessSliderMenuItems()
         
         if BrightIntoshSettings.shared.brightintoshActive {
             if !menu.items.contains(toggleTimerItem) {
@@ -383,6 +485,37 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         trialExpiredItem.isHidden = Authorizer.shared.isAllowed()
         
         unsupportedDeviceItem.isHidden = isSetupSupported()
+    }
+    
+    private func reconcileBrightnessSliderMenuItems() {
+        let shouldShow = BrightIntoshSettings.shared.fineGrainedBrightnessControl
+        let hasTitle = menu.items.contains(brightnessTitleItem)
+        let hasSlider = menu.items.contains(brightnessSliderItem)
+        
+        if shouldShow {
+            if !isTrackingBrightnessSlider {
+                brightnessSlider.floatValue = BrightIntoshSettings.shared.brightness
+                brightnessValueDisplay.stringValue = "\(Int(round(BrightIntoshSettings.shared.brightness * 100.0)))%"
+            }
+            
+            if !hasTitle {
+                let afterTimer = menu.items.contains(toggleTimerItem)
+                    ? (menu.items.firstIndex(where: { $0 === toggleTimerItem }) ?? 0) + 1
+                    : (menu.items.firstIndex(where: { $0 === toggleIncreasedBrightnessItem }) ?? 0) + 1
+                menu.insertItem(brightnessTitleItem, at: afterTimer)
+            }
+            if !hasSlider {
+                let afterTitle = (menu.items.firstIndex(where: { $0 === brightnessTitleItem }) ?? 0) + 1
+                menu.insertItem(brightnessSliderItem, at: afterTitle)
+            }
+        } else {
+            if hasSlider {
+                menu.removeItem(brightnessSliderItem)
+            }
+            if hasTitle {
+                menu.removeItem(brightnessTitleItem)
+            }
+        }
     }
     
     func updateStatusBarItemVisibility() {
@@ -400,6 +533,60 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     @objc func callToggleBrightIntosh() {
         toggleBrightIntosh()
     }
+    
+    @objc func brightnessSliderMoved(slider: NSSlider) {
+        isTrackingBrightnessSlider = true
+        let value = slider.floatValue
+        brightnessValueDisplay.stringValue = "\(Int(round(value * 100.0)))%"
+        BrightIntoshSettings.shared.brightness = value
+    }
+
+#if DEBUG
+    @objc func printDisplayColorState() {
+        print("=== BrightIntosh display color state ===")
+        print("Reason: manual status bar diagnostic")
+        print("BrightIntosh active setting: \(BrightIntoshSettings.shared.brightintoshActive)")
+        print("Alternate backend setting: \(BrightIntoshSettings.shared.useAlternateBrightnessBackend)")
+        print("Target XDR displays: \(getXDRDisplays().compactMap { $0.displayId }.sorted())")
+        
+        if NSScreen.screens.isEmpty {
+            print("Screens: none")
+        }
+        
+        for screen in NSScreen.screens {
+            guard let displayId = screen.displayId else {
+                print(" - \(screen.localizedName): missing display ID")
+                continue
+            }
+            
+            let currentGammaTable = GammaTable.createFromCurrentGammaTable(displayId: displayId)
+            let lastRed = currentGammaTable?.redTable.last ?? -1
+            let lastGreen = currentGammaTable?.greenTable.last ?? -1
+            let lastBlue = currentGammaTable?.blueTable.last ?? -1
+            let maxGamma = max(
+                currentGammaTable?.redTable.max() ?? -1,
+                currentGammaTable?.greenTable.max() ?? -1,
+                currentGammaTable?.blueTable.max() ?? -1
+            )
+            
+            print(" - \(screen.localizedName) (id \(displayId))")
+            print("   · built-in: \(isBuiltInScreen(screen: screen))")
+            print("   · frame: \(Int(screen.frame.width))x\(Int(screen.frame.height)) @ \(screen.frame.origin)")
+            print("   · max EDR: \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))")
+            print("   · gamma last RGB: \(String(format: "%.4f", lastRed)), \(String(format: "%.4f", lastGreen)), \(String(format: "%.4f", lastBlue))")
+            print("   · gamma max: \(String(format: "%.4f", maxGamma))")
+        }
+        
+        var managerDiagnostics = ""
+        SupportReportContext.brightnessManager?.appendSupportDiagnostics(to: &managerDiagnostics)
+        if managerDiagnostics.isEmpty {
+            print("Brightness manager diagnostics: none")
+        } else {
+            print(managerDiagnostics.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
+        print("=== End BrightIntosh display color state ===")
+    }
+#endif
     
     @objc func exitBrightIntosh() {
         exit(0)
@@ -473,6 +660,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         startTimePollerIfApplicable()
         startHDRCooldownMenuRefreshTimerIfNeeded()
         updateMenu()
+        updateBrightnessSliderContainerWidth()
     }
     
     func startTimePollerIfApplicable() {
@@ -485,6 +673,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     
     func menuDidClose(_ menu: NSMenu) {
         isOpen = false
+        isTrackingBrightnessSlider = false
         self.stopRemainingTimePoller()
         stopHDRCooldownMenuRefreshTimer()
     }

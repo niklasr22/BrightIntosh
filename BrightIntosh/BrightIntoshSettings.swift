@@ -12,6 +12,10 @@ extension UserDefaults {
     @objc dynamic var active: Bool {
         return bool(forKey: "active")
     }
+    
+    @objc dynamic var cliBrightness: Float {
+        return float(forKey: "cliBrightness")
+    }
 }
 
 @MainActor
@@ -80,10 +84,24 @@ class BrightIntoshSettings {
         }
     }
     
-    public var dismissedBrightnessSliderRemovalHint: Bool = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false) {
+    public var fineGrainedBrightnessControl: Bool = BrightIntoshSettings.getUserDefault(key: "fineGrainedBrightnessControl", defaultValue: false) {
         didSet {
-            BrightIntoshSettings.defaults.setValue(dismissedBrightnessSliderRemovalHint, forKey: "dismissedBrightnessSliderRemovalHint")
-            callListeners(setting: "dismissedBrightnessSliderRemovalHint")
+            BrightIntoshSettings.defaults.setValue(fineGrainedBrightnessControl, forKey: "fineGrainedBrightnessControl")
+            callListeners(setting: "fineGrainedBrightnessControl")
+        }
+    }
+    
+    public var brightness: Float = BrightIntoshSettings.getUserDefault(key: "brightness", defaultValue: 1.0) {
+        didSet {
+            let clampedBrightness = min(max(brightness, 0), 1)
+            if brightness != clampedBrightness {
+                brightness = clampedBrightness
+            }
+            guard abs(oldValue - clampedBrightness) > 0.0001 else {
+                return
+            }
+            BrightIntoshSettings.defaults.setValue(brightness, forKey: "brightness")
+            callListeners(setting: "brightness")
         }
     }
     
@@ -162,10 +180,18 @@ class BrightIntoshSettings {
         launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
         migrateUserDefaultsToAppGroups();
         
-        activeObserver = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (defaults, change) in
+        activeObserver = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (_, _) in
             Task { @MainActor in
-                if let newValue = change.newValue, newValue != self.brightintoshActive {
-                    self.brightintoshActive = newValue;
+                let active = BrightIntoshSettings.defaults.bool(forKey: "active")
+                if active != self.brightintoshActive {
+                    self.brightintoshActive = active
+                }
+            }
+        })
+        cliBrightnessObserver = BrightIntoshSettings.defaults.observe(\.cliBrightness, options: [.new], changeHandler: { (defaults, change) in
+            Task { @MainActor in
+                if let newValue = change.newValue, self.brightness != newValue {
+                    self.brightness = newValue
                 }
             }
         })
@@ -180,7 +206,8 @@ class BrightIntoshSettings {
         showIncompatibleAppsNotice = BrightIntoshSettings.getUserDefault(key: "showIncompatibleAppsInterferenceNotice", defaultValue: true)
         useAlternateBrightnessBackend = BrightIntoshSettings.getUserDefault(key: "useAlternateBrightnessBackend", defaultValue: false)
         waitForHDRBeforeIncreasingBrightness = BrightIntoshSettings.getUserDefault(key: "waitForHDRBeforeIncreasingBrightness", defaultValue: false)
-        dismissedBrightnessSliderRemovalHint = BrightIntoshSettings.getUserDefault(key: "dismissedBrightnessSliderRemovalHint", defaultValue: false)
+        fineGrainedBrightnessControl = BrightIntoshSettings.getUserDefault(key: "fineGrainedBrightnessControl", defaultValue: false)
+        brightness = BrightIntoshSettings.getUserDefault(key: "brightness", defaultValue: 1.0)
         hideMenuBarItem = BrightIntoshSettings.getUserDefault(key: "hideMenuBarItem", defaultValue: false)
         batteryAutomation = BrightIntoshSettings.getUserDefault(key: "batteryAutomation", defaultValue: false)
         batteryAutomationThreshold = BrightIntoshSettings.getUserDefault(key: "batteryAutomationThreshold", defaultValue: 50)

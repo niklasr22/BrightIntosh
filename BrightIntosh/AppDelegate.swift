@@ -19,15 +19,37 @@ class BrightIntoshAppDelegate: NSObject {
     private lazy var settingsWindowController = SettingsWindowController()
     
     private var statusBarMenu: StatusBarMenu?
-    private var brightnessManager: BrightnessManager?
+    private var brightnessManager: (any BrightnessManaging)?
     private var automationManager: AutomationManager?
     private var incompatibleAppsMonitor: IncompatibleAppsMonitor?
     private var hdrCooldownNoticeMonitor: HDRCooldownNoticeMonitor?
     private var supportedDevice: Bool = false
+
+    @objc func increaseBrightness() {
+        adjustBrightness(by: 0.05)
+    }
+
+    @objc func decreaseBrightness() {
+        adjustBrightness(by: -0.05)
+    }
+
+    private func adjustBrightness(by amount: Float) {
+        guard BrightIntoshSettings.shared.fineGrainedBrightnessControl else {
+            return
+        }
+        let brightness = BrightIntoshSettings.shared.brightness + amount
+        BrightIntoshSettings.shared.brightness = min(max(brightness, 0), 1)
+    }
     
     func addKeyListeners() {
         KeyboardShortcuts.onKeyUp(for: .toggleBrightIntosh) {
             self.toggleBrightIntosh()
+        }
+        KeyboardShortcuts.onKeyUp(for: .increaseBrightness) {
+            self.increaseBrightness()
+        }
+        KeyboardShortcuts.onKeyUp(for: .decreaseBrightness) {
+            self.decreaseBrightness()
         }
         KeyboardShortcuts.onKeyUp(for: .openSettings, action: {
             self.showSettingsWindow()

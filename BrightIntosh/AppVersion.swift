@@ -7,11 +7,6 @@
 
 import Foundation
 
-#if STORE
-    import StoreKit
-#endif
-
-let brightnessSliderRemovalOriginalPurchaseVersionCutoff = "6.0.0"
 let legacyPurchaseEntitlementOriginalPurchaseVersionCutoff = "3.0.0"
 
 struct AppVersion: Comparable {
@@ -41,19 +36,4 @@ extension String {
     func isAppVersion(earlierThan otherVersion: String) -> Bool {
         AppVersion(self) < AppVersion(otherVersion)
     }
-}
-
-func originalPurchaseVersionIsEarlierThan(_ cutoffVersion: String) async -> Bool {
-    #if STORE
-        do {
-            let shared = try await AppTransaction.shared
-            if case .verified(let appTransaction) = shared {
-                return appTransaction.originalAppVersion.isAppVersion(earlierThan: cutoffVersion)
-            }
-        } catch {
-            return false
-        }
-    #endif
-
-    return false
 }
