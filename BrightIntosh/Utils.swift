@@ -281,6 +281,22 @@ private func getAppTransaction() async throws -> VerificationResult<AppTransacti
 enum SupportReportContext {
     static weak var brightnessManager: (any BrightnessManaging)?
     static var lastBrightnessFailureReason: String?
+    static var lastDisplaySetupChange: (date: Date, reason: String)?
+    static var lastSystemWake: Date?
+
+    static func displayEventTiming(at date: Date = Date()) -> String {
+        let setupChange = lastDisplaySetupChange.map {
+            "last display setup change \(elapsedTime(since: $0.date, at: date)) ago (\($0.reason))"
+        } ?? "no display setup change recorded since launch"
+        let wake = lastSystemWake.map {
+            "last system wake \(elapsedTime(since: $0, at: date)) ago"
+        } ?? "no system wake recorded since launch"
+        return "\(setupChange); \(wake)"
+    }
+
+    private static func elapsedTime(since startDate: Date, at endDate: Date) -> String {
+        String(format: "%.1fs", max(0, endDate.timeIntervalSince(startDate)))
+    }
 }
 
 private let hdrReadyReportThreshold = 1.05
