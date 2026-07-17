@@ -16,7 +16,15 @@ class GammaTable: CustomStringConvertible {
     var factor: Float = 0
     
     var description: String {
-        return "GammaTable(factor: \(factor), max: \(maximumValue))"
+        let lastValues: String
+        if let red = redTable.last,
+           let green = greenTable.last,
+           let blue = blueTable.last {
+            lastValues = String(format: "%.4f, %.4f, %.4f", red, green, blue)
+        } else {
+            lastValues = "unavailable"
+        }
+        return "GammaTable(factor: \(factor), max: \(maximumValue), last RGB: \(lastValues))"
     }
     
     private init() {}
@@ -29,7 +37,8 @@ class GammaTable: CustomStringConvertible {
         return table
     }
     
-    func setTableForScreen(displayId: CGDirectDisplayID, factor: Float = 1.0) {
+    @discardableResult
+    func setTableForScreen(displayId: CGDirectDisplayID, factor: Float = 1.0) -> CGError {
         self.factor = factor
         var newRedTable = redTable
         var newGreenTable = greenTable
@@ -40,34 +49,55 @@ class GammaTable: CustomStringConvertible {
             newGreenTable[i] *= factor
             newBlueTable[i] *= factor
         }
-        CGSetDisplayTransferByTable(displayId, GammaTable.tableSize, &newRedTable, &newGreenTable, &newBlueTable)
+        return CGSetDisplayTransferByTable(displayId, GammaTable.tableSize, &newRedTable, &newGreenTable, &newBlueTable)
     }
     
-    func reapplyIfLastValuesDrifted(displayId: CGDirectDisplayID, factor: Float, tolerance: CGGammaValue) -> Bool {
-        guard !currentLastValuesMatch(displayId: displayId, factor: factor, tolerance: tolerance) else {
-            return false
-        }
-        
-        setTableForScreen(displayId: displayId, factor: factor)
-        return true
-    }
-    
-    private var maximumValue: CGGammaValue {
-        max(redTable.max() ?? 0, greenTable.max() ?? 0, blueTable.max() ?? 0)
-    }
-    
-    private func currentLastValuesMatch(displayId: CGDirectDisplayID, factor: Float, tolerance: CGGammaValue) -> Bool {
-        guard let currentTable = Self.createFromCurrentGammaTable(displayId: displayId) else { return true }
-        guard let redValue = redTable.last,
+    func reapplyIfLastValuesDrifted(displayId: CGDirectDisplayID, factor: Float, tolerance: CGGammaValue) -> String? {
+        guard let currentTable = Self.createFromCurrentGammaTable(displayId: displayId),
+              let redValue = redTable.last,
               let greenValue = greenTable.last,
               let blueValue = blueTable.last,
               let currentRedValue = currentTable.redTable.last,
               let currentGreenValue = currentTable.greenTable.last,
-              let currentBlueValue = currentTable.blueTable.last else { return true }
-        
-        return abs(currentRedValue - (redValue * factor)) <= tolerance &&
-            abs(currentGreenValue - (greenValue * factor)) <= tolerance &&
-            abs(currentBlueValue - (blueValue * factor)) <= tolerance
+              let currentBlueValue = currentTable.blueTable.last else {
+            return nil
+        }
+
+        let expectedRedValue = redValue * factor
+        let expectedGreenValue = greenValue * factor
+        let expectedBlueValue = blueValue * factor
+        guard abs(currentRedValue - expectedRedValue) > tolerance ||
+                abs(currentGreenValue - expectedGreenValue) > tolerance ||
+                abs(currentBlueValue - expectedBlueValue) > tolerance else {
+            return nil
+        }
+
+        let setResult = setTableForScreen(displayId: displayId, factor: factor)
+        return String(
+            format: "gamma endpoint drifted; expected RGB %.4f, %.4f, %.4f, observed RGB %.4f, %.4f, %.4f, factor %.4f, CGSet result %d",
+            expectedRedValue,
+            expectedGreenValue,
+            expectedBlueValue,
+            currentRedValue,
+            currentGreenValue,
+            currentBlueValue,
+            factor,
+            setResult.rawValue
+        )
+    }
+
+    func currentLastValuesDescription(displayId: CGDirectDisplayID) -> String {
+        guard let currentTable = Self.createFromCurrentGammaTable(displayId: displayId),
+              let red = currentTable.redTable.last,
+              let green = currentTable.greenTable.last,
+              let blue = currentTable.blueTable.last else {
+            return "unavailable"
+        }
+        return String(format: "%.4f, %.4f, %.4f", red, green, blue)
+    }
+    
+    private var maximumValue: CGGammaValue {
+        max(redTable.max() ?? 0, greenTable.max() ?? 0, blueTable.max() ?? 0)
     }
 }
 
@@ -87,12 +117,14 @@ final class GammaTechnique: BrightnessTechnique {
     private var hdrReadyDisplayIds: Set<CGDirectDisplayID> = []
     private var consecutiveRecoveryCounts: [CGDirectDisplayID: Int] = [:]
     private var gammaCaptureFailure: String?
+    private var lastFailureState: String?
     private var integrityPollTask: Task<Void, Never>?
 
     nonisolated private static let colorStateLock = NSLock()
     private let gammaFadeDuration: TimeInterval = 0.2
     private let gammaFadeFrameInterval: Duration = .milliseconds(16)
     private let gammaFactorEpsilon: Float = 0.001
+    private let integrityPollStartupDelay: Duration = .seconds(60)
     private let integrityPollInterval: Duration = .seconds(2)
     private let gammaTableTolerance: CGGammaValue = 0.003
     private let hdrReadyThreshold: CGFloat = 1.05
@@ -111,6 +143,9 @@ final class GammaTechnique: BrightnessTechnique {
         }
 
         isEnabled = true
+        BrightnessDiagnosticHistory.record(
+            "Gamma technique enabled for displays \(screens.compactMap(\.displayId).sorted())"
+        )
         screenUpdate(screens: screens)
         print("Enabled gamma technique")
     }
@@ -126,6 +161,9 @@ final class GammaTechnique: BrightnessTechnique {
                 return
             }
             gammaTables[displayId] = gammaTable
+            BrightnessDiagnosticHistory.record(
+                "Captured gamma table for display \(displayId): \(gammaTable)"
+            )
         }
 
         if let existing = overlayWindowControllers[displayId] {
@@ -142,6 +180,9 @@ final class GammaTechnique: BrightnessTechnique {
             height: 1
         )
         overlayWindowController.open(rect: rect)
+        BrightnessDiagnosticHistory.record(
+            "Created HDR trigger for display \(displayId); max EDR \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))"
+        )
 
         if screen.maximumExtendedDynamicRangeColorComponentValue > hdrReadyThreshold {
             hdrReadyDisplayIds.insert(displayId)
@@ -218,6 +259,9 @@ final class GammaTechnique: BrightnessTechnique {
 
     private func cleanup(reason: String) {
         print("Resetting gamma state: \(reason)")
+        BrightnessDiagnosticHistory.record(
+            "Cleaning up gamma technique: \(reason); overlays \(overlayWindowControllers.keys.sorted()), gamma displays \(gammaTables.keys.sorted())"
+        )
         isEnabled = false
         integrityPollTask?.cancel()
         integrityPollTask = nil
@@ -241,6 +285,7 @@ final class GammaTechnique: BrightnessTechnique {
     }
 
     private func removeDisplay(_ displayId: CGDirectDisplayID) {
+        BrightnessDiagnosticHistory.record("Removing display \(displayId) from gamma technique")
         fadeStates[displayId]?.task?.cancel()
         fadeStates.removeValue(forKey: displayId)
         hdrReadyDisplayIds.remove(displayId)
@@ -276,6 +321,11 @@ final class GammaTechnique: BrightnessTechnique {
             applyGammaTable(gammaTable, displayId: displayId, factor: targetFactor)
             state.appliedFactor = targetFactor
             state.task = nil
+            recordCompletedGammaApplication(
+                gammaTable,
+                displayId: displayId,
+                factor: targetFactor
+            )
             return
         }
 
@@ -307,6 +357,11 @@ final class GammaTechnique: BrightnessTechnique {
             state.appliedFactor = targetFactor
             state.targetFactor = targetFactor
             state.task = nil
+            self.recordCompletedGammaApplication(
+                gammaTable,
+                displayId: displayId,
+                factor: targetFactor
+            )
         }
     }
 
@@ -334,7 +389,23 @@ final class GammaTechnique: BrightnessTechnique {
     ) {
         Self.colorStateLock.lock()
         defer { Self.colorStateLock.unlock() }
-        gammaTable.setTableForScreen(displayId: displayId, factor: factor)
+        let result = gammaTable.setTableForScreen(displayId: displayId, factor: factor)
+        if result != .success {
+            BrightnessDiagnosticHistory.record(
+                "CGSetDisplayTransferByTable failed for display \(displayId), factor \(String(format: "%.4f", factor)), error \(result.rawValue)"
+            )
+        }
+    }
+
+    private func recordCompletedGammaApplication(
+        _ gammaTable: GammaTable,
+        displayId: CGDirectDisplayID,
+        factor: Float
+    ) {
+        let readback = gammaTable.currentLastValuesDescription(displayId: displayId)
+        BrightnessDiagnosticHistory.record(
+            "Applied final gamma for display \(displayId); factor \(String(format: "%.4f", factor)), readback RGB \(readback)"
+        )
     }
 
     private func applyBrightness(
@@ -360,6 +431,13 @@ final class GammaTechnique: BrightnessTechnique {
         integrityPollTask = Task { @MainActor in
             defer { self.integrityPollTask = nil }
 
+            BrightnessDiagnosticHistory.record("Gamma integrity polling scheduled to start in 60s")
+            try? await Task.sleep(for: self.integrityPollStartupDelay)
+            guard !Task.isCancelled, self.isEnabled else {
+                return
+            }
+            BrightnessDiagnosticHistory.record("Gamma integrity polling started")
+
             while !Task.isCancelled, self.isEnabled {
                 try? await Task.sleep(for: self.integrityPollInterval)
                 guard !Task.isCancelled, self.isEnabled else {
@@ -378,18 +456,27 @@ final class GammaTechnique: BrightnessTechnique {
                 continue
             }
 
-            var recoveredState = false
-            let hdrReady = screen.maximumExtendedDynamicRangeColorComponentValue > hdrReadyThreshold
+            var recoveryDetails: [String] = []
+            let maxEdr = screen.maximumExtendedDynamicRangeColorComponentValue
+            let hdrReady = maxEdr > hdrReadyThreshold
             if hdrReady {
                 let becameReady = hdrReadyDisplayIds.insert(displayId).inserted
                 if becameReady {
+                    BrightnessDiagnosticHistory.record(
+                        "Display \(displayId) became HDR ready; max EDR \(String(format: "%.4f", maxEdr))"
+                    )
                     applyBrightness(screen: screen, displayId: displayId, gammaTable: gammaTable)
                 }
             } else {
                 hdrReadyDisplayIds.remove(displayId)
                 restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
                 recreateHDROverlay(screen: screen, displayId: displayId)
-                recoveredState = true
+                let edrDetails = String(
+                    format: "HDR was not ready; max EDR %.4f, threshold %.2f",
+                    maxEdr,
+                    hdrReadyThreshold
+                )
+                recoveryDetails.append(edrDetails)
                 print("HDR state was reset for display \(displayId); recreated HDR trigger")
             }
 
@@ -397,26 +484,37 @@ final class GammaTechnique: BrightnessTechnique {
                state.task == nil,
                let targetFactor = state.targetFactor,
                abs(state.appliedFactor - targetFactor) <= gammaFactorEpsilon,
-               reapplyGammaTableIfNeeded(
+               let gammaRecoveryDetails = reapplyGammaTableIfNeeded(
                    gammaTable,
                    displayId: displayId,
                    factor: targetFactor
                ) {
-                recoveredState = true
+                recoveryDetails.append(gammaRecoveryDetails)
                 print("Gamma table was reset for display \(displayId); reapplied factor \(targetFactor)")
             }
 
-            guard recoveredState else {
+            guard !recoveryDetails.isEmpty else {
+                if let previousCount = consecutiveRecoveryCounts[displayId] {
+                    BrightnessDiagnosticHistory.record(
+                        "Display \(displayId) recovered normally after \(previousCount) integrity recoveries"
+                    )
+                }
                 consecutiveRecoveryCounts.removeValue(forKey: displayId)
                 continue
             }
 
             let recoveryCount = (consecutiveRecoveryCounts[displayId] ?? 0) + 1
             consecutiveRecoveryCounts[displayId] = recoveryCount
+            BrightnessDiagnosticHistory.record(
+                "Integrity recovery \(recoveryCount)/\(maxConsecutiveRecoveryAttempts) for display \(displayId): \(recoveryDetails.joined(separator: "; "))"
+            )
             print("Display state recovery \(recoveryCount)/\(maxConsecutiveRecoveryAttempts) for display \(displayId)")
 
             if recoveryCount >= maxConsecutiveRecoveryAttempts {
-                handlePersistentDisplayConflict(displayId: displayId)
+                handlePersistentDisplayConflict(
+                    displayId: displayId,
+                    recoveryDetails: recoveryDetails
+                )
                 return
             }
         }
@@ -444,7 +542,7 @@ final class GammaTechnique: BrightnessTechnique {
         _ gammaTable: GammaTable,
         displayId: CGDirectDisplayID,
         factor: Float
-    ) -> Bool {
+    ) -> String? {
         Self.colorStateLock.lock()
         defer { Self.colorStateLock.unlock() }
         return gammaTable.reapplyIfLastValuesDrifted(
@@ -458,9 +556,18 @@ final class GammaTechnique: BrightnessTechnique {
         NSScreen.screens.first { $0.displayId == displayId }
     }
 
-    private func handlePersistentDisplayConflict(displayId: CGDirectDisplayID) {
+    private func handlePersistentDisplayConflict(
+        displayId: CGDirectDisplayID,
+        recoveryDetails: [String]
+    ) {
         let reason = "Display \(displayId) repeatedly reset the HDR or gamma state after BrightIntosh applied it."
+        captureFailureState(
+            displayId: displayId,
+            reason: reason,
+            recoveryDetails: recoveryDetails
+        )
         print("Persistent display conflict detected: \(reason); disabling increased brightness")
+        BrightnessDiagnosticHistory.record("Gamma technique failure: \(reason)")
         consecutiveRecoveryCounts.removeAll()
 
         if BrightIntoshSettings.shared.brightintoshActive {
@@ -477,7 +584,9 @@ final class GammaTechnique: BrightnessTechnique {
     private func handleGammaCaptureFailure(displayId: CGDirectDisplayID) {
         let reason = "CGGetDisplayTransferByTable failed for display \(displayId)."
         gammaCaptureFailure = reason
+        captureFailureState(displayId: displayId, reason: reason, recoveryDetails: [reason])
         print("Gamma capture failure detected: \(reason); disabling increased brightness")
+        BrightnessDiagnosticHistory.record("Gamma technique failure: \(reason)")
 
         if BrightIntoshSettings.shared.brightintoshActive {
             BrightIntoshSettings.shared.brightintoshActive = false
@@ -490,7 +599,35 @@ final class GammaTechnique: BrightnessTechnique {
         }
     }
 
+    private func captureFailureState(
+        displayId: CGDirectDisplayID,
+        reason: String,
+        recoveryDetails: [String]
+    ) {
+        let maxEdr = screenForDisplay(displayId)?.maximumExtendedDynamicRangeColorComponentValue
+        let fadeState = fadeStates[displayId]
+        lastFailureState = """
+         - Reason: \(reason)
+         - Display ID: \(displayId)
+         - Increased brightness setting: \(BrightIntoshSettings.shared.brightintoshActive)
+         - Technique enabled: \(isEnabled)
+         - Max EDR: \(maxEdr.map { String(format: "%.4f", $0) } ?? "unavailable")
+         - Display event timing: \(SupportReportContext.displayEventTiming())
+         - Recovery details: \(recoveryDetails.joined(separator: "; "))
+         - Consecutive recovery count: \(consecutiveRecoveryCounts[displayId] ?? 0)
+         - Gamma table: \(gammaTables[displayId].map(String.init(describing:)) ?? "none")
+         - Fade applied factor: \(fadeState.map { String(format: "%.4f", $0.appliedFactor) } ?? "none")
+         - Fade target factor: \(fadeState?.targetFactor.map { String(format: "%.4f", $0) } ?? "none")
+         - Fade active: \(fadeState?.task != nil)
+         - HDR ready: \(hdrReadyDisplayIds.contains(displayId))
+         - Overlay display IDs: \(overlayWindowControllers.keys.sorted())
+        """
+    }
+
     func appendSupportDiagnostics(to report: inout String) {
+        if let lastFailureState {
+            report += "Gamma state at failure:\n\(lastFailureState)\n"
+        }
         report += "Gamma technique:\n"
         report += " - Technique enabled: \(isEnabled)\n"
         report += " - Overlay display IDs: \(overlayWindowControllers.keys.sorted())\n"

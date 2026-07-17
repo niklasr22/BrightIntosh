@@ -73,12 +73,16 @@ final class BrightnessManager: BrightnessManaging {
             // This callback is the earliest warning that a display may disappear.
             GammaTechnique.restoreSystemColorState()
             Task { @MainActor in
+                manager.recordDisplaySetupChange(
+                    reason: "display \(displayId) reconfiguration began (flags: \(flags))"
+                )
                 manager.suspend(
                     reason: "display \(displayId) reconfiguration began (flags: \(flags))"
                 )
             }
         } else {
             Task { @MainActor in
+                manager.recordDisplaySetupChange(reason: "display reconfiguration ended")
                 manager.scheduleActivationAfterDisplayStabilizes(
                     reason: "display reconfiguration ended"
                 )
@@ -88,6 +92,9 @@ final class BrightnessManager: BrightnessManaging {
 
     init() {
         brightnessTechnique = Self.makeBrightnessTechnique()
+        BrightnessDiagnosticHistory.record(
+            "Manager initialized; backend \(Self.backendName), displays \(Self.displaySummary(DisplaySnapshot.current()))"
+        )
         registerObservers()
         registerSettingsListeners()
         registerDisplayReconfigurationCallback()
@@ -118,6 +125,10 @@ final class BrightnessManager: BrightnessManaging {
         BrightIntoshSettings.shared.brightintoshActive
     }
 
+    private static var backendName: String {
+        BrightIntoshSettings.shared.useAlternateBrightnessBackend ? "alternate" : "gamma"
+    }
+
     private func registerObservers() {
         NotificationCenter.default.addObserver(
             self,
@@ -137,6 +148,12 @@ final class BrightnessManager: BrightnessManaging {
             self,
             selector: #selector(screensDidSleep),
             name: NSWorkspace.screensDidSleepNotification,
+            object: nil
+        )
+        workspaceNotifications.addObserver(
+            self,
+            selector: #selector(screensDidWake),
+            name: NSWorkspace.screensDidWakeNotification,
             object: nil
         )
         workspaceNotifications.addObserver(
@@ -203,6 +220,11 @@ final class BrightnessManager: BrightnessManaging {
         let updatedDisplays = DisplaySnapshot.current()
         let previousDisplays = displays
         displays = updatedDisplays
+        let topologyChanged = updatedDisplays.topologyDiffers(from: previousDisplays)
+
+        if topologyChanged {
+            recordDisplaySetupChange(reason: "screen parameters changed the display setup")
+        }
 
         if shouldDisableForClosedLid(
             current: updatedDisplays,
@@ -216,7 +238,7 @@ final class BrightnessManager: BrightnessManaging {
             return
         }
 
-        if updatedDisplays.topologyDiffers(from: previousDisplays) {
+        if topologyChanged {
             suspendAndScheduleActivation(reason: "display setup changed")
         } else if brightnessTechnique.isEnabled {
             // Screen parameter notifications also cover native brightness changes.
@@ -225,6 +247,17 @@ final class BrightnessManager: BrightnessManaging {
     }
 
     @objc private func systemDidWake() {
+        SupportReportContext.lastSystemWake = Date()
+        BrightnessDiagnosticHistory.record("System wake notification received")
+        reactivateAfterWake(reason: "system woke")
+    }
+
+    @objc private func screensDidWake() {
+        BrightnessDiagnosticHistory.record("Screens wake notification received")
+        reactivateAfterWake(reason: "screens woke")
+    }
+
+    private func reactivateAfterWake(reason: String) {
         guard activationRequested else {
             return
         }
@@ -235,14 +268,16 @@ final class BrightnessManager: BrightnessManaging {
             return
         }
 
-        suspendAndScheduleActivation(reason: "system woke")
+        suspendAndScheduleActivation(reason: reason)
     }
 
     @objc private func screensDidSleep() {
+        BrightnessDiagnosticHistory.record("Screens sleep notification received")
         suspend(reason: "screens slept")
     }
 
     @objc private func systemWillSleep() {
+        BrightnessDiagnosticHistory.record("System will sleep notification received")
         suspend(reason: "system will sleep")
     }
 
@@ -272,6 +307,9 @@ final class BrightnessManager: BrightnessManaging {
         }
 
         print("Activating brightness: \(reason)")
+        BrightnessDiagnosticHistory.record(
+            "Activating \(Self.backendName) technique: \(reason); targets \(displays.targetDisplayIds.sorted())"
+        )
         brightnessTechnique.enable(screens: displays.targetScreens)
     }
 
@@ -279,6 +317,7 @@ final class BrightnessManager: BrightnessManaging {
         cancelScheduledActivation()
         if brightnessTechnique.isEnabled {
             print("Disabling brightness: \(reason)")
+            BrightnessDiagnosticHistory.record("Disabling brightness: \(reason)")
             brightnessTechnique.disable()
         }
     }
@@ -287,6 +326,7 @@ final class BrightnessManager: BrightnessManaging {
         cancelScheduledActivation()
         if brightnessTechnique.isEnabled {
             print("Suspending brightness: \(reason)")
+            BrightnessDiagnosticHistory.record("Suspending brightness: \(reason)")
             brightnessTechnique.disable()
         }
     }
@@ -294,6 +334,7 @@ final class BrightnessManager: BrightnessManaging {
     private func suspendAndScheduleActivation(reason: String) {
         if brightnessTechnique.isEnabled {
             print("Suspending brightness before stabilization: \(reason)")
+            BrightnessDiagnosticHistory.record("Suspending before display stabilization: \(reason)")
             brightnessTechnique.disable()
         }
         scheduleActivationAfterDisplayStabilizes(reason: reason)
@@ -307,6 +348,7 @@ final class BrightnessManager: BrightnessManaging {
         }
 
         print("Waiting \(displayStabilizationDelay) before activating brightness: \(reason)")
+        BrightnessDiagnosticHistory.record("Scheduled display stabilization: \(reason)")
 
         stabilizationTask = Task { @MainActor in
             try? await Task.sleep(for: self.displayStabilizationDelay)
@@ -320,8 +362,26 @@ final class BrightnessManager: BrightnessManaging {
     }
 
     private func cancelScheduledActivation() {
+        if stabilizationTask != nil {
+            BrightnessDiagnosticHistory.record("Cancelled pending display stabilization")
+        }
         stabilizationTask?.cancel()
         stabilizationTask = nil
+    }
+
+    private func recordDisplaySetupChange(reason: String) {
+        SupportReportContext.lastDisplaySetupChange = (Date(), reason)
+        BrightnessDiagnosticHistory.record(
+            "Display setup event: \(reason); \(Self.displaySummary(DisplaySnapshot.current()))"
+        )
+    }
+
+    private static func displaySummary(_ snapshot: DisplaySnapshot) -> String {
+        let screenFrames = snapshot.screenFrames
+        let frames = screenFrames.keys.sorted().map {
+            "\($0)=\(screenFrames[$0]!)"
+        }.joined(separator: ", ")
+        return "screens [\(frames)], targets \(snapshot.targetDisplayIds.sorted())"
     }
 
     private func reconcileDisplaySelection() {
@@ -372,6 +432,7 @@ final class BrightnessManager: BrightnessManaging {
         }
         brightnessTechnique = Self.makeBrightnessTechnique()
         print("Selected \(BrightIntoshSettings.shared.useAlternateBrightnessBackend ? "alternate" : "gamma") brightness backend")
+        BrightnessDiagnosticHistory.record("Selected \(Self.backendName) brightness backend")
 
         if activationRequested {
             activateImmediately(reason: "brightness backend changed")
@@ -425,6 +486,8 @@ final class BrightnessManager: BrightnessManaging {
         report += " - Active technique: \(String(describing: type(of: brightnessTechnique)))\n"
         report += " - Active displays: \(displays.screenFrames.keys.sorted())\n"
         report += " - Target displays: \(displays.targetDisplayIds.sorted())\n"
+        report += " - Display event timing: \(SupportReportContext.displayEventTiming())\n"
+        BrightnessDiagnosticHistory.append(to: &report)
         if let gammaTechnique = brightnessTechnique as? GammaTechnique {
             gammaTechnique.appendSupportDiagnostics(to: &report)
         } else if let hdrTechnique = brightnessTechnique as? MultiplyingOverlayTechnique {
