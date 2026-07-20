@@ -259,14 +259,14 @@ struct AdvancedSettingsSheet: View {
                     .onChange(of: waitForHDRBeforeIncreasingBrightness) { _, new in
                         BrightIntoshSettings.shared.waitForHDRBeforeIncreasingBrightness = new
                     }
+                }
 
-                    Toggle(
-                        "Show a notice when boosted brightness needs a short delay",
-                        isOn: $showHDRRetryCooldownNotice
-                    )
-                    .onChange(of: showHDRRetryCooldownNotice) { _, new in
-                        BrightIntoshSettings.shared.showHDRRetryCooldownNotice = new
-                    }
+                Toggle(
+                    "Show a notice when boosted brightness needs a short delay",
+                    isOn: $showHDRRetryCooldownNotice
+                )
+                .onChange(of: showHDRRetryCooldownNotice) { _, new in
+                    BrightIntoshSettings.shared.showHDRRetryCooldownNotice = new
                 }
                 
                 Text("These options can help when extra brightness does not behave as expected.")

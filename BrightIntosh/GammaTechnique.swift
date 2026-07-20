@@ -104,6 +104,20 @@ class GammaTable: CustomStringConvertible {
 @MainActor
 final class GammaTechnique: BrightnessTechnique {
     private(set) var isEnabled = false
+    private static let hdrCooldownDurationDefaultsKey = "gammaTechniqueHDRCooldownDuration"
+
+    private enum HDRRecoveryState {
+        case waitingForHDR(until: Date)
+        case coolingDown(until: Date)
+    }
+
+    private final class DisplayRecoveryState {
+        var hdrState: HDRRecoveryState?
+        var isHDRReady = false
+        var consecutiveHDRFailures = 0
+        var didReportHDRFailure = false
+        var consecutiveGammaRecoveries = 0
+    }
 
     private final class FadeState {
         var appliedFactor: Float = 1.0
@@ -114,21 +128,32 @@ final class GammaTechnique: BrightnessTechnique {
     private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
     private var gammaTables: [CGDirectDisplayID: GammaTable] = [:]
     private var fadeStates: [CGDirectDisplayID: FadeState] = [:]
-    private var hdrReadyDisplayIds: Set<CGDirectDisplayID> = []
-    private var consecutiveRecoveryCounts: [CGDirectDisplayID: Int] = [:]
+    private var displayRecoveryStates: [CGDirectDisplayID: DisplayRecoveryState] = [:]
     private var gammaCaptureFailure: String?
     private var lastFailureState: String?
     private var integrityPollTask: Task<Void, Never>?
+    private var hdrCooldownDuration: TimeInterval = {
+        let storedDuration = BrightIntoshSettings.defaults.double(
+            forKey: GammaTechnique.hdrCooldownDurationDefaultsKey
+        )
+        if storedDuration >= 30 {
+            return min(storedDuration, 60)
+        }
+        return 30
+    }()
 
     nonisolated private static let colorStateLock = NSLock()
     private let gammaFadeDuration: TimeInterval = 0.2
     private let gammaFadeFrameInterval: Duration = .milliseconds(16)
     private let gammaFactorEpsilon: Float = 0.001
-    private let integrityPollStartupDelay: Duration = .seconds(60)
     private let integrityPollInterval: Duration = .seconds(2)
     private let gammaTableTolerance: CGGammaValue = 0.003
     private let hdrReadyThreshold: CGFloat = 1.05
-    private let maxConsecutiveRecoveryAttempts = 3
+    private let hdrEngagementTimeout: TimeInterval = 10
+    private let hdrCooldownIncrease: TimeInterval = 15
+    private let maximumHDRCooldownDuration: TimeInterval = 60
+    private let hdrRecoveryFailuresBeforeReporting = 2
+    private let maxConsecutiveGammaRecoveryAttempts = 3
 
     nonisolated static func restoreSystemColorState() {
         colorStateLock.lock()
@@ -166,27 +191,77 @@ final class GammaTechnique: BrightnessTechnique {
             )
         }
 
+        let recoveryState = displayRecoveryState(for: displayId)
+        if case let .coolingDown(until) = recoveryState.hdrState {
+            if until > Date() {
+                let remainingSeconds = Int(ceil(until.timeIntervalSinceNow))
+                BrightnessDiagnosticHistory.record(
+                    "HDR trigger suppressed for display \(displayId); cooldown has \(remainingSeconds)s remaining"
+                )
+                notifyHDRCooldownBegan(
+                    displayId: displayId,
+                    cooldownSeconds: remainingSeconds
+                )
+                return
+            }
+            notifyHDRCooldownEnded(displayId: displayId)
+        }
+
+        recoveryState.hdrState = nil
+        beginHDREngagement(screen: screen, displayId: displayId)
+    }
+
+    private func beginHDREngagement(screen: NSScreen, displayId: CGDirectDisplayID) {
         if let existing = overlayWindowControllers[displayId] {
             existing.updateScreen(screen: screen)
+        } else {
+            let overlayWindowController = OverlayWindowController(screen: screen)
+            overlayWindowControllers[displayId] = overlayWindowController
+            let rect = NSRect(
+                x: screen.frame.origin.x,
+                y: screen.frame.origin.y,
+                width: 1,
+                height: 1
+            )
+            overlayWindowController.open(rect: rect)
+            BrightnessDiagnosticHistory.record(
+                "Created HDR trigger for display \(displayId); max EDR \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))"
+            )
+        }
+
+        let recoveryState = displayRecoveryState(for: displayId)
+        recoveryState.hdrState = .waitingForHDR(
+            until: Date().addingTimeInterval(hdrEngagementTimeout)
+        )
+
+        guard hdrIsReady(screen) else {
+            recoveryState.isHDRReady = false
             return
         }
 
-        let overlayWindowController = OverlayWindowController(screen: screen)
-        overlayWindowControllers[displayId] = overlayWindowController
-        let rect = NSRect(
-            x: screen.frame.origin.x,
-            y: screen.frame.origin.y,
-            width: 1,
-            height: 1
-        )
-        overlayWindowController.open(rect: rect)
-        BrightnessDiagnosticHistory.record(
-            "Created HDR trigger for display \(displayId); max EDR \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))"
-        )
+        recoveryState.hdrState = nil
+        recoveryState.isHDRReady = true
+        recoveryState.consecutiveHDRFailures = 0
+    }
 
-        if screen.maximumExtendedDynamicRangeColorComponentValue > hdrReadyThreshold {
-            hdrReadyDisplayIds.insert(displayId)
+    private func closeHDROverlay(displayId: CGDirectDisplayID) {
+        overlayWindowControllers[displayId]?.window?.close()
+        overlayWindowControllers.removeValue(forKey: displayId)
+    }
+
+    private func hdrIsReady(_ screen: NSScreen) -> Bool {
+        screen.maximumExtendedDynamicRangeColorComponentValue > hdrReadyThreshold
+    }
+
+    private func displayRecoveryState(
+        for displayId: CGDirectDisplayID
+    ) -> DisplayRecoveryState {
+        if let state = displayRecoveryStates[displayId] {
+            return state
         }
+        let state = DisplayRecoveryState()
+        displayRecoveryStates[displayId] = state
+        return state
     }
 
     func disable() {
@@ -198,18 +273,23 @@ final class GammaTechnique: BrightnessTechnique {
             return
         }
 
-        for displayId in overlayWindowControllers.keys {
+        for displayId in gammaTables.keys {
             guard let screen = screenForDisplay(displayId),
                   let gammaTable = gammaTables[displayId] else {
                 continue
             }
-            applyBrightness(screen: screen, displayId: displayId, gammaTable: gammaTable)
+            updateDisplayBrightness(
+                screen: screen,
+                displayId: displayId,
+                gammaTable: gammaTable
+            )
         }
     }
 
     func screenUpdate(screens: [NSScreen]) {
         let activeDisplayIds = Set(screens.compactMap(\.displayId))
-        let removedDisplayIds = overlayWindowControllers.keys.filter {
+        let trackedDisplayIds = Set(gammaTables.keys).union(displayRecoveryStates.keys)
+        let removedDisplayIds = trackedDisplayIds.filter {
             !activeDisplayIds.contains($0)
         }
 
@@ -269,8 +349,17 @@ final class GammaTechnique: BrightnessTechnique {
             state.task?.cancel()
         }
         fadeStates.removeAll()
-        hdrReadyDisplayIds.removeAll()
-        consecutiveRecoveryCounts.removeAll()
+
+        for (displayId, state) in displayRecoveryStates {
+            state.isHDRReady = false
+            state.consecutiveGammaRecoveries = 0
+            notifyHDRCooldownEnded(displayId: displayId)
+            if case .waitingForHDR = state.hdrState {
+                state.hdrState = .coolingDown(
+                    until: Date().addingTimeInterval(hdrCooldownDuration)
+                )
+            }
+        }
 
         Self.restoreSystemColorState()
         restoreCapturedGammaTables(reason: reason)
@@ -288,14 +377,13 @@ final class GammaTechnique: BrightnessTechnique {
         BrightnessDiagnosticHistory.record("Removing display \(displayId) from gamma technique")
         fadeStates[displayId]?.task?.cancel()
         fadeStates.removeValue(forKey: displayId)
-        hdrReadyDisplayIds.remove(displayId)
-        consecutiveRecoveryCounts.removeValue(forKey: displayId)
-        overlayWindowControllers[displayId]?.window?.close()
+        displayRecoveryStates.removeValue(forKey: displayId)
+        notifyHDRCooldownEnded(displayId: displayId)
+        closeHDROverlay(displayId: displayId)
         if let gammaTable = gammaTables[displayId] {
             applyGammaTable(gammaTable, displayId: displayId)
         }
         gammaTables.removeValue(forKey: displayId)
-        overlayWindowControllers.removeValue(forKey: displayId)
     }
 
     private func fadeGammaFactor(
@@ -408,7 +496,7 @@ final class GammaTechnique: BrightnessTechnique {
         )
     }
 
-    private func applyBrightness(
+    private func applyBoostedBrightness(
         screen: NSScreen,
         displayId: CGDirectDisplayID,
         gammaTable: GammaTable
@@ -423,6 +511,21 @@ final class GammaTechnique: BrightnessTechnique {
         fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: factor)
     }
 
+    private func updateDisplayBrightness(
+        screen: NSScreen,
+        displayId: CGDirectDisplayID,
+        gammaTable: GammaTable
+    ) {
+        guard updateHDRAvailability(
+            screen: screen,
+            displayId: displayId,
+            gammaTable: gammaTable
+        ) else {
+            return
+        }
+        applyBoostedBrightness(screen: screen, displayId: displayId, gammaTable: gammaTable)
+    }
+
     private func startIntegrityPollIfNeeded() {
         guard isEnabled, integrityPollTask == nil else {
             return
@@ -431,11 +534,6 @@ final class GammaTechnique: BrightnessTechnique {
         integrityPollTask = Task { @MainActor in
             defer { self.integrityPollTask = nil }
 
-            BrightnessDiagnosticHistory.record("Gamma integrity polling scheduled to start in 60s")
-            try? await Task.sleep(for: self.integrityPollStartupDelay)
-            guard !Task.isCancelled, self.isEnabled else {
-                return
-            }
             BrightnessDiagnosticHistory.record("Gamma integrity polling started")
 
             while !Task.isCancelled, self.isEnabled {
@@ -450,35 +548,23 @@ final class GammaTechnique: BrightnessTechnique {
 
     private func recoverChangedDisplayState() {
         for (displayId, gammaTable) in gammaTables {
+            let recoveryState = displayRecoveryState(for: displayId)
             guard let screen = screenForDisplay(displayId) else {
-                consecutiveRecoveryCounts.removeValue(forKey: displayId)
-                hdrReadyDisplayIds.remove(displayId)
+                recoveryState.consecutiveGammaRecoveries = 0
+                recoveryState.isHDRReady = false
                 continue
             }
 
-            var recoveryDetails: [String] = []
-            let maxEdr = screen.maximumExtendedDynamicRangeColorComponentValue
-            let hdrReady = maxEdr > hdrReadyThreshold
-            if hdrReady {
-                let becameReady = hdrReadyDisplayIds.insert(displayId).inserted
-                if becameReady {
-                    BrightnessDiagnosticHistory.record(
-                        "Display \(displayId) became HDR ready; max EDR \(String(format: "%.4f", maxEdr))"
-                    )
-                    applyBrightness(screen: screen, displayId: displayId, gammaTable: gammaTable)
-                }
-            } else {
-                hdrReadyDisplayIds.remove(displayId)
-                restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
-                recreateHDROverlay(screen: screen, displayId: displayId)
-                let edrDetails = String(
-                    format: "HDR was not ready; max EDR %.4f, threshold %.2f",
-                    maxEdr,
-                    hdrReadyThreshold
-                )
-                recoveryDetails.append(edrDetails)
-                print("HDR state was reset for display \(displayId); recreated HDR trigger")
+            guard updateHDRAvailability(
+                screen: screen,
+                displayId: displayId,
+                gammaTable: gammaTable
+            ) else {
+                recoveryState.consecutiveGammaRecoveries = 0
+                continue
             }
+
+            applyBoostedBrightness(screen: screen, displayId: displayId, gammaTable: gammaTable)
 
             if let state = fadeStates[displayId],
                state.task == nil,
@@ -489,34 +575,165 @@ final class GammaTechnique: BrightnessTechnique {
                    displayId: displayId,
                    factor: targetFactor
                ) {
-                recoveryDetails.append(gammaRecoveryDetails)
-                print("Gamma table was reset for display \(displayId); reapplied factor \(targetFactor)")
-            }
-
-            guard !recoveryDetails.isEmpty else {
-                if let previousCount = consecutiveRecoveryCounts[displayId] {
-                    BrightnessDiagnosticHistory.record(
-                        "Display \(displayId) recovered normally after \(previousCount) integrity recoveries"
-                    )
-                }
-                consecutiveRecoveryCounts.removeValue(forKey: displayId)
-                continue
-            }
-
-            let recoveryCount = (consecutiveRecoveryCounts[displayId] ?? 0) + 1
-            consecutiveRecoveryCounts[displayId] = recoveryCount
-            BrightnessDiagnosticHistory.record(
-                "Integrity recovery \(recoveryCount)/\(maxConsecutiveRecoveryAttempts) for display \(displayId): \(recoveryDetails.joined(separator: "; "))"
-            )
-            print("Display state recovery \(recoveryCount)/\(maxConsecutiveRecoveryAttempts) for display \(displayId)")
-
-            if recoveryCount >= maxConsecutiveRecoveryAttempts {
-                handlePersistentDisplayConflict(
-                    displayId: displayId,
-                    recoveryDetails: recoveryDetails
+                recoveryState.consecutiveGammaRecoveries += 1
+                let recoveryCount = recoveryState.consecutiveGammaRecoveries
+                BrightnessDiagnosticHistory.record(
+                    "Gamma recovery \(recoveryCount)/\(maxConsecutiveGammaRecoveryAttempts) for display \(displayId): \(gammaRecoveryDetails)"
                 )
-                return
+                print("Gamma table was reset for display \(displayId); reapplied factor \(targetFactor)")
+                if recoveryCount >= maxConsecutiveGammaRecoveryAttempts {
+                    handlePersistentGammaConflict(
+                        displayId: displayId,
+                        recoveryDetails: gammaRecoveryDetails
+                    )
+                    return
+                }
+            } else if recoveryState.consecutiveGammaRecoveries > 0 {
+                let previousCount = recoveryState.consecutiveGammaRecoveries
+                recoveryState.consecutiveGammaRecoveries = 0
+                BrightnessDiagnosticHistory.record(
+                    "Display \(displayId) gamma remained stable after \(previousCount) recoveries"
+                )
             }
+        }
+    }
+
+    private func updateHDRAvailability(
+        screen: NSScreen,
+        displayId: CGDirectDisplayID,
+        gammaTable: GammaTable
+    ) -> Bool {
+        let now = Date()
+        let recoveryState = displayRecoveryState(for: displayId)
+
+        if let hdrState = recoveryState.hdrState {
+            switch hdrState {
+            case let .coolingDown(until):
+                restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+                guard now >= until else { return false }
+
+                BrightnessDiagnosticHistory.record(
+                    "HDR cooldown ended for display \(displayId); creating one new trigger"
+                )
+                notifyHDRCooldownEnded(displayId: displayId)
+                recoveryState.hdrState = nil
+                beginHDREngagement(screen: screen, displayId: displayId)
+                return recoveryState.isHDRReady
+
+            case let .waitingForHDR(until):
+                if hdrIsReady(screen) {
+                    recoveryState.hdrState = nil
+                    recoveryState.consecutiveHDRFailures = 0
+                    let becameReady = !recoveryState.isHDRReady
+                    recoveryState.isHDRReady = true
+                    if becameReady {
+                        BrightnessDiagnosticHistory.record(
+                            "Display \(displayId) became HDR ready; max EDR \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))"
+                        )
+                    }
+                    return true
+                }
+
+                restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+                guard now >= until else { return false }
+                beginHDRCooldown(displayId: displayId, reason: "HDR engagement timed out")
+                return false
+            }
+        }
+
+        guard hdrIsReady(screen) else {
+            restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+            beginHDRCooldown(displayId: displayId, reason: "HDR became unavailable")
+            return false
+        }
+
+        let becameReady = !recoveryState.isHDRReady
+        recoveryState.isHDRReady = true
+        recoveryState.consecutiveHDRFailures = 0
+        if becameReady {
+            BrightnessDiagnosticHistory.record(
+                "Display \(displayId) became HDR ready; max EDR \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))"
+            )
+        }
+        return true
+    }
+
+    private func beginHDRCooldown(displayId: CGDirectDisplayID, reason: String) {
+        let recoveryState = displayRecoveryState(for: displayId)
+        recoveryState.isHDRReady = false
+        closeHDROverlay(displayId: displayId)
+        recoveryState.consecutiveHDRFailures += 1
+        let failureCount = recoveryState.consecutiveHDRFailures
+        if failureCount >= hdrRecoveryFailuresBeforeReporting,
+           hdrCooldownDuration < maximumHDRCooldownDuration {
+            hdrCooldownDuration = min(
+                hdrCooldownDuration + hdrCooldownIncrease,
+                maximumHDRCooldownDuration
+            )
+            BrightIntoshSettings.defaults.set(
+                hdrCooldownDuration,
+                forKey: Self.hdrCooldownDurationDefaultsKey
+            )
+            BrightnessDiagnosticHistory.record(
+                "Future HDR cooldowns increased to \(Int(hdrCooldownDuration))s"
+            )
+        }
+        recoveryState.hdrState = .coolingDown(
+            until: Date().addingTimeInterval(hdrCooldownDuration)
+        )
+        notifyHDRCooldownBegan(
+            displayId: displayId,
+            cooldownSeconds: Int(hdrCooldownDuration)
+        )
+        BrightnessDiagnosticHistory.record(
+            "\(reason) for display \(displayId); removed HDR trigger and cooling down for \(Int(hdrCooldownDuration))s (failure \(failureCount))"
+        )
+
+        guard failureCount >= hdrRecoveryFailuresBeforeReporting,
+              !recoveryState.didReportHDRFailure else {
+            return
+        }
+
+        recoveryState.didReportHDRFailure = true
+        reportPersistentHDRFailure(displayId: displayId, recoveryDetails: reason)
+    }
+
+    private func notifyHDRCooldownBegan(
+        displayId: CGDirectDisplayID,
+        cooldownSeconds: Int
+    ) {
+        NotificationCenter.default.post(
+            name: .brightIntoshHDRCooldownDidBegin,
+            object: nil,
+            userInfo: [
+                "cooldownSeconds": cooldownSeconds,
+                "displayID": NSNumber(value: displayId),
+            ]
+        )
+    }
+
+    private func notifyHDRCooldownEnded(displayId: CGDirectDisplayID) {
+        NotificationCenter.default.post(
+            name: .brightIntoshHDRCooldownDidEnd,
+            object: nil,
+            userInfo: ["displayID": NSNumber(value: displayId)]
+        )
+    }
+
+    private func reportPersistentHDRFailure(
+        displayId: CGDirectDisplayID,
+        recoveryDetails: String
+    ) {
+        let reason = "Display \(displayId) did not recover HDR after a quiet recovery period."
+        captureFailureState(
+            displayId: displayId,
+            reason: reason,
+            recoveryDetails: [recoveryDetails]
+        )
+        BrightnessDiagnosticHistory.record("Gamma technique HDR failure: \(reason)")
+
+        Task { @MainActor in
+            await presentBrightnessFailurePrompt(reason: reason)
         }
     }
 
@@ -525,17 +742,16 @@ final class GammaTechnique: BrightnessTechnique {
         gammaTable: GammaTable
     ) {
         let state = fadeState(for: displayId)
+        let needsRestore = state.task != nil ||
+            state.targetFactor != nil ||
+            abs(state.appliedFactor - 1.0) > gammaFactorEpsilon
+        guard needsRestore else { return }
+
         state.task?.cancel()
         state.task = nil
         state.targetFactor = nil
         state.appliedFactor = 1.0
         applyGammaTable(gammaTable, displayId: displayId)
-    }
-
-    private func recreateHDROverlay(screen: NSScreen, displayId: CGDirectDisplayID) {
-        overlayWindowControllers[displayId]?.window?.close()
-        overlayWindowControllers.removeValue(forKey: displayId)
-        enableScreen(screen: screen)
     }
 
     private func reapplyGammaTableIfNeeded(
@@ -556,19 +772,21 @@ final class GammaTechnique: BrightnessTechnique {
         NSScreen.screens.first { $0.displayId == displayId }
     }
 
-    private func handlePersistentDisplayConflict(
+    private func handlePersistentGammaConflict(
         displayId: CGDirectDisplayID,
-        recoveryDetails: [String]
+        recoveryDetails: String
     ) {
-        let reason = "Display \(displayId) repeatedly reset the HDR or gamma state after BrightIntosh applied it."
+        let reason = "Display \(displayId) repeatedly reset the gamma table after BrightIntosh applied it."
         captureFailureState(
             displayId: displayId,
             reason: reason,
-            recoveryDetails: recoveryDetails
+            recoveryDetails: [recoveryDetails]
         )
-        print("Persistent display conflict detected: \(reason); disabling increased brightness")
+        print("Persistent gamma conflict detected: \(reason); disabling increased brightness")
         BrightnessDiagnosticHistory.record("Gamma technique failure: \(reason)")
-        consecutiveRecoveryCounts.removeAll()
+        for state in displayRecoveryStates.values {
+            state.consecutiveGammaRecoveries = 0
+        }
 
         if BrightIntoshSettings.shared.brightintoshActive {
             BrightIntoshSettings.shared.brightintoshActive = false
@@ -606,6 +824,7 @@ final class GammaTechnique: BrightnessTechnique {
     ) {
         let maxEdr = screenForDisplay(displayId)?.maximumExtendedDynamicRangeColorComponentValue
         let fadeState = fadeStates[displayId]
+        let recoveryState = displayRecoveryStates[displayId]
         lastFailureState = """
          - Reason: \(reason)
          - Display ID: \(displayId)
@@ -614,17 +833,38 @@ final class GammaTechnique: BrightnessTechnique {
          - Max EDR: \(maxEdr.map { String(format: "%.4f", $0) } ?? "unavailable")
          - Display event timing: \(SupportReportContext.displayEventTiming())
          - Recovery details: \(recoveryDetails.joined(separator: "; "))
-         - Consecutive recovery count: \(consecutiveRecoveryCounts[displayId] ?? 0)
+         - Consecutive HDR recovery failures: \(recoveryState?.consecutiveHDRFailures ?? 0)
+         - Consecutive gamma recovery count: \(recoveryState?.consecutiveGammaRecoveries ?? 0)
          - Gamma table: \(gammaTables[displayId].map(String.init(describing:)) ?? "none")
          - Fade applied factor: \(fadeState.map { String(format: "%.4f", $0.appliedFactor) } ?? "none")
          - Fade target factor: \(fadeState?.targetFactor.map { String(format: "%.4f", $0) } ?? "none")
          - Fade active: \(fadeState?.task != nil)
-         - HDR ready: \(hdrReadyDisplayIds.contains(displayId))
+         - HDR ready: \(recoveryState?.isHDRReady ?? false)
          - Overlay display IDs: \(overlayWindowControllers.keys.sorted())
         """
     }
 
     func appendSupportDiagnostics(to report: inout String) {
+        let hdrReadyDisplayIds = displayRecoveryStates.compactMap { displayId, state in
+            state.isHDRReady ? displayId : nil
+        }.sorted()
+        let reportedHDRFailureDisplayIds = displayRecoveryStates.compactMap { displayId, state in
+            state.didReportHDRFailure ? displayId : nil
+        }.sorted()
+        let consecutiveHDRFailures = displayRecoveryStates.reduce(into: [CGDirectDisplayID: Int]()) {
+            if $1.value.consecutiveHDRFailures > 0 {
+                $0[$1.key] = $1.value.consecutiveHDRFailures
+            }
+        }
+        let consecutiveGammaRecoveries = displayRecoveryStates.reduce(into: [CGDirectDisplayID: Int]()) {
+            if $1.value.consecutiveGammaRecoveries > 0 {
+                $0[$1.key] = $1.value.consecutiveGammaRecoveries
+            }
+        }
+        let activeHDRRecoveryStates = displayRecoveryStates.compactMap { displayId, state in
+            state.hdrState.map { (displayId, $0) }
+        }.sorted { $0.0 < $1.0 }
+
         if let lastFailureState {
             report += "Gamma state at failure:\n\(lastFailureState)\n"
         }
@@ -633,9 +873,29 @@ final class GammaTechnique: BrightnessTechnique {
         report += " - Overlay display IDs: \(overlayWindowControllers.keys.sorted())\n"
         report += " - Gamma tables: \(gammaTables)\n"
         report += " - Fading display IDs: \(fadeStates.keys.sorted())\n"
-        report += " - HDR-ready display IDs: \(hdrReadyDisplayIds.sorted())\n"
-        report += " - Consecutive recovery counts: \(consecutiveRecoveryCounts)\n"
+        report += " - HDR-ready display IDs: \(hdrReadyDisplayIds)\n"
+        if activeHDRRecoveryStates.isEmpty {
+            report += " - HDR recovery states: none\n"
+        } else {
+            report += " - HDR recovery states:\n"
+            for (displayId, state) in activeHDRRecoveryStates {
+                report += "   · display \(displayId): \(hdrRecoveryDescription(state))\n"
+            }
+        }
+        report += " - Consecutive HDR recovery failures: \(consecutiveHDRFailures)\n"
+        report += " - Reported HDR recovery failure display IDs: \(reportedHDRFailureDisplayIds)\n"
+        report += " - Learned HDR cooldown: \(Int(hdrCooldownDuration))s\n"
+        report += " - Consecutive gamma recovery counts: \(consecutiveGammaRecoveries)\n"
         report += " - Gamma capture failure: \(gammaCaptureFailure ?? "none")\n"
         report += " - Integrity poll active: \(integrityPollTask != nil)\n"
+    }
+
+    private func hdrRecoveryDescription(_ state: HDRRecoveryState) -> String {
+        switch state {
+        case let .waitingForHDR(until):
+            return "waiting for HDR, \(max(0, Int(ceil(until.timeIntervalSinceNow))))s remaining"
+        case let .coolingDown(until):
+            return "cooling down, \(max(0, Int(ceil(until.timeIntervalSinceNow))))s remaining"
+        }
     }
 }
