@@ -107,6 +107,7 @@ final class GammaTechnique: BrightnessTechnique {
     private static let hdrCooldownDurationDefaultsKey = "gammaTechniqueHDRCooldownDuration"
 
     private enum HDRRecoveryState {
+        case waitingForDisplayWake
         case waitingForHDR(until: Date)
         case coolingDown(until: Date)
     }
@@ -147,6 +148,8 @@ final class GammaTechnique: BrightnessTechnique {
     private let gammaFadeFrameInterval: Duration = .milliseconds(16)
     private let gammaFactorEpsilon: Float = 0.001
     private let integrityPollInterval: Duration = .seconds(2)
+    private let maximumIntegrityPollGap: TimeInterval = 10
+    private let integrityPollResumeDelay: TimeInterval = 5
     private let gammaTableTolerance: CGGammaValue = 0.003
     private let hdrReadyThreshold: CGFloat = 1.05
     private let hdrEngagementTimeout: TimeInterval = 10
@@ -192,6 +195,16 @@ final class GammaTechnique: BrightnessTechnique {
         }
 
         let recoveryState = displayRecoveryState(for: displayId)
+        if CGDisplayIsAsleep(displayId) != 0 {
+            recoveryState.hdrState = .waitingForDisplayWake
+            recoveryState.isHDRReady = false
+            notifyHDRCooldownEnded(displayId: displayId)
+            BrightnessDiagnosticHistory.record(
+                "Deferring HDR engagement for sleeping display \(displayId)"
+            )
+            return
+        }
+
         if case let .coolingDown(until) = recoveryState.hdrState {
             if until > Date() {
                 let remainingSeconds = Int(ceil(until.timeIntervalSinceNow))
@@ -531,18 +544,75 @@ final class GammaTechnique: BrightnessTechnique {
             return
         }
 
+        let pollScheduledAt = Date()
         integrityPollTask = Task { @MainActor in
             defer { self.integrityPollTask = nil }
 
             BrightnessDiagnosticHistory.record("Gamma integrity polling started")
+            let pollStartedAt = Date()
+            let startupDelay = pollStartedAt.timeIntervalSince(pollScheduledAt)
+            if startupDelay > self.maximumIntegrityPollGap {
+                self.deferRecoveryAfterLongPollGap(
+                    elapsed: startupDelay,
+                    now: pollStartedAt
+                )
+            }
+            var previousPollDate = pollStartedAt
 
             while !Task.isCancelled, self.isEnabled {
                 try? await Task.sleep(for: self.integrityPollInterval)
                 guard !Task.isCancelled, self.isEnabled else {
                     return
                 }
+                let now = Date()
+                let elapsed = now.timeIntervalSince(previousPollDate)
+                previousPollDate = now
+                if elapsed > self.maximumIntegrityPollGap {
+                    self.deferRecoveryAfterLongPollGap(elapsed: elapsed, now: now)
+                    continue
+                }
                 self.recoverChangedDisplayState()
             }
+        }
+    }
+
+    private func deferRecoveryAfterLongPollGap(elapsed: TimeInterval, now: Date) {
+        let earliestRetryDate = now.addingTimeInterval(integrityPollResumeDelay)
+        BrightnessDiagnosticHistory.record(
+            "Gamma integrity polling resumed after \(String(format: "%.1f", elapsed))s; deferring HDR recovery for \(Int(integrityPollResumeDelay))s"
+        )
+
+        for (displayId, gammaTable) in gammaTables {
+            guard let screen = screenForDisplay(displayId) else {
+                continue
+            }
+            let recoveryState = displayRecoveryState(for: displayId)
+
+            if CGDisplayIsAsleep(displayId) != 0 {
+                restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+                closeHDROverlay(displayId: displayId)
+                recoveryState.isHDRReady = false
+                recoveryState.hdrState = .waitingForDisplayWake
+                notifyHDRCooldownEnded(displayId: displayId)
+                continue
+            }
+
+            guard !hdrIsReady(screen) else { continue }
+            restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+            closeHDROverlay(displayId: displayId)
+            recoveryState.isHDRReady = false
+
+            let retryDate: Date
+            if case let .coolingDown(until) = recoveryState.hdrState {
+                retryDate = max(until, earliestRetryDate)
+            } else {
+                retryDate = earliestRetryDate
+            }
+            recoveryState.hdrState = .coolingDown(until: retryDate)
+            notifyHDRCooldownBegan(
+                displayId: displayId,
+                cooldownSeconds: max(1, Int(ceil(retryDate.timeIntervalSince(now))))
+            )
         }
     }
 
@@ -606,8 +676,35 @@ final class GammaTechnique: BrightnessTechnique {
         let now = Date()
         let recoveryState = displayRecoveryState(for: displayId)
 
+        if CGDisplayIsAsleep(displayId) != 0 {
+            restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+            closeHDROverlay(displayId: displayId)
+            recoveryState.isHDRReady = false
+            if case .waitingForDisplayWake = recoveryState.hdrState {
+                return false
+            }
+            recoveryState.hdrState = .waitingForDisplayWake
+            notifyHDRCooldownEnded(displayId: displayId)
+            BrightnessDiagnosticHistory.record(
+                "Display \(displayId) is asleep; deferring HDR recovery"
+            )
+            return false
+        }
+
+        if case .waitingForDisplayWake = recoveryState.hdrState {
+            recoveryState.hdrState = nil
+            BrightnessDiagnosticHistory.record(
+                "Display \(displayId) is awake; starting HDR engagement"
+            )
+            beginHDREngagement(screen: screen, displayId: displayId)
+            return recoveryState.isHDRReady
+        }
+
         if let hdrState = recoveryState.hdrState {
             switch hdrState {
+            case .waitingForDisplayWake:
+                return false
+
             case let .coolingDown(until):
                 restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
                 guard now >= until else { return false }
@@ -892,6 +989,8 @@ final class GammaTechnique: BrightnessTechnique {
 
     private func hdrRecoveryDescription(_ state: HDRRecoveryState) -> String {
         switch state {
+        case .waitingForDisplayWake:
+            return "waiting for display wake"
         case let .waitingForHDR(until):
             return "waiting for HDR, \(max(0, Int(ceil(until.timeIntervalSinceNow))))s remaining"
         case let .coolingDown(until):
