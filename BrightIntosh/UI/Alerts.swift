@@ -13,6 +13,78 @@ private enum DiagnosticsSendError: Error {
     case rejected(Int)
 }
 
+@MainActor
+private final class ModelessAlertSession: NSObject, NSWindowDelegate {
+    private let alert: NSAlert
+    private var continuation: CheckedContinuation<NSApplication.ModalResponse, Never>?
+    private var didFinish = false
+
+    init(alert: NSAlert) {
+        self.alert = alert
+    }
+
+    func response() async -> NSApplication.ModalResponse {
+        await withCheckedContinuation { continuation in
+            self.continuation = continuation
+
+            let window = alert.window
+            for (index, button) in alert.buttons.enumerated() {
+                button.tag = index
+                button.target = self
+                button.action = #selector(buttonPressed(_:))
+            }
+
+            window.delegate = self
+            window.isReleasedWhenClosed = false
+            window.level = .modalPanel
+            window.center()
+            NSApp.activate(ignoringOtherApps: true)
+            window.orderFrontRegardless()
+            window.makeKey()
+        }
+    }
+
+    @objc private func buttonPressed(_ sender: NSButton) {
+        let response = NSApplication.ModalResponse(
+            rawValue: NSApplication.ModalResponse.alertFirstButtonReturn.rawValue + sender.tag
+        )
+        finish(response: response)
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        finish(response: .abort)
+    }
+
+    private func finish(response: NSApplication.ModalResponse) {
+        guard !didFinish else { return }
+        didFinish = true
+        alert.window.delegate = nil
+        alert.window.orderOut(nil)
+        let continuation = continuation
+        self.continuation = nil
+        continuation?.resume(returning: response)
+    }
+}
+
+@MainActor
+private func presentModelessAlert(_ alert: NSAlert) async -> NSApplication.ModalResponse {
+    alert.showsSuppressionButton = false
+
+    if let parentWindow = NSApp.keyWindow ?? NSApp.mainWindow ?? NSApp.windows.first(where: {
+        $0.isVisible && $0.canBecomeKey && !($0 is NSPanel)
+    }) {
+        NSApp.activate(ignoringOtherApps: true)
+        parentWindow.makeKeyAndOrderFront(nil)
+        return await withCheckedContinuation { continuation in
+            alert.beginSheetModal(for: parentWindow) { response in
+                continuation.resume(returning: response)
+            }
+        }
+    }
+
+    return await ModelessAlertSession(alert: alert).response()
+}
+
 @MainActor func createBatteryAutomationContradictionAlert() -> NSAlert {
     let alert = NSAlert()
     alert.messageText = String(
@@ -35,17 +107,16 @@ func presentBrightnessFailurePrompt(reason: String) async {
     alert.addButton(withTitle: String(localized: "Send Anonymous Diagnostics"))
     alert.addButton(withTitle: String(localized: "Not Now"))
     
-    NSApp.activate(ignoringOtherApps: true)
-    let response = alert.runModal()
+    let response = await presentModelessAlert(alert)
 
     guard response == .alertFirstButtonReturn else { return }
     let report = await generateReport(includeRunningApplications: true)
     do {
         try await sendDiagnosticsReport(report)
-        showDiagnosticsSentAlert()
+        await showDiagnosticsSentAlert()
     } catch {
         copyDiagnosticsToClipboard(report)
-        showDiagnosticsSendFailedAlert()
+        await showDiagnosticsSendFailedAlert()
     }
 }
 
@@ -82,20 +153,20 @@ private func copyDiagnosticsToClipboard(_ report: String) {
 }
 
 @MainActor
-private func showDiagnosticsSentAlert() {
+private func showDiagnosticsSentAlert() async {
     let alert = NSAlert()
     alert.alertStyle = .informational
     alert.messageText = String(localized: "Diagnostics sent")
     alert.addButton(withTitle: String(localized: "OK"))
-    alert.runModal()
+    _ = await presentModelessAlert(alert)
 }
 
 @MainActor
-private func showDiagnosticsSendFailedAlert() {
+private func showDiagnosticsSendFailedAlert() async {
     let alert = NSAlert()
     alert.alertStyle = .warning
     alert.messageText = String(localized: "Diagnostics could not be sent")
     alert.informativeText = String(localized: "The report was copied to your clipboard instead. Please include it in your support message so the brightness issue can be investigated.")
     alert.addButton(withTitle: String(localized: "OK"))
-    alert.runModal()
+    _ = await presentModelessAlert(alert)
 }
