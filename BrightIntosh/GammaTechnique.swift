@@ -116,7 +116,6 @@ final class GammaTechnique: BrightnessTechnique {
         var hdrState: HDRRecoveryState?
         var isHDRReady = false
         var consecutiveHDRFailures = 0
-        var didReportHDRFailure = false
         var consecutiveGammaRecoveries = 0
     }
 
@@ -124,6 +123,11 @@ final class GammaTechnique: BrightnessTechnique {
         var appliedFactor: Float = 1.0
         var targetFactor: Float?
         var task: Task<Void, Never>?
+    }
+
+    private struct GammaApplicationContext {
+        let reason: BrightnessUpdateReason
+        let inputEdr: CGFloat
     }
 
     private var overlayWindowControllers: [CGDirectDisplayID: OverlayWindowController] = [:]
@@ -155,7 +159,7 @@ final class GammaTechnique: BrightnessTechnique {
     private let hdrEngagementTimeout: TimeInterval = 10
     private let hdrCooldownIncrease: TimeInterval = 15
     private let maximumHDRCooldownDuration: TimeInterval = 60
-    private let hdrRecoveryFailuresBeforeReporting = 2
+    private let hdrRecoveryFailuresBeforeCooldownIncrease = 2
     private let maxConsecutiveGammaRecoveryAttempts = 3
 
     nonisolated static func restoreSystemColorState() {
@@ -174,7 +178,7 @@ final class GammaTechnique: BrightnessTechnique {
         BrightnessDiagnosticHistory.record(
             "Gamma technique enabled for displays \(screens.compactMap(\.displayId).sorted())"
         )
-        screenUpdate(screens: screens)
+        updateScreens(screens, brightnessUpdateReason: .techniqueEnabled)
         print("Enabled gamma technique")
     }
 
@@ -294,12 +298,20 @@ final class GammaTechnique: BrightnessTechnique {
             updateDisplayBrightness(
                 screen: screen,
                 displayId: displayId,
-                gammaTable: gammaTable
+                gammaTable: gammaTable,
+                reason: reason
             )
         }
     }
 
     func screenUpdate(screens: [NSScreen]) {
+        updateScreens(screens, brightnessUpdateReason: .displayParametersChanged)
+    }
+
+    private func updateScreens(
+        _ screens: [NSScreen],
+        brightnessUpdateReason: BrightnessUpdateReason
+    ) {
         let activeDisplayIds = Set(screens.compactMap(\.displayId))
         let trackedDisplayIds = Set(gammaTables.keys).union(displayRecoveryStates.keys)
         let removedDisplayIds = trackedDisplayIds.filter {
@@ -323,7 +335,7 @@ final class GammaTechnique: BrightnessTechnique {
             }
         }
 
-        updateBrightness(reason: .displayParametersChanged)
+        updateBrightness(reason: brightnessUpdateReason)
         startIntegrityPollIfNeeded()
     }
 
@@ -402,7 +414,8 @@ final class GammaTechnique: BrightnessTechnique {
     private func fadeGammaFactor(
         displayId: CGDirectDisplayID,
         gammaTable: GammaTable,
-        targetFactor: Float
+        targetFactor: Float,
+        context: GammaApplicationContext
     ) {
         let state = fadeState(for: displayId)
         let targetChanged = state.targetFactor.map {
@@ -425,7 +438,8 @@ final class GammaTechnique: BrightnessTechnique {
             recordCompletedGammaApplication(
                 gammaTable,
                 displayId: displayId,
-                factor: targetFactor
+                factor: targetFactor,
+                context: context
             )
             return
         }
@@ -461,7 +475,8 @@ final class GammaTechnique: BrightnessTechnique {
             self.recordCompletedGammaApplication(
                 gammaTable,
                 displayId: displayId,
-                factor: targetFactor
+                factor: targetFactor,
+                context: context
             )
         }
     }
@@ -501,33 +516,50 @@ final class GammaTechnique: BrightnessTechnique {
     private func recordCompletedGammaApplication(
         _ gammaTable: GammaTable,
         displayId: CGDirectDisplayID,
-        factor: Float
+        factor: Float,
+        context: GammaApplicationContext
     ) {
         let readback = gammaTable.currentLastValuesDescription(displayId: displayId)
+        let factorDescription = String(format: "%.4f", factor)
+        let inputEdrDescription = String(format: "%.4f", context.inputEdr)
+        let completionEdr = screenForDisplay(displayId).map {
+            String(format: "%.4f", $0.maximumExtendedDynamicRangeColorComponentValue)
+        } ?? "unavailable"
         BrightnessDiagnosticHistory.record(
-            "Applied final gamma for display \(displayId); factor \(String(format: "%.4f", factor)), readback RGB \(readback)"
+            "Applied final gamma for display \(displayId); " +
+            "factor \(factorDescription), reason \(context.reason.rawValue), " +
+            "input max EDR \(inputEdrDescription), completion max EDR \(completionEdr), " +
+            "readback RGB \(readback)"
         )
     }
 
     private func applyBoostedBrightness(
         screen: NSScreen,
         displayId: CGDirectDisplayID,
-        gammaTable: GammaTable
+        gammaTable: GammaTable,
+        reason: BrightnessUpdateReason
     ) {
+        let currentEdr = screen.maximumExtendedDynamicRangeColorComponentValue
         let (referenceEdr, maxScreenBrightness) = getScreenRefGamma(screen)
         let factor = Self.gammaFactor(
             userBrightness: userBrightness,
             maxScreenBrightness: maxScreenBrightness,
             referenceEdr: referenceEdr,
-            currentEdr: screen.maximumExtendedDynamicRangeColorComponentValue
+            currentEdr: currentEdr
         )
-        fadeGammaFactor(displayId: displayId, gammaTable: gammaTable, targetFactor: factor)
+        fadeGammaFactor(
+            displayId: displayId,
+            gammaTable: gammaTable,
+            targetFactor: factor,
+            context: GammaApplicationContext(reason: reason, inputEdr: currentEdr)
+        )
     }
 
     private func updateDisplayBrightness(
         screen: NSScreen,
         displayId: CGDirectDisplayID,
-        gammaTable: GammaTable
+        gammaTable: GammaTable,
+        reason: BrightnessUpdateReason
     ) {
         guard updateHDRAvailability(
             screen: screen,
@@ -536,7 +568,12 @@ final class GammaTechnique: BrightnessTechnique {
         ) else {
             return
         }
-        applyBoostedBrightness(screen: screen, displayId: displayId, gammaTable: gammaTable)
+        applyBoostedBrightness(
+            screen: screen,
+            displayId: displayId,
+            gammaTable: gammaTable,
+            reason: reason
+        )
     }
 
     private func startIntegrityPollIfNeeded() {
@@ -634,7 +671,12 @@ final class GammaTechnique: BrightnessTechnique {
                 continue
             }
 
-            applyBoostedBrightness(screen: screen, displayId: displayId, gammaTable: gammaTable)
+            applyBoostedBrightness(
+                screen: screen,
+                displayId: displayId,
+                gammaTable: gammaTable,
+                reason: .integrityPoll
+            )
 
             if let state = fadeStates[displayId],
                state.task == nil,
@@ -761,7 +803,9 @@ final class GammaTechnique: BrightnessTechnique {
         closeHDROverlay(displayId: displayId)
         recoveryState.consecutiveHDRFailures += 1
         let failureCount = recoveryState.consecutiveHDRFailures
-        if failureCount >= hdrRecoveryFailuresBeforeReporting,
+        let failedAfterMaximumCooldown = failureCount > 1 &&
+            hdrCooldownDuration >= maximumHDRCooldownDuration
+        if failureCount >= hdrRecoveryFailuresBeforeCooldownIncrease,
            hdrCooldownDuration < maximumHDRCooldownDuration {
             hdrCooldownDuration = min(
                 hdrCooldownDuration + hdrCooldownIncrease,
@@ -786,13 +830,12 @@ final class GammaTechnique: BrightnessTechnique {
             "\(reason) for display \(displayId); removed HDR trigger and cooling down for \(Int(hdrCooldownDuration))s (failure \(failureCount))"
         )
 
-        guard failureCount >= hdrRecoveryFailuresBeforeReporting,
-              !recoveryState.didReportHDRFailure else {
-            return
+        if failedAfterMaximumCooldown {
+            handlePersistentHDRFailure(
+                displayId: displayId,
+                recoveryDetails: reason
+            )
         }
-
-        recoveryState.didReportHDRFailure = true
-        reportPersistentHDRFailure(displayId: displayId, recoveryDetails: reason)
     }
 
     private func notifyHDRCooldownBegan(
@@ -817,17 +860,24 @@ final class GammaTechnique: BrightnessTechnique {
         )
     }
 
-    private func reportPersistentHDRFailure(
+    private func handlePersistentHDRFailure(
         displayId: CGDirectDisplayID,
         recoveryDetails: String
     ) {
-        let reason = "Display \(displayId) did not recover HDR after a quiet recovery period."
+        let reason = "Display \(displayId) did not recover HDR after repeated quiet recovery periods."
         captureFailureState(
             displayId: displayId,
             reason: reason,
             recoveryDetails: [recoveryDetails]
         )
-        BrightnessDiagnosticHistory.record("Gamma technique HDR failure: \(reason)")
+        print("Persistent HDR failure detected: \(reason)")
+        BrightnessDiagnosticHistory.record("Gamma technique failure: \(reason)")
+
+        if BrightIntoshSettings.shared.brightintoshActive {
+            BrightIntoshSettings.shared.brightintoshActive = false
+        } else {
+            disable()
+        }
 
         Task { @MainActor in
             await presentBrightnessFailurePrompt(reason: reason)
@@ -945,9 +995,6 @@ final class GammaTechnique: BrightnessTechnique {
         let hdrReadyDisplayIds = displayRecoveryStates.compactMap { displayId, state in
             state.isHDRReady ? displayId : nil
         }.sorted()
-        let reportedHDRFailureDisplayIds = displayRecoveryStates.compactMap { displayId, state in
-            state.didReportHDRFailure ? displayId : nil
-        }.sorted()
         let consecutiveHDRFailures = displayRecoveryStates.reduce(into: [CGDirectDisplayID: Int]()) {
             if $1.value.consecutiveHDRFailures > 0 {
                 $0[$1.key] = $1.value.consecutiveHDRFailures
@@ -980,7 +1027,6 @@ final class GammaTechnique: BrightnessTechnique {
             }
         }
         report += " - Consecutive HDR recovery failures: \(consecutiveHDRFailures)\n"
-        report += " - Reported HDR recovery failure display IDs: \(reportedHDRFailureDisplayIds)\n"
         report += " - Learned HDR cooldown: \(Int(hdrCooldownDuration))s\n"
         report += " - Consecutive gamma recovery counts: \(consecutiveGammaRecoveries)\n"
         report += " - Gamma capture failure: \(gammaCaptureFailure ?? "none")\n"

@@ -8,9 +8,11 @@
 import Foundation
 import Cocoa
 
-enum BrightnessUpdateReason {
-    case displayParametersChanged
-    case brightnessSettingChanged
+enum BrightnessUpdateReason: String {
+    case techniqueEnabled = "technique enabled"
+    case displayParametersChanged = "display parameters changed"
+    case brightnessSettingChanged = "brightness setting changed"
+    case integrityPoll = "integrity poll"
 }
 
 @MainActor
@@ -245,7 +247,7 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
         hdrConsecutiveTimeoutCount[displayId] = nextCount
         let maxEdr = screenForDisplay(displayId)?.maximumExtendedDynamicRangeColorComponentValue
         BrightnessDiagnosticHistory.record(
-            "Alternate backend HDR timeout \(nextCount)/\(maxConsecutiveHDRTimeoutFailures) for display \(displayId); max EDR \(maxEdr.map { String(format: "%.4f", $0) } ?? "unavailable")"
+            "Alternate backend HDR timeout \(nextCount) for display \(displayId); max EDR \(maxEdr.map { String(format: "%.4f", $0) } ?? "unavailable")"
         )
         
         let cooldownSeconds = hdrRetryCooldownSeconds
@@ -258,14 +260,14 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
                 "displayID": NSNumber(value: displayId),
             ]
         )
-        
+
         if nextCount >= maxConsecutiveHDRTimeoutFailures {
             handlePersistentHDRFailure(displayId: displayId, timeoutCount: nextCount)
         }
         
         return cooldownSeconds
     }
-    
+
     private func handlePersistentHDRFailure(displayId: CGDirectDisplayID, timeoutCount: Int) {
         let reason = "Display \(displayId) did not become HDR ready after \(timeoutCount) consecutive \(String(format: "%.1f", hdrEngageTimeout))s attempts."
         let maxEdr = screenForDisplay(displayId)?.maximumExtendedDynamicRangeColorComponentValue
@@ -283,11 +285,13 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
         """
         print("Persistent HDR failure detected: \(reason)")
         BrightnessDiagnosticHistory.record("Alternate backend failure: \(reason)")
-        
+
         if BrightIntoshSettings.shared.brightintoshActive {
             BrightIntoshSettings.shared.brightintoshActive = false
+        } else {
+            disable()
         }
-        
+
         Task { @MainActor in
             await presentBrightnessFailurePrompt(reason: reason)
         }
