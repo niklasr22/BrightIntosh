@@ -55,6 +55,7 @@ final class BrightnessManager: BrightnessManaging {
     private var displays = DisplaySnapshot.current()
     private var stabilizationTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
+    private var lastScreenParameterDiagnosticDate: Date?
 
     nonisolated private static let displayReconfigurationCallback: CGDisplayReconfigurationCallBack = {
         displayId,
@@ -242,6 +243,16 @@ final class BrightnessManager: BrightnessManaging {
             suspendAndScheduleActivation(reason: "display setup changed")
         } else if brightnessTechnique.isEnabled {
             // Screen parameter notifications also cover native brightness changes.
+            let now = Date()
+            if lastScreenParameterDiagnosticDate.map({
+                now.timeIntervalSince($0) >= 1
+            }) ?? true {
+                lastScreenParameterDiagnosticDate = now
+                BrightnessDiagnosticHistory.record(
+                    "Screen parameters changed without a topology change; " +
+                    Self.edrSummary(updatedDisplays)
+                )
+            }
             brightnessTechnique.updateBrightness(reason: .displayParametersChanged)
         }
     }
@@ -382,6 +393,14 @@ final class BrightnessManager: BrightnessManaging {
             "\($0)=\(screenFrames[$0]!)"
         }.joined(separator: ", ")
         return "screens [\(frames)], targets \(snapshot.targetDisplayIds.sorted())"
+    }
+
+    private static func edrSummary(_ snapshot: DisplaySnapshot) -> String {
+        let values = snapshot.screens.compactMap { screen -> String? in
+            guard let displayId = screen.displayId else { return nil }
+            return "\(displayId)=\(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))"
+        }.sorted()
+        return "max EDR [\(values.joined(separator: ", "))]"
     }
 
     private func reconcileDisplaySelection() {

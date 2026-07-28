@@ -117,6 +117,7 @@ final class GammaTechnique: BrightnessTechnique {
         var isHDRReady = false
         var consecutiveHDRFailures = 0
         var consecutiveGammaRecoveries = 0
+        var lastHDREngagementObservationDate: Date?
     }
 
     private final class FadeState {
@@ -230,8 +231,11 @@ final class GammaTechnique: BrightnessTechnique {
     }
 
     private func beginHDREngagement(screen: NSScreen, displayId: CGDirectDisplayID) {
+        let preTriggerEdr = screen.maximumExtendedDynamicRangeColorComponentValue
+        let triggerWasCreated: Bool
         if let existing = overlayWindowControllers[displayId] {
             existing.updateScreen(screen: screen)
+            triggerWasCreated = false
         } else {
             let overlayWindowController = OverlayWindowController(screen: screen)
             overlayWindowControllers[displayId] = overlayWindowController
@@ -242,13 +246,19 @@ final class GammaTechnique: BrightnessTechnique {
                 height: 1
             )
             overlayWindowController.open(rect: rect)
-            BrightnessDiagnosticHistory.record(
-                "Created HDR trigger for display \(displayId); max EDR \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))"
-            )
+            triggerWasCreated = true
         }
         let recoveryState = displayRecoveryState(for: displayId)
+        recoveryState.lastHDREngagementObservationDate = nil
         recoveryState.hdrState = .waitingForHDR(
             until: Date().addingTimeInterval(hdrEngagementTimeout)
+        )
+        let immediateEdr = screenForDisplay(displayId)?
+            .maximumExtendedDynamicRangeColorComponentValue
+        BrightnessDiagnosticHistory.record(
+            "\(triggerWasCreated ? "Created" : "Updated") HDR trigger for display \(displayId); " +
+            "pre-trigger max EDR \(String(format: "%.4f", preTriggerEdr)), " +
+            "immediate max EDR \(immediateEdr.map { String(format: "%.4f", $0) } ?? "unavailable")"
         )
 
         guard hdrIsReady(screen) else {
@@ -764,6 +774,7 @@ final class GammaTechnique: BrightnessTechnique {
             case let .waitingForHDR(until):
                 if hdrIsReady(screen) {
                     recoveryState.hdrState = nil
+                    recoveryState.lastHDREngagementObservationDate = nil
                     recoveryState.consecutiveHDRFailures = 0
                     let becameReady = !recoveryState.isHDRReady
                     recoveryState.isHDRReady = true
@@ -776,6 +787,16 @@ final class GammaTechnique: BrightnessTechnique {
                 }
 
                 restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+                if recoveryState.lastHDREngagementObservationDate.map({
+                    now.timeIntervalSince($0) >= 1.5
+                }) ?? true {
+                    recoveryState.lastHDREngagementObservationDate = now
+                    BrightnessDiagnosticHistory.record(
+                        "HDR engagement observation for display \(displayId); " +
+                        "max EDR \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue)), " +
+                        "\(max(0, Int(ceil(until.timeIntervalSince(now)))))s remaining"
+                    )
+                }
                 guard now >= until else { return false }
                 beginHDRCooldown(displayId: displayId, reason: "HDR engagement timed out")
                 return false
@@ -802,7 +823,12 @@ final class GammaTechnique: BrightnessTechnique {
     private func beginHDRCooldown(displayId: CGDirectDisplayID, reason: String) {
         let recoveryState = displayRecoveryState(for: displayId)
         recoveryState.isHDRReady = false
+        recoveryState.lastHDREngagementObservationDate = nil
+        let preRemovalEdr = screenForDisplay(displayId)?
+            .maximumExtendedDynamicRangeColorComponentValue
         closeHDROverlay(displayId: displayId)
+        let immediatePostRemovalEdr = screenForDisplay(displayId)?
+            .maximumExtendedDynamicRangeColorComponentValue
         recoveryState.consecutiveHDRFailures += 1
         let failureCount = recoveryState.consecutiveHDRFailures
         let failedAfterMaximumCooldown = failureCount > 1 &&
@@ -829,7 +855,10 @@ final class GammaTechnique: BrightnessTechnique {
             cooldownSeconds: Int(hdrCooldownDuration)
         )
         BrightnessDiagnosticHistory.record(
-            "\(reason) for display \(displayId); removed HDR trigger and cooling down for \(Int(hdrCooldownDuration))s (failure \(failureCount))"
+            "\(reason) for display \(displayId); removed HDR trigger and cooling down for \(Int(hdrCooldownDuration))s " +
+            "(failure \(failureCount)); pre-removal max EDR " +
+            "\(preRemovalEdr.map { String(format: "%.4f", $0) } ?? "unavailable"), immediate post-removal max EDR " +
+            "\(immediatePostRemovalEdr.map { String(format: "%.4f", $0) } ?? "unavailable")"
         )
 
         if failedAfterMaximumCooldown {
