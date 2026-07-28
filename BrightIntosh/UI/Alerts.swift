@@ -14,34 +14,153 @@ private enum DiagnosticsSendError: Error {
 }
 
 @MainActor
-private final class ModelessAlertSession: NSObject, NSWindowDelegate {
-    private let alert: NSAlert
+private final class ForegroundAlertPanel: NSPanel {
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { true }
+}
+
+@MainActor
+private final class ForegroundAlertSession: NSObject, NSWindowDelegate {
+    private let panel: ForegroundAlertPanel
     private var continuation: CheckedContinuation<NSApplication.ModalResponse, Never>?
     private var didFinish = false
 
-    init(alert: NSAlert) {
-        self.alert = alert
+    init(
+        style: NSAlert.Style,
+        title: String,
+        message: String?,
+        buttonTitles: [String]
+    ) {
+        panel = ForegroundAlertPanel(
+            contentRect: NSRect(x: 0, y: 0, width: 430, height: 200),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        super.init()
+        configurePanel(
+            style: style,
+            title: title,
+            message: message,
+            buttonTitles: buttonTitles
+        )
     }
 
     func response() async -> NSApplication.ModalResponse {
         await withCheckedContinuation { continuation in
             self.continuation = continuation
 
-            let window = alert.window
-            for (index, button) in alert.buttons.enumerated() {
-                button.tag = index
-                button.target = self
-                button.action = #selector(buttonPressed(_:))
-            }
-
-            window.delegate = self
-            window.isReleasedWhenClosed = false
-            window.level = .modalPanel
-            window.center()
+            panel.delegate = self
+            panel.level = .modalPanel
+            panel.center()
             NSApp.activate(ignoringOtherApps: true)
-            window.orderFrontRegardless()
-            window.makeKey()
+            panel.orderFrontRegardless()
+            panel.makeKey()
         }
+    }
+
+    private func configurePanel(
+        style: NSAlert.Style,
+        title: String,
+        message: String?,
+        buttonTitles: [String]
+    ) {
+        panel.title = ""
+        panel.titleVisibility = .hidden
+        panel.titlebarAppearsTransparent = false
+        panel.titlebarSeparatorStyle = .none
+        panel.isFloatingPanel = true
+        panel.becomesKeyOnlyIfNeeded = false
+        panel.isReleasedWhenClosed = false
+        panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        panel.isOpaque = true
+        panel.backgroundColor = .windowBackgroundColor
+        panel.hasShadow = true
+
+        let contentView = NSView()
+        panel.contentView = contentView
+
+        let informational = style == .informational
+        let iconImage = NSImage(
+            systemSymbolName: informational
+                ? "checkmark.circle.fill"
+                : "exclamationmark.triangle.fill",
+            accessibilityDescription: nil
+        )
+        let icon = NSImageView(image: iconImage ?? NSImage())
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.imageScaling = .scaleProportionallyUpOrDown
+        icon.symbolConfiguration = NSImage.SymbolConfiguration(
+            pointSize: 27,
+            weight: .medium
+        )
+        icon.contentTintColor = informational ? .systemGreen : .systemOrange
+
+        let titleLabel = NSTextField(wrappingLabelWithString: title)
+        titleLabel.font = .systemFont(ofSize: 16, weight: .semibold)
+        titleLabel.textColor = .labelColor
+
+        let textStack = NSStackView()
+        textStack.orientation = .vertical
+        textStack.alignment = .leading
+        textStack.spacing = 6
+        textStack.addArrangedSubview(titleLabel)
+
+        if let message, !message.isEmpty {
+            let messageLabel = NSTextField(wrappingLabelWithString: message)
+            messageLabel.font = .systemFont(ofSize: 12.5)
+            messageLabel.textColor = .secondaryLabelColor
+            textStack.addArrangedSubview(messageLabel)
+        }
+
+        let messageRow = NSStackView(views: [icon, textStack])
+        messageRow.orientation = .horizontal
+        messageRow.alignment = .top
+        messageRow.spacing = 14
+
+        let buttonRow = NSStackView()
+        buttonRow.orientation = .horizontal
+        buttonRow.alignment = .centerY
+        buttonRow.spacing = 8
+
+        for index in buttonTitles.indices.reversed() {
+            let localizedTitle = buttonTitles[index]
+            let button = NSButton(
+                title: localizedTitle.isEmpty ? String(localized: "OK") : localizedTitle,
+                target: self,
+                action: #selector(buttonPressed(_:))
+            )
+            button.tag = index
+            button.bezelStyle = .rounded
+            button.controlSize = .large
+            if index == 0 {
+                button.keyEquivalent = "\r"
+            } else if index == 1 {
+                button.keyEquivalent = "\u{1b}"
+            }
+            buttonRow.addArrangedSubview(button)
+        }
+
+        let rootStack = NSStackView(views: [messageRow, buttonRow])
+        rootStack.translatesAutoresizingMaskIntoConstraints = false
+        rootStack.orientation = .vertical
+        rootStack.alignment = .trailing
+        rootStack.spacing = 18
+        contentView.addSubview(rootStack)
+
+        NSLayoutConstraint.activate([
+            icon.widthAnchor.constraint(equalToConstant: 36),
+            icon.heightAnchor.constraint(equalToConstant: 36),
+            textStack.widthAnchor.constraint(equalToConstant: 336),
+            rootStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22),
+            rootStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22),
+            rootStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 18),
+            rootStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -18),
+        ])
+
+        contentView.layoutSubtreeIfNeeded()
+        let contentHeight = max(154, rootStack.fittingSize.height + 36)
+        panel.setContentSize(NSSize(width: 430, height: contentHeight))
     }
 
     @objc private func buttonPressed(_ sender: NSButton) {
@@ -52,14 +171,20 @@ private final class ModelessAlertSession: NSObject, NSWindowDelegate {
     }
 
     func windowWillClose(_ notification: Notification) {
-        finish(response: .abort)
+        finish(response: .abort, closePanel: false)
     }
 
-    private func finish(response: NSApplication.ModalResponse) {
+    private func finish(
+        response: NSApplication.ModalResponse,
+        closePanel: Bool = true
+    ) {
         guard !didFinish else { return }
         didFinish = true
-        alert.window.delegate = nil
-        alert.window.orderOut(nil)
+        panel.delegate = nil
+        panel.orderOut(nil)
+        if closePanel {
+            panel.close()
+        }
         let continuation = continuation
         self.continuation = nil
         continuation?.resume(returning: response)
@@ -67,22 +192,18 @@ private final class ModelessAlertSession: NSObject, NSWindowDelegate {
 }
 
 @MainActor
-private func presentModelessAlert(_ alert: NSAlert) async -> NSApplication.ModalResponse {
-    alert.showsSuppressionButton = false
-
-    if let parentWindow = NSApp.keyWindow ?? NSApp.mainWindow ?? NSApp.windows.first(where: {
-        $0.isVisible && $0.canBecomeKey && !($0 is NSPanel)
-    }) {
-        NSApp.activate(ignoringOtherApps: true)
-        parentWindow.makeKeyAndOrderFront(nil)
-        return await withCheckedContinuation { continuation in
-            alert.beginSheetModal(for: parentWindow) { response in
-                continuation.resume(returning: response)
-            }
-        }
-    }
-
-    return await ModelessAlertSession(alert: alert).response()
+private func presentForegroundAlert(
+    style: NSAlert.Style,
+    title: String,
+    message: String? = nil,
+    buttonTitles: [String]
+) async -> NSApplication.ModalResponse {
+    await ForegroundAlertSession(
+        style: style,
+        title: title,
+        message: message,
+        buttonTitles: buttonTitles
+    ).response()
 }
 
 @MainActor func createBatteryAutomationContradictionAlert() -> NSAlert {
@@ -100,20 +221,20 @@ private func presentModelessAlert(_ alert: NSAlert) async -> NSApplication.Modal
 func presentBrightnessFailurePrompt(reason: String) async {
     SupportReportContext.lastBrightnessFailureReason = reason
     
-    let alert = NSAlert()
-    alert.alertStyle = .warning
-    alert.messageText = String(localized: "Sorry, BrightIntosh could not reliably increase brightness on this Mac")
-    alert.informativeText = String(localized: "Please share anonymous diagnostics so we can look into this brightness issue. The report only includes BrightIntosh data and your running processes, and we'll only use it to investigate this problem.")
-    alert.addButton(withTitle: String(localized: "Send Anonymous Diagnostics"))
-    alert.addButton(withTitle: String(localized: "Not Now"))
-    
-    let response = await presentModelessAlert(alert)
+    let response = await presentForegroundAlert(
+        style: .warning,
+        title: String(localized: "Sorry, BrightIntosh could not reliably increase brightness on this Mac"),
+        message: String(localized: "Please share anonymous diagnostics so we can look into this brightness issue. The report only includes BrightIntosh data and your running processes, and we'll only use it to investigate this problem."),
+        buttonTitles: [
+            String(localized: "Send Anonymous Diagnostics"),
+            String(localized: "Not Now"),
+        ]
+    )
 
     guard response == .alertFirstButtonReturn else { return }
     let report = await generateReport(includeRunningApplications: true)
     do {
         try await sendDiagnosticsReport(report)
-        await showDiagnosticsSentAlert()
     } catch {
         copyDiagnosticsToClipboard(report)
         await showDiagnosticsSendFailedAlert()
@@ -153,20 +274,11 @@ private func copyDiagnosticsToClipboard(_ report: String) {
 }
 
 @MainActor
-private func showDiagnosticsSentAlert() async {
-    let alert = NSAlert()
-    alert.alertStyle = .informational
-    alert.messageText = String(localized: "Diagnostics sent")
-    alert.addButton(withTitle: String(localized: "OK"))
-    _ = await presentModelessAlert(alert)
-}
-
-@MainActor
 private func showDiagnosticsSendFailedAlert() async {
-    let alert = NSAlert()
-    alert.alertStyle = .warning
-    alert.messageText = String(localized: "Diagnostics could not be sent")
-    alert.informativeText = String(localized: "The report was copied to your clipboard instead. Please include it in your support message so the brightness issue can be investigated.")
-    alert.addButton(withTitle: String(localized: "OK"))
-    _ = await presentModelessAlert(alert)
+    _ = await presentForegroundAlert(
+        style: .warning,
+        title: String(localized: "Diagnostics could not be sent"),
+        message: String(localized: "The report was copied to your clipboard instead. Please include it in your support message so the brightness issue can be investigated."),
+        buttonTitles: [String(localized: "OK")]
+    )
 }
