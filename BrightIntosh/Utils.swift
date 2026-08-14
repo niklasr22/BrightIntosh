@@ -53,8 +53,13 @@ private let incompatibleAppSignatures: [IncompatibleAppSignature] = [
     ),
     IncompatibleAppSignature(
         displayName: "Gamma Control",
-        bundleIdentifiers: ["ca.michelf.gamma-control"],
+        bundleIdentifiers: ["ca.michelf.gamma-control", "ca.michelf.GammaControl", "ca.michelf.GammaControl.6", "com.michelf.gamma-control"],
         normalizedNames: ["gammacontrol"]
+    ),
+    IncompatibleAppSignature(
+        displayName: "Gamma Dimmer",
+        bundleIdentifiers: ["com.lowtechguys.GammaDimmer"],
+        normalizedNames: ["gammadimmer"]
     ),
     IncompatibleAppSignature(
         displayName: "QuickShade",
