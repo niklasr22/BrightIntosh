@@ -7,6 +7,13 @@ import Cocoa
 import Combine
 import CoreGraphics
 
+private extension Notification.Name {
+    static let screenSaverDidStart = Notification.Name("com.apple.screensaver.didstart")
+    static let screenSaverDidStop = Notification.Name("com.apple.screensaver.didstop")
+    static let screenDidLock = Notification.Name("com.apple.screenIsLocked")
+    static let screenDidUnlock = Notification.Name("com.apple.screenIsUnlocked")
+}
+
 extension NSScreen {
     var displayId: CGDirectDisplayID? {
         deviceDescription[NSDeviceDescriptionKey(rawValue: "NSScreenNumber")] as? CGDirectDisplayID
@@ -19,6 +26,12 @@ protocol BrightnessManaging: AnyObject {
 
 @MainActor
 final class BrightnessManager: BrightnessManaging {
+    private enum PresentationInactivityReason: String, Hashable {
+        case screenLocked = "screen locked"
+        case screenSaver = "screen saver active"
+        case sessionInactive = "session inactive"
+    }
+
     private struct DisplaySnapshot {
         let screens: [NSScreen]
         let targetScreens: [NSScreen]
@@ -56,6 +69,7 @@ final class BrightnessManager: BrightnessManaging {
     private var stabilizationTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
     private var lastScreenParameterDiagnosticDate: Date?
+    private var presentationInactivityReasons: Set<PresentationInactivityReason> = []
 
     nonisolated private static let displayReconfigurationCallback: CGDisplayReconfigurationCallBack = {
         displayId,
@@ -116,6 +130,7 @@ final class BrightnessManager: BrightnessManaging {
         )
         NotificationCenter.default.removeObserver(self)
         NSWorkspace.shared.notificationCenter.removeObserver(self)
+        DistributedNotificationCenter.default().removeObserver(self)
 
         Task { @MainActor in
             brightnessTechnique.disable()
@@ -161,6 +176,44 @@ final class BrightnessManager: BrightnessManaging {
             self,
             selector: #selector(systemWillSleep),
             name: NSWorkspace.willSleepNotification,
+            object: nil
+        )
+        workspaceNotifications.addObserver(
+            self,
+            selector: #selector(sessionDidResignActive),
+            name: NSWorkspace.sessionDidResignActiveNotification,
+            object: nil
+        )
+        workspaceNotifications.addObserver(
+            self,
+            selector: #selector(sessionDidBecomeActive),
+            name: NSWorkspace.sessionDidBecomeActiveNotification,
+            object: nil
+        )
+
+        let distributedNotifications = DistributedNotificationCenter.default()
+        distributedNotifications.addObserver(
+            self,
+            selector: #selector(screenSaverDidStart),
+            name: .screenSaverDidStart,
+            object: nil
+        )
+        distributedNotifications.addObserver(
+            self,
+            selector: #selector(screenSaverDidStop),
+            name: .screenSaverDidStop,
+            object: nil
+        )
+        distributedNotifications.addObserver(
+            self,
+            selector: #selector(screenDidLock),
+            name: .screenDidLock,
+            object: nil
+        )
+        distributedNotifications.addObserver(
+            self,
+            selector: #selector(screenDidUnlock),
+            name: .screenDidUnlock,
             object: nil
         )
     }
@@ -273,6 +326,14 @@ final class BrightnessManager: BrightnessManaging {
             return
         }
 
+        guard presentationInactivityReasons.isEmpty else {
+            BrightnessDiagnosticHistory.record(
+                "Deferring activation after \(reason); presentation remains inactive: " +
+                presentationInactivityDescription
+            )
+            return
+        }
+
         displays = DisplaySnapshot.current()
         if shouldDisableForClosedLid(current: displays) {
             disableForClosedLid()
@@ -292,11 +353,82 @@ final class BrightnessManager: BrightnessManaging {
         suspend(reason: "system will sleep")
     }
 
+    @objc private func screenSaverDidStart() {
+        presentationDidBecomeInactive(.screenSaver)
+    }
+
+    @objc private func screenSaverDidStop() {
+        presentationDidBecomeActive(.screenSaver)
+    }
+
+    @objc private func screenDidLock() {
+        presentationDidBecomeInactive(.screenLocked)
+    }
+
+    @objc private func screenDidUnlock() {
+        presentationDidBecomeActive(.screenLocked)
+    }
+
+    @objc private func sessionDidResignActive() {
+        presentationDidBecomeInactive(.sessionInactive)
+    }
+
+    @objc private func sessionDidBecomeActive() {
+        presentationDidBecomeActive(.sessionInactive)
+    }
+
+    private func presentationDidBecomeInactive(_ reason: PresentationInactivityReason) {
+        guard presentationInactivityReasons.insert(reason).inserted else {
+            return
+        }
+
+        BrightnessDiagnosticHistory.record(
+            "Presentation became inactive: \(reason.rawValue); active reasons: " +
+            presentationInactivityDescription
+        )
+        suspend(reason: reason.rawValue)
+    }
+
+    private func presentationDidBecomeActive(_ reason: PresentationInactivityReason) {
+        guard presentationInactivityReasons.remove(reason) != nil else {
+            return
+        }
+
+        BrightnessDiagnosticHistory.record(
+            "Presentation inactivity ended: \(reason.rawValue); remaining reasons: " +
+            presentationInactivityDescription
+        )
+        guard presentationInactivityReasons.isEmpty, activationRequested else {
+            return
+        }
+
+        displays = DisplaySnapshot.current()
+        if shouldDisableForClosedLid(current: displays) {
+            disableForClosedLid()
+            return
+        }
+
+        suspendAndScheduleActivation(reason: "presentation became active")
+    }
+
+    private var presentationInactivityDescription: String {
+        let reasons = presentationInactivityReasons.map(\.rawValue).sorted()
+        return reasons.isEmpty ? "none" : reasons.joined(separator: ", ")
+    }
+
     private func activateImmediately(reason: String) {
         cancelScheduledActivation()
 
         guard activationRequested else {
             deactivate(reason: "activation no longer requested")
+            return
+        }
+
+        guard presentationInactivityReasons.isEmpty else {
+            BrightnessDiagnosticHistory.record(
+                "Activation deferred while presentation is inactive: " +
+                presentationInactivityDescription
+            )
             return
         }
 
@@ -354,7 +486,7 @@ final class BrightnessManager: BrightnessManaging {
     private func scheduleActivationAfterDisplayStabilizes(reason: String) {
         cancelScheduledActivation()
 
-        guard activationRequested else {
+        guard activationRequested, presentationInactivityReasons.isEmpty else {
             return
         }
 
@@ -496,12 +628,20 @@ final class BrightnessManager: BrightnessManaging {
     }
 
     func appendSupportDiagnostics(to report: inout String) {
-        let state = stabilizationTask != nil
-            ? "stabilizing"
-            : brightnessTechnique.isEnabled ? "active" : "inactive"
+        let state: String
+        if stabilizationTask != nil {
+            state = "stabilizing"
+        } else if brightnessTechnique.isEnabled {
+            state = "active"
+        } else if presentationInactivityReasons.isEmpty {
+            state = "inactive"
+        } else {
+            state = "suspended"
+        }
         report += "Brightness manager:\n"
         report += " - State: \(state)\n"
         report += " - Increased brightness setting: \(activationRequested)\n"
+        report += " - Presentation inactivity: \(presentationInactivityDescription)\n"
         report += " - Active technique: \(String(describing: type(of: brightnessTechnique)))\n"
         report += " - Active displays: \(displays.screenFrames.keys.sorted())\n"
         report += " - Target displays: \(displays.targetDisplayIds.sorted())\n"

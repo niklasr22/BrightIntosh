@@ -112,6 +112,11 @@ final class GammaTechnique: BrightnessTechnique {
         case coolingDown(until: Date)
     }
 
+    private enum HDRAvailability {
+        case unavailable
+        case ready(newlyEngaged: Bool)
+    }
+
     private final class DisplayRecoveryState {
         var hdrState: HDRRecoveryState?
         var isHDRReady = false
@@ -124,6 +129,8 @@ final class GammaTechnique: BrightnessTechnique {
         var appliedFactor: Float = 1.0
         var targetFactor: Float?
         var task: Task<Void, Never>?
+        var upwardAdjustmentTask: Task<Void, Never>?
+        var upwardAdjustmentGeneration = 0
     }
 
     private struct GammaApplicationContext {
@@ -152,6 +159,7 @@ final class GammaTechnique: BrightnessTechnique {
     private let gammaFadeDuration: TimeInterval = 0.2
     private let gammaFadeFrameInterval: Duration = .milliseconds(16)
     private let gammaFactorEpsilon: Float = 0.001
+    private let upwardGammaStabilizationDelay: Duration = .milliseconds(1500)
     private let integrityPollInterval: Duration = .seconds(2)
     private let maximumIntegrityPollGap: TimeInterval = 10
     private let integrityPollResumeDelay: TimeInterval = 5
@@ -227,10 +235,13 @@ final class GammaTechnique: BrightnessTechnique {
         }
 
         recoveryState.hdrState = nil
-        beginHDREngagement(screen: screen, displayId: displayId)
+        _ = beginHDREngagement(screen: screen, displayId: displayId)
     }
 
-    private func beginHDREngagement(screen: NSScreen, displayId: CGDirectDisplayID) {
+    private func beginHDREngagement(
+        screen: NSScreen,
+        displayId: CGDirectDisplayID
+    ) -> HDRAvailability {
         let preTriggerEdr = screen.maximumExtendedDynamicRangeColorComponentValue
         let triggerWasCreated: Bool
         if let existing = overlayWindowControllers[displayId] {
@@ -263,12 +274,13 @@ final class GammaTechnique: BrightnessTechnique {
 
         guard hdrIsReady(screen) else {
             recoveryState.isHDRReady = false
-            return
+            return .unavailable
         }
 
         recoveryState.hdrState = nil
         recoveryState.isHDRReady = true
         recoveryState.consecutiveHDRFailures = 0
+        return .ready(newlyEngaged: true)
     }
 
     private func closeHDROverlay(displayId: CGDirectDisplayID) {
@@ -383,6 +395,7 @@ final class GammaTechnique: BrightnessTechnique {
         integrityPollTask = nil
         for state in fadeStates.values {
             state.task?.cancel()
+            state.upwardAdjustmentTask?.cancel()
         }
         fadeStates.removeAll()
 
@@ -412,6 +425,7 @@ final class GammaTechnique: BrightnessTechnique {
     private func removeDisplay(_ displayId: CGDirectDisplayID) {
         BrightnessDiagnosticHistory.record("Removing display \(displayId) from gamma technique")
         fadeStates[displayId]?.task?.cancel()
+        fadeStates[displayId]?.upwardAdjustmentTask?.cancel()
         fadeStates.removeValue(forKey: displayId)
         displayRecoveryStates.removeValue(forKey: displayId)
         notifyHDRCooldownEnded(displayId: displayId)
@@ -548,7 +562,8 @@ final class GammaTechnique: BrightnessTechnique {
         screen: NSScreen,
         displayId: CGDirectDisplayID,
         gammaTable: GammaTable,
-        reason: BrightnessUpdateReason
+        reason: BrightnessUpdateReason,
+        applyImmediately: Bool = false
     ) {
         let currentEdr = screen.maximumExtendedDynamicRangeColorComponentValue
         let (referenceEdr, maxScreenBrightness) = getScreenRefGamma(screen)
@@ -558,6 +573,31 @@ final class GammaTechnique: BrightnessTechnique {
             referenceEdr: referenceEdr,
             currentEdr: currentEdr
         )
+
+        let state = fadeState(for: displayId)
+        let currentFactor = max(state.appliedFactor, state.targetFactor ?? state.appliedFactor)
+        let shouldStabilizeUpwardAdjustment =
+            !applyImmediately &&
+            (reason == .displayParametersChanged || reason == .integrityPoll)
+
+        if shouldStabilizeUpwardAdjustment,
+           factor > currentFactor + gammaFactorEpsilon {
+            scheduleUpwardGammaAdjustment(
+                displayId: displayId,
+                initialFactor: currentFactor,
+                proposedFactor: factor,
+                inputEdr: currentEdr,
+                reason: reason
+            )
+            return
+        }
+
+        if applyImmediately {
+            BrightnessDiagnosticHistory.record(
+                "Applying gamma immediately after HDR engagement for display \(displayId)"
+            )
+        }
+        cancelUpwardGammaAdjustment(displayId: displayId)
         fadeGammaFactor(
             displayId: displayId,
             gammaTable: gammaTable,
@@ -566,13 +606,95 @@ final class GammaTechnique: BrightnessTechnique {
         )
     }
 
+    private func scheduleUpwardGammaAdjustment(
+        displayId: CGDirectDisplayID,
+        initialFactor: Float,
+        proposedFactor: Float,
+        inputEdr: CGFloat,
+        reason: BrightnessUpdateReason
+    ) {
+        let state = fadeState(for: displayId)
+        guard state.upwardAdjustmentTask == nil else {
+            return
+        }
+
+        state.upwardAdjustmentGeneration += 1
+        let generation = state.upwardAdjustmentGeneration
+        BrightnessDiagnosticHistory.record(
+            "Deferring upward gamma for display \(displayId) until EDR stabilizes; " +
+            "factor \(String(format: "%.4f", initialFactor)) -> " +
+            "\(String(format: "%.4f", proposedFactor)), max EDR " +
+            "\(String(format: "%.4f", inputEdr)), reason \(reason.rawValue)"
+        )
+
+        state.upwardAdjustmentTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            try? await Task.sleep(for: self.upwardGammaStabilizationDelay)
+            guard !Task.isCancelled,
+                  self.isEnabled,
+                  state.upwardAdjustmentGeneration == generation else {
+                return
+            }
+            state.upwardAdjustmentTask = nil
+
+            guard let screen = self.screenForDisplay(displayId),
+                  let gammaTable = self.gammaTables[displayId],
+                  case .ready = self.updateHDRAvailability(
+                    screen: screen,
+                    displayId: displayId,
+                    gammaTable: gammaTable
+                  ) else {
+                return
+            }
+
+            let currentEdr = screen.maximumExtendedDynamicRangeColorComponentValue
+            let (referenceEdr, maxScreenBrightness) = getScreenRefGamma(screen)
+            let stabilizedFactor = Self.gammaFactor(
+                userBrightness: self.userBrightness,
+                maxScreenBrightness: maxScreenBrightness,
+                referenceEdr: referenceEdr,
+                currentEdr: currentEdr
+            )
+            let currentFactor = max(
+                state.appliedFactor,
+                state.targetFactor ?? state.appliedFactor
+            )
+            guard stabilizedFactor > currentFactor + self.gammaFactorEpsilon else {
+                return
+            }
+
+            BrightnessDiagnosticHistory.record(
+                "Applying stabilized upward gamma for display \(displayId); " +
+                "factor \(String(format: "%.4f", currentFactor)) -> " +
+                "\(String(format: "%.4f", stabilizedFactor)), max EDR " +
+                "\(String(format: "%.4f", currentEdr))"
+            )
+            self.fadeGammaFactor(
+                displayId: displayId,
+                gammaTable: gammaTable,
+                targetFactor: stabilizedFactor,
+                context: GammaApplicationContext(
+                    reason: reason,
+                    inputEdr: currentEdr
+                )
+            )
+        }
+    }
+
+    private func cancelUpwardGammaAdjustment(displayId: CGDirectDisplayID) {
+        guard let state = fadeStates[displayId] else { return }
+        state.upwardAdjustmentGeneration += 1
+        state.upwardAdjustmentTask?.cancel()
+        state.upwardAdjustmentTask = nil
+    }
+
     private func updateDisplayBrightness(
         screen: NSScreen,
         displayId: CGDirectDisplayID,
         gammaTable: GammaTable,
         reason: BrightnessUpdateReason
     ) {
-        guard updateHDRAvailability(
+        guard case let .ready(newlyEngaged) = updateHDRAvailability(
             screen: screen,
             displayId: displayId,
             gammaTable: gammaTable
@@ -583,7 +705,8 @@ final class GammaTechnique: BrightnessTechnique {
             screen: screen,
             displayId: displayId,
             gammaTable: gammaTable,
-            reason: reason
+            reason: reason,
+            applyImmediately: newlyEngaged
         )
     }
 
@@ -674,7 +797,7 @@ final class GammaTechnique: BrightnessTechnique {
                 continue
             }
 
-            guard updateHDRAvailability(
+            guard case let .ready(newlyEngaged) = updateHDRAvailability(
                 screen: screen,
                 displayId: displayId,
                 gammaTable: gammaTable
@@ -687,7 +810,8 @@ final class GammaTechnique: BrightnessTechnique {
                 screen: screen,
                 displayId: displayId,
                 gammaTable: gammaTable,
-                reason: .integrityPoll
+                reason: .integrityPoll,
+                applyImmediately: newlyEngaged
             )
 
             if let state = fadeStates[displayId],
@@ -726,7 +850,7 @@ final class GammaTechnique: BrightnessTechnique {
         screen: NSScreen,
         displayId: CGDirectDisplayID,
         gammaTable: GammaTable
-    ) -> Bool {
+    ) -> HDRAvailability {
         let now = Date()
         let recoveryState = displayRecoveryState(for: displayId)
 
@@ -735,14 +859,14 @@ final class GammaTechnique: BrightnessTechnique {
             closeHDROverlay(displayId: displayId)
             recoveryState.isHDRReady = false
             if case .waitingForDisplayWake = recoveryState.hdrState {
-                return false
+                return .unavailable
             }
             recoveryState.hdrState = .waitingForDisplayWake
             notifyHDRCooldownEnded(displayId: displayId)
             BrightnessDiagnosticHistory.record(
                 "Display \(displayId) is asleep; deferring HDR recovery"
             )
-            return false
+            return .unavailable
         }
 
         if case .waitingForDisplayWake = recoveryState.hdrState {
@@ -750,26 +874,24 @@ final class GammaTechnique: BrightnessTechnique {
             BrightnessDiagnosticHistory.record(
                 "Display \(displayId) is awake; starting HDR engagement"
             )
-            beginHDREngagement(screen: screen, displayId: displayId)
-            return recoveryState.isHDRReady
+            return beginHDREngagement(screen: screen, displayId: displayId)
         }
 
         if let hdrState = recoveryState.hdrState {
             switch hdrState {
             case .waitingForDisplayWake:
-                return false
+                return .unavailable
 
             case let .coolingDown(until):
                 restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
-                guard now >= until else { return false }
+                guard now >= until else { return .unavailable }
 
                 BrightnessDiagnosticHistory.record(
                     "HDR cooldown ended for display \(displayId); creating one new trigger"
                 )
                 notifyHDRCooldownEnded(displayId: displayId)
                 recoveryState.hdrState = nil
-                beginHDREngagement(screen: screen, displayId: displayId)
-                return recoveryState.isHDRReady
+                return beginHDREngagement(screen: screen, displayId: displayId)
 
             case let .waitingForHDR(until):
                 if hdrIsReady(screen) {
@@ -783,7 +905,7 @@ final class GammaTechnique: BrightnessTechnique {
                             "Display \(displayId) became HDR ready; max EDR \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))"
                         )
                     }
-                    return true
+                    return .ready(newlyEngaged: becameReady)
                 }
 
                 restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
@@ -797,16 +919,16 @@ final class GammaTechnique: BrightnessTechnique {
                         "\(max(0, Int(ceil(until.timeIntervalSince(now)))))s remaining"
                     )
                 }
-                guard now >= until else { return false }
+                guard now >= until else { return .unavailable }
                 beginHDRCooldown(displayId: displayId, reason: "HDR engagement timed out")
-                return false
+                return .unavailable
             }
         }
 
         guard hdrIsReady(screen) else {
             restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
             beginHDRCooldown(displayId: displayId, reason: "HDR became unavailable")
-            return false
+            return .unavailable
         }
 
         let becameReady = !recoveryState.isHDRReady
@@ -817,7 +939,7 @@ final class GammaTechnique: BrightnessTechnique {
                 "Display \(displayId) became HDR ready; max EDR \(String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue))"
             )
         }
-        return true
+        return .ready(newlyEngaged: becameReady)
     }
 
     private func beginHDRCooldown(displayId: CGDirectDisplayID, reason: String) {
@@ -923,6 +1045,7 @@ final class GammaTechnique: BrightnessTechnique {
         gammaTable: GammaTable
     ) {
         let state = fadeState(for: displayId)
+        cancelUpwardGammaAdjustment(displayId: displayId)
         let needsRestore = state.task != nil ||
             state.targetFactor != nil ||
             abs(state.appliedFactor - 1.0) > gammaFactorEpsilon
@@ -1045,6 +1168,9 @@ final class GammaTechnique: BrightnessTechnique {
         let activeHDRRecoveryStates = displayRecoveryStates.compactMap { displayId, state in
             state.hdrState.map { (displayId, $0) }
         }.sorted { $0.0 < $1.0 }
+        let pendingUpwardGammaDisplayIds = fadeStates.compactMap { displayId, state in
+            state.upwardAdjustmentTask != nil ? displayId : nil
+        }.sorted()
 
         if let lastFailureState {
             report += "Gamma state at failure:\n\(lastFailureState)\n"
@@ -1054,6 +1180,7 @@ final class GammaTechnique: BrightnessTechnique {
         report += " - Overlay display IDs: \(overlayWindowControllers.keys.sorted())\n"
         report += " - Gamma tables: \(gammaTables)\n"
         report += " - Fading display IDs: \(fadeStates.keys.sorted())\n"
+        report += " - Pending upward gamma display IDs: \(pendingUpwardGammaDisplayIds)\n"
         report += " - HDR-ready display IDs: \(hdrReadyDisplayIds)\n"
         if activeHDRRecoveryStates.isEmpty {
             report += " - HDR recovery states: none\n"
