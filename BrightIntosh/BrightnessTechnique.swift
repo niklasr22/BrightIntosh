@@ -291,7 +291,10 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
         BrightnessDiagnosticHistory.record("Alternate backend failure: \(reason)")
 
         if BrightIntoshSettings.shared.brightintoshActive {
-            BrightIntoshSettings.shared.brightintoshActive = false
+            BrightIntoshSettings.shared.setBrightintoshActive(
+                false,
+                reason: "persistent HDR failure in alternate backend"
+            )
         } else {
             disable()
         }

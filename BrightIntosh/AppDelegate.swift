@@ -62,7 +62,11 @@ class BrightIntoshAppDelegate: NSObject {
                 return
             }
             
-            BrightIntoshSettings.shared.brightintoshActive.toggle()
+            let active = !BrightIntoshSettings.shared.brightintoshActive
+            BrightIntoshSettings.shared.setBrightintoshActive(
+                active,
+                reason: active ? "enabled by user" : "disabled by user"
+            )
         }
     }
     
@@ -98,6 +102,14 @@ class BrightIntoshAppDelegate: NSObject {
 }
 
 extension BrightIntoshAppDelegate: NSApplicationDelegate {
+
+    func applicationProtectedDataWillBecomeUnavailable(_ notification: Notification) {
+        brightnessManager?.protectedDataWillBecomeUnavailable()
+    }
+
+    func applicationProtectedDataDidBecomeAvailable(_ notification: Notification) {
+        brightnessManager?.protectedDataDidBecomeAvailable()
+    }
     
     func application(
         _ application: NSApplication,

@@ -23,6 +23,7 @@ class BrightIntoshSettings {
     static let shared: BrightIntoshSettings = BrightIntoshSettings()
     
     public var ignoreAppTransaction = false
+    public private(set) var brightintoshActiveChangeReason: String?
     
     public static let defaults = UserDefaults(suiteName: defaultsSuiteName)!
     
@@ -38,6 +39,14 @@ class BrightIntoshSettings {
             BrightIntoshSettings.defaults.setValue(brightintoshActive, forKey: "active")
             callListeners(setting: "brightintoshActive")
         }
+    }
+
+    public func setBrightintoshActive(_ active: Bool, reason: String) {
+        guard active != brightintoshActive else { return }
+        let previousReason = brightintoshActiveChangeReason
+        brightintoshActiveChangeReason = reason
+        defer { brightintoshActiveChangeReason = previousReason }
+        brightintoshActive = active
     }
     
     public var brightIntoshOnlyOnBuiltIn: Bool = BrightIntoshSettings.getUserDefault(key: "brightIntoshOnlyOnBuiltIn", defaultValue: false) {
@@ -184,7 +193,7 @@ class BrightIntoshSettings {
             Task { @MainActor in
                 let active = BrightIntoshSettings.defaults.bool(forKey: "active")
                 if active != self.brightintoshActive {
-                    self.brightintoshActive = active
+                    self.setBrightintoshActive(active, reason: "changed by external control")
                 }
             }
         })

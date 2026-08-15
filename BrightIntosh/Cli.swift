@@ -7,11 +7,18 @@
 import Foundation
 
 @MainActor func toggleCli() {
-    BrightIntoshSettings.shared.brightintoshActive.toggle()
+    let active = !BrightIntoshSettings.shared.brightintoshActive
+    BrightIntoshSettings.shared.setBrightintoshActive(
+        active,
+        reason: "changed by CLI"
+    )
 }
 
 @MainActor func setActiveStateCli(active: Bool) {
-    BrightIntoshSettings.shared.brightintoshActive = active
+    BrightIntoshSettings.shared.setBrightintoshActive(
+        active,
+        reason: "changed by CLI"
+    )
 }
 
 @MainActor func statusCli() {

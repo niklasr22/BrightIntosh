@@ -109,7 +109,10 @@ class AutomationManager {
             let threshold = BrightIntoshSettings.shared.batteryAutomationThreshold
             if batteryCapacity <= threshold {
                 print("Battery level dropped below \(threshold)%. Deactivating increased brightness.")
-                BrightIntoshSettings.shared.brightintoshActive = false
+                BrightIntoshSettings.shared.setBrightintoshActive(
+                    false,
+                    reason: "battery automation threshold reached"
+                )
                 stopTimerAutomation()
             }
         }
@@ -143,7 +146,10 @@ class AutomationManager {
     
     func timerAutomationCallback() {
         print("Timer fired. Deactivating increased brightness.")
-        BrightIntoshSettings.shared.brightintoshActive = false
+        BrightIntoshSettings.shared.setBrightintoshActive(
+            false,
+            reason: "timer automation elapsed"
+        )
         stopTimerAutomation()
     }
     
@@ -184,13 +190,19 @@ class AutomationManager {
             if currentPowerStatePluggedIn {
                 if !BrightIntoshSettings.shared.brightintoshActive && wasBrightnessPreUnplugActive {
                     print("Power adapter connected. Activating increased brightness.")
-                    BrightIntoshSettings.shared.brightintoshActive = true
+                    BrightIntoshSettings.shared.setBrightintoshActive(
+                        true,
+                        reason: "power adapter connected"
+                    )
                 }
             } else {
                 wasBrightnessPreUnplugActive = BrightIntoshSettings.shared.brightintoshActive
                 if BrightIntoshSettings.shared.brightintoshActive {
                     print("Power adapter disconnected. Deactivating increased brightness.")
-                    BrightIntoshSettings.shared.brightintoshActive = false
+                    BrightIntoshSettings.shared.setBrightintoshActive(
+                        false,
+                        reason: "power adapter disconnected"
+                    )
                     stopTimerAutomation()
                 }
             }

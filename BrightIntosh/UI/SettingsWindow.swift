@@ -16,7 +16,12 @@ class BasicSettingsViewModel: ObservableObject {
      */
     private var brightIntoshActive = BrightIntoshSettings.shared.brightintoshActive
     var brightIntoshActiveToggle: Bool {
-        set { BrightIntoshSettings.shared.brightintoshActive = newValue }
+        set {
+            BrightIntoshSettings.shared.setBrightintoshActive(
+                newValue,
+                reason: newValue ? "enabled by user" : "disabled by user"
+            )
+        }
         get { return brightIntoshActive }
     }
     private var brightness = BrightIntoshSettings.shared.brightness
@@ -54,7 +59,10 @@ class BasicSettingsViewModel: ObservableObject {
     init() {
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
             if BrightIntoshSettings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
-                BrightIntoshSettings.shared.brightintoshActive = false
+                BrightIntoshSettings.shared.setBrightintoshActive(
+                    false,
+                    reason: "battery automation prevented activation"
+                )
             }
             if self.brightIntoshActive != BrightIntoshSettings.shared.brightintoshActive {
                 self.brightIntoshActive = BrightIntoshSettings.shared.brightintoshActive

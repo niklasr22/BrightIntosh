@@ -1030,7 +1030,10 @@ final class GammaTechnique: BrightnessTechnique {
         BrightnessDiagnosticHistory.record("Gamma technique failure: \(reason)")
 
         if BrightIntoshSettings.shared.brightintoshActive {
-            BrightIntoshSettings.shared.brightintoshActive = false
+            BrightIntoshSettings.shared.setBrightintoshActive(
+                false,
+                reason: "persistent HDR failure"
+            )
         } else {
             disable()
         }
@@ -1094,7 +1097,10 @@ final class GammaTechnique: BrightnessTechnique {
             state.consecutiveGammaRecoveries = 0
         }
         if BrightIntoshSettings.shared.brightintoshActive {
-            BrightIntoshSettings.shared.brightintoshActive = false
+            BrightIntoshSettings.shared.setBrightintoshActive(
+                false,
+                reason: "persistent gamma conflict"
+            )
         } else {
             disable()
         }
@@ -1114,7 +1120,10 @@ final class GammaTechnique: BrightnessTechnique {
         BrightnessDiagnosticHistory.record("Gamma technique failure: \(reason)")
 
         if BrightIntoshSettings.shared.brightintoshActive {
-            BrightIntoshSettings.shared.brightintoshActive = false
+            BrightIntoshSettings.shared.setBrightintoshActive(
+                false,
+                reason: "gamma capture failure"
+            )
         } else {
             disable()
         }
