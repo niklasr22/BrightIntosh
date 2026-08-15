@@ -10,8 +10,6 @@ import CoreGraphics
 private extension Notification.Name {
     static let screenSaverDidStart = Notification.Name("com.apple.screensaver.didstart")
     static let screenSaverDidStop = Notification.Name("com.apple.screensaver.didstop")
-    static let screenDidLock = Notification.Name("com.apple.screenIsLocked")
-    static let screenDidUnlock = Notification.Name("com.apple.screenIsUnlocked")
 }
 
 extension NSScreen {
@@ -22,12 +20,14 @@ extension NSScreen {
 @MainActor
 protocol BrightnessManaging: AnyObject {
     func appendSupportDiagnostics(to report: inout String)
+    func protectedDataWillBecomeUnavailable()
+    func protectedDataDidBecomeAvailable()
 }
 
 @MainActor
 final class BrightnessManager: BrightnessManaging {
     private enum PresentationInactivityReason: String, Hashable {
-        case screenLocked = "screen locked"
+        case protectedDataUnavailable = "protected data unavailable"
         case screenSaver = "screen saver active"
         case sessionInactive = "session inactive"
     }
@@ -111,6 +111,7 @@ final class BrightnessManager: BrightnessManaging {
             "Manager initialized; backend \(Self.backendName), displays \(Self.displaySummary(DisplaySnapshot.current()))"
         )
         registerObservers()
+        synchronizeProtectedDataAvailability()
         registerSettingsListeners()
         registerDisplayReconfigurationCallback()
 
@@ -148,45 +149,44 @@ final class BrightnessManager: BrightnessManaging {
     private func registerObservers() {
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(screenParametersDidChange),
+            selector: #selector(screenParametersDidChange(_:)),
             name: NSApplication.didChangeScreenParametersNotification,
             object: nil
         )
-
         let workspaceNotifications = NSWorkspace.shared.notificationCenter
         workspaceNotifications.addObserver(
             self,
-            selector: #selector(systemDidWake),
+            selector: #selector(systemDidWake(_:)),
             name: NSWorkspace.didWakeNotification,
             object: nil
         )
         workspaceNotifications.addObserver(
             self,
-            selector: #selector(screensDidSleep),
+            selector: #selector(screensDidSleep(_:)),
             name: NSWorkspace.screensDidSleepNotification,
             object: nil
         )
         workspaceNotifications.addObserver(
             self,
-            selector: #selector(screensDidWake),
+            selector: #selector(screensDidWake(_:)),
             name: NSWorkspace.screensDidWakeNotification,
             object: nil
         )
         workspaceNotifications.addObserver(
             self,
-            selector: #selector(systemWillSleep),
+            selector: #selector(systemWillSleep(_:)),
             name: NSWorkspace.willSleepNotification,
             object: nil
         )
         workspaceNotifications.addObserver(
             self,
-            selector: #selector(sessionDidResignActive),
+            selector: #selector(sessionDidResignActive(_:)),
             name: NSWorkspace.sessionDidResignActiveNotification,
             object: nil
         )
         workspaceNotifications.addObserver(
             self,
-            selector: #selector(sessionDidBecomeActive),
+            selector: #selector(sessionDidBecomeActive(_:)),
             name: NSWorkspace.sessionDidBecomeActiveNotification,
             object: nil
         )
@@ -194,42 +194,45 @@ final class BrightnessManager: BrightnessManaging {
         let distributedNotifications = DistributedNotificationCenter.default()
         distributedNotifications.addObserver(
             self,
-            selector: #selector(screenSaverDidStart),
+            selector: #selector(screenSaverDidStart(_:)),
             name: .screenSaverDidStart,
             object: nil
         )
         distributedNotifications.addObserver(
             self,
-            selector: #selector(screenSaverDidStop),
+            selector: #selector(screenSaverDidStop(_:)),
             name: .screenSaverDidStop,
             object: nil
         )
-        distributedNotifications.addObserver(
-            self,
-            selector: #selector(screenDidLock),
-            name: .screenDidLock,
-            object: nil
-        )
-        distributedNotifications.addObserver(
-            self,
-            selector: #selector(screenDidUnlock),
-            name: .screenDidUnlock,
-            object: nil
+    }
+
+    private func synchronizeProtectedDataAvailability() {
+        guard !NSApplication.shared.isProtectedDataAvailable else {
+            return
+        }
+        presentationInactivityReasons.insert(.protectedDataUnavailable)
+        BrightnessDiagnosticHistory.record(
+            "Presentation initially inactive: \(presentationInactivityDescription)"
         )
     }
 
     private func registerSettingsListeners() {
         Authorizer.shared.$status.sink { status in
             if status == .unauthorized && BrightIntoshSettings.shared.brightintoshActive {
-                BrightIntoshSettings.shared.brightintoshActive = false
+                BrightIntoshSettings.shared.setBrightintoshActive(
+                    false,
+                    reason: "authorization revoked"
+                )
             }
         }.store(in: &cancellables)
 
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
+            let reason = BrightIntoshSettings.shared.brightintoshActiveChangeReason ??
+                (self.activationRequested ? "setting enabled" : "setting disabled")
             if self.activationRequested {
-                self.activateImmediately(reason: "enabled by user")
+                self.activateImmediately(reason: reason)
             } else {
-                self.deactivate(reason: "disabled by user")
+                self.deactivate(reason: reason)
             }
         }
 
@@ -270,7 +273,7 @@ final class BrightnessManager: BrightnessManaging {
         }
     }
 
-    @objc private func screenParametersDidChange() {
+    @objc private func screenParametersDidChange(_ notification: Notification) {
         let updatedDisplays = DisplaySnapshot.current()
         let previousDisplays = displays
         displays = updatedDisplays
@@ -310,13 +313,13 @@ final class BrightnessManager: BrightnessManaging {
         }
     }
 
-    @objc private func systemDidWake() {
+    @objc private func systemDidWake(_ notification: Notification) {
         SupportReportContext.lastSystemWake = Date()
         BrightnessDiagnosticHistory.record("System wake notification received")
         reactivateAfterWake(reason: "system woke")
     }
 
-    @objc private func screensDidWake() {
+    @objc private func screensDidWake(_ notification: Notification) {
         BrightnessDiagnosticHistory.record("Screens wake notification received")
         reactivateAfterWake(reason: "screens woke")
     }
@@ -343,37 +346,37 @@ final class BrightnessManager: BrightnessManaging {
         suspendAndScheduleActivation(reason: reason)
     }
 
-    @objc private func screensDidSleep() {
+    @objc private func screensDidSleep(_ notification: Notification) {
         BrightnessDiagnosticHistory.record("Screens sleep notification received")
         suspend(reason: "screens slept")
     }
 
-    @objc private func systemWillSleep() {
+    @objc private func systemWillSleep(_ notification: Notification) {
         BrightnessDiagnosticHistory.record("System will sleep notification received")
         suspend(reason: "system will sleep")
     }
 
-    @objc private func screenSaverDidStart() {
+    func protectedDataWillBecomeUnavailable() {
+        presentationDidBecomeInactive(.protectedDataUnavailable)
+    }
+
+    func protectedDataDidBecomeAvailable() {
+        presentationDidBecomeActive(.protectedDataUnavailable)
+    }
+
+    @objc private func screenSaverDidStart(_ notification: Notification) {
         presentationDidBecomeInactive(.screenSaver)
     }
 
-    @objc private func screenSaverDidStop() {
+    @objc private func screenSaverDidStop(_ notification: Notification) {
         presentationDidBecomeActive(.screenSaver)
     }
 
-    @objc private func screenDidLock() {
-        presentationDidBecomeInactive(.screenLocked)
-    }
-
-    @objc private func screenDidUnlock() {
-        presentationDidBecomeActive(.screenLocked)
-    }
-
-    @objc private func sessionDidResignActive() {
+    @objc private func sessionDidResignActive(_ notification: Notification) {
         presentationDidBecomeInactive(.sessionInactive)
     }
 
-    @objc private func sessionDidBecomeActive() {
+    @objc private func sessionDidBecomeActive(_ notification: Notification) {
         presentationDidBecomeActive(.sessionInactive)
     }
 
@@ -433,7 +436,10 @@ final class BrightnessManager: BrightnessManaging {
         }
 
         guard Authorizer.shared.isAllowed() else {
-            BrightIntoshSettings.shared.brightintoshActive = false
+            BrightIntoshSettings.shared.setBrightintoshActive(
+                false,
+                reason: "authorization unavailable"
+            )
             return
         }
 
@@ -623,7 +629,10 @@ final class BrightnessManager: BrightnessManaging {
     private func disableForClosedLid() {
         deactivate(reason: "MacBook lid closed")
         if BrightIntoshSettings.shared.brightintoshActive {
-            BrightIntoshSettings.shared.brightintoshActive = false
+            BrightIntoshSettings.shared.setBrightintoshActive(
+                false,
+                reason: "MacBook lid closed"
+            )
         }
     }
 
