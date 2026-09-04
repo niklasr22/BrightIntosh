@@ -33,8 +33,8 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
     private var hdrCooldownEndDates: [CGDirectDisplayID: Date] = [:]
     /// Consecutive HDR engage timeouts per display; reset when HDR becomes ready.
     private var hdrConsecutiveTimeoutCount: [CGDirectDisplayID: Int] = [:]
+    private var isolatedHDRDisplayIds: Set<CGDirectDisplayID> = []
     private var lastFailureState: String?
-    private var isHandlingFailure = false
 
     private let hdrReadyThreshold = 1.05
     private let hdrEngageTimeout: TimeInterval = 25
@@ -78,6 +78,7 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
             .union(Set(hdrPollTasks.keys))
             .union(hdrReadyDisplayIds)
             .union(Set(hdrCooldownEndDates.keys))
+            .union(isolatedHDRDisplayIds)
     }
     
     private func startPollTasksIfNeeded(screens: [NSScreen]) {
@@ -102,6 +103,7 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
         hdrReadyDisplayIds.remove(displayId)
         hdrCooldownEndDates.removeValue(forKey: displayId)
         hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
+        isolatedHDRDisplayIds.remove(displayId)
     }
     
     /// Stops HDR polling while preserving retry cooldown deadlines across disable/enable toggles.
@@ -153,6 +155,10 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
         var notReadySince: Date?
         
         while !Task.isCancelled, isEnabled {
+            if isolatedHDRDisplayIds.contains(displayId) {
+                return await waitForIsolatedHDRRecovery(displayId: displayId)
+            }
+
             if let remainingCooldownSeconds = hdrCooldownRemainingSeconds(for: displayId) {
                 guard await waitOutHDRCooldown(displayId: displayId, seconds: remainingCooldownSeconds) else {
                     return false
@@ -179,6 +185,9 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
             
             if let start = notReadySince, now.timeIntervalSince(start) >= hdrEngageTimeout {
                 let cooldownSeconds = beginHDRRetryCooldown(displayId)
+                if isolatedHDRDisplayIds.contains(displayId) {
+                    return await waitForIsolatedHDRRecovery(displayId: displayId)
+                }
                 guard await waitOutHDRCooldown(displayId: displayId, seconds: cooldownSeconds) else {
                     return false
                 }
@@ -187,6 +196,34 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
             }
             
             try? await Task.sleep(for: currentPollInterval())
+        }
+        return false
+    }
+
+    private func waitForIsolatedHDRRecovery(
+        displayId: CGDirectDisplayID
+    ) async -> Bool {
+        overlayWindowControllers[displayId]?.setOverlayClearColorValue(1.0)
+
+        while !Task.isCancelled, isEnabled {
+            guard let screen = screenForDisplay(displayId) else {
+                isolatedHDRDisplayIds.remove(displayId)
+                hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
+                return false
+            }
+
+            if hdrReady(screen) {
+                isolatedHDRDisplayIds.remove(displayId)
+                hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
+                BrightnessDiagnosticHistory.record(
+                    "Isolated alternate-backend display \(displayId) recovered HDR; " +
+                    "resuming its brightness without restarting other displays; max EDR " +
+                    String(format: "%.4f", screen.maximumExtendedDynamicRangeColorComponentValue)
+                )
+                return true
+            }
+
+            try? await Task.sleep(for: defaultPollInterval)
         }
         return false
     }
@@ -252,6 +289,11 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
         )
         
         let cooldownSeconds = hdrRetryCooldownSeconds
+        if nextCount >= maxConsecutiveHDRTimeoutFailures {
+            isolatePersistentHDRFailure(displayId: displayId, timeoutCount: nextCount)
+            return cooldownSeconds
+        }
+
         hdrCooldownEndDates[displayId] = Date().addingTimeInterval(TimeInterval(cooldownSeconds))
         NotificationCenter.default.post(
             name: .brightIntoshHDRCooldownDidBegin,
@@ -262,16 +304,11 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
             ]
         )
 
-        if nextCount >= maxConsecutiveHDRTimeoutFailures {
-            handlePersistentHDRFailure(displayId: displayId, timeoutCount: nextCount)
-        }
-        
         return cooldownSeconds
     }
 
-    private func handlePersistentHDRFailure(displayId: CGDirectDisplayID, timeoutCount: Int) {
-        guard !isHandlingFailure else { return }
-        isHandlingFailure = true
+    private func isolatePersistentHDRFailure(displayId: CGDirectDisplayID, timeoutCount: Int) {
+        guard isolatedHDRDisplayIds.insert(displayId).inserted else { return }
         let reason = "Display \(displayId) did not become HDR ready after \(timeoutCount) consecutive \(String(format: "%.1f", hdrEngageTimeout))s attempts."
         let maxEdr = screenForDisplay(displayId)?.maximumExtendedDynamicRangeColorComponentValue
         lastFailureState = """
@@ -286,22 +323,14 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
          - Overlay display IDs: \(overlayWindowControllers.keys.sorted())
          - Active HDR poll display IDs: \(hdrPollTasks.keys.sorted())
         """
-        hdrConsecutiveTimeoutCount.removeValue(forKey: displayId)
-        print("Persistent HDR failure detected: \(reason)")
-        BrightnessDiagnosticHistory.record("Alternate backend failure: \(reason)")
-
-        if BrightIntoshSettings.shared.brightintoshActive {
-            BrightIntoshSettings.shared.setBrightintoshActive(
-                false,
-                reason: "persistent HDR failure in alternate backend"
-            )
-        } else {
-            disable()
-        }
-
-        Task { @MainActor in
-            await presentBrightnessFailurePrompt(reason: reason)
-        }
+        endHDRRetryCooldown(displayId, notify: true)
+        hdrReadyDisplayIds.remove(displayId)
+        overlayWindowControllers[displayId]?.setOverlayClearColorValue(1.0)
+        print("Persistent HDR failure isolated to display \(displayId): \(reason)")
+        BrightnessDiagnosticHistory.record(
+            "Alternate backend isolated HDR failure to display \(displayId); " +
+            "other displays remain active; monitoring for automatic recovery: \(reason)"
+        )
     }
     
     private func endHDRRetryCooldown(_ displayId: CGDirectDisplayID, notify: Bool) {
@@ -342,6 +371,7 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
         report += " - HDR engage attempt timeout: \(String(format: "%.1f", hdrEngageTimeout))s\n"
         report += " - HDR retry cooldown duration: \(hdrRetryCooldownSeconds)s\n"
         report += " - HDR ready displays: \(hdrReadyDisplayIds.sorted())\n"
+        report += " - Isolated HDR-unavailable displays: \(isolatedHDRDisplayIds.sorted())\n"
         report += " - Active HDR poll tasks: \(hdrPollTasks.keys.sorted())\n"
         
         if hdrCooldownEndDates.isEmpty {
@@ -364,7 +394,6 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
     
     func enable(screens: [NSScreen]) {
         let shouldAnnounceActiveCooldowns = !isEnabled
-        isHandlingFailure = false
         isEnabled = true
         BrightnessDiagnosticHistory.record(
             "Alternate backend enabled for displays \(screens.compactMap(\.displayId).sorted())"
@@ -379,7 +408,9 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
             return
         }
         
-        let overlayFactor = overlayBrightnessFactor(screen: screen)
+        let overlayFactor = isolatedHDRDisplayIds.contains(displayId)
+            ? 1.0
+            : overlayBrightnessFactor(screen: screen)
         
         if let existing = overlayWindowControllers[displayId] {
             existing.window?.setFrame(screen.frame, display: true)
@@ -442,6 +473,7 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
     }
     
     private func applyPendingHDRBrightness(displayId: CGDirectDisplayID) {
+        guard !isolatedHDRDisplayIds.contains(displayId) else { return }
         overlayWindowControllers[displayId]?.setOverlayClearColorValue(Double(pendingHDRBrightnessFactor))
     }
     
