@@ -218,27 +218,79 @@ private func presentForegroundAlert(
 }
 
 @MainActor
-func presentBrightnessFailurePrompt(reason: String) async {
-    SupportReportContext.lastBrightnessFailureReason = reason
-    
-    let response = await presentForegroundAlert(
-        style: .warning,
-        title: String(localized: "Sorry, BrightIntosh could not reliably increase brightness on this Mac"),
-        message: String(localized: "Please share anonymous diagnostics so we can look into this brightness issue. The report only includes BrightIntosh data and your running processes, and we'll only use it to investigate this problem."),
-        buttonTitles: [
-            String(localized: "Send Anonymous Diagnostics"),
-            String(localized: "Not Now"),
-        ]
-    )
+private final class BrightnessFailurePromptCoordinator {
+    static let shared = BrightnessFailurePromptCoordinator()
 
-    guard response == .alertFirstButtonReturn else { return }
-    let report = await generateReport(includeRunningApplications: true)
-    do {
-        try await sendDiagnosticsReport(report)
-    } catch {
-        copyDiagnosticsToClipboard(report)
-        await showDiagnosticsSendFailedAlert()
+    private let duplicateSuppressionInterval: TimeInterval = 60
+    private var isPresenting = false
+    private var activeReasons: [String] = []
+    private var lastPresentationEndDate: Date?
+
+    func present(reason: String) async {
+        if isPresenting {
+            appendActiveReason(reason)
+            BrightnessDiagnosticHistory.record(
+                "Coalesced duplicate brightness failure prompt while one was already active: \(reason)"
+            )
+            return
+        }
+
+        if let lastPresentationEndDate,
+           Date().timeIntervalSince(lastPresentationEndDate) < duplicateSuppressionInterval {
+            SupportReportContext.lastBrightnessFailureReason = reason
+            BrightnessDiagnosticHistory.record(
+                "Suppressed duplicate brightness failure prompt within \(Int(duplicateSuppressionInterval))s: \(reason)"
+            )
+            return
+        }
+
+        isPresenting = true
+        activeReasons = []
+        appendActiveReason(reason)
+        defer {
+            isPresenting = false
+            activeReasons = []
+            lastPresentationEndDate = Date()
+        }
+
+        let response = await presentForegroundAlert(
+            style: .warning,
+            title: String(localized: "Sorry, BrightIntosh could not reliably increase brightness on this Mac"),
+            message: String(localized: "Please share anonymous diagnostics so we can look into this brightness issue. The report only includes BrightIntosh data and your running processes, and we'll only use it to investigate this problem."),
+            buttonTitles: [
+                String(localized: "Send Anonymous Diagnostics"),
+                String(localized: "Not Now"),
+            ]
+        )
+
+        guard response == .alertFirstButtonReturn else { return }
+        updateSupportReportReason()
+        let report = await generateReport(includeRunningApplications: true)
+        do {
+            try await sendDiagnosticsReport(report)
+        } catch {
+            copyDiagnosticsToClipboard(report)
+            await showDiagnosticsSendFailedAlert()
+        }
     }
+
+    private func appendActiveReason(_ reason: String) {
+        if !activeReasons.contains(reason) {
+            activeReasons.append(reason)
+        }
+        updateSupportReportReason()
+    }
+
+    private func updateSupportReportReason() {
+        SupportReportContext.lastBrightnessFailureReason = activeReasons.joined(
+            separator: " | "
+        )
+    }
+}
+
+@MainActor
+func presentBrightnessFailurePrompt(reason: String) async {
+    await BrightnessFailurePromptCoordinator.shared.present(reason: reason)
 }
 
 @MainActor
