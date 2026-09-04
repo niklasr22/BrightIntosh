@@ -147,7 +147,7 @@ final class GammaTechnique: BrightnessTechnique {
     private var gammaTables: [CGDirectDisplayID: GammaTable] = [:]
     private var fadeStates: [CGDirectDisplayID: FadeState] = [:]
     private var displayRecoveryStates: [CGDirectDisplayID: DisplayRecoveryState] = [:]
-    private var gammaCaptureFailure: String?
+    private var gammaCaptureFailures: [CGDirectDisplayID: String] = [:]
     private var lastFailureState: String?
     private var integrityPollTask: Task<Void, Never>?
     private var isHandlingFailure = false
@@ -199,6 +199,11 @@ final class GammaTechnique: BrightnessTechnique {
                 return
             }
             gammaTables[displayId] = gammaTable
+            if gammaCaptureFailures.removeValue(forKey: displayId) != nil {
+                BrightnessDiagnosticHistory.record(
+                    "Display \(displayId) recovered gamma-table access; resuming its brightness independently"
+                )
+            }
             BrightnessDiagnosticHistory.record(
                 "Captured gamma table for display \(displayId): \(gammaTable)"
             )
@@ -340,7 +345,9 @@ final class GammaTechnique: BrightnessTechnique {
         brightnessUpdateReason: BrightnessUpdateReason
     ) {
         let activeDisplayIds = Set(screens.compactMap(\.displayId))
-        let trackedDisplayIds = Set(gammaTables.keys).union(displayRecoveryStates.keys)
+        let trackedDisplayIds = Set(gammaTables.keys)
+            .union(displayRecoveryStates.keys)
+            .union(gammaCaptureFailures.keys)
         let removedDisplayIds = trackedDisplayIds.filter {
             !activeDisplayIds.contains($0)
         }
@@ -426,6 +433,7 @@ final class GammaTechnique: BrightnessTechnique {
         fadeStates[displayId]?.upwardAdjustmentTask?.cancel()
         fadeStates.removeValue(forKey: displayId)
         displayRecoveryStates.removeValue(forKey: displayId)
+        gammaCaptureFailures.removeValue(forKey: displayId)
         notifyHDRCooldownEnded(displayId: displayId)
         closeHDROverlay(displayId: displayId)
         if let gammaTable = gammaTables[displayId] {
@@ -798,6 +806,8 @@ final class GammaTechnique: BrightnessTechnique {
     }
 
     private func recoverChangedDisplayState() {
+        retryFailedGammaCaptures()
+
         for (displayId, gammaTable) in gammaTables {
             guard isEnabled else { return }
             let recoveryState = displayRecoveryState(for: displayId)
@@ -853,6 +863,15 @@ final class GammaTechnique: BrightnessTechnique {
                     "Display \(displayId) gamma remained stable after \(previousCount) recoveries"
                 )
             }
+        }
+    }
+
+    private func retryFailedGammaCaptures() {
+        for displayId in Array(gammaCaptureFailures.keys) {
+            guard isEnabled, let screen = screenForDisplay(displayId) else {
+                continue
+            }
+            enableScreen(screen: screen)
         }
     }
 
@@ -1253,26 +1272,20 @@ final class GammaTechnique: BrightnessTechnique {
     }
 
     private func handleGammaCaptureFailure(displayId: CGDirectDisplayID) {
-        guard !isHandlingFailure else { return }
-        isHandlingFailure = true
         let reason = "CGGetDisplayTransferByTable failed for display \(displayId)."
-        gammaCaptureFailure = reason
-        captureFailureState(displayId: displayId, reason: reason, recoveryDetails: [reason])
-        print("Gamma capture failure detected: \(reason); disabling increased brightness")
-        BrightnessDiagnosticHistory.record("Gamma technique failure: \(reason)")
-
-        if BrightIntoshSettings.shared.brightintoshActive {
-            BrightIntoshSettings.shared.setBrightintoshActive(
-                false,
-                reason: "gamma capture failure"
-            )
-        } else {
-            disable()
-        }
-
-        Task { @MainActor in
-            await presentBrightnessFailurePrompt(reason: reason)
-        }
+        guard gammaCaptureFailures[displayId] == nil else { return }
+        gammaCaptureFailures[displayId] = reason
+        fadeStates[displayId]?.task?.cancel()
+        fadeStates[displayId]?.upwardAdjustmentTask?.cancel()
+        fadeStates.removeValue(forKey: displayId)
+        displayRecoveryStates.removeValue(forKey: displayId)
+        notifyHDRCooldownEnded(displayId: displayId)
+        closeHDROverlay(displayId: displayId)
+        print("Gamma capture failure isolated to display \(displayId): \(reason)")
+        BrightnessDiagnosticHistory.record(
+            "Gamma capture failure isolated to display \(displayId); " +
+            "other displays remain active and this display will be retried: \(reason)"
+        )
     }
 
     private func captureFailureState(
@@ -1362,7 +1375,7 @@ final class GammaTechnique: BrightnessTechnique {
         report += " - HDR recovery stabilization: \(String(format: "%.1f", hdrRecoveryStabilizationDuration))s\n"
         report += " - HDR trigger retention before recreation: \(Int(hdrTriggerRetentionDuration))s\n"
         report += " - Consecutive gamma recovery counts: \(consecutiveGammaRecoveries)\n"
-        report += " - Gamma capture failure: \(gammaCaptureFailure ?? "none")\n"
+        report += " - Gamma capture failures: \(gammaCaptureFailures)\n"
         report += " - Integrity poll active: \(integrityPollTask != nil)\n"
     }
 
