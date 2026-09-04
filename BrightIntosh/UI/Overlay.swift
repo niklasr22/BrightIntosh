@@ -13,7 +13,22 @@ class Overlay: MTKView, MTKViewDelegate {
     
     private var commandQueue: MTLCommandQueue?
     private var didRenderFirstFrame = false
+    private(set) var submittedFrameCount: UInt64 = 0
+    private(set) var completedFrameCount: UInt64 = 0
+    private(set) var drawableFailureCount: UInt64 = 0
+    private(set) var lastFrameCompletionDate: Date?
     var onFirstFrameRendered: (() -> Void)?
+
+    var renderingDiagnostics: String {
+        let lastCompletion: String
+        if let lastFrameCompletionDate {
+            lastCompletion = String(format: "%.2fs ago", Date().timeIntervalSince(lastFrameCompletionDate))
+        } else {
+            lastCompletion = "never"
+        }
+        return "frames submitted/completed \(submittedFrameCount)/\(completedFrameCount), " +
+            "drawable failures \(drawableFailureCount), last completion \(lastCompletion)"
+    }
     
     init(frame: CGRect, multiplyCompositing: Bool = false, clearColorValue: Double = 1.6) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
@@ -62,23 +77,33 @@ class Overlay: MTKView, MTKViewDelegate {
     }
     
     func draw(in view: MTKView) {
-        guard let commandQueue = commandQueue,
-              let renderPassDescriptor = view.currentRenderPassDescriptor,
-              let commandBuffer = commandQueue.makeCommandBuffer(),
-              let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor),
-              let drawable = view.currentDrawable else {
+        guard let commandQueue = commandQueue else {
             return
         }
-        
+        guard let renderPassDescriptor = view.currentRenderPassDescriptor,
+              let drawable = view.currentDrawable else {
+            drawableFailureCount += 1
+            return
+        }
+        guard let commandBuffer = commandQueue.makeCommandBuffer(),
+              let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            return
+        }
+
+        submittedFrameCount += 1
         renderEncoder.endEncoding()
         
         commandBuffer.present(drawable)
         commandBuffer.addCompletedHandler { [weak self] _ in
             DispatchQueue.main.async {
-                guard let self, !self.didRenderFirstFrame else { return }
-                self.didRenderFirstFrame = true
-                self.onFirstFrameRendered?()
-                self.onFirstFrameRendered = nil
+                guard let self else { return }
+                self.completedFrameCount += 1
+                self.lastFrameCompletionDate = Date()
+                if !self.didRenderFirstFrame {
+                    self.didRenderFirstFrame = true
+                    self.onFirstFrameRendered?()
+                    self.onFirstFrameRendered = nil
+                }
             }
         }
         commandBuffer.commit()
