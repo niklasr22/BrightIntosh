@@ -3,6 +3,8 @@ Remarque : Après un essai gratuit de trois jours, l'application doit être dév
 Cette application open-source utilise les capacités HDR de votre MacBook Pro pour augmenter la luminosité maximale de votre écran pour n'importe quelle application !
 L'application propose divers paramètres tels que les niveaux de luminosité, les raccourcis et les automatisations pour rendre votre expérience aussi pratique que possible.
 
+L'augmentation de la luminosité peut être limitée ou temporairement indisponible lors de la lecture de vidéos en plein écran.
+
 Les appareils pris en charge sont :
 
 - MacBook Pro M5 de 2025 / 2026 (Identifiant de modèle : Mac17,2, Mac17,6, Mac17,7, Mac17,8, Mac17,9)

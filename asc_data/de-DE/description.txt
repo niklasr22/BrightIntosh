@@ -2,6 +2,8 @@ Hinweis: Nach einer kostenlosen dreitägigen Testphase muss die App durch einen 
 
 Diese Open-Source-Anwendung nutzt die HDR-Funktionen Ihres MacBook Pro, um die maximale Helligkeit Ihres Displays für jede App zu erhöhen! Die App bietet verschiedene Einstellungen wie Helligkeitsstufen, Tastenkombinationen und Automatisierungen, um Ihr Erlebnis so bequem wie möglich zu gestalten.
 
+Bei der Videowiedergabe im Vollbildmodus kann die Helligkeitsverstärkung eingeschränkt oder vorübergehend nicht verfügbar sein.
+
 Unterstützte Geräte sind:
 
 - MacBook Pro M5 von 2025 / 2026 (Modellbezeichner: Mac17,2, Mac17,6, Mac17,7, Mac17,8, Mac17,9) 

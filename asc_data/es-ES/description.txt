@@ -3,6 +3,8 @@ Nota: Después de una prueba gratuita de tres días, la aplicación necesita ser
 Esta aplicación de código abierto utiliza las capacidades HDR de tu MacBook Pro para aumentar el brillo máximo de tu pantalla en cualquier aplicación.
 La aplicación ofrece varias configuraciones como niveles de brillo, accesos directos y automatizaciones para hacer tu experiencia lo más conveniente posible.
 
+El aumento de brillo puede verse limitado o dejar de estar disponible temporalmente durante la reproducción de vídeos a pantalla completa.
+
 Los dispositivos compatibles son:
 
 - MacBook Pro M5 de 14" de 2025 / 2026/2026 (Identificador de Modelo: Mac17,2, Mac17,6, Mac17,7, Mac17,8, Mac17,9, )

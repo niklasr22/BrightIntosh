@@ -3,6 +3,8 @@ Note: After a free three-day trial the app needs to be unlocked via a one-time p
 This open-source application makes use of HDR capabilities of your MacBook Pro to increase the maximum brightness of your display for any app!
 The app provides various settings like brightness levels, shortcuts and automations to make your experience as convenient as possible.
 
+Brightness boosting may be limited or temporarily unavailable during full-screen video playback.
+
 Supported devices are:
 
 - MacBook Pro M5 from 2025 / 2026 (Model identifier: Mac17,2, Mac17,6, Mac17,7, Mac17,8, Mac17,9) 
