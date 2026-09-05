@@ -15,6 +15,8 @@ class Overlay: MTKView, MTKViewDelegate {
     private var didRenderFirstFrame = false
     private(set) var submittedFrameCount: UInt64 = 0
     private(set) var completedFrameCount: UInt64 = 0
+    private(set) var failedFrameCount: UInt64 = 0
+    private(set) var lastRenderingError: String?
     private(set) var drawableFailureCount: UInt64 = 0
     private(set) var lastFrameCompletionDate: Date?
     var onFirstFrameRendered: (() -> Void)?
@@ -26,8 +28,9 @@ class Overlay: MTKView, MTKViewDelegate {
         } else {
             lastCompletion = "never"
         }
-        return "frames submitted/completed \(submittedFrameCount)/\(completedFrameCount), " +
-            "drawable failures \(drawableFailureCount), last completion \(lastCompletion)"
+        return "frames submitted/completed/failed \(submittedFrameCount)/\(completedFrameCount)/\(failedFrameCount), " +
+            "drawable failures \(drawableFailureCount), last successful completion \(lastCompletion), " +
+            "last rendering error \(lastRenderingError ?? "none")"
     }
     
     init(frame: CGRect, multiplyCompositing: Bool = false, clearColorValue: Double = 1.6) {
@@ -87,6 +90,7 @@ class Overlay: MTKView, MTKViewDelegate {
         }
         guard let commandBuffer = commandQueue.makeCommandBuffer(),
               let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            lastRenderingError = "Could not create command buffer or render encoder"
             return
         }
 
@@ -94,9 +98,16 @@ class Overlay: MTKView, MTKViewDelegate {
         renderEncoder.endEncoding()
         
         commandBuffer.present(drawable)
-        commandBuffer.addCompletedHandler { [weak self] _ in
+        commandBuffer.addCompletedHandler { [weak self] buffer in
+            let succeeded = buffer.status == .completed
+            let error = buffer.error?.localizedDescription ?? "Command buffer status \(buffer.status.rawValue)"
             DispatchQueue.main.async {
                 guard let self else { return }
+                guard succeeded else {
+                    self.failedFrameCount += 1
+                    self.lastRenderingError = error
+                    return
+                }
                 self.completedFrameCount += 1
                 self.lastFrameCompletionDate = Date()
                 if !self.didRenderFirstFrame {

@@ -204,6 +204,10 @@ final class MultiplyingOverlayTechnique: BrightnessTechnique {
         displayId: CGDirectDisplayID
     ) async -> Bool {
         overlayWindowControllers[displayId]?.setOverlayClearColorValue(1.0)
+        scheduleBrightnessFailurePrompt(reason: "Display \(displayId) remains HDR-unavailable in the alternate backend.") { [weak self] in
+            self?.isEnabled == true && self?.isolatedHDRDisplayIds.contains(displayId) == true &&
+                self?.screenForDisplay(displayId) != nil && CGDisplayIsAsleep(displayId) == 0
+        }
 
         while !Task.isCancelled, isEnabled {
             guard let screen = screenForDisplay(displayId) else {
