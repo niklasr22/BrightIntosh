@@ -78,6 +78,7 @@ class BrightIntoshAppDelegate: NSObject {
     }
     
     func showSettingsWindow() {
+        NSApplication.shared.activate(ignoringOtherApps: true)
         self.settingsWindowController.showWindow(nil)
     }
 
@@ -186,9 +187,7 @@ extension BrightIntoshAppDelegate: NSApplicationDelegate {
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
-        if BrightIntoshSettings.shared.hideMenuBarItem {
-            self.showSettingsWindow()
-        }
+        self.showSettingsWindow()
         return false
     }
     

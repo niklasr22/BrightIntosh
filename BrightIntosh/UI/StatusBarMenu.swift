@@ -124,7 +124,8 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         unsupportedDeviceItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "This device is incompatible"))
         menu.addItem(unsupportedDeviceItem)
         
-        trialExpiredItem = NSMenuItem(title: String(localized: "Your trial has expired"), action: nil, keyEquivalent: "")
+        trialExpiredItem = NSMenuItem(title: String(localized: "Your trial has expired"), action: #selector(openSettings), keyEquivalent: "")
+        trialExpiredItem.target = self
         trialExpiredItem.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "Your trial has expired"))
         trialExpiredItem.isHidden = true
         menu.addItem(trialExpiredItem)
@@ -531,6 +532,10 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
     }
     
     @objc func callToggleBrightIntosh() {
+        guard Authorizer.shared.isAllowed() else {
+            openSettings()
+            return
+        }
         toggleBrightIntosh()
     }
     
