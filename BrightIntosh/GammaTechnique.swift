@@ -122,6 +122,7 @@ final class GammaTechnique: BrightnessTechnique {
         var isHDRReady = false
         var consecutiveHDRFailures = 0
         var consecutiveGammaRecoveries = 0
+        var lastGammaRecoveryDetails: String?
         var lastHDREngagementObservationDate: Date?
         var hdrUnavailableSince: Date?
         var hdrReadySince: Date?
@@ -148,9 +149,10 @@ final class GammaTechnique: BrightnessTechnique {
     private var fadeStates: [CGDirectDisplayID: FadeState] = [:]
     private var displayRecoveryStates: [CGDirectDisplayID: DisplayRecoveryState] = [:]
     private var gammaCaptureFailures: [CGDirectDisplayID: String] = [:]
+    private var gammaConflictDisplayIds: Set<CGDirectDisplayID> = []
     private var lastFailureState: String?
     private var integrityPollTask: Task<Void, Never>?
-    private var isHandlingFailure = false
+    private var gammaConflictChecksAllowedAfter = Date.distantPast
     nonisolated private static let colorStateLock = NSLock()
     private let gammaFadeDuration: TimeInterval = 0.2
     private let gammaFadeFrameInterval: Duration = .milliseconds(16)
@@ -160,6 +162,7 @@ final class GammaTechnique: BrightnessTechnique {
     private let maximumIntegrityPollGap: TimeInterval = 10
     private let integrityPollResumeDelay: TimeInterval = 5
     private let gammaTableTolerance: CGGammaValue = 0.003
+    private let gammaConflictGraceDuration: TimeInterval = 15
     private let hdrReadyThreshold: CGFloat = 1.05
     private let hdrLossConfirmationDuration: TimeInterval = 1.5
     private let hdrRecoveryStabilizationDuration: TimeInterval = 2
@@ -179,8 +182,11 @@ final class GammaTechnique: BrightnessTechnique {
             return
         }
 
-        isHandlingFailure = false
+        if !isEnabled {
+            gammaConflictDisplayIds.removeAll()
+        }
         isEnabled = true
+        gammaConflictChecksAllowedAfter = Date().addingTimeInterval(gammaConflictGraceDuration)
         BrightnessDiagnosticHistory.record(
             "Gamma technique enabled for displays \(screens.compactMap(\.displayId).sorted())"
         )
@@ -192,6 +198,7 @@ final class GammaTechnique: BrightnessTechnique {
         guard let displayId = screen.displayId else {
             return
         }
+        guard !gammaConflictDisplayIds.contains(displayId) else { return }
 
         if gammaTables[displayId] == nil {
             guard let gammaTable = GammaTable.createFromCurrentGammaTable(displayId: displayId) else {
@@ -348,6 +355,7 @@ final class GammaTechnique: BrightnessTechnique {
         let trackedDisplayIds = Set(gammaTables.keys)
             .union(displayRecoveryStates.keys)
             .union(gammaCaptureFailures.keys)
+            .union(gammaConflictDisplayIds)
         let removedDisplayIds = trackedDisplayIds.filter {
             !activeDisplayIds.contains($0)
         }
@@ -434,6 +442,7 @@ final class GammaTechnique: BrightnessTechnique {
         fadeStates.removeValue(forKey: displayId)
         displayRecoveryStates.removeValue(forKey: displayId)
         gammaCaptureFailures.removeValue(forKey: displayId)
+        gammaConflictDisplayIds.remove(displayId)
         notifyHDRCooldownEnded(displayId: displayId)
         closeHDROverlay(displayId: displayId)
         if let gammaTable = gammaTables[displayId] {
@@ -836,6 +845,8 @@ final class GammaTechnique: BrightnessTechnique {
 
             if let state = fadeStates[displayId],
                state.task == nil,
+               state.upwardAdjustmentTask == nil,
+               Date() >= gammaConflictChecksAllowedAfter,
                let targetFactor = state.targetFactor,
                abs(state.appliedFactor - targetFactor) <= gammaFactorEpsilon,
                let gammaRecoveryDetails = reapplyGammaTableIfNeeded(
@@ -843,7 +854,12 @@ final class GammaTechnique: BrightnessTechnique {
                    displayId: displayId,
                    factor: targetFactor
                ) {
-                recoveryState.consecutiveGammaRecoveries += 1
+                if recoveryState.lastGammaRecoveryDetails == gammaRecoveryDetails {
+                    recoveryState.consecutiveGammaRecoveries += 1
+                } else {
+                    recoveryState.lastGammaRecoveryDetails = gammaRecoveryDetails
+                    recoveryState.consecutiveGammaRecoveries = 1
+                }
                 let recoveryCount = recoveryState.consecutiveGammaRecoveries
                 BrightnessDiagnosticHistory.record(
                     "Gamma recovery \(recoveryCount)/\(maxConsecutiveGammaRecoveryAttempts) for display \(displayId): \(gammaRecoveryDetails)"
@@ -859,8 +875,9 @@ final class GammaTechnique: BrightnessTechnique {
             } else if recoveryState.consecutiveGammaRecoveries > 0 {
                 let previousCount = recoveryState.consecutiveGammaRecoveries
                 recoveryState.consecutiveGammaRecoveries = 0
+                recoveryState.lastGammaRecoveryDetails = nil
                 BrightnessDiagnosticHistory.record(
-                    "Display \(displayId) gamma remained stable after \(previousCount) recoveries"
+                    "Display \(displayId) gamma conflict sequence cleared after \(previousCount) recoveries"
                 )
             }
         }
@@ -1244,31 +1261,27 @@ final class GammaTechnique: BrightnessTechnique {
         displayId: CGDirectDisplayID,
         recoveryDetails: String
     ) {
-        guard !isHandlingFailure else { return }
-        isHandlingFailure = true
+        guard gammaConflictDisplayIds.insert(displayId).inserted else { return }
         let reason = "Display \(displayId) repeatedly reset the gamma table after BrightIntosh applied it."
         captureFailureState(
             displayId: displayId,
             reason: reason,
             recoveryDetails: [recoveryDetails]
         )
-        print("Persistent gamma conflict detected: \(reason); disabling increased brightness")
-        BrightnessDiagnosticHistory.record("Gamma technique failure: \(reason)")
-        for state in displayRecoveryStates.values {
-            state.consecutiveGammaRecoveries = 0
+        if let gammaTable = gammaTables[displayId] {
+            applyGammaTable(gammaTable, displayId: displayId)
         }
-        if BrightIntoshSettings.shared.brightintoshActive {
-            BrightIntoshSettings.shared.setBrightintoshActive(
-                false,
-                reason: "persistent gamma conflict"
-            )
-        } else {
-            disable()
-        }
-
-        Task { @MainActor in
-            await presentBrightnessFailurePrompt(reason: reason)
-        }
+        fadeStates[displayId]?.task?.cancel()
+        fadeStates[displayId]?.upwardAdjustmentTask?.cancel()
+        fadeStates.removeValue(forKey: displayId)
+        displayRecoveryStates.removeValue(forKey: displayId)
+        gammaTables.removeValue(forKey: displayId)
+        notifyHDRCooldownEnded(displayId: displayId)
+        closeHDROverlay(displayId: displayId)
+        print("Persistent gamma conflict isolated to display \(displayId): \(reason)")
+        BrightnessDiagnosticHistory.record(
+            "Gamma conflict isolated to display \(displayId); other displays remain active: \(reason)"
+        )
     }
 
     private func handleGammaCaptureFailure(displayId: CGDirectDisplayID) {
@@ -1376,6 +1389,8 @@ final class GammaTechnique: BrightnessTechnique {
         report += " - HDR trigger retention before recreation: \(Int(hdrTriggerRetentionDuration))s\n"
         report += " - Consecutive gamma recovery counts: \(consecutiveGammaRecoveries)\n"
         report += " - Gamma capture failures: \(gammaCaptureFailures)\n"
+        report += " - Gamma-conflict isolated displays: \(gammaConflictDisplayIds.sorted())\n"
+        report += " - Gamma-conflict grace remaining: \(max(0, Int(ceil(gammaConflictChecksAllowedAfter.timeIntervalSinceNow))))s\n"
         report += " - Integrity poll active: \(integrityPollTask != nil)\n"
     }
 
