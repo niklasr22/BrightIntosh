@@ -11,6 +11,186 @@
         }
       }
     },
+    "Allow BrightIntosh in System Settings to enable launch on login." : {
+      "comment" : "Status or action for the macOS launch-at-login setting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube BrightIntosh in den Systemeinstellungen, um den Start bei der Anmeldung zu aktivieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow BrightIntosh in System Settings to enable launch on login."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite que BrightIntosh se abra al iniciar sesión en Ajustes del Sistema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez BrightIntosh dans Réglages Système pour activer son ouverture à la connexion."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorizza BrightIntosh in Impostazioni di Sistema per attivare l’apertura al login."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン時の起動を有効にするには、システム設定でBrightIntoshを許可してください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorize o BrightIntosh nas Definições do Sistema para ativar a abertura ao iniciar sessão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在系统设置中允许 BrightIntosh 在登录时启动。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請在系統設定中允許 BrightIntosh 在登入時啟動。"
+          }
+        }
+      }
+    },
+    "Couldn't update launch on login." : {
+      "comment" : "Status or action for the macOS launch-at-login setting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Einstellung für den Start bei der Anmeldung konnte nicht geändert werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't update launch on login."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha podido cambiar el ajuste de apertura al iniciar sesión."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de modifier le réglage d’ouverture à la connexion."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile modificare l’impostazione di apertura al login."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン時の起動設定を変更できませんでした。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível alterar a definição de abertura ao iniciar sessão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法更改登录时启动的设置。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法更改登入時啟動的設定。"
+          }
+        }
+      }
+    },
+    "Open Login Items Settings" : {
+      "comment" : "Status or action for the macOS launch-at-login setting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldeobjekte in den Systemeinstellungen öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Login Items Settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir los ajustes de Ítems de inicio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir les réglages d’ouverture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri le impostazioni degli elementi login"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン項目の設定を開く"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir as definições dos elementos de início de sessão"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开登录项设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟登入項目設定"
+          }
+        }
+      }
+    },
     "[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)" : {
       "comment" : "",
       "localizations" : {
@@ -3768,6 +3948,126 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "登入時開啟"
+          }
+        }
+      }
+    },
+    "macOS did not disable launch on login. Check BrightIntosh in System Settings." : {
+      "comment" : "Status or action for the macOS launch-at-login setting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS hat den Start bei der Anmeldung nicht deaktiviert. Überprüfe BrightIntosh in den Systemeinstellungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS did not disable launch on login. Check BrightIntosh in System Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS no ha desactivado la apertura al iniciar sesión. Revisa BrightIntosh en Ajustes del Sistema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS n’a pas désactivé l’ouverture à la connexion. Vérifiez BrightIntosh dans Réglages Système."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS non ha disattivato l’apertura al login. Controlla BrightIntosh in Impostazioni di Sistema."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOSでログイン時の起動を無効にできませんでした。システム設定でBrightIntoshを確認してください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O macOS não desativou a abertura ao iniciar sessão. Verifique o BrightIntosh nas Definições do Sistema."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 未停用登录时启动。请在系统设置中检查 BrightIntosh。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 未停用登入時啟動。請在系統設定中檢查 BrightIntosh。"
+          }
+        }
+      }
+    },
+    "macOS did not enable launch on login. Try again or add BrightIntosh in System Settings." : {
+      "comment" : "Status or action for the macOS launch-at-login setting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS hat den Start bei der Anmeldung nicht aktiviert. Versuche es erneut oder füge BrightIntosh in den Systemeinstellungen hinzu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS did not enable launch on login. Try again or add BrightIntosh in System Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS no ha activado la apertura al iniciar sesión. Inténtalo de nuevo o añade BrightIntosh en Ajustes del Sistema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS n’a pas activé l’ouverture à la connexion. Réessayez ou ajoutez BrightIntosh dans Réglages Système."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS non ha attivato l’apertura al login. Riprova o aggiungi BrightIntosh in Impostazioni di Sistema."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOSでログイン時の起動を有効にできませんでした。もう一度試すか、システム設定でBrightIntoshを追加してください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O macOS não ativou a abertura ao iniciar sessão. Tente novamente ou adicione o BrightIntosh nas Definições do Sistema."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 未启用登录时启动。请重试，或在系统设置中添加 BrightIntosh。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 未啟用登入時啟動。請重試，或在系統設定中加入 BrightIntosh。"
           }
         }
       }

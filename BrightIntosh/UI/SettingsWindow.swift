@@ -7,6 +7,7 @@
 
 import KeyboardShortcuts
 import OSLog
+import ServiceManagement
 import SwiftUI
 
 @MainActor
@@ -56,7 +57,18 @@ class BasicSettingsViewModel: ObservableObject {
         get { return powerAdapterAutomation }
     }
 
+    @Published private(set) var launchAtLoginStatus = BrightIntoshSettings.shared.launchAtLoginStatus
+    @Published private(set) var launchAtLoginError = BrightIntoshSettings.shared.launchAtLoginError
+    var launchAtLoginToggle: Bool {
+        get { launchAtLoginStatus == .enabled }
+        set { BrightIntoshSettings.shared.launchAtLogin = newValue }
+    }
+
     init() {
+        BrightIntoshSettings.shared.addListener(setting: "launchAtLogin") {
+            self.launchAtLoginStatus = BrightIntoshSettings.shared.launchAtLoginStatus
+            self.launchAtLoginError = BrightIntoshSettings.shared.launchAtLoginError
+        }
         BrightIntoshSettings.shared.addListener(setting: "brightintoshActive") {
             if BrightIntoshSettings.shared.brightintoshActive && !checkBatteryAutomationContradiction() {
                 BrightIntoshSettings.shared.setBrightintoshActive(
@@ -300,7 +312,6 @@ struct BasicSettings: View {
     
     @State private var showInDock = BrightIntoshSettings.shared.showInDock
     @State private var hideMenuBarItem = BrightIntoshSettings.shared.hideMenuBarItem
-    @State private var launchOnLogin = BrightIntoshSettings.shared.launchAtLogin
     @State private var brightIntoshOnlyOnBuiltIn = BrightIntoshSettings.shared.brightIntoshOnlyOnBuiltIn
     @State private var disableWhenLidClosed = BrightIntoshSettings.shared.disableWhenLidClosed
     @State private var showIncompatibleAppsNotice = BrightIntoshSettings.shared.showIncompatibleAppsNotice
@@ -366,10 +377,26 @@ struct BasicSettings: View {
                     }
                 }
                 Section(header: Text("Automations").bold()) {
-                    Toggle("Launch on login", isOn: $launchOnLogin)
-                        .onChange(of: launchOnLogin) { _, new in
-                            BrightIntoshSettings.shared.launchAtLogin = new
+                    VStack(alignment: .leading, spacing: 8) {
+                        Toggle("Launch on login", isOn: $viewModel.launchAtLoginToggle)
+                        if viewModel.launchAtLoginStatus == .requiresApproval {
+                            Text("Allow BrightIntosh in System Settings to enable launch on login.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
+                        if let error = viewModel.launchAtLoginError {
+                            Text(verbatim: "\(String(localized: "Couldn't update launch on login.")) \(error)")
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                        }
+                        if viewModel.launchAtLoginStatus == .requiresApproval || viewModel.launchAtLoginError != nil {
+                            Button("Open Login Items Settings") {
+                                SMAppService.openSystemSettingsLoginItems()
+                            }
+                            .buttonStyle(.link)
+                            .controlSize(.small)
+                        }
+                    }
                     Toggle("Disable when the MacBook lid is closed", isOn: $disableWhenLidClosed)
                         .onChange(of: disableWhenLidClosed) { _, new in
                             BrightIntoshSettings.shared.disableWhenLidClosed = new
@@ -474,6 +501,12 @@ struct BasicSettings: View {
         }
         .sheet(isPresented: $showSupportReportSheet) {
             SupportReportSheet(isPresented: $showSupportReportSheet)
+        }
+        .onAppear {
+            BrightIntoshSettings.shared.refreshLaunchAtLoginStatus()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            BrightIntoshSettings.shared.refreshLaunchAtLoginStatus()
         }
     }
 }

@@ -163,20 +163,47 @@ class BrightIntoshSettings {
         }
     }
     
-    public var launchAtLogin: Bool = false {
-        didSet {
-        let service = SMAppService.mainApp
-        do {
-                if launchAtLogin {
-                    try service.register()
-                } else {
-                    try service.unregister()
-                }
-            } catch {
-                launchAtLogin.toggle()
-            }
-            callListeners(setting: "launchAtLogin")
+    public private(set) var launchAtLoginStatus = SMAppService.mainApp.status
+    public private(set) var launchAtLoginError: String?
+
+    public var launchAtLogin: Bool {
+        get { launchAtLoginStatus == .enabled }
+        set { setLaunchAtLogin(newValue) }
+    }
+
+    public func refreshLaunchAtLoginStatus() {
+        let status = SMAppService.mainApp.status
+        if status != launchAtLoginStatus {
+            launchAtLoginError = nil
         }
+        launchAtLoginStatus = status
+        callListeners(setting: "launchAtLogin")
+    }
+
+    private func setLaunchAtLogin(_ enabled: Bool) {
+        let service = SMAppService.mainApp
+        launchAtLoginError = nil
+        do {
+            if enabled {
+                if service.status != .enabled && service.status != .requiresApproval {
+                    try service.register()
+                }
+            } else if service.status != .notRegistered {
+                try service.unregister()
+            }
+        } catch {
+            launchAtLoginError = error.localizedDescription
+        }
+
+        launchAtLoginStatus = service.status
+        if launchAtLoginError == nil {
+            if enabled && launchAtLoginStatus != .enabled && launchAtLoginStatus != .requiresApproval {
+                launchAtLoginError = String(localized: "macOS did not enable launch on login. Try again or add BrightIntosh in System Settings.")
+            } else if !enabled && launchAtLoginStatus != .notRegistered {
+                launchAtLoginError = String(localized: "macOS did not disable launch on login. Check BrightIntosh in System Settings.")
+            }
+        }
+        callListeners(setting: "launchAtLogin")
     }
     
     private var listeners: [String: [()->()]] = [:]
@@ -185,8 +212,6 @@ class BrightIntoshSettings {
     var cliBrightnessObserver: NSKeyValueObservation?
 
     init() {
-        // Load launch at login status
-        launchAtLogin = SMAppService.mainApp.status == SMAppService.Status.enabled
         migrateUserDefaultsToAppGroups();
         
         activeObserver = BrightIntoshSettings.defaults.observe(\.active, options: [.initial, .new], changeHandler: { (_, _) in
