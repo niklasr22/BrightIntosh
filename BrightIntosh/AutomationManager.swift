@@ -15,17 +15,17 @@ class AutomationManager {
     private let powerAdapterCheckInterval = 2.0
     private var powerAdapterCheckTimer: Timer?
     private var lastPowerAdapterPluggedInState: Bool?
-    private var wasBrightnessPreUnplugActive = false;
+    private var wasBrightnessPreUnplugActive = false
     
     private var timerAutomationTimer: Timer?
     
     init() {
-        if BrightIntoshSettings.shared.batteryAutomation {
-            startBatteryAutomation()
-        }
-        
         if BrightIntoshSettings.shared.powerAdapterAutomation {
             startPowerAdapterAutomation()
+        }
+
+        if BrightIntoshSettings.shared.batteryAutomation {
+            startBatteryAutomation()
         }
         
         BrightIntoshSettings.shared.addListener(setting: "batteryAutomation") {
@@ -102,6 +102,11 @@ class AutomationManager {
     }
     
     func checkBatteryAutomation() {
+        // Save the pre-unplug state before battery automation can disable brightness.
+        if BrightIntoshSettings.shared.powerAdapterAutomation {
+            checkPowerAdapterAutomation()
+        }
+        guard isPowerAdapterConnected() == false else { return }
         if !BrightIntoshSettings.shared.brightintoshActive {
             return
         }
@@ -161,15 +166,16 @@ class AutomationManager {
         if powerAdapterCheckTimer != nil {
             return
         }
-        lastPowerAdapterPluggedInState = isPowerAdapterConnected()
+        lastPowerAdapterPluggedInState = nil
         wasBrightnessPreUnplugActive = false
+        checkPowerAdapterAutomation()
         let powerAdapterCheckDate = Date()
         powerAdapterCheckTimer = Timer(fire: powerAdapterCheckDate, interval: powerAdapterCheckInterval, repeats: true, block: {t in
             Task { @MainActor in
                 self.checkPowerAdapterAutomation()
             }
         })
-        RunLoop.main.add(powerAdapterCheckTimer!, forMode: RunLoop.Mode.default)
+        RunLoop.main.add(powerAdapterCheckTimer!, forMode: RunLoop.Mode.common)
         print("Started power adapter automation")
     }
     
@@ -178,17 +184,21 @@ class AutomationManager {
             powerAdapterCheckTimer?.invalidate()
             powerAdapterCheckTimer = nil
             lastPowerAdapterPluggedInState = nil
+            wasBrightnessPreUnplugActive = false
         }
     }
     
     func checkPowerAdapterAutomation() {
-        let currentPowerStatePluggedIn = isPowerAdapterConnected()
+        // An unavailable reading is not a power transition.
+        guard let currentPowerStatePluggedIn = isPowerAdapterConnected() else { return }
         
         if lastPowerAdapterPluggedInState != currentPowerStatePluggedIn {
             lastPowerAdapterPluggedInState = currentPowerStatePluggedIn
             
             if currentPowerStatePluggedIn {
-                if !BrightIntoshSettings.shared.brightintoshActive && wasBrightnessPreUnplugActive {
+                let shouldRestoreBrightness = wasBrightnessPreUnplugActive
+                wasBrightnessPreUnplugActive = false
+                if !BrightIntoshSettings.shared.brightintoshActive && shouldRestoreBrightness {
                     print("Power adapter connected. Activating increased brightness.")
                     BrightIntoshSettings.shared.setBrightintoshActive(
                         true,

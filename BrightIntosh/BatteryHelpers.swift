@@ -47,25 +47,29 @@ func getBatteryCapacity() -> Int? {
     return nil
 }
 
-func isPowerAdapterConnected() -> Bool {
+func isPowerAdapterConnected() -> Bool? {
     do {
         let powerSources = try getPowerSources()
         for powerSource in powerSources {
             if powerSource[kIOPSNameKey] as? String == INTERNAL_BATTERY_NAME {
-                return powerSource[kIOPSPowerSourceStateKey] as? String == "AC Power"
+                switch powerSource[kIOPSPowerSourceStateKey] as? String {
+                case kIOPSACPowerValue: return true
+                case kIOPSBatteryPowerValue: return false
+                default: return nil
+                }
             }
         }
     } catch {
-        return false
+        return nil
     }
-    return false
+    return nil
 }
 
 /// Runs checks if increased brightness activation would be toggling an immediate deactivation through the battery automation.
 /// If this is the case, an alert is shown to let the user decide wether to continue by deactivating the automation or not,
 /// - Returns: Bool wether increased brightness can be enabled or not
 @MainActor func checkBatteryAutomationContradiction() -> Bool {
-    if BrightIntoshSettings.shared.batteryAutomation {
+    if BrightIntoshSettings.shared.batteryAutomation && isPowerAdapterConnected() == false {
         if let batteryCapacity = getBatteryCapacity(), batteryCapacity <= BrightIntoshSettings.shared.batteryAutomationThreshold {
             let alert = createBatteryAutomationContradictionAlert()
             let result = alert.runModal()
