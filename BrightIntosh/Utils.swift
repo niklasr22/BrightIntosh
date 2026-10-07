@@ -17,115 +17,61 @@ struct IncompatibleRunningApp: Equatable {
 private struct IncompatibleAppSignature {
     let displayName: String
     let bundleIdentifiers: Set<String>
-    let normalizedNames: Set<String>
 }
 
 private let incompatibleAppSignatures: [IncompatibleAppSignature] = [
     IncompatibleAppSignature(
         displayName: "f.lux",
-        bundleIdentifiers: ["org.herf.Flux"],
-        normalizedNames: ["flux", "fluxapp"]
+        bundleIdentifiers: ["org.herf.Flux"]
     ),
     IncompatibleAppSignature(
         displayName: "MonitorControl",
-        bundleIdentifiers: ["me.guillaumeb.MonitorControl", "app.monitorcontrol.MonitorControl", "app.monitorcontrol.MonitorControlLite"],
-        normalizedNames: ["monitorcontrol"]
+        bundleIdentifiers: ["me.guillaumeb.MonitorControl", "app.monitorcontrol.MonitorControl", "app.monitorcontrol.MonitorControlLite"]
     ),
     IncompatibleAppSignature(
         displayName: "BetterDisplay",
-        bundleIdentifiers: ["com.github.wulkano.BetterDisplay", "pro.betterdisplay.BetterDisplay"],
-        normalizedNames: ["betterdisplay", "betterdummy"]
+        bundleIdentifiers: ["com.github.wulkano.BetterDisplay", "pro.betterdisplay.BetterDisplay"]
     ),
     IncompatibleAppSignature(
         displayName: "Lunar",
-        bundleIdentifiers: ["fyi.lunar.Lunar"],
-        normalizedNames: ["lunar"]
+        bundleIdentifiers: ["fyi.lunar.Lunar"]
     ),
     IncompatibleAppSignature(
         displayName: "Vivid",
-        bundleIdentifiers: ["com.getvivid.vivid", "com.getvivid.Vivid"],
-        normalizedNames: ["vivid"]
+        bundleIdentifiers: ["com.getvivid.vivid", "com.getvivid.Vivid"]
     ),
     IncompatibleAppSignature(
         displayName: "DisplayBuddy",
-        bundleIdentifiers: ["com.sids.DisplayBuddy", "com.sids.displaybuddy-setapp"],
-        normalizedNames: ["displaybuddy"]
+        bundleIdentifiers: ["com.sids.DisplayBuddy", "com.sids.displaybuddy-setapp"]
     ),
     IncompatibleAppSignature(
         displayName: "Gamma Control",
-        bundleIdentifiers: ["ca.michelf.gamma-control", "ca.michelf.GammaControl", "ca.michelf.GammaControl.6", "com.michelf.gamma-control"],
-        normalizedNames: ["gammacontrol"]
+        bundleIdentifiers: ["ca.michelf.gamma-control", "ca.michelf.GammaControl", "ca.michelf.GammaControl.6", "com.michelf.gamma-control"]
     ),
     IncompatibleAppSignature(
         displayName: "Gamma Dimmer",
-        bundleIdentifiers: ["com.lowtechguys.GammaDimmer"],
-        normalizedNames: ["gammadimmer"]
+        bundleIdentifiers: ["com.lowtechguys.GammaDimmer"]
     ),
     IncompatibleAppSignature(
         displayName: "QuickShade",
-        bundleIdentifiers: ["jp.questbeat.Shade"],
-        normalizedNames: ["quickshade"]
+        bundleIdentifiers: ["jp.questbeat.Shade"]
     ),
     IncompatibleAppSignature(
         displayName: "Iris",
-        bundleIdentifiers: ["com.iristech.Iris", "com.iristech.IrisMini"],
-        normalizedNames: ["iris", "irismini"]
+        bundleIdentifiers: ["com.iristech.Iris", "com.iristech.IrisMini"]
     ),
 ]
-
-private func normalizedApplicationName(_ name: String) -> String {
-    name
-        .lowercased()
-        .unicodeScalars
-        .filter { CharacterSet.alphanumerics.contains($0) }
-        .map(String.init)
-        .joined()
-}
-
-private func normalizedApplicationCandidates(for app: NSRunningApplication) -> Set<String> {
-    var candidates = Set<String>()
-    
-    if let localizedName = app.localizedName {
-        candidates.insert(normalizedApplicationName(localizedName))
-    }
-    if let bundleIdentifier = app.bundleIdentifier {
-        candidates.insert(normalizedApplicationName(bundleIdentifier))
-    }
-    if let bundleName = app.bundleURL?.deletingPathExtension().lastPathComponent {
-        candidates.insert(normalizedApplicationName(bundleName))
-    }
-    if let executableName = app.executableURL?.deletingPathExtension().lastPathComponent {
-        candidates.insert(normalizedApplicationName(executableName))
-    }
-    
-    return candidates
-}
 
 @MainActor func runningIncompatibleApps() -> [IncompatibleRunningApp] {
     let currentBundleIdentifier = Bundle.main.bundleIdentifier
     var foundApps: [IncompatibleRunningApp] = []
     
     for app in NSWorkspace.shared.runningApplications {
-        guard app.bundleIdentifier != currentBundleIdentifier else { continue }
-        
-        let bundleIdentifier = app.bundleIdentifier
-        let normalizedBundleIdentifier = bundleIdentifier?.lowercased()
-        let normalizedCandidates = normalizedApplicationCandidates(for: app)
-        
-        guard let signature = incompatibleAppSignatures.first(where: { signature in
-            if let normalizedBundleIdentifier,
-               signature.bundleIdentifiers.contains(where: { $0.lowercased() == normalizedBundleIdentifier }) {
-                return true
-            }
-            if !signature.normalizedNames.isDisjoint(with: normalizedCandidates) {
-                return true
-            }
-            if normalizedCandidates.contains(where: { candidate in
-                signature.normalizedNames.contains(where: { candidate.contains($0) })
-            }) {
-                return true
-            }
-            return false
+        guard let bundleIdentifier = app.bundleIdentifier,
+              bundleIdentifier != currentBundleIdentifier else { continue }
+
+        guard let signature = incompatibleAppSignatures.first(where: {
+            $0.bundleIdentifiers.contains(bundleIdentifier)
         }) else {
             continue
         }
