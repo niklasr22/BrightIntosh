@@ -148,7 +148,7 @@ struct WelcomeStoreView: View {
             
             Spacer()
             
-            if !isUnrestrictedUser && trial.stillEntitled() && trial.getRemainingDays() > 0 {
+            if !isUnrestrictedUser && trial.stillEntitled() {
                 Button(action: onContinue) {
                     Text("Start your free \(trial.getRemainingDays()) day trial")
                 }

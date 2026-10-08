@@ -831,6 +831,66 @@
         }
       }
     },
+    "Allow BrightIntosh in System Settings to enable launch on login." : {
+      "comment" : "Status or action for the macOS launch-at-login setting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube BrightIntosh in den Systemeinstellungen, um den Start bei der Anmeldung zu aktivieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow BrightIntosh in System Settings to enable launch on login."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite que BrightIntosh se abra al iniciar sesión en Ajustes del Sistema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez BrightIntosh dans Réglages Système pour activer son ouverture à la connexion."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorizza BrightIntosh in Impostazioni di Sistema per attivare l’apertura al login."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン時の起動を有効にするには、システム設定でBrightIntoshを許可してください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorize o BrightIntosh nas Definições do Sistema para ativar a abertura ao iniciar sessão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在系统设置中允许 BrightIntosh 在登录时启动。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請在系統設定中允許 BrightIntosh 在登入時啟動。"
+          }
+        }
+      }
+    },
     "An unknown error occurred while purchasing." : {
       "comment" : "",
       "localizations" : {
@@ -1889,6 +1949,66 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "複製到剪貼簿"
+          }
+        }
+      }
+    },
+    "Couldn't update launch on login." : {
+      "comment" : "Status or action for the macOS launch-at-login setting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Einstellung für den Start bei der Anmeldung konnte nicht geändert werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't update launch on login."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha podido cambiar el ajuste de apertura al iniciar sesión."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de modifier le réglage d’ouverture à la connexion."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile modificare l’impostazione di apertura al login."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン時の起動設定を変更できませんでした。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível alterar a definição de abertura ao iniciar sessão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法更改登录时启动的设置。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法更改登入時啟動的設定。"
           }
         }
       }
@@ -3772,6 +3892,126 @@
         }
       }
     },
+    "macOS did not disable launch on login. Check BrightIntosh in System Settings." : {
+      "comment" : "Status or action for the macOS launch-at-login setting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS hat den Start bei der Anmeldung nicht deaktiviert. Überprüfe BrightIntosh in den Systemeinstellungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS did not disable launch on login. Check BrightIntosh in System Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS no ha desactivado la apertura al iniciar sesión. Revisa BrightIntosh en Ajustes del Sistema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS n’a pas désactivé l’ouverture à la connexion. Vérifiez BrightIntosh dans Réglages Système."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS non ha disattivato l’apertura al login. Controlla BrightIntosh in Impostazioni di Sistema."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOSでログイン時の起動を無効にできませんでした。システム設定でBrightIntoshを確認してください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O macOS não desativou a abertura ao iniciar sessão. Verifique o BrightIntosh nas Definições do Sistema."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 未停用登录时启动。请在系统设置中检查 BrightIntosh。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 未停用登入時啟動。請在系統設定中檢查 BrightIntosh。"
+          }
+        }
+      }
+    },
+    "macOS did not enable launch on login. Try again or add BrightIntosh in System Settings." : {
+      "comment" : "Status or action for the macOS launch-at-login setting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS hat den Start bei der Anmeldung nicht aktiviert. Versuche es erneut oder füge BrightIntosh in den Systemeinstellungen hinzu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS did not enable launch on login. Try again or add BrightIntosh in System Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS no ha activado la apertura al iniciar sesión. Inténtalo de nuevo o añade BrightIntosh en Ajustes del Sistema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS n’a pas activé l’ouverture à la connexion. Réessayez ou ajoutez BrightIntosh dans Réglages Système."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS non ha attivato l’apertura al login. Riprova o aggiungi BrightIntosh in Impostazioni di Sistema."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOSでログイン時の起動を有効にできませんでした。もう一度試すか、システム設定でBrightIntoshを追加してください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O macOS não ativou a abertura ao iniciar sessão. Tente novamente ou adicione o BrightIntosh nas Definições do Sistema."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 未启用登录时启动。请重试，或在系统设置中添加 BrightIntosh。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 未啟用登入時啟動。請重試，或在系統設定中加入 BrightIntosh。"
+          }
+        }
+      }
+    },
     "macOS is temporarily limiting the display's maximum brightness. Brightintosh will restore the boost in approx. %lld seconds once the system allows it." : {
       "localizations" : {
         "de" : {
@@ -3889,6 +4129,66 @@
         }
       }
     },
+    "No purchases were found for your Apple Account." : {
+      "comment" : "Purchase loading, restoration, or approval status in the paywall.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für deinen Apple Account wurden keine Käufe gefunden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No purchases were found for your Apple Account."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se han encontrado compras para tu cuenta de Apple."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun achat n’a été trouvé pour votre compte Apple."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non sono stati trovati acquisti per il tuo Apple Account."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お使いのApple Accountで購入が見つかりませんでした。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foram encontradas compras para a sua Conta Apple."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到与你的 Apple 账户关联的购买项目。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找不到與你的 Apple 帳號關聯的購買項目。"
+          }
+        }
+      }
+    },
     "Not Now" : {
       "localizations" : {
         "de" : {
@@ -4001,6 +4301,66 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "確定"
+          }
+        }
+      }
+    },
+    "Open Login Items Settings" : {
+      "comment" : "Status or action for the macOS launch-at-login setting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldeobjekte in den Systemeinstellungen öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Login Items Settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir los ajustes de Ítems de inicio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir les réglages d’ouverture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri le impostazioni degli elementi login"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン項目の設定を開く"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir as definições dos elementos de início de sessão"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开登录项设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟登入項目設定"
           }
         }
       }
@@ -4239,118 +4599,62 @@
         }
       }
     },
-    "Purchase is pending. Please check your purchase history in the App Store." : {
+    "Purchase is awaiting approval. Access will unlock automatically when it is approved." : {
+      "comment" : "Purchase loading, restoration, or approval status in the paywall.",
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Kauf ist ausstehend. Bitte überprüfen Sie Ihre Kaufhistorie im App Store."
+            "value" : "Der Kauf wartet auf Genehmigung. Der Zugriff wird nach der Genehmigung automatisch freigeschaltet."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Purchase is pending. Please check your purchase history in the App Store."
+            "value" : "Purchase is awaiting approval. Access will unlock automatically when it is approved."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La compra está pendiente. Por favor, verifica tu historial de compras en la App Store."
+            "value" : "La compra está pendiente de aprobación. El acceso se desbloqueará automáticamente cuando se apruebe."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'achat est en attente. Veuillez vérifier votre historique d'achats dans l'App Store."
+            "value" : "L’achat est en attente d’approbation. L’accès sera débloqué automatiquement une fois l’achat approuvé."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'acquisto è in sospeso. Si prega di controllare la cronologia degli acquisti nell'App Store."
+            "value" : "L’acquisto è in attesa di approvazione. L’accesso verrà sbloccato automaticamente dopo l’approvazione."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "購入が保留中です。App Storeの購入履歴をご確認ください。"
+            "value" : "購入は承認待ちです。承認されると自動的にアクセスできるようになります。"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compra pendente. Por favor, verifique o seu histórico de compras na App Store."
+            "value" : "A compra aguarda aprovação. O acesso será desbloqueado automaticamente após a aprovação."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "购买待处理。请在 App Store 中检查您的购买历史记录。"
+            "value" : "购买正在等待批准。获批后将自动解锁访问权限。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "購買待處理。請在 App Store 中檢查您的購買記錄。"
-          }
-        }
-      }
-    },
-    "Purchase was cancelled." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Kauf wurde abgebrochen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Purchase was cancelled."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La compra fue cancelada."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'achat a été annulé."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Acquisto annullato."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "購入はキャンセルされました。"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compra foi cancelada."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "购买已取消。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "購買已取消。"
+            "value" : "購買正在等待批准。獲准後將自動解鎖存取權限。"
           }
         }
       }
@@ -4467,6 +4771,66 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "回復 App 內購買項目"
+          }
+        }
+      }
+    },
+    "Retry" : {
+      "comment" : "Purchase loading, restoration, or approval status in the paywall.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erneut versuchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retry"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réessayer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riprova"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再試行"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar novamente"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重試"
           }
         }
       }
@@ -5262,6 +5626,66 @@
         }
       }
     },
+    "The App Store is taking longer than expected. Check your internet connection and try again." : {
+      "comment" : "Purchase loading, restoration, or approval status in the paywall.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der App Store braucht länger als erwartet. Überprüfe deine Internetverbindung und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The App Store is taking longer than expected. Check your internet connection and try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El App Store está tardando más de lo esperado. Comprueba tu conexión a internet e inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’App Store prend plus de temps que prévu. Vérifiez votre connexion Internet et réessayez."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’App Store sta impiegando più tempo del previsto. Controlla la connessione a internet e riprova."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Storeへの接続に通常より時間がかかっています。インターネット接続を確認して、もう一度お試しください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A App Store está a demorar mais do que o esperado. Verifique a ligação à internet e tente novamente."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store 响应时间比预期长。请检查互联网连接并重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store 回應時間比預期長。請檢查網際網路連線並重試。"
+          }
+        }
+      }
+    },
     "The report was copied to your clipboard instead. Please include it in your support message so the brightness issue can be investigated." : {
       "localizations" : {
         "de" : {
@@ -5316,64 +5740,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "報告已改為複製到剪貼簿。請將它附在你的支援訊息中，以便調查亮度問題。"
-          }
-        }
-      }
-    },
-    "There seems to be an issue with the store connection. Please check your internet connection and try restarting your MacBook." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Es scheint ein Problem mit der Store-Verbindung zu geben. Bitte überprüfe deine Internetverbindung oder starte dein MacBook neu."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "There seems to be an issue with the store connection. Please check your internet connection and try restarting your MacBook."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Parece haber un problema con la conexión a la tienda. Por favor, verifica tu conexión a Internet o intenta reiniciar tu MacBook."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il semble y avoir un problème avec la connexion au magasin. Veuillez vérifier votre connexion Internet ou essayer de redémarrer votre MacBook."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sembra esserci un problema con la connessione al negozio. Per favore verifica la connessione e prova a riavviare il tuo MacBook."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ストアとの接続に問題があるようです。インターネット接続を確認し、MacBookを再起動してみてください。"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Parece haver um problema com a conexão da loja. Verifique sua conexão com a Internet ou tente reiniciar seu MacBook."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "商店连接似乎有问题。请检查您的网络连接，并尝试重启 MacBook。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "商店連接似乎出現問題。請檢查您的網路連線並嘗試重新啟動您的MacBook。"
           }
         }
       }
@@ -5667,6 +6033,66 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟／關閉亮度增強："
+          }
+        }
+      }
+    },
+    "Unable to load this purchase. Please try again." : {
+      "comment" : "Purchase loading, restoration, or approval status in the paywall.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Kauf konnte nicht geladen werden. Bitte versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to load this purchase. Please try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha podido cargar esta compra. Inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de charger cet achat. Veuillez réessayer."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile caricare questo acquisto. Riprova."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この購入を読み込めませんでした。もう一度お試しください。"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível carregar esta compra. Tente novamente."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法加载此购买项目。请重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法載入此購買項目。請重試。"
           }
         }
       }

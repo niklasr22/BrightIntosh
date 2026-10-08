@@ -52,7 +52,7 @@ final class BrightnessManager: BrightnessManaging {
         }
 
         func topologyDiffers(from other: DisplaySnapshot) -> Bool {
-            screenFrames != other.screenFrames ||
+            Set(screenFrames.keys) != Set(other.screenFrames.keys) ||
                 targetDisplayIds != other.targetDisplayIds
         }
 
@@ -278,8 +278,9 @@ final class BrightnessManager: BrightnessManaging {
         let previousDisplays = displays
         displays = updatedDisplays
         let topologyChanged = updatedDisplays.topologyDiffers(from: previousDisplays)
+        let geometryChanged = updatedDisplays.screenFrames != previousDisplays.screenFrames
 
-        if topologyChanged {
+        if topologyChanged || geometryChanged {
             recordDisplaySetupChange(reason: "screen parameters changed the display setup")
         }
 
@@ -297,6 +298,14 @@ final class BrightnessManager: BrightnessManaging {
 
         if topologyChanged {
             suspendAndScheduleActivation(reason: "display setup changed")
+        } else if geometryChanged, brightnessTechnique.isEnabled {
+            // Some applications can switch resolution without changing the connected displays.
+            // Refresh the trigger geometry without dropping the existing boost.
+            BrightnessDiagnosticHistory.record(
+                "Updating display geometry without suspending brightness; " +
+                Self.displaySummary(updatedDisplays)
+            )
+            brightnessTechnique.screenUpdate(screens: updatedDisplays.targetScreens)
         } else if brightnessTechnique.isEnabled {
             // Screen parameter notifications also cover native brightness changes.
             let now = Date()

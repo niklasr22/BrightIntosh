@@ -45,10 +45,6 @@ public class Authorizer: ObservableObject {
     func update(purchaseStatus: AuthorizationStatus, trialStatus: AuthorizationStatus) {
         status = max(purchaseStatus, trialStatus)
         print("Auth status updated: \(status)")
-        if authorizationTimer != nil && status == .authorizedUnlimited {
-            // Attempt authorization check until unlimited state is reached
-            stopAuthorizationTimer()
-        }
     }
     
     func isAllowed() -> Bool {

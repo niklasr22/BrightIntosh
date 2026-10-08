@@ -47,19 +47,25 @@ struct BrightIntoshStoreView: View {
     
     @State private var product: Product?
     
-    @State var purchaseCompleted = false
+    @State private var isLoading = true
+    @State private var loadAttempt = 0
+    @State private var isPurchasing = false
+    @State private var isRestoringAccess = false
         
     @Environment(\.isUnrestrictedUser) private var isUnrestrictedUser: Bool
     @Environment(\.trial) private var trial: TrialData?
 
-    @State private var showRestartNoteDueToSpinner = false
+    @State private var showLoadingHelp = false
     
     @State private var fetchingError: String?
     @State private var transactionError: String?
+    @State private var transactionNotice: String?
+
+    private var isBusy: Bool { isPurchasing || isRestoringAccess }
 
     var body: some View {
         VStack {
-            if purchaseCompleted || isUnrestrictedUser {
+            if entitlementHandler.isUnrestrictedUser || isUnrestrictedUser {
                 Spacer()
                 if showLogo {
                     Image("LogoBorderedHighRes").resizable().scaledToFit().frame(height: 90.0)
@@ -70,11 +76,14 @@ struct BrightIntoshStoreView: View {
                 Spacer()
             } else {
                 VStack {
-                    if showRestartNoteDueToSpinner {
-                        Note(text: "There seems to be an issue with the store connection. Please check your internet connection and try restarting your MacBook.", style: .error)
+                    if showLoadingHelp {
+                        Note(text: String(localized: "The App Store is taking longer than expected. Check your internet connection and try again."))
                     }
                     if let transactionError = transactionError {
                         Note(text: transactionError, style: .error)
+                    }
+                    if let transactionNotice {
+                        Note(text: transactionNotice)
                     }
                     if let fetchingError = fetchingError {
                         Note(text: fetchingError, style: .error)
@@ -115,87 +124,110 @@ struct BrightIntoshStoreView: View {
                                     .frame(maxWidth: 220.0)
                             }
                             .buttonStyle(BrightIntoshButtonStyle())
+                            .disabled(isBusy)
+                            if isPurchasing { ProgressView() }
                         }
-                    } else {
+                    } else if isLoading {
                         Spacer()
                         ProgressView()
-                            .onAppear {
-                                Task {
-                                    await delayNotLoadingRestartNote()
-                                }
+                            .task(id: loadAttempt) {
+                                do {
+                                    try await Task.sleep(for: .seconds(6))
+                                    guard !Task.isCancelled else { return }
+                                    showLoadingHelp = true
+                                } catch {}
                             }
                         Spacer()
                     }
+                    if fetchingError != nil || showLoadingHelp {
+                        Button("Retry") {
+                            loadAttempt += 1
+                        }
+                        .disabled(isBusy)
+                    }
                     RestorePurchasesButton(label: String(localized: "Restore In-App Purchase"), action: {
-                        do {
-                            try await AppStore.sync()
-                            _ = try await EntitlementHandler.shared.isUnrestrictedUser()
-                            transactionError = nil
-                        } catch let error as StoreKitError {
-                            transactionError = String(localized: LocalizedStringResource("Error while restoring: \(getStoreKitErrorMessage(error))"))
-                        } catch {
-                            transactionError = String(localized: LocalizedStringResource("Error while restoring: \(error.localizedDescription)"))
-                        }
+                        await restoreAccess(refreshAppPurchase: false)
                     })
+                    .disabled(isBusy)
                     RestorePurchasesButton(label: String(localized: "Revalidate App Purchase"), action: {
-                        do {
-                            _ = try await EntitlementHandler.shared.isUnrestrictedUser(refresh: true)
-                            transactionError = nil
-                        } catch let error as StoreKitError {
-                            transactionError = String(localized: LocalizedStringResource("Error while revalidating: \(getStoreKitErrorMessage(error))"))
-                        } catch {
-                            transactionError = String(localized: LocalizedStringResource("Error while revalidating: \(error.localizedDescription)"))
-                        }
+                        await restoreAccess(refreshAppPurchase: true)
                     })
+                    .disabled(isBusy)
                     HStack {
                         Text("[Privacy Policy](https://brightintosh.de/app_privacy_policy_en.html)")
                         Text("[Terms](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)")
                     }
                     Spacer()
                 }
-                .onReceive(entitlementHandler.$isUnrestrictedUser, perform: { isUnrestrictedUser in
-                    purchaseCompleted = isUnrestrictedUser
-                })
                 .padding(20.0)
             }
-        }.onAppear {
-            showRestartNoteDueToSpinner = false
-        }.task {
-            do {
-                let availableProducts = Products.allCases.map { $0.rawValue }
-                let products = try await Product.products(for: availableProducts)
-                if let unrestrictedBrightIntosh = products.first(where: { $0.id == Products.unrestrictedBrightIntosh.rawValue }) {
-                    product = unrestrictedBrightIntosh
-                }
-                fetchingError = nil
-            } catch let error as StoreKitError {
-                fetchingError = String(localized: LocalizedStringResource("Error while fetching products: \(getStoreKitErrorMessage(error))"))
-                logger.error("Error while fetching products: \(getStoreKitErrorMessage(error))")
-            } catch {
-                fetchingError = String(localized: LocalizedStringResource("Error while fetching products: \(error.localizedDescription)"))
-                logger.error("Error while fetching products: \(error.localizedDescription)")
-            }
+        }
+        .task(id: loadAttempt) {
+            await loadProduct()
         }
     }
-    
+
+    private func loadProduct() async {
+        isLoading = true
+        showLoadingHelp = false
+        fetchingError = nil
+        do {
+            let products = try await Product.products(for: Products.allCases.map(\.rawValue))
+            guard !Task.isCancelled else { return }
+            product = products.first { $0.id == Products.unrestrictedBrightIntosh.rawValue }
+            if product == nil {
+                fetchingError = String(localized: "Unable to load this purchase. Please try again.")
+            }
+        } catch {
+            guard !Task.isCancelled else { return }
+            let message = (error as? StoreKitError).map(getStoreKitErrorMessage) ?? error.localizedDescription
+            fetchingError = String(localized: LocalizedStringResource("Error while fetching products: \(message)"))
+            logger.error("Error while fetching products: \(message)")
+        }
+        isLoading = false
+        showLoadingHelp = false
+    }
+
+    private func restoreAccess(refreshAppPurchase: Bool) async {
+        guard !isBusy else { return }
+        isRestoringAccess = true
+        transactionError = nil
+        transactionNotice = nil
+        defer { isRestoringAccess = false }
+        do {
+            if !refreshAppPurchase { try await AppStore.sync() }
+            let restored = try await entitlementHandler.isUnrestrictedUser(refresh: refreshAppPurchase)
+            if !restored {
+                transactionNotice = String(localized: "No purchases were found for your Apple Account.")
+            }
+        } catch {
+            let message = (error as? StoreKitError).map(getStoreKitErrorMessage) ?? error.localizedDescription
+            transactionError = refreshAppPurchase
+                ? String(localized: LocalizedStringResource("Error while revalidating: \(message)"))
+                : String(localized: LocalizedStringResource("Error while restoring: \(message)"))
+        }
+    }
+
     private func purchase() async {
-        guard let product = product else {
+        guard !isBusy, let product = product else {
             return
         }
+        isPurchasing = true
+        transactionError = nil
+        transactionNotice = nil
+        defer { isPurchasing = false }
         do {
             let result = try await product.purchase()
             switch result {
             case .success(let verificationResult):
-                if try await entitlementHandler.verifyEntitlement(transaction: verificationResult) {
-                    entitlementHandler.setRestrictionState(.authorizedUnlimited)
-                }
+                try await entitlementHandler.processTransaction(verificationResult)
                 transactionError = nil
                 fetchingError = nil
             case .userCancelled:
                 logger.info("User cancelled purchase of \(product.displayName)")
-                transactionError = String(localized: LocalizedStringResource("Purchase was cancelled."))
+                transactionError = nil
             case .pending:
-                transactionError = String(localized: LocalizedStringResource("Purchase is pending. Please check your purchase history in the App Store."))
+                transactionNotice = String(localized: "Purchase is awaiting approval. Access will unlock automatically when it is approved.")
                 break
             @unknown default:
                 transactionError = String(localized: LocalizedStringResource("An unknown error occurred while purchasing."))
@@ -210,18 +242,7 @@ struct BrightIntoshStoreView: View {
         }
     }
     
-    private func delayNotLoadingRestartNote() async {
-        do {
-            try await Task.sleep(nanoseconds: 6_000_000_000)
-        } catch {
-            return
-        }
-        withAnimation {
-            if product == nil {
-                showRestartNoteDueToSpinner = true
-            }
-        }
-    }
+
 }
 
 #Preview {

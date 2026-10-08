@@ -27,21 +27,20 @@ class OverlayWindow: NSWindow {
         
         if fullsize {
             super.init(contentRect: rect, styleMask: [.fullSizeContentView, .borderless], backing: .buffered, defer: false)
-            if #available(macOS 13.0, *) {
-                collectionBehavior = [.stationary, .canJoinAllSpaces, .ignoresCycle, .canJoinAllApplications, .fullScreenAuxiliary]
-            } else {
-                collectionBehavior = [.stationary, .canJoinAllSpaces, .ignoresCycle, .fullScreenAuxiliary]
-            }
             level = NSWindow.Level(rawValue: Int(CGShieldingWindowLevel()))
         } else {
             super.init(contentRect: rect, styleMask: [], backing: BackingStoreType(rawValue: 0)!, defer: false)
-            collectionBehavior = [.stationary, .ignoresCycle, .canJoinAllSpaces]
-            level = .screenSaver
+            // Capturing some applications (like games) can reorder their windows at the shielding level.
+            // Keep the HDR trigger above that level so it remains unobscured.
+            level = NSWindow.Level(rawValue: Int(CGShieldingWindowLevel()) + 1)
             canHide = false
             isMovableByWindowBackground = true
             isReleasedWhenClosed = false
             alphaValue = 1
         }
+
+        // Keep overlays eligible to appear alongside native fullscreen apps.
+        collectionBehavior = [.stationary, .canJoinAllSpaces, .ignoresCycle, .canJoinAllApplications, .fullScreenAuxiliary]
         
         animationBehavior = .none
         isOpaque = false
@@ -152,6 +151,17 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
         var position = screen.frame.origin
         position.y += screen.frame.height - 1
         return position
+    }
+
+    var visibilityDiagnosticContext: String {
+        guard let window else { return "window unavailable" }
+        let currentScreen = window.screen
+        return "window \(window.windowNumber), level \(window.level.rawValue), " +
+            "shielding level \(CGShieldingWindowLevel()), visible \(window.isVisible), " +
+            "occlusion-visible \(window.occlusionState.contains(.visible)), frame \(window.frame), " +
+            "actual display \(currentScreen?.displayId.map(String.init) ?? "none"), " +
+            "actual screen frame \(currentScreen.map { String(describing: $0.frame) } ?? "none"), " +
+            "target display \(screen.displayId.map(String.init) ?? "none"), target screen frame \(screen.frame)"
     }
     
     required init?(coder: NSCoder) {

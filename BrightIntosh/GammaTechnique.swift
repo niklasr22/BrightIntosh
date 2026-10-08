@@ -107,7 +107,7 @@ final class GammaTechnique: BrightnessTechnique {
 
     private enum HDRRecoveryState {
         case waitingForDisplayWake
-        case confirmingLoss(until: Date)
+        case confirmingLoss(until: Date, retainingGamma: Bool)
         case waitingForHDR(until: Date)
         case retainingTrigger(until: Date)
         case monitoringUnavailable
@@ -180,6 +180,7 @@ final class GammaTechnique: BrightnessTechnique {
     private let gammaConflictGraceDuration: TimeInterval = 15
     private let hdrReadyThreshold: CGFloat = 1.05
     private let hdrLossConfirmationDuration: TimeInterval = 1.5
+    private let hdrTransientLossGraceDuration: TimeInterval = 5
     private let hdrRecoveryStabilizationDuration: TimeInterval = 2
     private let hdrEngagementTimeout: TimeInterval = 10
     private let hdrTriggerRetentionDuration: TimeInterval = 30
@@ -947,13 +948,35 @@ final class GammaTechnique: BrightnessTechnique {
             }
 
             recoveryState.hdrReadySince = nil
-            restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+
+            if case let .confirmingLoss(until, retainingGamma: true) = hdrState {
+                if now < until, hdrTriggerIsVisibleAndRendering(displayId: displayId, now: now) {
+                    // Hold the last applied gamma without applying further boosts
+                    // while macOS settles a brief HDR headroom transition.
+                    return .unavailable
+                }
+                restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+                if now < until {
+                    recoveryState.hdrState = .confirmingLoss(
+                        until: min(until, now.addingTimeInterval(hdrLossConfirmationDuration)),
+                        retainingGamma: false
+                    )
+                    recordHDRRecovery(
+                        screen: screen,
+                        displayId: displayId,
+                        message: "HDR trigger became unavailable during grace; restoring neutral gamma"
+                    )
+                    return .unavailable
+                }
+            } else {
+                restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+            }
 
             switch hdrState {
             case .waitingForDisplayWake:
                 return .unavailable
 
-            case let .confirmingLoss(until):
+            case let .confirmingLoss(until, _):
                 guard now >= until else { return .unavailable }
                 beginHDRRecovery(screen: screen, displayId: displayId, reason: "HDR loss confirmed")
                 return .unavailable
@@ -1010,12 +1033,30 @@ final class GammaTechnique: BrightnessTechnique {
         }
 
         guard hdrIsReady(screen) else {
-            restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
-            recoveryState.resetHDR(to: .confirmingLoss(until: now.addingTimeInterval(hdrLossConfirmationDuration)))
+            let retainingGamma = recoveryState.isHDRReady &&
+                (fadeStates[displayId]?.appliedFactor ?? 1.0) > 1.0 + gammaFactorEpsilon &&
+                hdrTriggerIsVisibleAndRendering(displayId: displayId, now: now)
+            let confirmationDuration = retainingGamma
+                ? hdrTransientLossGraceDuration
+                : hdrLossConfirmationDuration
+            if retainingGamma {
+                let state = fadeState(for: displayId)
+                state.task?.cancel()
+                state.task = nil
+                state.targetFactor = nil
+                cancelUpwardGammaAdjustment(displayId: displayId)
+            } else {
+                restoreGammaUntilHDRReturns(displayId: displayId, gammaTable: gammaTable)
+            }
+            recoveryState.resetHDR(to: .confirmingLoss(
+                until: now.addingTimeInterval(confirmationDuration),
+                retainingGamma: retainingGamma
+            ))
             recordHDRRecovery(
                 screen: screen,
                 displayId: displayId,
-                message: "Possible HDR loss; confirming for \(hdrLossConfirmationDuration)s with neutral gamma and retained trigger",
+                message: "Possible HDR loss; confirming for \(confirmationDuration)s with " +
+                    "\(retainingGamma ? "retained" : "neutral") gamma and retained trigger",
                 newOutage: true
             )
             return .unavailable
@@ -1029,6 +1070,16 @@ final class GammaTechnique: BrightnessTechnique {
             )
         }
         return .ready(newlyEngaged: becameReady)
+    }
+
+    private func hdrTriggerIsVisibleAndRendering(displayId: CGDirectDisplayID, now: Date) -> Bool {
+        guard let window = overlayWindowControllers[displayId]?.window as? OverlayWindow,
+              window.isVisible,
+              window.occlusionState.contains(.visible),
+              let overlay = window.overlay,
+              let lastCompletion = overlay.lastFrameCompletionDate,
+              overlay.lastRenderingError == nil else { return false }
+        return now.timeIntervalSince(lastCompletion) <= 1.0
     }
 
     private func stabilizedHDRRecoveryAvailability(
@@ -1150,8 +1201,8 @@ final class GammaTechnique: BrightnessTechnique {
         let overlayDescription: String
         if let window = overlayWindowControllers[displayId]?.window {
             let rendering = (window as? OverlayWindow)?.overlay?.renderingDiagnostics ?? "rendering unavailable"
-            overlayDescription = "visible \(window.isVisible), occlusion-visible " +
-                "\(window.occlusionState.contains(.visible)), frame \(window.frame), \(rendering)"
+            let visibility = overlayWindowControllers[displayId]?.visibilityDiagnosticContext ?? "visibility unavailable"
+            overlayDescription = "\(visibility), \(rendering)"
         } else {
             overlayDescription = "none"
         }
@@ -1348,6 +1399,7 @@ final class GammaTechnique: BrightnessTechnique {
             }
         }
         report += " - HDR loss confirmation: \(String(format: "%.1f", hdrLossConfirmationDuration))s\n"
+        report += " - HDR transient loss grace with visible rendering trigger: \(String(format: "%.1f", hdrTransientLossGraceDuration))s\n"
         report += " - HDR recovery stabilization: \(String(format: "%.1f", hdrRecoveryStabilizationDuration))s\n"
         report += " - HDR trigger retention before recreation: \(Int(hdrTriggerRetentionDuration))s\n"
         report += " - Consecutive gamma recovery counts: \(consecutiveGammaRecoveries)\n"
@@ -1361,8 +1413,9 @@ final class GammaTechnique: BrightnessTechnique {
         switch state {
         case .waitingForDisplayWake:
             return "waiting for display wake"
-        case let .confirmingLoss(until):
-            return "confirming HDR loss, \(max(0, Int(ceil(until.timeIntervalSinceNow))))s remaining"
+        case let .confirmingLoss(until, retainingGamma):
+            return "confirming HDR loss with \(retainingGamma ? "retained" : "neutral") gamma, " +
+                "\(max(0, Int(ceil(until.timeIntervalSinceNow))))s remaining"
         case let .waitingForHDR(until):
             return "waiting for HDR, \(max(0, Int(ceil(until.timeIntervalSinceNow))))s remaining"
         case let .retainingTrigger(until):

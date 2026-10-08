@@ -466,7 +466,7 @@ class StatusBarMenu : NSObject, NSMenuDelegate {
         toggleIncreasedBrightnessItem.title = BrightIntoshSettings.shared.brightintoshActive ? String(localized: "Deactivate") : String(localized: "Activate")
         toggleTimerItem.title = BrightIntoshSettings.shared.timerAutomation ? String(localized: "Disable after") : String(localized: "Enable Timer")
         updateTimerDurationSubmenu()
-        if #available(macOS 14, *), !BrightIntoshSettings.shared.timerAutomation {
+        if !BrightIntoshSettings.shared.timerAutomation {
             toggleTimerItem.badge = nil
         }
         

@@ -41,7 +41,9 @@ public struct TrialData: Sendable {
     
     func getRemainingDays() -> Int {
         if let expirationDate = getExpirationDate(), currentDate < expirationDate {
-            return Calendar.current.dateComponents([.year, .month, .day], from: currentDate, to: expirationDate).day ?? 0
+            let days = Calendar.current.dateComponents([.day], from: currentDate, to: expirationDate).day ?? 0
+            let boundary = Calendar.current.date(byAdding: .day, value: days, to: currentDate) ?? currentDate
+            return max(1, days + (boundary < expirationDate ? 1 : 0))
         }
         return 0
     }
