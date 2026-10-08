@@ -81,9 +81,7 @@ final class HDRCooldownNoticePresenter {
             fallback.state = .active
             fallback.wantsLayer = true
             fallback.layer?.cornerRadius = 16
-            if #available(macOS 11.0, *) {
-                fallback.layer?.cornerCurve = .continuous
-            }
+            fallback.layer?.cornerCurve = .continuous
             effect = fallback
         }
         

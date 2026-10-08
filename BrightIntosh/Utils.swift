@@ -303,9 +303,7 @@ private func appendSettingsDiagnostics(to report: inout String) {
     } else {
         report += " - Clamshell closed: unknown\n"
     }
-    if #available(macOS 12.0, *) {
-        report += " - Low Power Mode: \(ProcessInfo.processInfo.isLowPowerModeEnabled)\n"
-    }
+    report += " - Low Power Mode: \(ProcessInfo.processInfo.isLowPowerModeEnabled)\n"
     
     report += "Settings:\n"
     report += " - Increased brightness active: \(settings.brightintoshActive)\n"
