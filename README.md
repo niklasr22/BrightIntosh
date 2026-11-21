@@ -30,6 +30,8 @@ Maximum brightness with BrightIntosh on the left half of the picture, default ma
 
 ## Compatible devices
 
+- MacBook Pro M6 from 2026 (Model Identifier: Mac18,1)
+- MacBook Pro M5 PROLED from 2026 (Model Identifiers: Mac17,10, Mac17,11, Mac17,12, Mac17,13)
 - MacBook Pro M5 from 2025 / 2026 (Model identifier: Mac17,2, Mac17,6, Mac17,7, Mac17,8, Mac17,9) 
 - MacBook Pro M4 from 2024 (Model Identifiers: Mac16,1, Mac16,5, Mac16,6, Mac16,7, Mac16,8)
 - MacBook Pro M3 from 2023 (Model Identifiers: Mac15,3, Mac15,6, Mac15,7, Mac15,8, Mac15,9, Mac15,10, Mac15,11)
